@@ -155,6 +155,14 @@
         <hr style="border-color:#334155; margin:1.2rem 0" />
         <button class="btn-danger" id="emergencyBtn">🚨 Déclencher l'alerte d'urgence</button>
         <div class="msg" id="emergencyMsg"></div>
+
+        <hr style="border-color:#334155; margin:1.2rem 0" />
+        <div class="row" style="align-items:center; justify-content:space-between">
+          <h3 style="font-size:1rem; margin:0">🛟 Positions de mon cercle de confiance</h3>
+          <button class="btn-ghost" id="refreshCircleBtn">↻ Rafraîchir</button>
+        </div>
+        <p class="muted" style="font-size:.85rem">Seules les positions de tes <strong>connexions acceptées</strong> apparaissent ici.</p>
+        <div id="circleLocList"><p class="muted">—</p></div>
       </div>
     </section>
   </main>
@@ -217,7 +225,7 @@
       if (loggedIn) {
         $("userEmail").textContent = session.user.email;
         await ensureProfile(session.user);
-        await Promise.all([loadProfile(), loadCafes(), loadCheckins(), loadConnections()]);
+        await Promise.all([loadProfile(), loadCafes(), loadCheckins(), loadConnections(), loadCircleLocations()]);
       }
     }
 
@@ -338,6 +346,29 @@
         msg.textContent = error ? "Erreur : " + error.message : okText;
       }, () => { msg.style.color = "var(--danger)"; msg.textContent = "Autorise la géolocalisation dans ton navigateur pour partager ta position."; });
     }
+
+    // Positions partagées par mon cercle de confiance (RLS : seules les connexions
+    // acceptées peuvent lire mes positions, et inversement).
+    async function loadCircleLocations() {
+      const { data: { user } } = await db.auth.getUser();
+      const [{ data: locs }, { data: profiles }] = await Promise.all([
+        db.from("locations_realtime").select("*").order("created_at", { ascending: false }).limit(50),
+        db.from("profiles").select("id, username"),
+      ]);
+      const nameOf = (id) => (profiles || []).find((p) => p.id === id)?.username || "Voyageur";
+      // On affiche les positions des AUTRES (mon cercle), pas les miennes.
+      const circle = (locs || []).filter((l) => l.user_id !== user.id);
+      $("circleLocList").innerHTML = circle.length
+        ? circle.map((l) => `<div class="place">
+            <strong>${escapeHtml(nameOf(l.user_id))}</strong>
+            ${l.is_emergency ? '<span class="badge" style="background:rgba(248,113,113,.2);color:var(--danger)">🚨 URGENCE</span>' : ''}
+            <div class="meta">${new Date(l.created_at).toLocaleString("fr-FR")}</div>
+            <a href="https://www.google.com/maps?q=${l.lat},${l.lng}" target="_blank" rel="noopener" style="color:var(--accent2)">Voir sur la carte 📍</a>
+          </div>`).join("")
+        : '<p class="muted">Personne de ton cercle n\'a partagé de position pour l\'instant.</p>';
+    }
+
+    $("refreshCircleBtn").addEventListener("click", loadCircleLocations);
 
     // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
     async function loadConnections() {

@@ -73,9 +73,22 @@ create table if not exists locations_realtime (
 );
 alter table locations_realtime enable row level security;
 
+-- Cercle de confiance : je vois mes positions ET celles de mes connexions acceptées
 drop policy if exists "Je vois mes positions" on locations_realtime;
-create policy "Je vois mes positions"
-  on locations_realtime for select to authenticated using (auth.uid() = user_id);
+drop policy if exists "Mon cercle de confiance voit mes positions" on locations_realtime;
+create policy "Mon cercle de confiance voit mes positions"
+  on locations_realtime for select to authenticated
+  using (
+    auth.uid() = user_id
+    or exists (
+      select 1 from matches_connections m
+      where m.status = 'accepted'
+        and (
+          (m.user_a = auth.uid() and m.user_b = locations_realtime.user_id)
+          or (m.user_b = auth.uid() and m.user_a = locations_realtime.user_id)
+        )
+    )
+  );
 
 drop policy if exists "J envoie mes positions" on locations_realtime;
 create policy "J envoie mes positions"
