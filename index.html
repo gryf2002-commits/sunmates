@@ -54,9 +54,21 @@
     .muted { color: var(--muted); }
     .hidden { display: none; }
     .stat { font-size: 2rem; font-weight: 800; color: var(--accent); }
+    #alertBanner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: #dc2626; color: #fff; padding: 0.9rem 1.2rem; text-align: center;
+      font-weight: 600; box-shadow: 0 2px 12px rgba(0,0,0,.5);
+      animation: pulse 1s ease-in-out infinite alternate;
+    }
+    #alertBanner a { color: #fff; text-decoration: underline; }
+    #alertBanner button { background: #fff; color: #7f1d1d; padding: .25rem .7rem; margin-left: 1rem; }
+    @keyframes pulse { from { background: #dc2626; } to { background: #b91c1c; } }
   </style>
 </head>
 <body>
+  <!-- Bannière d'alerte temps réel (cachée par défaut) -->
+  <div id="alertBanner" class="hidden"></div>
+
   <header>
     <div class="logo"><span class="sun">☀️ Sun</span>Mates</div>
     <div id="userBox" class="hidden">
@@ -226,7 +238,49 @@
         $("userEmail").textContent = session.user.email;
         await ensureProfile(session.user);
         await Promise.all([loadProfile(), loadCafes(), loadCheckins(), loadConnections(), loadCircleLocations()]);
+        subscribeToCircle();
+      } else {
+        unsubscribeCircle();
       }
+    }
+
+    // ====================== TEMPS RÉEL (alertes du cercle) ======================
+    // On écoute les nouvelles positions insérées dans la base. Grâce à la RLS,
+    // Supabase ne nous envoie QUE les positions qu'on a le droit de voir
+    // (les nôtres + celles de notre cercle de confiance).
+    let circleChannel = null;
+
+    function subscribeToCircle() {
+      if (circleChannel) return; // déjà abonné
+      circleChannel = db
+        .channel("circle-alerts")
+        .on("postgres_changes",
+          { event: "INSERT", schema: "public", table: "locations_realtime" },
+          async (payload) => {
+            const row = payload.new;
+            const { data: { user } } = await db.auth.getUser();
+            if (!user || row.user_id === user.id) return; // on ignore nos propres positions
+            await loadCircleLocations(); // met à jour la liste (déjà filtrée par RLS)
+            if (row.is_emergency) {
+              const { data: prof } = await db.from("profiles")
+                .select("username").eq("id", row.user_id).maybeSingle();
+              showAlertBanner(prof?.username || "Un voyageur", row.lat, row.lng);
+            }
+          })
+        .subscribe();
+    }
+
+    function unsubscribeCircle() {
+      if (circleChannel) { db.removeChannel(circleChannel); circleChannel = null; }
+    }
+
+    function showAlertBanner(name, lat, lng) {
+      const b = $("alertBanner");
+      b.innerHTML = `🚨 <strong>${escapeHtml(name)}</strong> a déclenché une alerte d'urgence !
+        <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" rel="noopener">Voir la position 📍</a>
+        <button id="dismissAlert">Fermer</button>`;
+      show(b, true);
+      $("dismissAlert").addEventListener("click", () => show(b, false));
     }
 
     // Crée la ligne de profil au premier login si elle n'existe pas

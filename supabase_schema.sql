@@ -94,6 +94,20 @@ drop policy if exists "J envoie mes positions" on locations_realtime;
 create policy "J envoie mes positions"
   on locations_realtime for insert to authenticated with check (auth.uid() = user_id);
 
+-- 4b) TEMPS RÉEL : diffuser les nouvelles positions aux abonnés
+--     (la RLS ci-dessus garantit que chacun ne reçoit que ce qu'il peut voir)
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'locations_realtime'
+  ) then
+    alter publication supabase_realtime add table locations_realtime;
+  end if;
+end $$;
+
 -- 5) CONNEXIONS SÛRES ENTRE VOYAGEURS -------------------------
 create table if not exists matches_connections (
   id         bigint generated always as identity primary key,
