@@ -295,6 +295,13 @@
     .compat.mid  { background: var(--accent-soft); color: var(--accent); }
     .compat.low  { background: #f1f2f5; color: var(--muted); }
 
+    /* ------------------------ Avatars / photos --------------------- */
+    .avatar { background-size: cover; background-position: center; overflow: hidden; }
+    .avatar.lg { width: 74px; height: 74px; font-size: 28px; border-radius: 50%; }
+    .avatar-edit { display: flex; align-items: center; gap: 1rem; margin-bottom: .4rem; }
+    .detail-hero.has-photo { background-size: cover; background-position: center; }
+    .detail-hero.has-photo .dh-emoji { display: none; }
+
     /* ------------------------ Bannière d'alerte --------------------- */
     #alertBanner {
       position: fixed; top: 0; left: 50%; transform: translateX(-50%); max-width: 460px; width: 100%; z-index: 1000;
@@ -417,17 +424,16 @@
         <!-- Vue profil voyageur détaillé -->
         <div id="matesProfile" class="mates-view hidden">
           <button class="backbtn" data-mback>‹ Retour</button>
-          <div class="detail-hero">
-            <div class="dh-emoji" id="tpEmoji">🧑‍🦰</div>
+          <div class="detail-hero" id="tpHero">
+            <div class="dh-emoji" id="tpEmoji">🧑</div>
             <div class="dh-body"><div class="dh-name" id="tpName">—</div><div class="dh-city" id="tpCity">📍 —</div></div>
-            <span class="grate" style="position:absolute;top:.9rem;right:.9rem" id="tpRate">★ 9.5</span>
           </div>
-          <div class="gallery">
-            <div class="g">🏖️</div><div class="g">🌆</div><div class="g">🥾</div><div class="g">☕</div>
+          <div class="dstats" style="margin-bottom:1rem">
+            <div class="dstat"><b id="tpCompat">—</b><span>Compatibilité ❤️</span></div>
+            <div class="dstat"><b id="tpTrust">0</b><span>Score de confiance</span></div>
           </div>
           <div class="card">
             <div class="section-head" style="margin-bottom:.4rem"><h3 style="margin:0">Détails</h3><span class="badge no" id="tpVerif">Non vérifié</span></div>
-            <div style="margin:.2rem 0 .6rem"><span class="compat mid" id="tpCompat">❤️ —</span> <span class="muted" style="font-size:.82rem">de compatibilité avec toi</span></div>
             <p class="muted" id="tpBio" style="line-height:1.5">—</p>
             <div class="hashtags" id="tpTags"></div>
           </div>
@@ -443,8 +449,10 @@
         <div id="matesChat" class="mates-view hidden">
           <div class="chat-header">
             <button class="backbtn" data-mback style="margin:0">‹</button>
-            <div class="avatar" id="chatAvatar">M</div>
-            <div><div class="name" style="font-weight:700;color:var(--ink)" id="chatName">—</div><div class="meta muted" style="font-size:.78rem" id="chatStatus">en ligne</div></div>
+            <div id="chatProfileBtn" style="display:flex;align-items:center;gap:.7rem;cursor:pointer;flex:1">
+              <div class="avatar" id="chatAvatar">M</div>
+              <div><div class="name" style="font-weight:700;color:var(--ink)" id="chatName">—</div><div class="meta muted" style="font-size:.78rem" id="chatStatus">Voir le profil ›</div></div>
+            </div>
           </div>
           <div class="chat-body" id="chatBody"></div>
           <div class="chat-input">
@@ -535,6 +543,15 @@
 
         <div class="card">
           <h3 style="margin-top:0">Modifier mon profil</h3>
+          <label>Photo de profil</label>
+          <div class="avatar-edit">
+            <div class="avatar lg" id="pAvatarPreview">😎</div>
+            <div style="flex:1">
+              <label for="pAvatarFile" class="btn-accent" style="display:inline-block;cursor:pointer;padding:.6rem 1rem">📷 Choisir une photo</label>
+              <input id="pAvatarFile" type="file" accept="image/*" style="display:none" />
+              <div class="msg" id="avatarMsg" style="margin-top:.3rem"></div>
+            </div>
+          </div>
           <label>Pseudo</label>
           <input id="pUsername" placeholder="Chloé" />
           <div class="row" style="margin-top:0">
@@ -876,7 +893,8 @@
       updateCompletion();
       const uname = data.username || "Voyageur";
       $("profileName").textContent = uname;
-      $("profileAvatar").textContent = (uname[0] || "😎").toUpperCase();
+      setAvatarEl($("profileAvatar"), data.avatar_url, uname[0] || "😎");
+      setAvatarEl($("pAvatarPreview"), data.avatar_url, uname[0] || "😎");
       $("homeHello").textContent = "Salut " + uname + " 🌞";
       const badge = $("verifBadge");
       badge.textContent = data.is_verified ? "✅ Vérifié" : "Non vérifié";
@@ -917,6 +935,39 @@
         .update({ is_verified: true, trust_score: 30 }).eq("id", myUserId);
       if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; }
       else { msg.style.color = "var(--ok)"; msg.textContent = "Profil vérifié ✅ (+30 points)"; await loadProfile(); }
+    });
+
+    // ---- Avatar : applique une image OU une initiale dans un élément .avatar ----
+    function setAvatarEl(el, url, fallbackChar) {
+      if (!el) return;
+      if (url) { el.style.backgroundImage = "url('" + url + "')"; el.textContent = ""; }
+      else { el.style.backgroundImage = "none"; el.textContent = (fallbackChar || "?").toUpperCase(); }
+    }
+    // Markup d'avatar pour les listes (photo si dispo, sinon initiale)
+    function avatarMarkup(name, url, cls) {
+      const c = "avatar" + (cls ? " " + cls : "");
+      return url
+        ? `<div class="${c}" style="background-image:url('${escapeHtml(url)}')"></div>`
+        : `<div class="${c}">${(name?.[0] || "?").toUpperCase()}</div>`;
+    }
+
+    // ---- Upload de la photo de profil vers Supabase Storage ----
+    $("pAvatarFile").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      const msg = $("avatarMsg");
+      if (!file || !myUserId) return;
+      if (file.size > 5 * 1024 * 1024) { msg.style.color = "var(--danger)"; msg.textContent = "Image trop lourde (max 5 Mo)."; return; }
+      msg.style.color = "var(--muted)"; msg.textContent = "Envoi de la photo…";
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const path = myUserId + "/avatar." + ext;
+      const up = await db.storage.from("avatars").upload(path, file, { upsert: true, cacheControl: "3600" });
+      if (up.error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + up.error.message; return; }
+      const pub = db.storage.from("avatars").getPublicUrl(path);
+      const url = pub.data.publicUrl + "?t=" + Date.now(); // anti-cache pour voir la nouvelle photo
+      const { error } = await db.from("profiles").update({ avatar_url: url }).eq("id", myUserId);
+      if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; return; }
+      msg.style.color = "var(--ok)"; msg.textContent = "Photo mise à jour ✅";
+      await Promise.all([loadProfile(), loadConnections()]);
     });
 
     // ====================== LIEUX SÛRS ======================
@@ -1007,11 +1058,12 @@
     $("refreshCircleBtn").addEventListener("click", loadCircleLocations);
 
     // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
+    let connectedIds = new Set(); // ids des Mates déjà connectés (statut accepté)
     async function loadConnections() {
       if (!myUserId) return;
       const myId = myUserId;
       const [{ data: profiles }, { data: conns }] = await Promise.all([
-        db.from("profiles").select("id, username, city, is_verified, trust_score, bio, interests, languages, travel_style"),
+        db.from("profiles").select("id, username, city, is_verified, trust_score, bio, interests, languages, travel_style, avatar_url"),
         db.from("matches_connections").select("*"),
       ]);
       const all = profiles || [];
@@ -1022,12 +1074,13 @@
       travelerMap = {};
       all.forEach((p) => { travelerMap[p.id] = p; });
       myMatchProfile = all.find((p) => p.id === myId) || myProfile;
+      const avatarOf = (id) => travelerMap[id]?.avatar_url;
 
       // Demandes reçues (je suis user_b, statut en attente)
       const received = list.filter((c) => c.user_b === myId && c.status === "pending");
       $("requestsList").innerHTML = received.length
         ? received.map((c) => `<div class="person">
-            <div class="avatar">${initOf(c.user_a)}</div>
+            ${avatarMarkup(nameOf(c.user_a), avatarOf(c.user_a))}
             <div class="info"><div class="name">${escapeHtml(nameOf(c.user_a))}</div><div class="meta">souhaite se connecter</div></div>
             <button class="btn-primary" data-accept="${c.id}">Accepter</button></div>`).join("")
         : '<p class="muted">Aucune demande reçue.</p>';
@@ -1036,27 +1089,23 @@
 
       // Connexions acceptées (d'un côté ou de l'autre)
       const accepted = list.filter((c) => c.status === "accepted" && (c.user_a === myId || c.user_b === myId));
-      $("myConnectionsList").innerHTML = accepted.length
-        ? accepted.map((c) => {
-            const other = c.user_a === myId ? c.user_b : c.user_a;
-            return `<div class="person conn-chat" data-chat="${other}" style="cursor:pointer">
-              <div class="avatar">${initOf(other)}</div>
-              <div class="info"><div class="name">${escapeHtml(nameOf(other))}</div><div class="meta">Toucher pour discuter 💬</div></div>
-              <div class="qarrow">›</div></div>`;
-          }).join("")
+      connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)));
+      // « Mes connexions » : on ouvre le PROFIL du Mate (compat + trust + bouton message)
+      $("myConnectionsList").innerHTML = connectedIds.size
+        ? [...connectedIds].map((other) => `<div class="person trav-open" data-profile="${other}" style="cursor:pointer">
+              ${avatarMarkup(nameOf(other), avatarOf(other))}
+              <div class="info"><div class="name">${escapeHtml(nameOf(other))}</div><div class="meta">Voir le profil ›</div></div>
+              <span class="badge ok">✅</span></div>`).join("")
         : '<p class="muted">Aucune connexion pour l\'instant.</p>';
-      $("myConnectionsList").querySelectorAll("[data-chat]").forEach((el) =>
-        el.addEventListener("click", () => openChat(el.dataset.chat)));
+      $("myConnectionsList").querySelectorAll("[data-profile]").forEach((el) =>
+        el.addEventListener("click", () => openTravelerProfile(travelerMap[el.dataset.profile])));
 
-      // Liste « Mes conversations » = mes connexions acceptées (clic → chat réel)
-      $("convList").innerHTML = accepted.length
-        ? accepted.map((c) => {
-            const other = c.user_a === myId ? c.user_b : c.user_a;
-            return `<div class="person conv-open" data-chat="${other}" style="cursor:pointer">
-              <div class="avatar">${initOf(other)}</div>
+      // « Mes conversations » = mes connexions acceptées (clic → chat réel)
+      $("convList").innerHTML = connectedIds.size
+        ? [...connectedIds].map((other) => `<div class="person conv-open" data-chat="${other}" style="cursor:pointer">
+              ${avatarMarkup(nameOf(other), avatarOf(other))}
               <div class="info"><div class="name">${escapeHtml(nameOf(other))}</div><div class="meta">Toucher pour discuter 💬</div></div>
-              <div class="qarrow">›</div></div>`;
-          }).join("")
+              <div class="qarrow">›</div></div>`).join("")
         : '<p class="muted">Pas encore de conversation. Connecte-toi avec un voyageur ci-dessous 👇</p>';
       $("convList").querySelectorAll("[data-chat]").forEach((el) =>
         el.addEventListener("click", () => openChat(el.dataset.chat)));
@@ -1098,7 +1147,7 @@
         .sort((x, y) => y.pct - x.pct);
       $("travelersList").innerHTML = list.length
         ? list.map(({ p, pct }) => `<div class="person trav-open" data-profile="${p.id}" style="cursor:pointer">
-            <div class="avatar">${(p.username?.[0] || "?").toUpperCase()}</div>
+            ${avatarMarkup(p.username, p.avatar_url)}
             <div class="info">
               <div class="name">${escapeHtml(p.username || 'Voyageur')} ${p.is_verified ? '<span class="badge ok">vérifié</span>' : ''}</div>
               <div class="meta">${escapeHtml(p.city || '')} · score ${p.trust_score ?? 0}</div>
@@ -1269,8 +1318,8 @@
       const p = travelerMap[otherUserId] || {};
       const name = p.username || "Voyageur";
       $("chatName").textContent = name;
-      $("chatAvatar").textContent = (name[0] || "?").toUpperCase();
-      $("chatStatus").textContent = "Mate connecté";
+      setAvatarEl($("chatAvatar"), p.avatar_url, name[0] || "?");
+      $("chatStatus").textContent = "Voir le profil ›";
       $("chatBody").innerHTML = '<p class="muted" style="text-align:center">Chargement…</p>';
       showMatesView("matesChat");
       // Historique : messages échangés entre moi et cet interlocuteur (RLS = uniquement les miens)
@@ -1284,6 +1333,10 @@
         : '<p class="muted" style="text-align:center">Démarrez la conversation 👋</p>';
       scrollChatBottom();
     }
+    // Depuis le chat, ouvrir le profil du Mate
+    $("chatProfileBtn").addEventListener("click", () => {
+      if (currentChatUserId) openTravelerProfile(travelerMap[currentChatUserId]);
+    });
 
     async function sendChatMessage() {
       const input = $("chatInput");
@@ -1335,24 +1388,31 @@
       if (!p) return;
       currentTravelerId = p.id;
       const name = p.username || "Voyageur";
-      $("tpEmoji").textContent = "🧑‍🦰";
       $("tpName").textContent = name;
       $("tpCity").textContent = "📍 " + (p.city || "Quelque part dans le monde");
-      $("tpRate").textContent = "★ " + (((p.trust_score ?? 0) / 10 + 8).toFixed(1));
+      // Photo en bandeau si disponible, sinon emoji
+      const hero = $("tpHero");
+      if (p.avatar_url) { hero.classList.add("has-photo"); hero.style.backgroundImage = "url('" + p.avatar_url + "')"; }
+      else { hero.classList.remove("has-photo"); hero.style.backgroundImage = ""; $("tpEmoji").textContent = "🧑"; }
       $("tpBio").textContent = p.bio || "Voyageur·se SunMates en quête de belles rencontres et d'aventures en sécurité. ✨";
       const verif = $("tpVerif");
       verif.textContent = p.is_verified ? "✅ Vérifié" : "Non vérifié";
       verif.className = "badge " + (p.is_verified ? "ok" : "no");
-      // Compatibilité avec moi
+      // Compatibilité + score de confiance
       const pct = compatibility(myMatchProfile, p);
       const tpc = $("tpCompat");
-      tpc.textContent = "❤️ " + pct + "%";
-      tpc.className = "compat " + compatTier(pct);
+      tpc.textContent = pct + "%";
+      tpc.style.color = pct >= 70 ? "var(--ok)" : (pct >= 40 ? "var(--accent)" : "var(--muted)");
+      $("tpTrust").textContent = p.trust_score ?? 0;
       // Tags = vrais centres d'intérêt si renseignés, sinon hashtags par défaut
       const tags = (p.interests && p.interests.length)
         ? p.interests.map((t) => "#" + t.replace(/\s/g, ""))
         : ["#SoloTravel", "#AdventureTogether", "#SunMates"];
       $("tpTags").innerHTML = tags.map((t) => `<span>${escapeHtml(t)}</span>`).join("");
+      // Bouton connexion adapté si déjà connecté
+      const cbtn = $("tpConnectBtn");
+      if (connectedIds.has(p.id)) { cbtn.textContent = "✅ Connecté"; cbtn.disabled = true; cbtn.style.opacity = ".6"; }
+      else { cbtn.textContent = "Connexion"; cbtn.disabled = false; cbtn.style.opacity = "1"; }
       $("tpMsg").textContent = "";
       showMatesView("matesProfile");
     }

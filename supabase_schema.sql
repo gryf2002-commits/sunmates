@@ -36,6 +36,7 @@ alter table profiles add column if not exists last_name    text;
 alter table profiles add column if not exists interests    text[] default '{}';
 alter table profiles add column if not exists languages    text[] default '{}';
 alter table profiles add column if not exists travel_style text;
+alter table profiles add column if not exists avatar_url   text;
 
 -- Données PRIVÉES (téléphone) : lisibles UNIQUEMENT par leur propriétaire.
 create table if not exists profiles_private (
