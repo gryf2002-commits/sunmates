@@ -80,12 +80,12 @@
 
     /* ----------------------------- Champs --------------------------- */
     label { display: block; font-size: .82rem; color: var(--muted); margin: .8rem 0 .3rem; font-weight: 500; }
-    input, textarea {
+    input, textarea, select {
       width: 100%; padding: .8rem .9rem; border-radius: var(--radius-sm);
       border: 1.5px solid var(--line); background: #fff; color: var(--text);
       font-size: .95rem; font-family: inherit; transition: border-color .15s, box-shadow .15s;
     }
-    input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
 
     /* ----------------------------- Boutons -------------------------- */
     button { border: 0; border-radius: var(--radius-sm); padding: .8rem 1.2rem; font-size: .95rem;
@@ -302,6 +302,18 @@
     .detail-hero.has-photo { background-size: cover; background-position: center; }
     .detail-hero.has-photo .dh-emoji { display: none; }
 
+    /* ------------------- Matchmaking : pastilles & recos ----------- */
+    .afn { display: inline-block; background: var(--accent-soft); color: var(--accent); font-size: .7rem; font-weight: 600; padding: .18rem .5rem; border-radius: 999px; margin: .25rem .25rem 0 0; }
+    #recoList { display: flex; gap: .7rem; overflow-x: auto; padding-bottom: .3rem; scrollbar-width: none; }
+    #recoList::-webkit-scrollbar { display: none; }
+    .reco { flex: 0 0 134px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: .85rem .7rem; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); }
+    .reco:active { transform: scale(.98); }
+    .reco .avatar { margin: 0 auto .5rem; }
+    .reco-name { font-weight: 700; color: var(--ink); font-size: .9rem; line-height: 1.1; }
+    .reco-meta { color: var(--muted); font-size: .75rem; }
+    .reco-pct { color: var(--accent); font-weight: 800; font-size: .9rem; margin-top: .35rem; }
+    .reco-reason { font-size: .68rem; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: .15rem .45rem; margin-top: .35rem; display: inline-block; }
+
     /* ------------------------ Bannière d'alerte --------------------- */
     #alertBanner {
       position: fixed; top: 0; left: 50%; transform: translateX(-50%); max-width: 460px; width: 100%; z-index: 1000;
@@ -402,6 +414,11 @@
           <h1>Mes Mates 🤝</h1>
           <p class="muted" style="margin-top:0">Discute avec tes Mates, accepte les demandes et rencontre de nouveaux voyageurs.</p>
 
+          <div class="card" id="recoSection" style="display:none">
+            <div class="section-head"><h3 style="margin:0">✨ Pour toi</h3><span class="muted" style="font-size:.78rem">Tes meilleurs matchs</span></div>
+            <div id="recoList"></div>
+          </div>
+
           <div class="section-head"><h3 style="margin-top:.4rem">💬 Mes conversations</h3></div>
           <div class="card" id="convList"></div>
 
@@ -416,6 +433,18 @@
           <div class="card">
             <h3 style="margin-top:0">🌍 Voyageurs à rencontrer</h3>
             <div class="search"><span class="ico">🔍</span><input id="travSearch" type="text" placeholder="Rechercher par pseudo ou ville…" /></div>
+            <div class="chips wrap" id="travFilters" style="margin-bottom:.5rem">
+              <button class="chip" data-filter="verified">Vérifiés</button>
+              <button class="chip" data-filter="city">Même ville</button>
+              <button class="chip" data-filter="affinity">Affinité 50%+</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem">
+              <span class="muted" style="font-size:.82rem;white-space:nowrap">Trier par</span>
+              <select id="travSort">
+                <option value="compat">Compatibilité ❤️</option>
+                <option value="trust">Score de confiance 🛡️</option>
+              </select>
+            </div>
             <div id="travelersList"><p class="muted">Chargement…</p></div>
             <div class="msg" id="connMsg"></div>
           </div>
@@ -1118,48 +1147,109 @@
       });
       travelersCache = all.filter((p) => p.id !== myId && !related.has(p.id));
       renderTravelers($("travSearch") ? $("travSearch").value : "");
+      renderRecos();
     }
 
-    // ---- Matchmaking : % de compatibilité (intérêts 60% + ville 25% + score 15%) ----
+    // ---- Matchmaking : compatibilité enrichie ----
+    // Intérêts 45% + ville 15% + langues 15% + style 10% + score de confiance 15%
     let myMatchProfile = null;
+    const sameCityAs = (me, other) => !!(me?.city && other?.city &&
+      me.city.trim().toLowerCase() === other.city.trim().toLowerCase());
+    // Éléments en commun entre deux listes (insensible à la casse)
+    function sharedList(aArr, bArr) {
+      const b = new Set((bArr || []).map((s) => s.toLowerCase()));
+      return (aArr || []).filter((x) => b.has(x.toLowerCase()));
+    }
+    function jaccard(aArr, bArr) {
+      const a = new Set((aArr || []).map((s) => s.toLowerCase()));
+      const b = new Set((bArr || []).map((s) => s.toLowerCase()));
+      if (!a.size && !b.size) return 0;
+      let inter = 0; a.forEach((x) => { if (b.has(x)) inter++; });
+      return inter / new Set([...a, ...b]).size;
+    }
     function compatibility(me, other) {
       if (!me || !other) return 0;
-      const a = new Set((me.interests || []).map((x) => x.toLowerCase()));
-      const b = new Set((other.interests || []).map((x) => x.toLowerCase()));
-      let inter = 0; a.forEach((x) => { if (b.has(x)) inter++; });
-      const union = new Set([...a, ...b]).size;
-      const interestScore = union ? inter / union : 0;                  // 0..1
-      const sameCity = me.city && other.city &&
-        me.city.trim().toLowerCase() === other.city.trim().toLowerCase();
-      const cityScore = sameCity ? 1 : 0;                               // 0 ou 1
-      const trustScore = Math.min(other.trust_score || 0, 100) / 100;   // 0..1
-      return Math.round((interestScore * 0.6 + cityScore * 0.25 + trustScore * 0.15) * 100);
+      const interest = jaccard(me.interests, other.interests);
+      const lang = jaccard(me.languages, other.languages);
+      const city = sameCityAs(me, other) ? 1 : 0;
+      const style = (me.travel_style && other.travel_style && me.travel_style === other.travel_style) ? 1 : 0;
+      const trust = Math.min(other.trust_score || 0, 100) / 100;
+      return Math.round((interest * 0.45 + city * 0.15 + lang * 0.15 + style * 0.10 + trust * 0.15) * 100);
     }
     function compatTier(pct) { return pct >= 70 ? "high" : (pct >= 40 ? "mid" : "low"); }
 
-    // Liste des voyageurs : recherche + tri par compatibilité décroissante
+    // Raisons du match (pour les pastilles d'affinité), 3 max
+    function matchReasons(me, other) {
+      const r = [];
+      const si = sharedList(me?.interests, other.interests);
+      if (si.length) r.push(si.length + " intérêt" + (si.length > 1 ? "s" : "") + " commun" + (si.length > 1 ? "s" : ""));
+      if (sameCityAs(me, other)) r.push("📍 Même ville");
+      const sl = sharedList(me?.languages, other.languages);
+      if (sl.length) r.push("🗣 " + sl[0]);
+      if (me?.travel_style && other.travel_style && me.travel_style === other.travel_style) r.push("🧭 " + other.travel_style);
+      return r.slice(0, 3);
+    }
+
+    // Carte « Pour toi » : top 3 matchs
+    function renderRecos() {
+      const top = travelersCache
+        .map((p) => ({ p, pct: compatibility(myMatchProfile, p), reasons: matchReasons(myMatchProfile, p) }))
+        .filter((o) => o.pct > 0)
+        .sort((a, b) => b.pct - a.pct)
+        .slice(0, 3);
+      const sec = $("recoSection");
+      if (!top.length) { sec.style.display = "none"; return; }
+      sec.style.display = "";
+      $("recoList").innerHTML = top.map(({ p, pct, reasons }) => `
+        <div class="reco trav-open" data-profile="${p.id}">
+          ${avatarMarkup(p.username, p.avatar_url, "lg")}
+          <div class="reco-name">${escapeHtml(p.username || "Voyageur")}</div>
+          <div class="reco-meta">${escapeHtml(p.city || "—")}</div>
+          <div class="reco-pct">❤️ ${pct}%</div>
+          ${reasons[0] ? `<div class="reco-reason">${escapeHtml(reasons[0])}</div>` : ""}
+        </div>`).join("");
+      $("recoList").querySelectorAll("[data-profile]").forEach((el) =>
+        el.addEventListener("click", () => openTravelerProfile(travelerMap[el.dataset.profile])));
+    }
+
+    // Liste des voyageurs : recherche + filtres + tri
     let travelersCache = [];
+    const travFilters = { verified: false, city: false, affinity: false };
+    let travSortKey = "compat";
     function renderTravelers(query) {
       const q = (query || "").trim().toLowerCase();
-      const list = travelersCache
+      let list = travelersCache
         .filter((p) => !q || (p.username || "").toLowerCase().includes(q) || (p.city || "").toLowerCase().includes(q))
-        .map((p) => ({ p, pct: compatibility(myMatchProfile, p) }))
-        .sort((x, y) => y.pct - x.pct);
+        .map((p) => ({ p, pct: compatibility(myMatchProfile, p), reasons: matchReasons(myMatchProfile, p) }));
+      if (travFilters.verified) list = list.filter((o) => o.p.is_verified);
+      if (travFilters.city) list = list.filter((o) => sameCityAs(myMatchProfile, o.p));
+      if (travFilters.affinity) list = list.filter((o) => o.pct >= 50);
+      list.sort((x, y) => travSortKey === "trust"
+        ? (y.p.trust_score || 0) - (x.p.trust_score || 0)
+        : y.pct - x.pct);
       $("travelersList").innerHTML = list.length
-        ? list.map(({ p, pct }) => `<div class="person trav-open" data-profile="${p.id}" style="cursor:pointer">
+        ? list.map(({ p, pct, reasons }) => `<div class="person trav-open" data-profile="${p.id}" style="cursor:pointer">
             ${avatarMarkup(p.username, p.avatar_url)}
             <div class="info">
               <div class="name">${escapeHtml(p.username || 'Voyageur')} ${p.is_verified ? '<span class="badge ok">vérifié</span>' : ''}</div>
               <div class="meta">${escapeHtml(p.city || '')} · score ${p.trust_score ?? 0}</div>
+              ${reasons.length ? `<div>${reasons.map((rr) => `<span class="afn">${escapeHtml(rr)}</span>`).join("")}</div>` : ""}
             </div>
             <span class="compat ${compatTier(pct)}">❤️ ${pct}%</span></div>`).join("")
-        : (q
-            ? '<p class="muted">Aucun voyageur ne correspond à « ' + escapeHtml(query) + ' ».</p>'
+        : (q || travFilters.verified || travFilters.city || travFilters.affinity
+            ? '<p class="muted">Aucun voyageur ne correspond à ces critères.</p>'
             : '<p class="muted">Aucun autre voyageur pour l\'instant. Invite quelqu\'un à s\'inscrire !</p>');
       $("travelersList").querySelectorAll("[data-profile]").forEach((el) =>
         el.addEventListener("click", () => openTravelerProfile(travelerMap[el.dataset.profile])));
     }
     $("travSearch").addEventListener("input", (e) => renderTravelers(e.target.value));
+    document.querySelectorAll("[data-filter]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const k = b.dataset.filter; travFilters[k] = !travFilters[k];
+        b.classList.toggle("active", travFilters[k]);
+        renderTravelers($("travSearch").value);
+      }));
+    $("travSort").addEventListener("change", (e) => { travSortKey = e.target.value; renderTravelers($("travSearch").value); });
 
     async function sendConnection(otherId) {
       const msg = $("connMsg");
