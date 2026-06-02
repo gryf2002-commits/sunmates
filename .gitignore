@@ -1,0 +1,21 @@
+# Dépendances
+node_modules/
+
+# Logs
+*.log
+
+# Fichiers système OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs / IDE
+.vscode/
+.idea/
+
+# Secrets — NE JAMAIS COMMITTER (mots de passe, tokens, clés privées)
+.env
+.env.*
+*.key
+*.pem
+secrets.*
