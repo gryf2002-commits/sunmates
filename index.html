@@ -689,8 +689,7 @@
           { event: "INSERT", schema: "public", table: "locations_realtime" },
           async (payload) => {
             const row = payload.new;
-            const { data: { user } } = await db.auth.getUser();
-            if (!user || row.user_id === user.id) return; // on ignore nos propres positions
+            if (!myUserId || row.user_id === myUserId) return; // on ignore nos propres positions
             await loadCircleLocations(); // met à jour la liste (déjà filtrée par RLS)
             if (row.is_emergency) {
               const { data: prof } = await db.from("profiles")
@@ -760,11 +759,12 @@
 
     // ====================== PROFIL ======================
     async function loadProfile() {
-      const { data: { user } } = await db.auth.getUser();
-      if (!user) return;
-      // IMPORTANT : filtrer sur MON id. Sinon, avec plusieurs comptes, la requête
-      // renvoie tous les profils et .maybeSingle() échoue (le profil ne s'affiche pas).
-      const { data, error } = await db.from("profiles").select("*").eq("id", user.id).maybeSingle();
+      if (!myUserId) return;
+      // On utilise myUserId (issu de la session) plutôt que getUser() : appelé via
+      // onAuthStateChange, getUser() peut bloquer (verrou auth) et faire échouer la
+      // lecture du profil après un rechargement de page. On filtre aussi sur MON id
+      // (sinon, avec plusieurs comptes, .maybeSingle() reçoit trop de lignes et échoue).
+      const { data, error } = await db.from("profiles").select("*").eq("id", myUserId).maybeSingle();
       if (error || !data) return;
       $("pUsername").value = data.username || "";
       $("pCity").value = data.city || "";
@@ -780,24 +780,26 @@
     }
 
     $("saveProfileBtn").addEventListener("click", async () => {
-      const { data: { user } } = await db.auth.getUser();
       const msg = $("profileMsg");
-      const { error } = await db.from("profiles").update({
+      if (!myUserId) { msg.style.color = "var(--danger)"; msg.textContent = "Reconnecte-toi puis réessaie."; return; }
+      // upsert = crée le profil s'il n'existe pas, le met à jour sinon (profil de A à Z)
+      const { error } = await db.from("profiles").upsert({
+        id: myUserId,
         username: $("pUsername").value.trim(),
         city: $("pCity").value.trim(),
         bio: $("pBio").value.trim(),
-      }).eq("id", user.id);
+      });
       msg.style.color = error ? "var(--danger)" : "var(--ok)";
       msg.textContent = error ? "Erreur : " + error.message : "Profil enregistré ✅";
       if (!error) await loadProfile();
     });
 
     $("verifyBtn").addEventListener("click", async () => {
-      const { data: { user } } = await db.auth.getUser();
       const msg = $("profileMsg");
+      if (!myUserId) return;
       // MVP : la "vérification" est simulée — elle passe le badge à vérifié (+30 points).
       const { error } = await db.from("profiles")
-        .update({ is_verified: true, trust_score: 30 }).eq("id", user.id);
+        .update({ is_verified: true, trust_score: 30 }).eq("id", myUserId);
       if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; }
       else { msg.style.color = "var(--ok)"; msg.textContent = "Profil vérifié ✅ (+30 points)"; await loadProfile(); }
     });
@@ -822,12 +824,12 @@
 
     async function checkIn(cafeId) {
       const msg = $("cafesMsg");
-      const { data: { user } } = await db.auth.getUser();
-      const { error } = await db.from("checkpoints").insert({ user_id: user.id, cafe_id: cafeId });
+      if (!myUserId) return;
+      const { error } = await db.from("checkpoints").insert({ user_id: myUserId, cafe_id: cafeId });
       if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; return; }
       // +10 points de confiance par check-in
-      const { data: prof } = await db.from("profiles").select("trust_score").eq("id", user.id).maybeSingle();
-      await db.from("profiles").update({ trust_score: (prof?.trust_score || 0) + 10 }).eq("id", user.id);
+      const { data: prof } = await db.from("profiles").select("trust_score").eq("id", myUserId).maybeSingle();
+      await db.from("profiles").update({ trust_score: (prof?.trust_score || 0) + 10 }).eq("id", myUserId);
       msg.style.color = "var(--ok)"; msg.textContent = "Check-in enregistré ✅ (+10 points)";
       await Promise.all([loadProfile(), loadCheckins()]);
     }
@@ -858,9 +860,8 @@
       msg.style.color = "var(--muted)"; msg.textContent = "Localisation en cours…";
       if (!navigator.geolocation) { msg.style.color = "var(--danger)"; msg.textContent = "Géolocalisation non disponible sur cet appareil."; return; }
       navigator.geolocation.getCurrentPosition(async (pos) => {
-        const { data: { user } } = await db.auth.getUser();
         const { error } = await db.from("locations_realtime").insert({
-          user_id: user.id, lat: pos.coords.latitude, lng: pos.coords.longitude, is_emergency: isEmergency,
+          user_id: myUserId, lat: pos.coords.latitude, lng: pos.coords.longitude, is_emergency: isEmergency,
         });
         msg.style.color = error ? "var(--danger)" : (isEmergency ? "var(--danger)" : "var(--ok)");
         msg.textContent = error ? "Erreur : " + error.message : okText;
@@ -870,14 +871,14 @@
     // Positions partagées par mon cercle de confiance (RLS : seules les connexions
     // acceptées peuvent lire mes positions, et inversement).
     async function loadCircleLocations() {
-      const { data: { user } } = await db.auth.getUser();
+      if (!myUserId) return;
       const [{ data: locs }, { data: profiles }] = await Promise.all([
         db.from("locations_realtime").select("*").order("created_at", { ascending: false }).limit(50),
         db.from("profiles").select("id, username"),
       ]);
       const nameOf = (id) => (profiles || []).find((p) => p.id === id)?.username || "Voyageur";
       // On affiche les positions des AUTRES (mon cercle), pas les miennes.
-      const circle = (locs || []).filter((l) => l.user_id !== user.id);
+      const circle = (locs || []).filter((l) => l.user_id !== myUserId);
       $("circleLocList").innerHTML = circle.length
         ? circle.map((l) => `<div class="place">
             <div class="name">${escapeHtml(nameOf(l.user_id))}
@@ -892,8 +893,8 @@
 
     // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
     async function loadConnections() {
-      const { data: { user } } = await db.auth.getUser();
-      const myId = user.id;
+      if (!myUserId) return;
+      const myId = myUserId;
       const [{ data: profiles }, { data: conns }] = await Promise.all([
         db.from("profiles").select("id, username, city, is_verified, trust_score, bio"),
         db.from("matches_connections").select("*"),
@@ -977,10 +978,10 @@
     $("travSearch").addEventListener("input", (e) => renderTravelers(e.target.value));
 
     async function sendConnection(otherId) {
-      const { data: { user } } = await db.auth.getUser();
       const msg = $("connMsg");
+      if (!myUserId) return;
       const { error } = await db.from("matches_connections")
-        .insert({ user_a: user.id, user_b: otherId, status: "pending" });
+        .insert({ user_a: myUserId, user_b: otherId, status: "pending" });
       msg.style.color = error ? "var(--danger)" : "var(--ok)";
       msg.textContent = error ? "Erreur : " + error.message : "Demande envoyée ✅";
       await loadConnections();
