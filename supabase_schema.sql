@@ -101,6 +101,12 @@ create policy "Je cree une demande de connexion"
   on matches_connections for insert to authenticated
   with check (auth.uid() = user_a);
 
+-- Le destinataire (user_b) peut accepter/refuser une demande reçue
+drop policy if exists "Je reponds aux demandes recues" on matches_connections;
+create policy "Je reponds aux demandes recues"
+  on matches_connections for update to authenticated
+  using (auth.uid() = user_b) with check (auth.uid() = user_b);
+
 -- 6) DONNÉES DE DÉMO : quelques lieux sûrs --------------------
 insert into partner_cafes (name, category, city, is_eco, safety_note)
 select * from (values

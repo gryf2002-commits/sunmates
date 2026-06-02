@@ -92,6 +92,7 @@
         <button data-tab="profil" class="active">👤 Profil</button>
         <button data-tab="lieux">🛟 Lieux sûrs</button>
         <button data-tab="checkins">🎯 Check-ins</button>
+        <button data-tab="connexions">🤝 Connexions</button>
         <button data-tab="securite">🚨 Sécurité</button>
       </div>
 
@@ -126,6 +127,23 @@
         <h2>Mes check-ins</h2>
         <p>Total de check-ins : <span class="stat" id="checkinCount">0</span></p>
         <div id="checkinList"><p class="muted">Chargement…</p></div>
+      </div>
+
+      <!-- Onglet Connexions -->
+      <div class="card tab-panel hidden" data-panel="connexions">
+        <h2>Connexions entre voyageurs</h2>
+        <p class="muted">Envoie une demande de connexion sûre, et accepte celles que tu reçois.</p>
+
+        <h3 style="font-size:1rem;margin:.9rem 0 .3rem">📨 Demandes reçues</h3>
+        <div id="requestsList"><p class="muted">—</p></div>
+
+        <h3 style="font-size:1rem;margin:1.1rem 0 .3rem">✅ Mes connexions</h3>
+        <div id="myConnectionsList"><p class="muted">—</p></div>
+
+        <h3 style="font-size:1rem;margin:1.1rem 0 .3rem">🌍 Voyageurs à rencontrer</h3>
+        <div id="travelersList"><p class="muted">Chargement…</p></div>
+
+        <div class="msg" id="connMsg"></div>
       </div>
 
       <!-- Onglet Sécurité -->
@@ -199,7 +217,7 @@
       if (loggedIn) {
         $("userEmail").textContent = session.user.email;
         await ensureProfile(session.user);
-        await Promise.all([loadProfile(), loadCafes(), loadCheckins()]);
+        await Promise.all([loadProfile(), loadCafes(), loadCheckins(), loadConnections()]);
       }
     }
 
@@ -319,6 +337,73 @@
         msg.style.color = error ? "var(--danger)" : (isEmergency ? "var(--danger)" : "var(--ok)");
         msg.textContent = error ? "Erreur : " + error.message : okText;
       }, () => { msg.style.color = "var(--danger)"; msg.textContent = "Autorise la géolocalisation dans ton navigateur pour partager ta position."; });
+    }
+
+    // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
+    async function loadConnections() {
+      const { data: { user } } = await db.auth.getUser();
+      const myId = user.id;
+      const [{ data: profiles }, { data: conns }] = await Promise.all([
+        db.from("profiles").select("id, username, city, is_verified, trust_score"),
+        db.from("matches_connections").select("*"),
+      ]);
+      const all = profiles || [];
+      const list = conns || [];
+      const nameOf = (id) => (all.find((p) => p.id === id)?.username) || "Voyageur";
+
+      // Demandes reçues (je suis user_b, statut en attente)
+      const received = list.filter((c) => c.user_b === myId && c.status === "pending");
+      $("requestsList").innerHTML = received.length
+        ? received.map((c) => `<div class="place"><strong>${escapeHtml(nameOf(c.user_a))}</strong> souhaite se connecter
+            <div><button class="btn-primary" data-accept="${c.id}">Accepter</button></div></div>`).join("")
+        : '<p class="muted">Aucune demande reçue.</p>';
+      $("requestsList").querySelectorAll("[data-accept]").forEach((b) =>
+        b.addEventListener("click", () => acceptConnection(Number(b.dataset.accept))));
+
+      // Connexions acceptées (d'un côté ou de l'autre)
+      const accepted = list.filter((c) => c.status === "accepted" && (c.user_a === myId || c.user_b === myId));
+      $("myConnectionsList").innerHTML = accepted.length
+        ? accepted.map((c) => {
+            const other = c.user_a === myId ? c.user_b : c.user_a;
+            return `<div class="place"><strong>${escapeHtml(nameOf(other))}</strong> <span class="badge ok">connecté ✅</span></div>`;
+          }).join("")
+        : '<p class="muted">Aucune connexion pour l\'instant.</p>';
+
+      // Voyageurs à rencontrer (autres profils, hors connexions/demandes déjà existantes)
+      const related = new Set();
+      list.forEach((c) => {
+        if (c.user_a === myId) related.add(c.user_b);
+        if (c.user_b === myId) related.add(c.user_a);
+      });
+      const others = all.filter((p) => p.id !== myId && !related.has(p.id));
+      $("travelersList").innerHTML = others.length
+        ? others.map((p) => `<div class="place">
+            <strong>${escapeHtml(p.username || 'Voyageur')}</strong>
+            ${p.is_verified ? '<span class="badge ok">vérifié</span>' : ''}
+            <div class="meta">${escapeHtml(p.city || '')} · score ${p.trust_score ?? 0}</div>
+            <button class="btn-accent" data-connect="${p.id}">Demander une connexion</button></div>`).join("")
+        : '<p class="muted">Aucun autre voyageur pour l\'instant. Crée un 2e compte pour tester !</p>';
+      $("travelersList").querySelectorAll("[data-connect]").forEach((b) =>
+        b.addEventListener("click", () => sendConnection(b.dataset.connect)));
+    }
+
+    async function sendConnection(otherId) {
+      const { data: { user } } = await db.auth.getUser();
+      const msg = $("connMsg");
+      const { error } = await db.from("matches_connections")
+        .insert({ user_a: user.id, user_b: otherId, status: "pending" });
+      msg.style.color = error ? "var(--danger)" : "var(--ok)";
+      msg.textContent = error ? "Erreur : " + error.message : "Demande envoyée ✅";
+      await loadConnections();
+    }
+
+    async function acceptConnection(connId) {
+      const msg = $("connMsg");
+      const { error } = await db.from("matches_connections")
+        .update({ status: "accepted" }).eq("id", connId);
+      msg.style.color = error ? "var(--danger)" : "var(--ok)";
+      msg.textContent = error ? "Erreur : " + error.message : "Connexion acceptée ✅";
+      await loadConnections();
     }
 
     // ====================== UTILITAIRE ======================
