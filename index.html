@@ -7,11 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <!-- Fraunces : serif éditorial chaleureux (esprit « magazine de voyage » rétro) -->
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&display=swap" rel="stylesheet" />
+  <!-- Identité SunMates : Fraunces (titres éditoriaux) + Manrope (interface) -->
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- PWA : app installable sur le téléphone -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#f4655e" />
+  <meta name="theme-color" content="#c25b3f" />
   <link rel="apple-touch-icon" href="icon.svg" />
   <!-- Leaflet : carte interactive des lieux sûrs -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -694,12 +694,283 @@
     body.theme-dusk .iconbtn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.13); }
     body.theme-dusk .bubble.them { background: #2c2342; color: #ede6f2; }
     body.theme-dusk .sresult:hover, body.theme-dusk .notif-item:hover, body.theme-dusk .matepick:hover,
-    body.theme-dusk .qrow:hover, body.theme-dusk .person:hover, body.theme-dusk .person[style*="cursor"]:hover { background: rgba(255,255,255,.06); }
+    body.theme-dusk .qrow:hover, body.theme-dusk .person[style*="cursor"]:hover { background: rgba(255,255,255,.06); }
     body.theme-dusk .badge.no { background: #2a2140; color: var(--muted); }
     body.theme-dusk .leaflet-popup-content-wrapper, body.theme-dusk .leaflet-popup-tip { background: #241b35; color: #ede6f2; }
 
     /* Le grain et les ombres restent désactivés pour « mouvement réduit »
        déjà géré plus haut ; rien d'animé n'est ajouté ici. */
+
+    /* ===================================================================
+       SUNMATES — IDENTITÉ DE MARQUE v2  « Maison de voyage »
+       Inspiration : raffinement éditorial (Voyageurs du Monde) + chaleur
+       rétro-premium (Vacation), pour une app de voyage gamifiée haut de gamme.
+       Palette propre : ivoire · espresso · TERRACOTTA · PÉTROLE · OR.
+       Couche finale = redéfinit les jetons + affine les composants.
+       =================================================================== */
+    :root {
+      --bg:        #F4EDE0;            /* ivoire chaud */
+      --bg-grad:   radial-gradient(120% 80% at 50% -10%, #efe2cc 0%, #f4ede0 55%, #f1e8d8 100%);
+      --card:      #FFFCF6;            /* blanc chaud */
+      --paper:     #FFFCF6;
+      --cream:     #F2E9D8;
+      --accent:    #BE5640;            /* TERRACOTTA — couleur signature */
+      --accent-2:  #CF7355;
+      --accent-3:  #D9A441;            /* OR / ambre */
+      --accent-grad: linear-gradient(135deg, #D9A441 0%, #C76A49 48%, #BE5640 100%);
+      --accent-soft: #F1E4D7;          /* terracotta très pâle */
+      --petrol:    #114C49;            /* BLEU PÉTROLE — secondaire voyage */
+      --gold:      #C79A43;
+      --retro-teal:#16615C;            /* pétrole (liens d'action) */
+      --ink:       #241C12;            /* espresso (titres) */
+      --ink-warm:  #2A2016;
+      --text:      #4C4236;            /* texte */
+      --muted:     #938775;            /* secondaire */
+      --ok:        #1E7A5A;            /* vert sobre */
+      --danger:    #B23A2E;            /* rouge sobre */
+      --line:      #E7DCC8;
+      --radius:    18px; --radius-sm: 12px; --radius-lg: 24px;
+      --shadow:    0 12px 34px rgba(70,45,20,.09), 0 2px 8px rgba(70,45,20,.05);
+      --shadow-sm: 0 6px 16px rgba(70,45,20,.06);
+      --shadow-pop:0 18px 46px rgba(120,60,30,.18);
+      --sunset-grad: linear-gradient(180deg, #E7C489 0%, #D78F62 46%, #BE5640 100%);
+      --ring:      0 0 0 4px rgba(190,86,64,.16);
+    }
+
+    /* --- Typographie : Manrope (interface) + Fraunces (titres) --- */
+    body { font-family: "Manrope", system-ui, -apple-system, sans-serif; background: var(--bg-grad); color: var(--text); }
+    h1, h2, h3, h4, .brand b, .logo-text, #homeHello, .auth-title h1,
+    .stat, .feature h2, .detail-hero h2, .dh-name, .reco-name, .pb-title, .ph-name {
+      font-family: "Fraunces", Georgia, serif; font-optical-sizing: auto;
+    }
+    h1 { font-weight: 600; font-size: 1.7rem; letter-spacing: -.02em; line-height: 1.12; color: var(--ink); }
+    /* Titres de haut de page centrés (rendu parallèle) + un peu d'air en haut */
+    .tab-panel > h1, .mates-view > h1, .secu-view > h1, .jeux-view > h1 { text-align: center; margin-top: 1.1rem; }
+    .tab-panel > h1 + .muted, .secu-view > h1 + .muted, .jeux-view > h1 + .muted { text-align: center; }
+    h2 { font-weight: 600; letter-spacing: -.015em; color: var(--ink); }
+    h3 { font-weight: 600; font-size: 1.04rem; letter-spacing: -.01em; color: var(--ink); }
+    .muted { color: var(--muted); }
+    label, .logo-tag, .t-meta, .section-head a { text-transform: uppercase; letter-spacing: .14em; font-size: .68rem; font-weight: 700; }
+    .section-head a { color: var(--retro-teal); }
+
+    /* --- Marque / en-tête --- */
+    .brand b { font-weight: 600; letter-spacing: .015em; font-size: 1.2rem; }
+    .brand .mark { background: var(--accent-grad); border-radius: 11px; box-shadow: var(--shadow-sm); }
+    .topbar { background: linear-gradient(var(--bg) 72%, rgba(244,237,224,0)); }
+
+    /* --- Cartes : épurées, bord fin, ombre douce --- */
+    .card { background: var(--card) !important; border: 1px solid var(--line) !important; border-radius: var(--radius);
+      box-shadow: var(--shadow) !important; }
+    .post, .pf-section { background: var(--card) !important; border-color: var(--line) !important; }
+    .feed-card, .post-body, .pcell, .pprompt, .stat-box, .dstat, .tile, .gcard, .reco {
+      background: var(--cream) !important; border: 1px solid var(--line) !important; }
+
+    /* --- Boutons : terracotta plein, secondaire pétrole, finition nette --- */
+    button { font-family: "Manrope", sans-serif; font-weight: 700; border-radius: var(--radius-sm); }
+    .btn-primary { background: var(--accent) !important; color: #fff; box-shadow: 0 8px 20px rgba(190,86,64,.26) !important; }
+    .btn-primary::before, .btn-danger::before { display: none !important; } /* on retire la brillance pour un rendu net */
+    .btn-primary:hover { filter: brightness(1.04); transform: translateY(-1px); box-shadow: 0 12px 26px rgba(190,86,64,.34) !important; }
+    .btn-accent { background: var(--accent-soft); color: var(--accent); }
+    .btn-ghost { background: transparent; border: 1.5px solid var(--line); color: var(--ink); }
+    .btn-danger { background: var(--danger) !important; color: #fff; box-shadow: 0 8px 20px rgba(178,58,46,.3) !important; }
+
+    /* --- Champs --- */
+    input, textarea, select, .search input { background: #fff !important; border: 1.5px solid var(--line) !important; color: var(--text); border-radius: var(--radius-sm); }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent) !important; box-shadow: var(--ring); }
+
+    /* --- Chips / pastilles --- */
+    .chip { background: var(--cream); border: 1px solid var(--line); color: var(--text); font-weight: 600; }
+    .chip.active { background: var(--accent) !important; color: #fff !important; border-color: transparent; }
+    .badge.ok { background: rgba(30,122,90,.12); color: var(--ok); border-color: rgba(30,122,90,.4); }
+
+    /* --- Navigation basse : icônes en traits --- */
+    .bottom-nav { background: rgba(255,252,246,.86); box-shadow: 0 -8px 28px rgba(70,45,20,.08); }
+    .bottom-nav button { color: var(--muted); font-weight: 600; font-size: .7rem; }
+    .bottom-nav button.active { color: var(--accent); }
+    .bottom-nav svg { width: 22px; height: 22px; display: block; margin: 0 auto 2px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .bottom-nav button.active::before { background: var(--accent); }
+
+    /* --- Héros (connexion) raffiné --- */
+    .auth-hero { background: var(--sunset-grad) !important; }
+    .logo-text { letter-spacing: .14em; font-weight: 600; }
+    .feature, .tile .thumb { background: var(--sunset-grad); }
+
+    /* --- Posts du fil --- */
+    .post-body { background: linear-gradient(160deg, #fff, var(--cream)) !important; }
+
+    /* =================== MODE SOMBRE retravaillé (nuit pétrole) =================== */
+    body.theme-dusk {
+      --bg: #0E1F1D; --card: #152A27; --paper: #152A27; --cream: #1C322E;
+      --accent: #E07C5B; --accent-2: #E89B7E; --accent-3: #E6B45E;
+      --accent-soft: rgba(224,124,91,.16);
+      --accent-grad: linear-gradient(135deg, #E6B45E 0%, #DE8460 48%, #C95E45 100%);
+      --ink: #F4ECDC; --ink-warm: #F7F0E2; --text: #D7CFBF; --muted: #94A39B;
+      --line: rgba(255,255,255,.08); --retro-teal: #59C9B9; --ok: #57C99A;
+      color: var(--text);
+      background: radial-gradient(130% 80% at 50% -8%, #2a4f4a 0%, #16332f 36%, #0f2421 64%, #0E1F1D 100%) fixed;
+    }
+    body.theme-dusk .app-shell { background: radial-gradient(120% 55% at 50% -12%, rgba(224,124,91,.26) 0%, rgba(224,124,91,0) 58%), var(--bg) !important; }
+    body.theme-dusk .card { background: linear-gradient(180deg, #163029 0%, #12231f 100%) !important; }
+    body.theme-dusk input, body.theme-dusk textarea, body.theme-dusk select, body.theme-dusk .search input { background: #1C322E !important; color: #f0ece0; }
+    body.theme-dusk .feed-card, body.theme-dusk .post-body, body.theme-dusk .pcell, body.theme-dusk .pprompt,
+    body.theme-dusk .stat-box, body.theme-dusk .dstat, body.theme-dusk .tile, body.theme-dusk .gcard,
+    body.theme-dusk .chip, body.theme-dusk .mseg, body.theme-dusk .coupon { background: #1C322E !important; }
+    body.theme-dusk .bottom-nav { background: rgba(14,31,29,.88); }
+    body.theme-dusk .topbar { background: linear-gradient(rgba(14,31,29,.86), rgba(14,31,29,0)); }
+    body.theme-dusk .bubble.them { background: #1C322E; color: #f0ece0; }
+    body.theme-dusk .iconbtn { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.13); }
+    body.theme-dusk .notif-card, body.theme-dusk .picker-card { background: #152A27; }
+
+    /* ===================================================================
+       SUNMATES — IDENTITÉ v3  « VIBRANT VACANCES » 🌅🌴
+       App pour se faire des potes en voyage : ça doit RESPIRER la chaleur,
+       le soleil et la convivialité. Couleurs vives (soleil/corail/turquoise/
+       rose crépuscule), dégradés généreux, ambiances photo pour les jeux.
+       Couche finale — prime sur toutes les précédentes.
+       =================================================================== */
+    :root {
+      --bg:        #FFF4E6;
+      --bg-grad:   linear-gradient(168deg, #FFE6B0 0%, #FFCBA6 26%, #FFB8CE 54%, #B7E9EE 100%);
+      --card:      #FFFFFF; --paper: #FFFDF8; --cream: #FFF1E0;
+      --accent:    #FF5A4D;            /* corail soleil — signature */
+      --accent-2:  #FF8A3D;            /* mangue */
+      --accent-3:  #FFC93C;            /* jaune soleil */
+      --accent-grad: linear-gradient(135deg, #FFC93C 0%, #FF7A3D 46%, #FF4F6D 100%);
+      --accent-soft: #FFE6DC;
+      --teal:      #14C2B8; --teal-2: #22D3C5;   /* turquoise mer */
+      --retro-teal:#0E9E96;
+      --gold:      #FFB52E;
+      --ink:       #39203A;            /* prune chaud (titres) */
+      --ink-warm:  #44264A;
+      --text:      #5B4455; --muted: #AC93A3;
+      --ok:        #11B5A0; --danger: #F0384E;
+      --line:      #F6E3D6;
+      --radius:    22px; --radius-sm: 14px; --radius-lg: 28px;
+      --shadow:    0 16px 38px rgba(255,90,77,.13), 0 3px 10px rgba(120,40,60,.06);
+      --shadow-sm: 0 8px 18px rgba(255,90,77,.10);
+      --shadow-pop:0 22px 50px rgba(255,79,109,.26);
+      --sunset-grad: linear-gradient(150deg, #FFC93C 0%, #FF7A3D 38%, #FF4F6D 72%, #B25CC9 100%);
+      --ring:      0 0 0 4px rgba(255,90,77,.18);
+    }
+    body { background: var(--bg-grad) fixed; color: var(--text); }
+    .app-shell { background: radial-gradient(125% 48% at 50% -8%, rgba(255,201,60,.42) 0%, rgba(255,138,61,.10) 38%, rgba(255,255,255,0) 64%), #FFF7EE !important; }
+
+    h1, h2, h3 { color: var(--ink); }
+    .topbar { background: linear-gradient(var(--bg) 70%, rgba(255,244,230,0)); }
+    .brand .mark { background: var(--accent-grad); box-shadow: 0 6px 16px rgba(255,90,77,.4); }
+    .section-head a { color: var(--retro-teal); }
+
+    /* Cartes chaleureuses */
+    .card { background: var(--card) !important; border: 1px solid var(--line) !important; border-radius: var(--radius); box-shadow: var(--shadow) !important; }
+    .post, .pf-section { background: var(--card) !important; border-color: var(--line) !important; }
+    .feed-card, .pcell, .pprompt, .stat-box, .dstat, .reco { background: var(--cream) !important; border: 1px solid var(--line) !important; }
+    .post { background: var(--card) !important; }
+    .post-body { background: var(--cream) !important; border-color: var(--line) !important; }
+    .post-head .ph-name { color: var(--ink); }
+
+    /* Boutons vifs + lueur colorée */
+    .btn-primary { background: var(--accent-grad) !important; color: #fff; box-shadow: 0 12px 26px rgba(255,79,109,.34) !important; }
+    .btn-primary::before, .btn-danger::before { display: none !important; }
+    .btn-primary:hover { transform: translateY(-2px); filter: saturate(1.05); }
+    .btn-accent { background: var(--accent-soft); color: var(--accent); }
+    .btn-ghost { background: #fff; border: 1.5px solid var(--line); color: var(--ink); }
+    .btn-danger { background: linear-gradient(135deg,#FF6A6A,#F0384E) !important; color: #fff; box-shadow: 0 12px 26px rgba(240,56,78,.34) !important; }
+
+    input, textarea, select, .search input { background: #fff !important; border: 1.5px solid var(--line) !important; color: var(--text); }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent) !important; box-shadow: var(--ring); }
+
+    /* Pastilles & vignettes colorées */
+    .chip { background: var(--cream); border: 1px solid var(--line); color: var(--text); font-weight: 600; }
+    .chip.active { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent; }
+    .badge.ok { background: rgba(17,181,160,.14); color: var(--ok); border-color: rgba(17,181,160,.4); }
+    .tile, .gcard { background: var(--card) !important; border: 1px solid var(--line) !important; }
+    .thumb { background: var(--accent-grad); color: #fff; }
+    .thumb.green { background: linear-gradient(135deg,#22D3C5,#0E9E96) !important; }
+    .thumb.blue  { background: linear-gradient(135deg,#5BC0FF,#2D8FE0) !important; }
+    .thumb.purp  { background: linear-gradient(135deg,#C77DFF,#8A4FE0) !important; }
+
+    /* Navigation : icônes vives */
+    .bottom-nav { background: rgba(255,255,255,.9); box-shadow: 0 -8px 28px rgba(255,90,77,.10); }
+    .bottom-nav button { color: var(--muted); }
+    .bottom-nav button.active { color: var(--accent); }
+    .bottom-nav button.active::before { background: var(--accent); }
+
+    /* Héros & ambiances photo (jeux / quêtes) */
+    .auth-hero, .feature { background: var(--sunset-grad) !important; }
+    .gcard .ghead { position: relative; background-size: cover !important; background-position: center !important; min-height: 92px; }
+    .gcard .ghead::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.45) 100%); }
+    .gcard .ghead > * { position: relative; z-index: 1; }
+    .gcard .grate { background: rgba(0,0,0,.35); color: #fff; padding: .1rem .45rem; border-radius: 999px; backdrop-filter: blur(4px); }
+    .detail-hero { background-size: cover !important; background-position: center !important; }
+    .detail-hero .dh-body { background: linear-gradient(transparent, rgba(0,0,0,.62)) !important; }
+
+    /* Photo cohérente sur chaque lieu sûr (check-in) */
+    .place-photo { height: 132px; background-size: cover; background-position: center; border-radius: 14px; margin-bottom: .6rem; background-color: var(--cream); }
+
+    /* Écran de connexion réchauffé : photo de vacances + dégradé soleil */
+    .auth-hero { background: linear-gradient(150deg, rgba(255,201,60,.72), rgba(255,79,109,.80) 62%, rgba(178,92,201,.84)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=60') center/cover !important; }
+    /* Disque clair derrière le soleil pour le faire ressortir */
+    .auth-hero .logo-badge { background: rgba(255,255,255,.94) !important; box-shadow: 0 12px 30px rgba(0,0,0,.18), 0 0 0 6px rgba(255,255,255,.25) !important; display: grid; place-items: center; }
+
+    /* Peps sur la navigation : icône active dans une pastille dégradée vive */
+    .bottom-nav button.active svg { background: var(--accent-grad); stroke: #fff; padding: 6px; border-radius: 13px; width: 26px; height: 26px; box-shadow: 0 6px 14px rgba(255,90,77,.42); }
+    .bottom-nav button.active { font-weight: 700; }
+    .bottom-nav button.active::before { display: none; } /* on garde uniquement la pastille */
+
+    /* =================== DARK — « NUIT TROPICALE » =================== */
+    body.theme-dusk {
+      --bg: #190E2E; --card: #271641; --paper: #271641; --cream: #2E1B4C;
+      --accent: #FF6A5D; --accent-2: #FF9248; --accent-3: #FFD15C;
+      --accent-soft: rgba(255,106,93,.18);
+      --accent-grad: linear-gradient(135deg, #FFD15C 0%, #FF8A45 46%, #FF5570 100%);
+      --teal: #2BE0D0; --retro-teal: #36E0CE; --gold: #FFD15C;
+      --ink: #FCEFE9; --ink-warm: #FFF3EC; --text: #E6D7EC; --muted: #A98FC0;
+      --ok: #2BE0B0; --danger: #FF6A78; --line: rgba(255,255,255,.10);
+      color: var(--text);
+      background: radial-gradient(120% 70% at 50% -6%, #FF7A3D40 0%, #6A2A6E 24%, #34164F 52%, #190E2E 100%) fixed;
+    }
+    body.theme-dusk .app-shell { background: radial-gradient(125% 50% at 50% -8%, rgba(255,138,61,.34) 0%, rgba(255,79,109,.10) 40%, rgba(0,0,0,0) 66%), var(--bg) !important; }
+    body.theme-dusk .card, body.theme-dusk .post, body.theme-dusk .pf-section { background: linear-gradient(180deg,#2A1846,#22123A) !important; border-color: rgba(255,255,255,.08) !important; }
+    body.theme-dusk input, body.theme-dusk textarea, body.theme-dusk select, body.theme-dusk .search input { background: #2E1B4C !important; color: #f3e9f3; }
+    body.theme-dusk .feed-card, body.theme-dusk .pcell, body.theme-dusk .pprompt, body.theme-dusk .stat-box,
+    body.theme-dusk .dstat, body.theme-dusk .tile, body.theme-dusk .gcard, body.theme-dusk .chip,
+    body.theme-dusk .mseg, body.theme-dusk .coupon, body.theme-dusk .reco { background: #2E1B4C !important; }
+    body.theme-dusk .bottom-nav { background: rgba(25,14,46,.9); }
+    body.theme-dusk .topbar { background: linear-gradient(rgba(25,14,46,.88), rgba(25,14,46,0)); }
+    body.theme-dusk .bubble.them { background: #2E1B4C; color: #f3e9f3; }
+    body.theme-dusk .iconbtn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); }
+    body.theme-dusk .notif-card, body.theme-dusk .picker-card { background: #22123A; }
+    /* Contraste : bouton fantôme (ex. « Déconnexion ») bien lisible en sombre */
+    body.theme-dusk .btn-ghost { background: rgba(255,255,255,.07) !important; border-color: rgba(255,255,255,.2) !important; color: var(--ink) !important; }
+    body.theme-dusk .badge.no { background: rgba(255,255,255,.08); color: var(--muted); border-color: rgba(255,255,255,.16); }
+    body.theme-dusk label, body.theme-dusk .muted { color: var(--muted); }
+    /* Bouton « Retour » : même teinte que les autres actions (corail) */
+    .backbtn { color: var(--accent) !important; background: transparent; font-weight: 700; }
+    body.theme-dusk .backbtn { color: var(--accent) !important; }
+    /* Boutons secondaires uniformes en sombre */
+    body.theme-dusk .btn-accent { background: rgba(255,106,93,.18) !important; color: var(--accent-2) !important; }
+    body.theme-dusk .section-head a { color: var(--accent-2); }
+    /* Fond des posts du feed en sombre (fini le kaki) */
+    body.theme-dusk .post-body { background: rgba(255,255,255,.06) !important; }
+    /* Logo : soleil le jour, lune la nuit */
+    .mark .logo-night { display: none; }
+    body.theme-dusk .mark .logo-day { display: none; }
+    body.theme-dusk .mark .logo-night { display: block; }
+    body.theme-dusk .brand .mark { background: linear-gradient(150deg, #7A2E5E, #C2502E) !important; } /* coucher de soleil sombre */
+    /* Hero de connexion : ambiance NUIT en mode sombre */
+    body.theme-dusk .auth-hero { background: linear-gradient(160deg, rgba(58,42,110,.74), rgba(40,24,78,.82) 58%, rgba(18,26,86,.86)), url('https://loremflickr.com/820/740/ocean,night,stars?lock=5151') center/cover !important; }
+    body.theme-dusk .auth-hero .logo-badge { background: rgba(20,16,40,.88) !important; box-shadow: 0 12px 30px rgba(0,0,0,.4), 0 0 0 6px rgba(255,255,255,.12) !important; }
+    /* Modale d'info (badge…) centrée à l'écran, pas en bas */
+    #pickerOverlay.info { align-items: center; }
+    #pickerOverlay.info .picker-card { border-radius: 22px; max-width: 380px; margin: 0 1rem; }
+    /* Œil pour révéler le mot de passe */
+    .pw-eye { position: absolute; right: .5rem; top: 50%; transform: translateY(-50%); background: none; border: 0; cursor: pointer; padding: .3rem; line-height: 1; color: var(--muted); }
+    .pw-eye svg { display: block; }
+    .pw-eye:hover { color: var(--accent); }
+    /* Tuile « à venir » (Gold) grisée et non cliquable */
+    .tile.soon { opacity: .6; cursor: default; position: relative; }
+    .tile.soon .thumb { background: linear-gradient(135deg,#FFE08A,#E8A14B) !important; }
+    .tile.soon .t-meta { color: var(--accent); font-weight: 700; }
   </style>
 </head>
 <body>
@@ -728,14 +999,24 @@
   <!-- ============ ÉCRAN CONNEXION / INSCRIPTION ============ -->
   <section id="authView" class="auth-wrap">
     <div class="auth-hero">
-      <div class="logo-badge">🌅</div>
+      <div class="logo-badge"><svg viewBox="0 0 64 64" width="48" height="48">
+        <defs><linearGradient id="sunG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD15C"/><stop offset="0.55" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF4F6D"/></linearGradient></defs>
+        <g stroke="#FF8A3D" stroke-width="3.4" stroke-linecap="round">
+          <line x1="32" y1="6" x2="32" y2="13"/>
+          <line x1="14" y1="14" x2="19" y2="19"/><line x1="50" y1="14" x2="45" y2="19"/>
+          <line x1="7" y1="33" x2="14" y2="33"/><line x1="50" y1="33" x2="57" y2="33"/>
+        </g>
+        <circle cx="32" cy="33" r="13" fill="url(#sunG)"/>
+        <path d="M10 47h44" stroke="#FF4F6D" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M17 53h30" stroke="#FFB52E" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+      </svg></div>
       <div class="logo-text">SUNMATES</div>
-      <div class="logo-tag">Level up your journey</div>
+      <div class="logo-tag">Voyage seul·e, jamais seul·e ☀️</div>
     </div>
     <div class="auth-body">
       <div class="auth-title">
-        <h1>Bienvenue 👋</h1>
-        <p class="muted">Voyager solo, en toute sécurité 🌍</p>
+        <h1>Bienvenue à bord !</h1>
+        <p class="muted">Rencontre des voyageurs de confiance et partez à l'aventure ensemble 🌍</p>
       </div>
       <div class="seg">
         <button id="tabLogin" class="active">Connexion</button>
@@ -744,7 +1025,10 @@
       <label>Email</label>
       <input id="authEmail" type="email" placeholder="chloe@exemple.com" />
       <label>Mot de passe</label>
-      <input id="authPassword" type="password" placeholder="••••••••" />
+      <div style="position:relative">
+        <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" />
+        <button type="button" id="authPwToggle" class="pw-eye" title="Afficher / masquer le mot de passe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
+      </div>
       <button class="btn-primary btn-block" id="authSubmit" style="margin-top:1.2rem">Se connecter</button>
       <div class="auth-play"><button id="authPlay" title="Valider">▶</button></div>
       <div class="msg" id="authMsg" style="text-align:center"></div>
@@ -754,7 +1038,10 @@
   <!-- ============ APPLICATION (après connexion) ============ -->
   <section id="appView" class="app-shell hidden">
     <header class="topbar">
-      <div class="brand"><span class="mark">🌅</span><b><span class="sun">Sun</span>Mates</b></div>
+      <div class="brand"><span class="mark">
+        <svg class="logo-day" viewBox="0 0 64 64" width="20" height="20"><g stroke="#fff" stroke-width="3.4" stroke-linecap="round"><line x1="32" y1="8" x2="32" y2="15"/><line x1="15" y1="16" x2="20" y2="21"/><line x1="49" y1="16" x2="44" y2="21"/><line x1="9" y1="34" x2="16" y2="34"/><line x1="48" y1="34" x2="55" y2="34"/></g><circle cx="32" cy="34" r="11" fill="#fff"/><path d="M13 47h38" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>
+        <svg class="logo-night" viewBox="0 0 64 64" width="20" height="20"><g stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"><line x1="32" y1="13" x2="32" y2="18"/><line x1="18" y1="20" x2="22" y2="24"/><line x1="46" y1="20" x2="42" y2="24"/></g><circle cx="32" cy="37" r="11" fill="#fff"/><path d="M10 41h44" stroke="#FFD15C" stroke-width="3.6" stroke-linecap="round"/><path d="M17 47h30" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></svg>
+      </span><b><span class="sun">Sun</span>Mates</b></div>
       <div class="topbar-actions hidden" id="userBox">
         <button class="iconbtn" id="themeToggle" title="Changer de thème">🌙</button>
         <button class="iconbtn" id="notifBell">🔔<span class="nbadge hidden" id="notifBellCount">0</span></button>
@@ -765,7 +1052,7 @@
     <main>
       <!-- ---------------- Onglet ACCUEIL ---------------- -->
       <div class="tab-panel" data-panel="accueil">
-        <h1 id="homeHello">Salut 🌞</h1>
+        <h1 id="homeHello">Bonjour</h1>
         <p class="muted" style="margin-top:0">Prêt·e pour ta prochaine aventure ?</p>
 
         <div class="search">
@@ -793,12 +1080,13 @@
           <div class="tile" data-goto="lieux"><div class="thumb green">🛟</div><div class="t-name">Lieux sûrs</div><div class="t-meta">Check-ins</div></div>
           <div class="tile" data-goto="profil"><div class="thumb blue">👤</div><div class="t-name">Mon profil</div><div class="t-meta">Score de confiance</div></div>
           <div class="tile" data-goto="jeux"><div class="thumb">🎮</div><div class="t-name">Jeux & Quêtes</div><div class="t-meta">Gagne des badges</div></div>
+          <div class="tile soon"><div class="thumb">👑</div><div class="t-name">SunMates Gold</div><div class="t-meta">Bientôt · Passe Premium</div></div>
         </div>
       </div>
 
       <!-- ---------------- Onglet LIEUX SÛRS ---------------- -->
       <div class="tab-panel hidden" data-panel="lieux">
-        <h1>Lieux sûrs 🛟</h1>
+        <h1>Lieux sûrs</h1>
         <p class="muted" style="margin-top:0">Des espaces validés pour des rencontres en sécurité. Fais un check-in pour gagner des points de confiance.</p>
         <div class="card" style="padding:.5rem">
           <div id="map" style="height:280px;border-radius:14px;overflow:hidden;background:var(--cream)"></div>
@@ -814,7 +1102,7 @@
 
         <!-- Vue principale (sous-onglets) -->
         <div id="matesHome" class="mates-view">
-          <h1>Mes Mates 🤝</h1>
+          <h1>Mes Mates</h1>
           <div class="mates-stat"><b id="matesCount">0</b><span>Mates de confiance 🛡️</span></div>
 
           <div class="mseg">
@@ -907,6 +1195,7 @@
             <button class="btn-accent" id="tpConnectBtn">Connexion</button>
           </div>
           <button class="btn-ghost btn-block" id="tpChallengeBtn" style="margin-top:.6rem">🎯 Proposer un défi</button>
+          <button class="btn-ghost btn-block" id="tpBffBtn" style="margin-top:.5rem;display:none">⭐ Définir comme BFF du moment</button>
           <button class="btn-ghost btn-block" id="tpBlockBtn" style="margin-top:.5rem;color:var(--danger)">🚫 Bloquer ce voyageur</button>
           <div class="msg" id="tpMsg" style="text-align:center"></div>
         </div>
@@ -934,14 +1223,14 @@
 
         <!-- Vue principale : SOS bien visible + quelques accès rapides -->
         <div id="secuHome" class="secu-view">
-          <h1>Sécurité 🚨</h1>
+          <h1>Sécurité</h1>
           <p class="muted" style="margin-top:0">En cas de besoin, un seul geste. On est là pour toi.</p>
 
-          <div class="card" style="text-align:center;padding:1.8rem 1.2rem;border:1px solid rgba(244,101,94,.15)">
-            <div style="font-size:2.8rem">🆘</div>
-            <h2 style="margin:.2rem 0;color:var(--accent)">Besoin d'aide ?</h2>
-            <p class="muted" style="font-size:.85rem;margin:0 0 1.1rem">Partage de position, alerte d'urgence, cercle de confiance et plus.</p>
-            <button class="btn-danger" id="needHelpBtn" style="font-size:1.2rem;padding:1.2rem 1rem;width:100%">🆘 J'ai besoin d'aide</button>
+          <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1.2rem">
+            <div style="font-size:2.8rem;line-height:1">🆘</div>
+            <h2 style="margin:.5rem 0 .2rem;color:var(--accent)">Besoin d'aide ?</h2>
+            <p class="muted" style="font-size:.85rem;margin:0 0 1.2rem;max-width:300px">Partage de position, alerte d'urgence, cercle de confiance et plus.</p>
+            <button class="btn-danger" id="needHelpBtn" style="font-size:1.15rem;padding:1.1rem 1rem;width:100%;max-width:320px">🆘 J'ai besoin d'aide</button>
           </div>
 
           <div class="section-head"><h3>Accès rapides</h3></div>
@@ -957,18 +1246,22 @@
         <!-- Vue Besoin d'aide : TOUTES les sous-catégories -->
         <div id="secuHelp" class="secu-view hidden">
           <button class="backbtn" data-sback>‹ Retour</button>
-          <h1>Besoin d'aide 🆘</h1>
+          <h1>Besoin d'aide</h1>
           <div class="card" style="border:1px solid rgba(239,68,68,.22)">
             <a class="btn-danger btn-block" href="tel:112" style="text-decoration:none;text-align:center;display:block;font-size:1.05rem">☎️ Appeler les secours (112)</a>
             <div class="row" style="margin-top:.7rem">
-              <button class="btn-primary" id="shareLocBtn">📍 Ma position</button>
-              <button class="btn-ghost" id="emergencyBtn" style="color:var(--danger);border-color:rgba(239,68,68,.4)">🚨 Alerte</button>
+              <button class="btn-accent" id="shareLocBtn">📍 Ma position</button>
+              <button class="btn-danger" id="emergencyBtn">🚨 Alerte</button>
             </div>
-            <div class="msg" id="locMsg"></div>
-            <div class="msg" id="emergencyMsg"></div>
+            <div class="msg" id="locMsg" style="text-align:center"></div>
+            <div class="msg" id="emergencyMsg" style="text-align:center"></div>
+            <div style="margin-top:.8rem;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:.7rem .85rem">
+              <div class="muted" style="font-size:.78rem;line-height:1.5"><b style="color:var(--accent)">📍 Ma position</b> — partagée avec ton <b>cercle de confiance</b> (tes connexions acceptées).</div>
+              <div class="muted" style="font-size:.78rem;line-height:1.5;margin-top:.35rem"><b style="color:var(--danger)">🚨 Alerte</b> — diffuse aussitôt ta position à ton cercle en cas d'urgence.</div>
+            </div>
           </div>
 
-          <div class="card">
+          <div class="card" id="circleCard">
             <div class="section-head">
               <h3 style="margin:0">🛟 Cercle de confiance</h3>
               <button class="btn-ghost" id="refreshCircleBtn" style="padding:.4rem .8rem;font-size:.8rem">↻ Rafraîchir</button>
@@ -977,16 +1270,17 @@
             <div id="circleLocList"><p class="muted">—</p></div>
           </div>
 
-          <div class="section-head"><h3 style="margin-top:.4rem">Trouver de l'aide autour de moi</h3></div>
+          <div class="section-head" id="helpAround"><h3 style="margin-top:.4rem">Trouver de l'aide autour de moi</h3></div>
           <div class="grid2">
             <div class="tile" data-help="police"><div class="thumb blue">🚓</div><div class="t-name">Trouver un commissariat</div><div class="t-meta">À proximité</div></div>
             <div class="tile" data-help="hopital"><div class="thumb green">🏥</div><div class="t-name">Trouver un hôpital</div><div class="t-meta">À proximité</div></div>
             <div class="tile" data-help="lieux"><div class="thumb purp">🛟</div><div class="t-name">Lieux publics sûrs</div><div class="t-meta">Validés</div></div>
             <div class="tile" data-help="mate"><div class="thumb blue">🤝</div><div class="t-name">Trouver un Mate sûr·e</div><div class="t-meta">Cercle de confiance</div></div>
             <div class="tile" data-help="support"><div class="thumb">💬</div><div class="t-name">Support SunMates</div><div class="t-meta">Nous écrire</div></div>
+            <div class="tile" data-help="numeros"><div class="thumb green">📞</div><div class="t-name">Numéros utiles</div><div class="t-meta">Urgences Europe</div></div>
           </div>
 
-          <div class="card">
+          <div class="card" style="margin-top:1.4rem">
             <h3 style="margin-top:0">Sécurité &amp; confidentialité</h3>
             <div class="qrow" data-secu="signaler"><div class="qico">🚩</div><div class="qname">Signaler un voyageur</div><div class="qarrow">›</div></div>
             <div class="qrow" data-secu="historique"><div class="qico">🗂️</div><div class="qname">Historique de rencontres</div><div class="qarrow">›</div></div>
@@ -1005,8 +1299,11 @@
 
       <!-- ---------------- Onglet PROFIL ---------------- -->
       <div class="tab-panel hidden" data-panel="profil">
-        <h1>Mon profil 👤</h1>
-        <div class="card">
+        <h1>Mon profil</h1>
+
+        <div id="profMain">
+        <div class="card" style="position:relative">
+          <button class="iconbtn" id="profileSettingsBtn" title="Paramètres du compte" style="position:absolute;top:.7rem;right:.7rem">⚙️</button>
           <div class="person" style="border:0;padding:0">
             <div class="avatar" id="profileAvatar">😎</div>
             <div class="info">
@@ -1015,7 +1312,8 @@
             </div>
           </div>
           <div class="stat-row" style="margin-top:1rem">
-            <div class="stat-box"><div class="stat" id="trustScore">0</div><div class="lbl">Score de confiance</div></div>
+            <div class="stat-box"><div class="stat" id="trustScore">0</div><div class="lbl">Confiance</div></div>
+            <div class="stat-box"><div class="stat" id="matesCountSelf">0</div><div class="lbl">Mates</div></div>
             <div class="stat-box"><div class="stat" id="checkinCount">0</div><div class="lbl">Check-ins</div></div>
           </div>
           <div class="completion">
@@ -1024,6 +1322,15 @@
           </div>
         </div>
 
+        <div class="card" id="bffCard" style="display:none"></div>
+
+        <div class="mseg">
+          <button data-pseg="edit" class="active">Mon profil</button>
+          <button data-pseg="checkins">Check-ins</button>
+          <button data-pseg="premium">Premium ✨</button>
+        </div>
+
+        <div class="prof-seg" data-psegpanel="edit">
         <div class="card">
           <h3 style="margin-top:0">Modifier mon profil</h3>
           <p class="muted" style="font-size:.82rem;margin-top:0">Touche une section pour la déplier. Pense à <strong>Enregistrer</strong> en bas.</p>
@@ -1182,10 +1489,43 @@
           </div>
           <div class="msg" id="profileMsg"></div>
         </div>
+        </div><!-- /prof-seg edit -->
 
+        <div class="prof-seg hidden" data-psegpanel="checkins">
         <div class="card">
-          <h3 style="margin-top:0">🎯 Mes check-ins</h3>
+          <h3 style="margin-top:0">Mes check-ins</h3>
           <div id="checkinList"><p class="muted">Chargement…</p></div>
+        </div>
+        </div><!-- /prof-seg checkins -->
+
+        <div class="prof-seg hidden" data-psegpanel="premium">
+          <div class="card" style="background:linear-gradient(145deg,#FFE8A3,#FFC23D 55%,#E89B2B);border:0;text-align:center">
+            <div style="font-size:2.8rem">👑</div>
+            <h2 style="margin:.3rem 0;color:#5a3d00;font-family:'Fraunces',serif">SunMates Gold</h2>
+            <span class="badge" style="background:rgba(0,0,0,.14);color:#5a3d00;border:0">Bientôt disponible</span>
+            <ul style="text-align:left;margin:1.1rem auto 0;max-width:300px;line-height:1.9;color:#4a3500;list-style:none;padding:0;font-weight:600">
+              <li>⭐ Profil mis en avant dans la découverte</li>
+              <li>🔍 Filtres de recherche illimités</li>
+              <li>🕶️ Mode incognito</li>
+              <li>🎟️ Coupons partenaires exclusifs</li>
+              <li>🏅 Badge Gold sur ton profil</li>
+            </ul>
+            <button class="btn-primary btn-block" id="premiumBtn" style="margin-top:1.3rem;background:#5a3d00 !important;box-shadow:none !important">Me prévenir au lancement</button>
+            <div class="msg" id="premiumMsg" style="color:#4a3500"></div>
+          </div>
+        </div><!-- /prof-seg premium -->
+        </div><!-- /profMain -->
+
+        <div class="card hidden" id="settingsCard">
+          <button class="backbtn" id="settingsBack" style="margin-bottom:.6rem">‹ Retour</button>
+          <h3 style="margin-top:0">⚙️ Paramètres du compte</h3>
+          <label>Nouvel email</label>
+          <input id="setEmail" type="email" placeholder="nouvel@email.com" />
+          <button class="btn-accent btn-block" id="saveEmailBtn" style="margin-top:.4rem">Changer l'email</button>
+          <label style="margin-top:1rem">Nouveau mot de passe</label>
+          <input id="setPassword" type="password" placeholder="Au moins 6 caractères" />
+          <button class="btn-accent btn-block" id="savePasswordBtn" style="margin-top:.4rem">Changer le mot de passe</button>
+          <div class="msg" id="settingsMsg"></div>
         </div>
       </div>
 
@@ -1194,7 +1534,7 @@
 
         <!-- Vue principale : Jeux & Quêtes -->
         <div id="jeuxHome" class="jeux-view">
-          <h1>Jeux &amp; Quêtes 🔥</h1>
+          <h1>Jeux &amp; Quêtes</h1>
           <p class="muted" style="margin-top:0">Relève des défis, gagne des badges et débloque des coupons.</p>
 
           <div class="card" id="suggestionsSection" style="display:none">
@@ -1205,13 +1545,20 @@
           <div class="section-head"><h3 style="margin-top:.4rem">Jeux populaires</h3></div>
           <div class="grid2" id="gamesGrid"></div>
 
+          <div class="section-head"><h3 style="margin-top:1.6rem">🎁 Mes récompenses</h3></div>
+          <div class="grid2" style="margin:0 0 .6rem">
+            <div class="tile" id="openBadges" style="padding:.7rem .8rem;flex-direction:row;align-items:center;gap:.6rem;text-align:left;background:var(--accent-soft) !important;border:1px solid rgba(255,90,77,.28) !important">
+              <div class="thumb" style="width:34px;height:34px;min-width:34px;font-size:1rem;border-radius:10px;margin:0">🏅</div>
+              <div><div class="t-name" style="font-size:.86rem">Badges</div><div class="t-meta">0 débloqués</div></div>
+            </div>
+            <div class="tile" id="openCoupons" style="padding:.7rem .8rem;flex-direction:row;align-items:center;gap:.6rem;text-align:left;background:var(--accent-soft) !important;border:1px solid rgba(255,90,77,.28) !important">
+              <div class="thumb green" style="width:34px;height:34px;min-width:34px;font-size:1rem;border-radius:10px;margin:0">🎟️</div>
+              <div><div class="t-name" style="font-size:.86rem">Coupons</div><div class="t-meta">0 dispo</div></div>
+            </div>
+          </div>
+
           <div class="section-head"><h3>Quêtes du jour</h3></div>
           <div class="card" id="questsList"></div>
-
-          <div class="grid2" style="margin-top:.2rem">
-            <div class="tile" id="openBadges"><div class="thumb">🏅</div><div class="t-name">Mes badges</div><div class="t-meta">36/44 débloqués</div></div>
-            <div class="tile" id="openCoupons"><div class="thumb green">🎟️</div><div class="t-name">Mes coupons</div><div class="t-meta">4 disponibles</div></div>
-          </div>
         </div>
 
         <!-- Vue détail d'une quête / d'un jeu -->
@@ -1251,7 +1598,7 @@
           <h1>Badges 🏅</h1>
           <div class="card">
             <div class="person" style="border:0;padding:.2rem 0"><div class="qico">🏅</div><div class="info"><div class="name">Collection actuelle</div></div><span class="badge warn">36 / 44</span></div>
-            <div class="person" style="border:0;padding:.2rem 0"><div class="qico">🎟️</div><div class="info"><div class="name">Coupons de réduction</div></div><span class="badge ok">1 / 1</span></div>
+            <div class="person" id="openCouponsFromBadges" style="border:0;padding:.4rem .2rem;cursor:pointer"><div class="qico">🎟️</div><div class="info"><div class="name">Mes coupons</div><div class="meta">Voir mes coupons ›</div></div><div class="qarrow">›</div></div>
           </div>
           <div class="card"><div class="bgrid" id="badgeGrid"></div></div>
         </div>
@@ -1269,12 +1616,12 @@
 
     <!-- ---------------- Barre de navigation (bas) ---------------- -->
     <nav class="bottom-nav">
-      <button data-tab="accueil" class="active"><span class="ni">🏠</span>Accueil</button>
-      <button data-tab="lieux"><span class="ni">🛟</span>Lieux</button>
-      <button data-tab="jeux"><span class="ni">🎮</span>Jeux<span class="navbadge hidden" id="navJeux"></span></button>
-      <button data-tab="connexions"><span class="ni">🤝</span>Mates<span class="navbadge hidden" id="navMates"></span></button>
-      <button data-tab="securite"><span class="ni">🚨</span>Sécurité</button>
-      <button data-tab="profil"><span class="ni">👤</span>Profil</button>
+      <button data-tab="accueil" class="active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Accueil</button>
+      <button data-tab="lieux"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>Lieux</button>
+      <button data-tab="jeux"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8 4.8-2.2Z"/></svg>Jeux<span class="navbadge hidden" id="navJeux"></span></button>
+      <button data-tab="connexions"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.2"/><path d="M3.6 19a5.5 5.5 0 0 1 10.8 0"/><path d="M16 7.6a3 3 0 0 1 0 5.6"/><path d="M17.8 19a5 5 0 0 0-3-4.7"/></svg>Mates<span class="navbadge hidden" id="navMates"></span></button>
+      <button data-tab="securite"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/></svg>Sécurité</button>
+      <button data-tab="profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>Profil</button>
     </nav>
   </section>
 
@@ -1325,6 +1672,14 @@
     }
     $("authSubmit").addEventListener("click", submitAuth);
     $("authPlay").addEventListener("click", submitAuth);
+    const EYE_OPEN = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+    const EYE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+    $("authPwToggle").addEventListener("click", () => {
+      const i = $("authPassword");
+      const show = i.type === "password";
+      i.type = show ? "text" : "password";
+      $("authPwToggle").innerHTML = show ? EYE_OPEN : EYE_OFF; // œil ouvert quand visible
+    });
 
     $("logoutBtn").addEventListener("click", () => db.auth.signOut());
 
@@ -1437,6 +1792,7 @@
       if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
       if (target === "lieux" && typeof renderMap === "function") renderMap();
+      if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1448,14 +1804,14 @@
       if (!data || !data.length) { wrap.innerHTML = '<p class="muted">Aucun lieu pour l\'instant.</p>'; return; }
       const icons = ["☕", "🏠", "🌿", "📍"];
       wrap.innerHTML = '<div class="grid2">' + data.map((c, i) => `
-        <div class="tile" data-goto="lieux">
+        <div class="tile" data-homecafe="${c.id}">
           <div class="thumb ${["","green","blue","purp"][i % 4]}">${icons[i % 4]}</div>
           <div class="t-name">${escapeHtml(c.name)}</div>
           <div class="t-meta">${escapeHtml(c.city || "")} ${c.is_eco ? "· 🌱" : ""}</div>
         </div>`).join("") + '</div>';
-      // re-brancher la navigation sur les nouvelles tuiles
-      wrap.querySelectorAll('[data-goto]').forEach((el) =>
-        el.addEventListener("click", () => goToTab(el.dataset.goto)));
+      // Clic sur un lieu → onglet Lieux + zoom direct sur CE lieu (carte)
+      wrap.querySelectorAll('[data-homecafe]').forEach((el) =>
+        el.addEventListener("click", () => { goToTab("lieux"); if (typeof focusMapOn === "function") setTimeout(() => focusMapOn(Number(el.dataset.homecafe)), 80); }));
     }
 
     // ====================== PROFIL ======================
@@ -1487,6 +1843,7 @@
     const selMusic     = new Set();
     let   selStyle = null;
     let   myProfile = null; // mon profil complet (utilisé pour le matchmaking)
+    let   myBffId = null;   // « BFF du moment » choisi
 
     // Construit des chips cliquables dans un conteneur (single = choix unique)
     function buildChips(containerId, options, selectedSet, single) {
@@ -1585,11 +1942,13 @@
       $("profileName").textContent = uname;
       setAvatarEl($("profileAvatar"), data.avatar_url, uname[0] || "😎");
       setAvatarEl($("pAvatarPreview"), data.avatar_url, uname[0] || "😎");
-      $("homeHello").textContent = "Salut " + uname + " 🌞";
+      $("homeHello").textContent = "Bonjour " + uname;
       const badge = $("verifBadge");
       badge.textContent = data.is_verified ? "✅ Vérifié" : "Non vérifié";
       badge.className = "badge " + (data.is_verified ? "ok" : "no");
       const cp = $("contactPrefVal"); if (cp) cp.textContent = (data.allow_contact === "connections") ? "Connexions ›" : "Tout le monde ›";
+      myBffId = data.bff_id || null;
+      renderBff();
     }
 
     $("saveProfileBtn").addEventListener("click", async () => {
@@ -1681,6 +2040,7 @@
       if (!data.length) { list.innerHTML = '<p class="muted">Aucun lieu pour l\'instant.</p>'; return; }
       list.innerHTML = data.map((c) => `
         <div class="place">
+          <div class="place-photo" style="background-image:url('${cafeImage(c)}')"></div>
           <div class="name">${escapeHtml(c.name)} ${c.is_eco ? '<span class="eco">🌱 éco</span>' : ''}</div>
           <div class="meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')}</div>
           <div class="meta">${escapeHtml(c.safety_note || '')}</div>
@@ -1721,11 +2081,32 @@
         .select("created_at, partner_cafes(name, city)")
         .order("created_at", { ascending: false });
       if (error) return;
-      $("checkinCount").textContent = data.length;
-      $("checkinList").innerHTML = data.length
-        ? data.map((c) => `<div class="place"><div class="name">${escapeHtml(c.partner_cafes?.name || 'Lieu')}</div>
-            <div class="meta">${new Date(c.created_at).toLocaleString("fr-FR")}</div></div>`).join("")
+      const list = data || [];
+      $("checkinCount").textContent = list.length;
+      // Regroupe les check-ins par lieu (un lieu fait plusieurs fois = une seule tuile ×N)
+      const groups = {};
+      list.forEach((c) => {
+        const name = c.partner_cafes?.name || "Lieu";
+        if (!groups[name]) groups[name] = { name, city: c.partner_cafes?.city || "", count: 0, dates: [] };
+        groups[name].count++; groups[name].dates.push(c.created_at);
+      });
+      const arr = Object.values(groups);
+      $("checkinList").innerHTML = arr.length
+        ? '<div class="bgrid">' + arr.map((g, i) => `<div class="bitem" data-cig="${i}" style="cursor:pointer">
+              <div class="hex">📍</div>
+              <div class="bname">${escapeHtml(g.name)}</div>
+              <div class="bprog">${g.count > 1 ? "×" + g.count : escapeHtml(g.city)}</div>
+            </div>`).join("") + '</div>'
         : '<p class="muted">Aucun check-in pour l\'instant — va dans « Lieux sûrs ».</p>';
+      $("checkinList").querySelectorAll("[data-cig]").forEach((el) => el.addEventListener("click", () => {
+        const g = arr[Number(el.dataset.cig)];
+        const dates = g.dates.slice().sort((a, b) => (b || "").localeCompare(a || "")).map((d) => "• " + new Date(d).toLocaleString("fr-FR")).join("<br>");
+        showInfo("Check-in", `<div style="text-align:center;padding:.4rem 0">
+            <div style="font-size:3rem">📍</div>
+            <h3 style="margin:.3rem 0">${escapeHtml(g.name)}</h3>
+            <p class="muted" style="margin:.2rem 0">${escapeHtml(g.city)} · ${g.count} check-in${g.count > 1 ? "s" : ""}</p>
+            <div class="muted" style="font-size:.82rem;margin-top:.5rem;line-height:1.8;text-align:left;display:inline-block">${dates}</div></div>`);
+      }));
     }
 
     // ====================== SÉCURITÉ ======================
@@ -1773,6 +2154,7 @@
 
     // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
     let connectedIds = new Set(); // ids des Mates déjà connectés (statut accepté)
+    let connHistory = [];         // historique : {uid, since, msgs} par connexion acceptée
     async function loadConnections() {
       if (!myUserId) return;
       const myId = myUserId;
@@ -1814,6 +2196,9 @@
       // Connexions acceptées (d'un côté ou de l'autre)
       const accepted = list.filter((c) => c.status === "accepted" && (c.user_a === myId || c.user_b === myId));
       connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)).filter((id) => !blockedIds.has(id)));
+      const msgCountByPeer = {};
+      (msgs || []).forEach((mm) => { const peer = mm.sender_id === myId ? mm.recipient_id : mm.sender_id; msgCountByPeer[peer] = (msgCountByPeer[peer] || 0) + 1; });
+      connHistory = accepted.map((c) => { const uid = c.user_a === myId ? c.user_b : c.user_a; return { uid, since: c.created_at, msgs: msgCountByPeer[uid] || 0 }; }).filter((h) => !blockedIds.has(h.uid));
       // « Mes connexions » : on ouvre le PROFIL du Mate (compat + trust + bouton message)
       $("myConnectionsList").innerHTML = connectedIds.size
         ? [...connectedIds].map((other) => `<div class="person trav-open" data-profile="${other}" style="cursor:pointer">
@@ -1850,8 +2235,10 @@
       travelersCache = all.filter((p) => p.id !== myId && !related.has(p.id) && !blockedIds.has(p.id));
       renderTravelers($("travSearch") ? $("travSearch").value : "");
       const mc = $("matesCount"); if (mc) mc.textContent = connectedIds.size;
+      const ms = $("matesCountSelf"); if (ms) ms.textContent = connectedIds.size;
       if (typeof updateNotifBadges === "function") updateNotifBadges();
       if (typeof buildHomeFeed === "function") buildHomeFeed();
+      if (typeof renderBff === "function") renderBff();
     }
 
     // ---- Matchmaking : compatibilité enrichie ----
@@ -2013,6 +2400,7 @@
     const headColors = ["", "blue", "purp", "green"];
     let myQuestStatus = {};      // quest_key -> 'joined' | 'completed'
     let myBadgeKeys = new Set(); // badges débloqués (clés)
+    let myBadges = [];           // badges débloqués (détails : nom, emoji, date)
     let myCoupons = [];          // coupons gagnés
     let mySuggestions = [];      // défis reçus (en attente)
     let currentQuest = null;     // quête ouverte dans la vue détail
@@ -2023,13 +2411,14 @@
       const [qs, uq, ub, uc, sg] = await Promise.all([
         db.from("quests").select("*").order("sort_order"),
         db.from("user_quests").select("quest_key,status").eq("user_id", myUserId),
-        db.from("user_badges").select("badge_key,name,emoji").eq("user_id", myUserId),
+        db.from("user_badges").select("badge_key,name,emoji,earned_at").eq("user_id", myUserId),
         db.from("user_coupons").select("*").eq("user_id", myUserId).order("earned_at", { ascending: false }),
         db.from("quest_suggestions").select("*").eq("to_user", myUserId).eq("status", "pending").order("created_at", { ascending: false }),
       ]);
       allQuests = qs.data || [];
       myQuestStatus = {}; (uq.data || []).forEach((r) => { myQuestStatus[r.quest_key] = r.status; });
-      myBadgeKeys = new Set((ub.data || []).map((b) => b.badge_key));
+      myBadges = ub.data || [];
+      myBadgeKeys = new Set(myBadges.map((b) => b.badge_key));
       myCoupons = uc.data || [];
       mySuggestions = sg.data || [];
       renderJeux();
@@ -2039,14 +2428,45 @@
 
     const questByKey = (k) => allQuests.find((q) => q.key === k);
 
+    // Photos liées à la VILLE/capitale (LoremFlickr = photos Flickr libres par
+    // mot-clé). `lock` rend l'image stable. Un dégradé vif reste derrière, donc
+    // jamais d'image cassée. Mots-clés distincts → villes/pays variés.
+    function flickrImg(keywords, seed) {
+      const s = seed || keywords; let n = 0;
+      for (let i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) >>> 0;
+      return `https://loremflickr.com/640/320/${encodeURIComponent(keywords)}?lock=${n % 100000}`;
+    }
+    // Chaque quête → sa ville (+ nuance pour varier si même pays)
+    const QUEST_CITY = {
+      game_treasure: "lisbon,portugal",
+      game_quiz: "barcelona,spain",
+      game_photo: "berlin,germany",
+      game_food: "rome,italy",
+      quest_pano: "stockholm,sweden",
+      quest_coffee: "lisbon,cafe",
+      quest_artisan: "barcelona,market",
+      quest_cocktail: "berlin,nightlife",
+      quest_thrill: "interlaken,switzerland",
+      quest_firstride: "roadtrip,landscape",
+    };
+    function questImage(q) {
+      const kw = (q && QUEST_CITY[q.key]) || ((q && q.city) ? q.city.split(",")[0] : "travel");
+      return flickrImg(kw, q && q.key);
+    }
+    // Lieu → photo de sa ville
+    function cafeImage(c) {
+      const city = ((c.city || "travel").split(",")[0]).trim();
+      return flickrImg(city + ",city", c.name);
+    }
+
     function renderJeux() {
       const games = allQuests.filter((q) => q.kind === "game");
       const quests = allQuests.filter((q) => q.kind === "quest");
 
-      // Jeux populaires
+      // Jeux populaires (avec ambiance photo)
       $("gamesGrid").innerHTML = games.map((g, i) => `
         <div class="gcard" data-qkey="${g.key}">
-          <div class="ghead ${headColors[i % 4]}">${g.emoji}<span class="grate">★ ${escapeHtml(g.rating || "")}</span></div>
+          <div class="ghead ${headColors[i % 4]}" style="background-image:url('${questImage(g)}')">${g.emoji}<span class="grate">+${g.points || 0} pts</span></div>
           <div class="gbody"><div class="gname">${escapeHtml(g.title)}${myQuestStatus[g.key] === "completed" ? " ✅" : ""}</div><div class="gcity">${escapeHtml(g.city || "")}</div></div>
         </div>`).join("");
 
@@ -2068,12 +2488,13 @@
       const earned = defs.filter((d) => myBadgeKeys.has(d.key)).length;
       $("badgeGrid").innerHTML = defs.map((b) => {
         const done = myBadgeKeys.has(b.key);
-        return `<div class="bitem ${done ? "" : "locked"}">
+        return `<div class="bitem ${done ? "" : "locked"}" data-badge="${escapeHtml(b.key)}" style="cursor:pointer">
           <div class="hex">${b.emoji || "🏅"}</div>
           <div class="bname">${escapeHtml(b.name || "")}</div>
           <div class="bprog">${done ? "✅ débloqué" : "🔒 à débloquer"}</div>
         </div>`;
       }).join("");
+      $("badgeGrid").querySelectorAll("[data-badge]").forEach((el) => el.addEventListener("click", () => showBadgeInfo(el.dataset.badge)));
       // Compteurs remis à la réalité (0 si rien d'accompli)
       const bm = $("openBadges").querySelector(".t-meta"); if (bm) bm.textContent = earned + "/" + defs.length + " débloqués";
       const cm = $("openCoupons").querySelector(".t-meta"); if (cm) cm.textContent = myCoupons.length + " disponible" + (myCoupons.length > 1 ? "s" : "");
@@ -2120,14 +2541,16 @@
       if (!q) return;
       currentQuest = q;
       const status = myQuestStatus[q.key];
+      const hero = $("detailHero");
+      if (hero) { hero.style.backgroundImage = "url('" + questImage(q) + "')"; hero.classList.add("has-photo"); }
       $("detailEmoji").textContent = q.emoji || "🎮";
       $("detailName").textContent = q.title;
       $("detailCity").textContent = q.city || "";
       $("detailDesc").textContent = q.description || "";
       $("detailStats").innerHTML = `
-        <div class="dstat"><b>${escapeHtml(q.participants || "—")}</b><span>Participants</span></div>
-        <div class="dstat"><b>★ ${escapeHtml(q.rating || "—")}</b><span>Note</span></div>
-        <div class="dstat"><b>+${q.points || 0}</b><span>Points</span></div>`;
+        <div class="dstat"><b>+${q.points || 0}</b><span>Points</span></div>
+        <div class="dstat"><b>${q.badge_emoji || "🏅"}</b><span>Badge</span></div>
+        <div class="dstat"><b>${status === "completed" ? "✅" : (status === "joined" ? "⏳" : "—")}</b><span>Statut</span></div>`;
       // Récompense badge
       $("detailBadgeIco").textContent = q.badge_emoji || "🏅";
       $("detailBadgeName").textContent = q.badge_name || "Badge";
@@ -2205,28 +2628,73 @@
       b.addEventListener("click", () => showJeuxView("jeuxHome")));
     $("openBadges").addEventListener("click", () => showJeuxView("jeuxBadges"));
     $("openCoupons").addEventListener("click", () => showJeuxView("jeuxCoupons"));
+    $("openCouponsFromBadges").addEventListener("click", () => showJeuxView("jeuxCoupons"));
 
     // ---- Sélecteur générique (overlay : choisir un Mate) ----
     let pickerCb = null;
     function openPicker(title, items, cb) {
       pickerCb = cb;
+      $("pickerOverlay").classList.remove("info");
       $("pickerTitle").textContent = title;
-      $("pickerBody").innerHTML = items.length
-        ? items.map((it, i) => `<div class="matepick" data-pick="${i}">
-            ${avatarMarkup(it.label, it.avatar)}
-            <div class="info"><div class="name">${escapeHtml(it.label)}</div></div></div>`).join("")
-        : '<p class="muted">Personne pour l\'instant.</p>';
-      $("pickerBody").querySelectorAll("[data-pick]").forEach((el) =>
-        el.addEventListener("click", () => { const it = items[Number(el.dataset.pick)]; if (pickerCb) pickerCb(it); }));
+      const renderList = (q) => {
+        q = (q || "").toLowerCase();
+        const filtered = items.filter((it) => !q || (it.label || "").toLowerCase().includes(q));
+        $("pickerList").innerHTML = filtered.length
+          ? filtered.map((it) => `<div class="matepick" data-pickid="${items.indexOf(it)}">
+              ${avatarMarkup(it.label, it.avatar)}
+              <div class="info"><div class="name">${escapeHtml(it.label)}</div></div></div>`).join("")
+          : '<p class="muted" style="padding:.5rem">Aucun résultat.</p>';
+        $("pickerList").querySelectorAll("[data-pickid]").forEach((el) =>
+          el.addEventListener("click", () => { const it = items[Number(el.dataset.pickid)]; if (pickerCb) pickerCb(it); }));
+      };
+      $("pickerBody").innerHTML = (items.length > 5
+        ? '<div class="search" style="margin-bottom:.6rem"><span class="ico">🔍</span><input id="pickerSearch" type="text" placeholder="Rechercher un pseudo…" /></div>'
+        : "") + '<div id="pickerList"></div>';
+      const ps = $("pickerSearch"); if (ps) ps.addEventListener("input", (e) => renderList(e.target.value));
+      renderList("");
       show($("pickerOverlay"), true);
     }
-    function closePicker() { show($("pickerOverlay"), false); pickerCb = null; }
+    function closePicker() { show($("pickerOverlay"), false); $("pickerOverlay").classList.remove("info"); pickerCb = null; }
     $("pickerClose").addEventListener("click", closePicker);
     $("pickerOverlay").addEventListener("click", (e) => { if (e.target.id === "pickerOverlay") closePicker(); });
+
+    // Affiche un panneau d'info (réutilise l'overlay du sélecteur)
+    function showInfo(title, html) {
+      pickerCb = null;
+      $("pickerTitle").textContent = title;
+      $("pickerBody").innerHTML = html;
+      $("pickerOverlay").classList.add("info");
+      show($("pickerOverlay"), true);
+    }
+    // Détail d'un badge : date d'obtention + quête liée
+    function showBadgeInfo(key) {
+      const quest = allQuests.find((q) => q.badge_key === key);
+      const earned = myBadges.find((b) => b.badge_key === key);
+      let html;
+      if (earned) {
+        const d = earned.earned_at
+          ? new Date(earned.earned_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+          : "—";
+        html = `<div style="text-align:center;padding:.4rem 0">
+            <div style="font-size:3.2rem">${earned.emoji || "🏅"}</div>
+            <h3 style="margin:.3rem 0">${escapeHtml(earned.name || "Badge")}</h3>
+            <p class="muted" style="margin:.2rem 0">Débloqué le <b>${d}</b></p>
+            ${quest ? `<p class="muted" style="margin:.2rem 0">Via la quête « ${escapeHtml(quest.title)} »${quest.city ? " · " + escapeHtml(quest.city) : ""}</p>` : ""}
+            <p class="muted" style="margin:.2rem 0">En solo ou avec tes Mates 🤝</p></div>`;
+      } else {
+        html = `<div style="text-align:center;padding:.4rem 0">
+            <div style="font-size:3.2rem;filter:grayscale(1);opacity:.55">${(quest && quest.badge_emoji) || "🏅"}</div>
+            <h3 style="margin:.3rem 0">${escapeHtml((quest && quest.badge_name) || "Badge")}</h3>
+            <p class="muted">🔒 Pas encore débloqué.</p>
+            ${quest ? `<p class="muted">Accomplis « ${escapeHtml(quest.title)} » pour l'obtenir.</p>` : ""}</div>`;
+      }
+      showInfo("Badge", html);
+    }
 
     // ====================== MESSAGERIE (chat réel via Supabase) ======================
     let travelerMap = {};         // profils chargés depuis Supabase (pour la fiche)
     let currentTravelerId = null; // profil voyageur affiché dans la fiche détaillée
+    let mateProfileBack = null;   // action de retour personnalisée (ex. depuis l'historique sécurité)
     let currentChatUserId = null; // interlocuteur de la conversation ouverte
     let messageChannel = null;    // abonnement temps réel aux messages
 
@@ -2358,6 +2826,7 @@
 
     async function openTravelerProfile(p) {
       if (!p) return;
+      mateProfileBack = null; // par défaut, le retour ramène à la liste Mates
       currentTravelerId = p.id;
       const name = p.username || "Voyageur";
       $("tpName").textContent = name;
@@ -2419,6 +2888,10 @@
       const cbtn = $("tpConnectBtn");
       if (connectedIds.has(p.id)) { cbtn.textContent = "✅ Connecté"; cbtn.disabled = true; cbtn.style.opacity = ".6"; }
       else { cbtn.textContent = "Connexion"; cbtn.disabled = false; cbtn.style.opacity = "1"; }
+      // BFF du moment : seulement pour les Mates connectés
+      const bffBtn = $("tpBffBtn");
+      if (connectedIds.has(p.id)) { bffBtn.style.display = ""; bffBtn.textContent = (myBffId === p.id) ? "⭐ Retirer des BFF" : "⭐ Définir comme BFF du moment"; }
+      else { bffBtn.style.display = "none"; }
       $("tpMsg").textContent = "";
       $("tpBadgesCard").style.display = "none"; $("tpBadges").innerHTML = "";
       showMatesView("matesProfile");
@@ -2432,6 +2905,7 @@
     }
     $("tpMsgBtn").addEventListener("click", () => { if (currentTravelerId) openChat(currentTravelerId); });
     $("tpBlockBtn").addEventListener("click", () => blockUser(currentTravelerId));
+    $("tpBffBtn").addEventListener("click", () => { if (currentTravelerId) setBff(currentTravelerId); });
     // Proposer un défi à CE voyageur (doit être une connexion acceptée)
     $("tpChallengeBtn").addEventListener("click", () => {
       const m = $("tpMsg");
@@ -2452,7 +2926,10 @@
 
     // Boutons "Retour" des sous-vues Mates
     document.querySelectorAll("[data-mback]").forEach((b) =>
-      b.addEventListener("click", () => showMatesView("matesHome")));
+      b.addEventListener("click", () => {
+        if (mateProfileBack) { const f = mateProfileBack; mateProfileBack = null; f(); }
+        else showMatesView("matesHome");
+      }));
 
     // ====================== CENTRE DE SÉCURITÉ ======================
     function showSecuView(id) {
@@ -2470,9 +2947,9 @@
     async function handleSecu(action) {
       const m = $("helpMsg"); m.style.color = "var(--text)";
       if (action === "signaler") {
-        const mates = [...connectedIds].map((id) => travelerMap[id]).filter(Boolean);
-        if (!mates.length) { m.style.color = "var(--danger)"; m.textContent = "Tu n'as pas encore de connexion à signaler."; return; }
-        openPicker("Signaler un voyageur", mates.map((p) => ({ label: p.username || "Voyageur", avatar: p.avatar_url, id: p.id })), async (it) => {
+        const people = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)));
+        if (!people.length) { m.style.color = "var(--danger)"; m.textContent = "Aucun voyageur à signaler pour l'instant."; return; }
+        openPicker("Signaler un voyageur", people.map((p) => ({ label: p.username || "Voyageur", avatar: p.avatar_url, id: p.id })), async (it) => {
           closePicker();
           const reason = prompt("Pour quelle raison signales-tu « " + it.label + " » ?");
           if (!reason) return;
@@ -2481,8 +2958,24 @@
           m.textContent = error ? "Erreur : " + error.message : "Signalement envoyé. Merci, on regarde ça. 🙏";
         });
       } else if (action === "historique") {
-        m.style.color = "var(--text)";
-        m.textContent = "Tu as " + connectedIds.size + " connexion(s) et " + $("checkinCount").textContent + " check-in(s). Détail dans les onglets Profil & Mates.";
+        if (!connHistory.length) { showInfo("Historique des rencontres", '<p class="muted" style="text-align:center;padding:1rem">Aucune rencontre pour l\'instant. Connecte-toi avec des voyageurs !</p>'); return; }
+        const rows = connHistory.slice().sort((a, b) => (b.since || "").localeCompare(a.since || "")).map((h) => {
+          const p = travelerMap[h.uid] || {};
+          const since = h.since ? new Date(h.since).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "—";
+          return `<div class="notif-item" data-hist="${h.uid}">${avatarMarkup(p.username, p.avatar_url)}
+              <div class="info"><div class="name">${escapeHtml(p.username || "Voyageur")}</div>
+              <div class="meta muted" style="font-size:.76rem">Connecté·e le ${since} · ${h.msgs} message${h.msgs > 1 ? "s" : ""} échangé${h.msgs > 1 ? "s" : ""}</div></div>
+              <div class="qarrow">›</div></div>`;
+        }).join("");
+        showInfo("Historique des rencontres", rows);
+        $("pickerBody").querySelectorAll("[data-hist]").forEach((el) => el.addEventListener("click", () => {
+          const p = travelerMap[el.dataset.hist]; closePicker();
+          if (p) {
+            goToTab("connexions"); openTravelerProfile(p);
+            // Retour → revient à l'historique sécurité (pas à la liste Mates)
+            mateProfileBack = () => { goToTab("securite"); showSecuView("secuHelp"); setTimeout(() => handleSecu("historique"), 60); };
+          }
+        }));
       } else if (action === "contact") {
         const cur = (myProfile?.allow_contact === "connections") ? "connections" : "everyone";
         const next = cur === "everyone" ? "connections" : "everyone";
@@ -2507,6 +3000,15 @@
         else if (action === "lieux") { showSecuView("secuHome"); goToTab("lieux"); }
         else if (action === "mate") { showSecuView("secuHome"); goToTab("connexions"); }
         else if (action === "support") { window.location.href = "mailto:support@sunmates.app"; }
+        else if (action === "numeros") {
+          showInfo("Numéros utiles 📞", `<div style="line-height:2.1;font-size:.92rem">
+            <div>🚨 <b>112</b> — Urgences (toute l'Europe)</div>
+            <div>📱 <b>114</b> — Urgence par SMS</div>
+            <div>🩺 <b>116 117</b> — Médecin de garde</div>
+            <div>🧒 <b>116 000</b> — Enfants disparus</div>
+            <div style="margin-top:.6rem"><a href="tel:112" class="btn-danger btn-block" style="text-decoration:none;text-align:center;display:block">☎️ Appeler le 112</a></div>
+          </div>`);
+        }
         else if (action === "position") { showSecuView("secuHome"); $("shareLocBtn").click(); }
         else { m.textContent = "Action bientôt disponible 🙂"; }
       }));
@@ -2585,6 +3087,41 @@
     }
     document.querySelectorAll("[data-mseg]").forEach((b) => b.addEventListener("click", () => showMatesSegment(b.dataset.mseg)));
 
+    // ---- Sous-onglets de la page Profil (Mon profil / Check-ins) ----
+    function showProfileSegment(seg) {
+      document.querySelectorAll("[data-pseg]").forEach((b) => b.classList.toggle("active", b.dataset.pseg === seg));
+      document.querySelectorAll("[data-psegpanel]").forEach((p) => show(p, p.dataset.psegpanel === seg));
+    }
+    document.querySelectorAll("[data-pseg]").forEach((b) => b.addEventListener("click", () => showProfileSegment(b.dataset.pseg)));
+    $("premiumBtn").addEventListener("click", () => { const m = $("premiumMsg"); m.textContent = "Génial ! On te préviendra dès le lancement de Gold 🎉"; });
+
+    // ---- Paramètres du compte (email / mot de passe) ----
+    $("profileSettingsBtn").addEventListener("click", () => {
+      $("setEmail").value = ""; $("setPassword").value = ""; $("settingsMsg").textContent = "";
+      show($("profMain"), false); show($("settingsCard"), true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    $("settingsBack").addEventListener("click", () => {
+      show($("settingsCard"), false); show($("profMain"), true);
+    });
+    $("saveEmailBtn").addEventListener("click", async () => {
+      const m = $("settingsMsg"); const email = $("setEmail").value.trim();
+      if (!email) { m.style.color = "var(--danger)"; m.textContent = "Entre un nouvel email."; return; }
+      m.style.color = "var(--muted)"; m.textContent = "Mise à jour…";
+      const { error } = await db.auth.updateUser({ email });
+      m.style.color = error ? "var(--danger)" : "var(--ok)";
+      m.textContent = error ? "Erreur : " + error.message : "Vérifie ta boîte mail pour confirmer le nouvel email ✅";
+    });
+    $("savePasswordBtn").addEventListener("click", async () => {
+      const m = $("settingsMsg"); const password = $("setPassword").value;
+      if (!password || password.length < 6) { m.style.color = "var(--danger)"; m.textContent = "Mot de passe : au moins 6 caractères."; return; }
+      m.style.color = "var(--muted)"; m.textContent = "Mise à jour…";
+      const { error } = await db.auth.updateUser({ password });
+      m.style.color = error ? "var(--danger)" : "var(--ok)";
+      m.textContent = error ? "Erreur : " + error.message : "Mot de passe modifié ✅";
+      if (!error) $("setPassword").value = "";
+    });
+
     // ---- Accepter / refuser un défi reçu (la notif disparaît ensuite) ----
     async function acceptSuggestion(id, key) {
       await db.from("quest_suggestions").update({ status: "accepted" }).eq("id", id);
@@ -2614,6 +3151,35 @@
       toast("🚫", "Voyageur bloqué");
       showMatesView("matesHome");
       await loadConnections();
+    }
+
+    // ---- BFF du moment ----
+    function renderBff() {
+      const el = $("bffCard"); if (!el) return;
+      const b = myBffId ? travelerMap[myBffId] : null;
+      if (b) {
+        el.style.display = "";
+        el.innerHTML = `<div class="person" data-bffopen="${b.id}" style="cursor:pointer;border:0;padding:0">
+            ${avatarMarkup(b.username, b.avatar_url, "lg")}
+            <div class="info"><div class="name">⭐ Mon BFF du moment</div><div class="meta">${escapeHtml(b.username || "Voyageur")}${b.city ? " · " + escapeHtml(b.city) : ""}</div></div>
+            <div class="qarrow">›</div></div>`;
+        const o = el.querySelector("[data-bffopen]");
+        if (o) o.addEventListener("click", () => { goToTab("connexions"); openTravelerProfile(travelerMap[b.id]); });
+      } else {
+        el.style.display = "";
+        el.innerHTML = `<div class="person" style="border:0;padding:0"><div class="qico">⭐</div>
+            <div class="info"><div class="name">BFF du moment</div><div class="meta">Choisis-en un parmi tes Mates (sur leur profil) ✨</div></div></div>`;
+      }
+    }
+    async function setBff(uid) {
+      if (!myUserId) return;
+      const next = (myBffId === uid) ? null : uid; // re-cliquer = retirer
+      const { error } = await db.from("profiles").update({ bff_id: next }).eq("id", myUserId);
+      if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+      myBffId = next; if (myProfile) myProfile.bff_id = next;
+      toast("⭐", next ? "BFF du moment défini !" : "BFF retiré");
+      renderBff();
+      if (currentTravelerId) openTravelerProfile(travelerMap[currentTravelerId]);
     }
 
     // ====================== NOTIFICATIONS / TOASTS / FEED ======================
@@ -2731,7 +3297,8 @@
         showSecuView("secuHelp");
         if (a === "position") $("shareLocBtn").click();
         else if (a === "emergency") $("emergencyBtn").click();
-        // circle / lieux : la vue secuHelp affiche déjà le cercle et les accès d'aide
+        else if (a === "lieux") { const t = $("helpAround"); if (t) setTimeout(() => t.scrollIntoView({ behavior: "smooth", block: "start" }), 60); }
+        else if (a === "circle") { const t = $("circleCard"); if (t) setTimeout(() => t.scrollIntoView({ behavior: "smooth", block: "start" }), 60); }
       }));
 
     // ---- Temps réel : nouvelles demandes de connexion ----
