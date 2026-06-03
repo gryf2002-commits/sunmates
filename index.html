@@ -9,6 +9,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- Fraunces : serif éditorial chaleureux (esprit « magazine de voyage » rétro) -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&display=swap" rel="stylesheet" />
+  <!-- PWA : app installable sur le téléphone -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#f4655e" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <!-- Leaflet : carte interactive des lieux sûrs -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+    }
+  </script>
   <style>
     /* ===================================================================
        SUNMATES — Système de design (thème clair / corail)
@@ -647,6 +659,10 @@
     .sresult .smeta { color: var(--muted); font-size: .78rem; }
     .conv-preview { color: var(--muted); font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
     .conv-unread { background: var(--accent); color: #fff; font-size: .62rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
+    /* Actions sur ses propres messages (éditer / supprimer) */
+    .bubble-act { display: flex; gap: .3rem; margin-top: .3rem; justify-content: flex-end; opacity: .85; }
+    .bubble-act button { background: rgba(255,255,255,.25); border: 0; border-radius: 7px; padding: .12rem .4rem; font-size: .72rem; cursor: pointer; line-height: 1; }
+    .bubble.me .bubble-act button:hover { background: rgba(255,255,255,.45); }
 
     /* Le grain et les ombres restent désactivés pour « mouvement réduit »
        déjà géré plus haut ; rien d'animé n'est ajouté ici. */
@@ -743,6 +759,9 @@
       <div class="tab-panel hidden" data-panel="lieux">
         <h1>Lieux sûrs 🛟</h1>
         <p class="muted" style="margin-top:0">Des espaces validés pour des rencontres en sécurité. Fais un check-in pour gagner des points de confiance.</p>
+        <div class="card" style="padding:.5rem">
+          <div id="map" style="height:280px;border-radius:14px;overflow:hidden;background:var(--cream)"></div>
+        </div>
         <div class="card">
           <div id="cafesList"><p class="muted">Chargement…</p></div>
           <div class="msg" id="cafesMsg"></div>
@@ -777,6 +796,20 @@
                 <button class="chip" data-filter="city">Même ville</button>
                 <button class="chip" data-filter="affinity">Affinité 50%+</button>
               </div>
+              <details style="margin-bottom:.7rem">
+                <summary style="cursor:pointer;font-size:.85rem;font-weight:700;color:var(--retro-teal)">🔎 Filtres avancés</summary>
+                <div class="row" style="margin-top:.5rem">
+                  <div style="flex:1"><label>Âge min</label><input id="fAgeMin" type="number" min="18" max="99" placeholder="18" /></div>
+                  <div style="flex:1"><label>Âge max</label><input id="fAgeMax" type="number" min="18" max="99" placeholder="99" /></div>
+                </div>
+                <label>Intention</label>
+                <select id="fIntent"><option value="">Toutes</option><option>Amitié</option><option>Compagnons de voyage</option><option>Réseau</option><option>Rencontre</option><option>Fête</option></select>
+                <label>Langue parlée</label>
+                <select id="fLang"><option value="">Toutes</option><option>Français</option><option>English</option><option>Español</option><option>Italiano</option><option>Deutsch</option><option>Português</option></select>
+                <label>Style de voyage</label>
+                <select id="fStyle"><option value="">Tous</option><option>Routard</option><option>Confort</option><option>Aventure</option><option>Slow travel</option><option>Fête</option><option>Nature</option></select>
+                <button class="btn-ghost btn-block" id="fReset" style="margin-top:.6rem">Réinitialiser les filtres</button>
+              </details>
               <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem">
                 <span class="muted" style="font-size:.82rem;white-space:nowrap">Trier par</span>
                 <select id="travSort">
@@ -832,6 +865,7 @@
             <button class="btn-accent" id="tpConnectBtn">Connexion</button>
           </div>
           <button class="btn-ghost btn-block" id="tpChallengeBtn" style="margin-top:.6rem">🎯 Proposer un défi</button>
+          <button class="btn-ghost btn-block" id="tpBlockBtn" style="margin-top:.5rem;color:var(--danger)">🚫 Bloquer ce voyageur</button>
           <div class="msg" id="tpMsg" style="text-align:center"></div>
         </div>
 
@@ -1359,6 +1393,7 @@
       if (target === "jeux" && typeof showJeuxView === "function") { showJeuxView("jeuxHome"); if (typeof loadGameData === "function" && myUserId) loadGameData(); }
       if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
+      if (target === "lieux" && typeof renderMap === "function") renderMap();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1611,6 +1646,7 @@
       list.querySelectorAll("[data-checkin]").forEach((b) =>
         b.addEventListener("click", () => checkIn(Number(b.dataset.checkin), b.dataset.name)));
       loadHome(); // garde l'accueil synchronisé
+      if (typeof renderMap === "function" && leafMap) renderMap(); // rafraîchit les marqueurs
     }
 
     // Check-in SÉCURISÉ : il faut le CODE affiché sur place. Les points sont
@@ -1692,11 +1728,13 @@
     async function loadConnections() {
       if (!myUserId) return;
       const myId = myUserId;
-      const [{ data: profiles }, { data: conns }, { data: msgs }] = await Promise.all([
+      const [{ data: profiles }, { data: conns }, { data: msgs }, { data: blk }] = await Promise.all([
         db.from("profiles").select("*"),
         db.from("matches_connections").select("*"),
         db.from("messages").select("sender_id,recipient_id,content,created_at").order("created_at", { ascending: false }).limit(300),
+        db.from("blocks").select("blocked").eq("blocker", myId),
       ]);
+      blockedIds = new Set((blk || []).map((b) => b.blocked));
       const all = profiles || [];
       const list = conns || [];
       // Dernier message échangé avec chaque interlocuteur (pour l'aperçu)
@@ -1727,7 +1765,7 @@
 
       // Connexions acceptées (d'un côté ou de l'autre)
       const accepted = list.filter((c) => c.status === "accepted" && (c.user_a === myId || c.user_b === myId));
-      connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)));
+      connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)).filter((id) => !blockedIds.has(id)));
       // « Mes connexions » : on ouvre le PROFIL du Mate (compat + trust + bouton message)
       $("myConnectionsList").innerHTML = connectedIds.size
         ? [...connectedIds].map((other) => `<div class="person trav-open" data-profile="${other}" style="cursor:pointer">
@@ -1761,7 +1799,7 @@
         if (c.user_a === myId) related.add(c.user_b);
         if (c.user_b === myId) related.add(c.user_a);
       });
-      travelersCache = all.filter((p) => p.id !== myId && !related.has(p.id));
+      travelersCache = all.filter((p) => p.id !== myId && !related.has(p.id) && !blockedIds.has(p.id));
       renderTravelers($("travSearch") ? $("travSearch").value : "");
       const mc = $("matesCount"); if (mc) mc.textContent = connectedIds.size;
       if (typeof updateNotifBadges === "function") updateNotifBadges();
@@ -1850,6 +1888,18 @@
       if (travFilters.verified) list = list.filter((o) => o.p.is_verified);
       if (travFilters.city) list = list.filter((o) => sameCityAs(myMatchProfile, o.p));
       if (travFilters.affinity) list = list.filter((o) => o.pct >= 50);
+      // Filtres avancés (âge / intention / langue / style)
+      const aMin = parseInt($("fAgeMin")?.value, 10);
+      const aMax = parseInt($("fAgeMax")?.value, 10);
+      const fInt = $("fIntent")?.value || "";
+      const fLng = $("fLang")?.value || "";
+      const fSty = $("fStyle")?.value || "";
+      if (!isNaN(aMin)) list = list.filter((o) => { const a = ageFrom(o.p.birthdate); return a != null && a >= aMin; });
+      if (!isNaN(aMax)) list = list.filter((o) => { const a = ageFrom(o.p.birthdate); return a != null && a <= aMax; });
+      if (fInt) list = list.filter((o) => (o.p.intent || []).includes(fInt));
+      if (fLng) list = list.filter((o) => (o.p.languages || []).map((s) => s.toLowerCase()).includes(fLng.toLowerCase()));
+      if (fSty) list = list.filter((o) => o.p.travel_style === fSty);
+      const advActive = !isNaN(aMin) || !isNaN(aMax) || fInt || fLng || fSty;
       list.sort((x, y) => travSortKey === "trust"
         ? (y.p.trust_score || 0) - (x.p.trust_score || 0)
         : y.pct - x.pct);
@@ -1862,7 +1912,7 @@
               ${reasons.length ? `<div>${reasons.map((rr) => `<span class="afn">${escapeHtml(rr)}</span>`).join("")}</div>` : ""}
             </div>
             <span class="compat ${compatTier(pct)}">❤️ ${pct}%</span></div>`).join("")
-        : (q || travFilters.verified || travFilters.city || travFilters.affinity
+        : (q || travFilters.verified || travFilters.city || travFilters.affinity || advActive
             ? '<p class="muted">Aucun voyageur ne correspond à ces critères.</p>'
             : '<p class="muted">Découvre nos voyageurs ci-dessus 🌍 — pour trouver une vraie personne, tape son pseudo dans la recherche.</p>');
       $("travelersList").querySelectorAll("[data-profile]").forEach((el) =>
@@ -1876,6 +1926,14 @@
         renderTravelers($("travSearch").value);
       }));
     $("travSort").addEventListener("change", (e) => { travSortKey = e.target.value; renderTravelers($("travSearch").value); });
+    // Filtres avancés : re-rendu à chaque changement
+    ["fAgeMin", "fAgeMax", "fIntent", "fLang", "fStyle"].forEach((id) => {
+      const el = $(id); if (el) el.addEventListener("input", () => renderTravelers($("travSearch").value));
+    });
+    $("fReset").addEventListener("click", () => {
+      ["fAgeMin", "fAgeMax", "fIntent", "fLang", "fStyle"].forEach((id) => { if ($(id)) $(id).value = ""; });
+      renderTravelers($("travSearch").value);
+    });
 
     async function sendConnection(otherId) {
       const msg = $("connMsg");
@@ -1977,9 +2035,12 @@
 
       // Coupons réels
       $("couponList").innerHTML = myCoupons.length
-        ? myCoupons.map((c) => `<div class="coupon"><div class="cico">🎟️</div>
-            <div><div class="cname">${escapeHtml(c.title || "Coupon")}</div><div class="cdesc">${escapeHtml(c.descr || "")}${c.used ? " · utilisé" : ""}</div></div></div>`).join("")
+        ? myCoupons.map((c) => `<div class="coupon" style="${c.used ? "opacity:.55" : ""}"><div class="cico">🎟️</div>
+            <div style="flex:1"><div class="cname">${escapeHtml(c.title || "Coupon")}</div><div class="cdesc">${escapeHtml(c.descr || "")}</div></div>
+            ${c.used ? '<span class="badge no">Utilisé</span>' : `<button class="btn-accent" data-usecoupon="${c.id}" style="padding:.4rem .7rem;font-size:.8rem">Utiliser</button>`}</div>`).join("")
         : '<p class="muted">Pas encore de coupon. Accomplis une quête qui en offre un 🎟️</p>';
+      $("couponList").querySelectorAll("[data-usecoupon]").forEach((el) =>
+        el.addEventListener("click", () => useCoupon(Number(el.dataset.usecoupon))));
 
       // Défis reçus (proposés par mes Mates)
       const sec = $("suggestionsSection");
@@ -2132,8 +2193,30 @@
     }
 
     function bubbleHtml(m) {
-      return `<div class="bubble ${m.sender_id === myUserId ? "me" : "them"}" data-mid="${m.id}">${escapeHtml(m.content)}</div>`;
+      const mine = m.sender_id === myUserId;
+      const act = mine ? `<div class="bubble-act"><button class="msg-edit" data-mid="${m.id}">✏️</button><button class="msg-del" data-mid="${m.id}">🗑️</button></div>` : "";
+      return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}" data-content="${escapeHtml(m.content)}"><span class="bubble-txt">${escapeHtml(m.content)}</span>${act}</div>`;
     }
+    // Éditer / supprimer ses propres messages (délégation sur le conteneur)
+    $("chatBody").addEventListener("click", async (e) => {
+      const del = e.target.closest(".msg-del");
+      const ed = e.target.closest(".msg-edit");
+      if (del) {
+        const id = del.dataset.mid;
+        if (!confirm("Supprimer ce message ?")) return;
+        const { error } = await db.from("messages").delete().eq("id", id);
+        if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+        const b = document.querySelector(`.bubble[data-mid="${id}"]`); if (b) b.remove();
+      } else if (ed) {
+        const id = ed.dataset.mid;
+        const b = document.querySelector(`.bubble[data-mid="${id}"]`);
+        const nv = prompt("Modifier le message :", b ? b.dataset.content : "");
+        if (nv == null || !nv.trim()) return;
+        const { error } = await db.from("messages").update({ content: nv.trim() }).eq("id", id);
+        if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+        if (currentChatUserId) openChat(currentChatUserId);
+      }
+    });
 
     // Ouvre la conversation avec un Mate (identifié par son id utilisateur)
     async function openChat(otherUserId) {
@@ -2296,6 +2379,7 @@
       }
     }
     $("tpMsgBtn").addEventListener("click", () => { if (currentTravelerId) openChat(currentTravelerId); });
+    $("tpBlockBtn").addEventListener("click", () => blockUser(currentTravelerId));
     // Proposer un défi à CE voyageur (doit être une connexion acceptée)
     $("tpChallengeBtn").addEventListener("click", () => {
       const m = $("tpMsg");
@@ -2397,6 +2481,30 @@
     }
     $("homeSearch").addEventListener("input", (e) => renderSearch(e.target.value));
 
+    // ---- Carte interactive des lieux sûrs (Leaflet) ----
+    let leafMap = null, mapMarkers = [];
+    function renderMap() {
+      if (typeof L === "undefined") return;
+      const el = $("map"); if (!el) return;
+      if (!leafMap) {
+        leafMap = L.map(el, { scrollWheelZoom: false }).setView([46.6, 2.3], 4);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(leafMap);
+        leafMap.on("popupopen", (e) => {
+          const b = e.popup._contentNode && e.popup._contentNode.querySelector(".mappop");
+          if (b) b.addEventListener("click", () => checkIn(Number(b.dataset.cid), b.dataset.cname));
+        });
+      }
+      mapMarkers.forEach((m) => leafMap.removeLayer(m)); mapMarkers = [];
+      const pts = (allCafes || []).filter((c) => c.lat != null && c.lng != null);
+      pts.forEach((c) => {
+        const mk = L.marker([c.lat, c.lng]).addTo(leafMap);
+        mk.bindPopup(`<b>${escapeHtml(c.name)}</b><br>${escapeHtml(c.city || "")}${c.is_eco ? " · 🌱" : ""}<br><button class="mappop" data-cid="${c.id}" data-cname="${escapeHtml(c.name)}" style="margin-top:6px;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:.35rem .6rem;cursor:pointer">🔒 Check-in</button>`);
+        mapMarkers.push(mk);
+      });
+      if (pts.length) { try { leafMap.fitBounds(L.featureGroup(mapMarkers).getBounds().pad(0.25)); } catch (err) {} }
+      setTimeout(() => { try { leafMap.invalidateSize(); } catch (err) {} }, 120);
+    }
+
     // Temps relatif (« il y a 5 min »)
     function timeAgo(iso) {
       if (!iso) return "";
@@ -2427,6 +2535,25 @@
       await db.from("quest_suggestions").update({ status: "dismissed" }).eq("id", id);
       toast("👍", "Défi refusé");
       await loadGameData();
+    }
+    // ---- Utiliser un coupon ----
+    async function useCoupon(id) {
+      if (!confirm("Marquer ce coupon comme utilisé ?")) return;
+      const { error } = await db.from("user_coupons").update({ used: true }).eq("id", id);
+      if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+      toast("🎟️", "Coupon utilisé — bon plan !");
+      await loadGameData();
+    }
+    // ---- Bloquer un voyageur ----
+    let blockedIds = new Set();
+    async function blockUser(uid) {
+      if (!uid || !myUserId) return;
+      if (!confirm("Bloquer ce voyageur ? Il n'apparaîtra plus dans ta découverte ni tes messages.")) return;
+      const { error } = await db.from("blocks").insert({ blocker: myUserId, blocked: uid });
+      if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+      toast("🚫", "Voyageur bloqué");
+      showMatesView("matesHome");
+      await loadConnections();
     }
 
     // ====================== NOTIFICATIONS / TOASTS / FEED ======================
