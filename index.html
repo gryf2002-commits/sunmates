@@ -15,23 +15,28 @@
        =================================================================== */
     :root {
       /* Couleurs */
-      --bg:        #fdf3f1;   /* fond de page rose très clair */
+      --bg:        #fbeee9;   /* sable chaud */
+      --bg-grad:   radial-gradient(125% 85% at 50% -12%, #ffe6d2 0%, #fdeee7 40%, #fbe9e4 100%);
       --card:      #ffffff;   /* cartes */
       --accent:    #f4655e;   /* corail principal */
-      --accent-2:  #ff8a7d;   /* corail clair (dégradés) */
-      --accent-grad: linear-gradient(135deg, #ff9286 0%, #f4655e 100%);
+      --accent-2:  #ff8a7d;   /* corail clair */
+      --accent-3:  #ffb274;   /* ambre (coucher de soleil) */
+      --accent-grad: linear-gradient(135deg, #ffb274 0%, #ff8a7d 45%, #f4655e 100%);
       --accent-soft: #fdeceb; /* fond corail très pâle (chips, icônes) */
-      --ink:       #20242e;   /* titres */
-      --text:      #3a3f4b;   /* texte */
+      --ink:       #1d2230;   /* titres */
+      --text:      #454b59;   /* texte */
       --muted:     #9aa0ac;   /* texte secondaire */
       --ok:        #22c55e;
       --danger:    #ef4444;
-      --line:      #f1e7e6;   /* séparateurs */
+      --line:      #f0e6e4;   /* séparateurs */
       /* Formes */
-      --radius:    20px;
+      --radius:    22px;
       --radius-sm: 14px;
-      --shadow:    0 10px 30px rgba(244,101,94,.10), 0 2px 8px rgba(20,20,40,.04);
-      --shadow-sm: 0 4px 14px rgba(20,20,40,.06);
+      --radius-lg: 28px;
+      --shadow:    0 14px 40px rgba(244,101,94,.12), 0 4px 12px rgba(20,20,40,.05);
+      --shadow-sm: 0 6px 18px rgba(20,20,40,.06);
+      --shadow-pop: 0 18px 50px rgba(244,101,94,.22);
+      --ring:      0 0 0 4px rgba(244,101,94,.16);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -323,6 +328,126 @@
     #alertBanner a { color: #fff; text-decoration: underline; }
     #alertBanner button { background: #fff; color: #b91c1c; padding: .25rem .8rem; margin-left: .8rem; font-size: .85rem; }
     @keyframes pulse { from { background: #ef4444; } to { background: #dc2626; } }
+    /* ===================================================================
+       POLISH — couche de finition visuelle (chargée en dernier)
+       Dégradés coucher de soleil, effets verre, ombres douces,
+       micro-animations. N'affecte que l'apparence.
+       =================================================================== */
+    body { background: var(--bg-grad); background-attachment: fixed; }
+    .app-shell { background: transparent; }
+    h1 { letter-spacing: -.02em; }
+    h2, h3 { letter-spacing: -.01em; }
+    ::selection { background: rgba(244,101,94,.18); }
+
+    /* Header & nav en verre dépoli */
+    .topbar { background: rgba(251,238,233,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(244,101,94,.07); }
+    .bottom-nav { background: rgba(255,255,255,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 -10px 34px rgba(20,20,40,.10); }
+    .bottom-nav button { transition: color .2s; }
+    .bottom-nav button .ni { transition: transform .22s cubic-bezier(.2,.8,.3,1), filter .2s; }
+    .bottom-nav button.active .ni { transform: translateY(-2px) scale(1.12); }
+
+    /* Cartes : ombre douce + légère élévation animée */
+    .card { border: 1px solid rgba(255,255,255,.9); transition: box-shadow .25s ease, transform .25s ease; }
+
+    /* Boutons : rebond doux + ombre colorée */
+    button { transition: transform .14s cubic-bezier(.2,.8,.3,1), box-shadow .2s, filter .2s; }
+    .btn-primary { box-shadow: 0 10px 24px rgba(244,101,94,.36); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(244,101,94,.44); filter: none; }
+    .btn-accent:hover { background: #fde2dd; }
+    .btn-ghost:hover { background: #fff7f5; border-color: var(--accent-2); }
+    .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(244,101,94,.46); }
+
+    /* Champs : anneau de focus doux */
+    input:focus, textarea:focus, select:focus { box-shadow: var(--ring); }
+
+    /* Chips : survol + état actif plus marqué */
+    .chip { transition: transform .18s, box-shadow .18s, background .18s; }
+    .chip:hover { transform: translateY(-1px); }
+    .chip.active { box-shadow: 0 8px 18px rgba(244,101,94,.32); }
+
+    /* Tuiles / cartes cliquables : élévation au survol */
+    .tile, .gcard, .reco { transition: transform .2s cubic-bezier(.2,.8,.3,1), box-shadow .2s; }
+    .tile:hover, .gcard:hover, .reco:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+    /* Lignes de personnes cliquables : surbrillance douce */
+    .person { border-radius: 14px; transition: background .16s; }
+    .person[style*="cursor"]:hover { background: #fff6f3; }
+    .qrow { transition: background .16s; border-radius: 10px; }
+    .qrow:hover { background: #fff6f3; }
+
+    /* Avatars : petite ombre corail + anneau blanc */
+    .avatar { box-shadow: 0 5px 14px rgba(244,101,94,.20); }
+    .avatar.lg { box-shadow: 0 8px 22px rgba(244,101,94,.28); border: 3px solid #fff; }
+
+    /* Héros & bandeaux : ombre généreuse */
+    .feature, .detail-hero { box-shadow: var(--shadow-pop); }
+
+    /* Barre de complétion : petite lueur */
+    .completion-bar span { box-shadow: 0 0 10px rgba(244,101,94,.55); }
+
+    /* Écran de connexion : soleil flou dans le héros */
+    .auth-hero { position: relative; overflow: hidden; box-shadow: 0 18px 40px rgba(244,101,94,.34); }
+    .auth-hero::after { content: ""; position: absolute; width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.45), rgba(255,255,255,0) 70%); top: -70px; right: -50px; }
+    .auth-hero .logo-badge, .auth-hero .logo-text, .auth-hero .logo-tag { position: relative; z-index: 1; }
+
+    /* Apparition douce des panneaux au changement d'onglet */
+    .tab-panel:not(.hidden) { animation: fadeUp .35s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    /* ===================================================================
+       POLISH v2 — finitions écran par écran
+       =================================================================== */
+
+    /* --- Écran de connexion : héros vivant --- */
+    .auth-hero::before { content: ""; position: absolute; width: 180px; height: 180px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.32), rgba(255,255,255,0) 70%); bottom: -65px; left: -45px; }
+    .logo-badge { animation: floaty 5s ease-in-out infinite; box-shadow: 0 16px 30px rgba(0,0,0,.12), inset 0 0 0 2px rgba(255,255,255,.3); }
+    @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    .logo-text { text-shadow: 0 2px 14px rgba(0,0,0,.14); }
+    .seg button.active { box-shadow: 0 8px 18px rgba(244,101,94,.32); }
+    .auth-play button { animation: pulseRing 2.6s ease-out infinite; }
+    @keyframes pulseRing {
+      0%   { box-shadow: 0 8px 20px rgba(244,101,94,.45), 0 0 0 0 rgba(244,101,94,.35); }
+      70%  { box-shadow: 0 8px 20px rgba(244,101,94,.45), 0 0 0 18px rgba(244,101,94,0); }
+      100% { box-shadow: 0 8px 20px rgba(244,101,94,.45), 0 0 0 0 rgba(244,101,94,0); }
+    }
+
+    /* --- Accueil : titre dégradé, vignettes en relief --- */
+    #homeHello { background: linear-gradient(90deg, #f4655e, #ff9f6b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .search input { border: 1px solid rgba(244,101,94,.10); }
+    .tile .thumb { box-shadow: inset 0 -12px 26px rgba(0,0,0,.10); }
+
+    /* --- Profil : compteurs dégradés, encarts doux --- */
+    .stat-box { background: linear-gradient(160deg, #ffffff, #fdeee9); box-shadow: var(--shadow-sm); }
+    .stat { background: linear-gradient(90deg, #f4655e, #ff9f6b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .dstat { background: linear-gradient(160deg, #ffffff, #fdeee9); }
+
+    /* --- Recommandations « Pour toi » --- */
+    .reco { background: linear-gradient(180deg, #ffffff, #fff7f3); }
+
+    /* --- Jeux : cartes, badges, coupons --- */
+    .gcard { overflow: hidden; }
+    .gcard .ghead { position: relative; }
+    .gcard .ghead::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(0,0,0,.12)); }
+    .hex { box-shadow: 0 8px 18px rgba(244,101,94,.30); transition: transform .2s ease; }
+    .bitem.locked .hex { box-shadow: none; }
+    .bitem:hover .hex { transform: translateY(-3px) rotate(-3deg); }
+    .coupon { position: relative; }
+    .coupon::before, .coupon::after { content: ""; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); top: 50%; transform: translateY(-50%); }
+    .coupon::before { left: -9px; } .coupon::after { right: -9px; }
+
+    /* --- Bandeaux de détail : dégradé plus marqué --- */
+    .detail-hero .dh-body { background: linear-gradient(transparent, rgba(0,0,0,.5)); }
+
+    /* --- Chat : bulles en relief --- */
+    .bubble.them { box-shadow: 0 2px 8px rgba(20,20,40,.05); }
+    .bubble.me { box-shadow: 0 6px 16px rgba(244,101,94,.30); }
+    .chat-input input { border: 1px solid rgba(244,101,94,.10); }
+
+    /* --- Badges --- */
+    .badge.ok { box-shadow: inset 0 0 0 1px rgba(34,197,94,.15); }
+
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
   </style>
 </head>
 <body>
