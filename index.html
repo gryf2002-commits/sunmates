@@ -973,6 +973,8 @@
     body.gold-free .gold-only-note { display: block; background: rgba(255,201,60,.18); border: 1px dashed #C98A1E; color: #8a5a00; border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 600; }
     #goldPreviewBanner { display: none; }
     body.gold-free #goldPreviewBanner { display: block; background: linear-gradient(135deg,#FFD15C,#E89B2B); color: #5a3d00; text-align: center; font-weight: 700; font-size: .8rem; padding: .5rem; }
+    /* Exclus Gold (lieu / quête) — lisibles en clair ET en sombre */
+    .gold-place { background: transparent !important; border: 0 !important; }
     /* Tuile « à venir » (Gold) grisée et non cliquable */
     .tile.soon { opacity: .6; cursor: default; position: relative; }
     .tile.soon .thumb { background: linear-gradient(135deg,#FFE08A,#E8A14B) !important; }
@@ -1213,9 +1215,9 @@
           <div class="card" id="tpInfoCard">
             <h3 style="margin-top:0">Infos</h3>
             <div class="pgrid" id="tpGrid"></div>
+            <div id="tpPrompts"></div>
           </div>
-          <div id="tpPrompts"></div>
-          <div class="card" id="tpBadgesCard" style="display:none">
+          <div class="card" id="tpBadgesCard" style="display:none;margin-top:.5rem">
             <h3 style="margin-top:0">🏅 Badges</h3>
             <div class="bgrid" id="tpBadges"></div>
           </div>
@@ -1364,7 +1366,7 @@
 
         <div class="prof-seg" data-psegpanel="edit">
         <div class="card">
-          <h3 style="margin-top:0">Modifier mon profil</h3>
+          <div class="section-head" style="align-items:center"><h3 style="margin-top:0">Modifier mon profil</h3><button id="previewProfileBtn" class="btn-accent" style="padding:.45rem .8rem;font-size:.8rem;white-space:nowrap">🪪 Aperçu</button></div>
           <p class="muted" style="font-size:.82rem;margin-top:0">Touche une section pour la déplier. Pense à <strong>Enregistrer</strong> en bas.</p>
 
           <!-- Section 1 : Photo & présentation (ouverte par défaut) -->
@@ -1508,7 +1510,7 @@
 
           <!-- Section 7 : Mes prompts -->
           <div class="pf-section">
-            <div class="pf-head">✍️ Mes prompts<span class="chev">›</span></div>
+            <div class="pf-head">✍️ Infos inutiles mais importantes !<span class="chev">›</span></div>
             <div class="pf-body">
               <p class="muted" style="font-size:.8rem;margin:.2rem 0 .6rem">Choisis une question et réponds-y pour donner vie à ton profil.</p>
               <div id="promptsWrap"></div>
@@ -2104,7 +2106,7 @@
       buildPrompts();
       updateCompletion();
       const uname = data.username || "Voyageur";
-      $("profileName").textContent = uname;
+      $("profileName").textContent = uname + (data.is_admin ? " 👑" : "");
       setAvatarEl($("profileAvatar"), data.avatar_url, uname[0] || "😎");
       setAvatarEl($("pAvatarPreview"), data.avatar_url, uname[0] || "😎");
       $("homeHello").textContent = "Bonjour " + uname;
@@ -2207,8 +2209,8 @@
       if (error) { list.innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
       allCafes = data || []; // pour la recherche globale de l'accueil
       if (!data.length) { list.innerHTML = '<p class="muted">Aucun lieu pour l\'instant.</p>'; return; }
-      const goldPlace = iAmGold ? `
-        <div class="place" style="background:linear-gradient(160deg,#fff,rgba(255,201,60,.14))">
+      const goldPlace = goldView() ? `
+        <div class="place gold-place">
           <div class="place-photo" style="background-image:url('${flickrImg("rooftop,bar,night", "goldplace")}')"></div>
           <div class="name">Rooftop Club SunMates 👑 <span class="badge warn">Exclusif Gold</span></div>
           <div class="meta">Lounge partenaire · Lisbonne</div>
@@ -2778,6 +2780,14 @@
     let mySuggestions = [];      // défis reçus (en attente)
     let currentQuest = null;     // quête ouverte dans la vue détail
 
+    // Vue Gold réservée à l'admin (les exclus Gold ne sont visibles que par lui)
+    function goldView() { return !!(myProfile && myProfile.is_admin) && iAmGold; }
+    // Quête exclusive Gold (démo, côté client — pas en base)
+    const GOLD_QUEST = { key: "gold_vip", demo: true, kind: "quest", title: "Soirée VIP partenaires", emoji: "🥂",
+      city: "Exclusif Gold 👑", points: 50, badge_emoji: "🥂", badge_name: "VIP partenaire",
+      coupon_title: "Cocktail premium", coupon_desc: "offert chez nos partenaires",
+      description: "Accès à une soirée privée dans un lieu partenaire : +50 points de confiance et un cocktail premium offert. Réservé aux membres Gold." };
+
     // Charge toutes les données de jeu de l'utilisateur connecté.
     async function loadGameData() {
       if (!myUserId) return;
@@ -2821,6 +2831,7 @@
       quest_cocktail: "berlin,nightlife",
       quest_thrill: "interlaken,switzerland",
       quest_firstride: "roadtrip,landscape",
+      gold_vip: "cocktail,party,rooftop",
     };
     function questImage(q) {
       const kw = (q && QUEST_CITY[q.key]) || ((q && q.city) ? q.city.split(",")[0] : "travel");
@@ -2845,8 +2856,8 @@
         </div>`).join("");
 
       // Quêtes du jour
-      const goldQuestRow = iAmGold ? `
-        <div class="qrow" data-goldq="1" style="background:linear-gradient(90deg,rgba(255,201,60,.2),transparent)">
+      const goldQuestRow = goldView() ? `
+        <div class="qrow gold-place" data-goldq="1">
           <div class="qico">🥂</div>
           <div class="qname">Soirée VIP partenaires 👑<div class="meta muted" style="font-size:.74rem">Exclusif Gold · +50 pts · cocktail premium offert</div></div>
           <div class="qarrow">›</div>
@@ -2858,7 +2869,7 @@
           <div class="qarrow">›</div>
         </div>`).join("") : '<p class="muted">Lance le script SQL pour voir les quêtes 🙂</p>');
       const gq = $("questsList").querySelector("[data-goldq]");
-      if (gq) gq.addEventListener("click", () => showInfo("Quête exclusive Gold 👑", '<div style="text-align:center;padding:.4rem 0"><div style="font-size:3rem">🥂</div><h3 style="margin:.3rem 0">Soirée VIP partenaires</h3><p class="muted">Accès à une soirée privée dans un lieu partenaire, +50 points et un cocktail premium offert.</p><p class="muted">Réservé aux membres <b>Gold</b>.</p></div>'));
+      if (gq) gq.addEventListener("click", () => openDetail(GOLD_QUEST));
 
       // clic → détail (jeux + quêtes)
       document.querySelectorAll("[data-qkey]").forEach((el) =>
@@ -2947,11 +2958,19 @@
       $("detailCodeBox").style.display = (q.requires_code && status !== "completed") ? "" : "none";
       if ($("detailCode")) $("detailCode").value = "";
       // Boutons selon l'état
-      const joinBtn = $("detailJoinBtn"), compBtn = $("detailCompleteBtn");
-      joinBtn.style.display = status ? "none" : "";
-      compBtn.style.display = status === "completed" ? "none" : "";
-      $("detailMsg").style.color = "var(--muted)";
-      $("detailMsg").textContent = status === "completed" ? "✅ Quête accomplie !" : (status === "joined" ? "🎒 Quête en cours" : "");
+      const joinBtn = $("detailJoinBtn"), compBtn = $("detailCompleteBtn"), sugBtn = $("detailSuggestBtn");
+      if (q.demo) {
+        joinBtn.style.display = "none"; compBtn.style.display = "none"; sugBtn.style.display = "none";
+        $("detailCodeBox").style.display = "none";
+        $("detailMsg").style.color = "var(--accent)";
+        $("detailMsg").textContent = "👑 Quête exclusive — réservée aux membres Gold";
+      } else {
+        sugBtn.style.display = "";
+        joinBtn.style.display = status ? "none" : "";
+        compBtn.style.display = status === "completed" ? "none" : "";
+        $("detailMsg").style.color = "var(--muted)";
+        $("detailMsg").textContent = status === "completed" ? "✅ Quête accomplie !" : (status === "joined" ? "🎒 Quête en cours" : "");
+      }
       showJeuxView("jeuxDetail");
     }
 
@@ -3210,6 +3229,7 @@
       if (!p) return;
       mateProfileBack = null; // par défaut, le retour ramène à la liste Mates
       currentTravelerId = p.id;
+      ["tpMsgBtn", "tpConnectBtn", "tpChallengeBtn", "tpBlockBtn"].forEach((id) => { const e = $(id); if (e) e.style.display = ""; });
       const name = p.username || "Voyageur";
       $("tpName").textContent = name;
       $("tpCity").textContent = "📍 " + (p.city || "Quelque part dans le monde");
@@ -3227,9 +3247,13 @@
       tpc.textContent = pct + "%";
       tpc.style.color = pct >= 70 ? "var(--ok)" : (pct >= 40 ? "var(--accent)" : "var(--muted)");
       $("tpTrust").textContent = p.trust_score ?? 0;
-      // Nombre de Mates (abonnés) — via la fonction serveur mates_count
-      $("tpMates").textContent = "…";
-      db.rpc("mates_count", { p_uid: p.id }).then(({ data }) => { $("tpMates").textContent = (data ?? 0); }).catch(() => { $("tpMates").textContent = "0"; });
+      // Nombre de Mates (abonnés)
+      if (p.id === myUserId) {
+        $("tpMates").textContent = connectedIds.size; // mon profil : même nombre que ma stat
+      } else {
+        $("tpMates").textContent = "…";
+        db.rpc("mates_count", { p_uid: p.id }).then(({ data }) => { $("tpMates").textContent = (data ?? 0); }).catch(() => { $("tpMates").textContent = "0"; });
+      }
       // Tags = vrais centres d'intérêt si renseignés, sinon hashtags par défaut
       const tags = (p.interests && p.interests.length)
         ? p.interests.map((t) => "#" + t.replace(/\s/g, ""))
@@ -3480,6 +3504,15 @@
     }
     document.querySelectorAll("[data-pseg]").forEach((b) => b.addEventListener("click", () => showProfileSegment(b.dataset.pseg)));
     $("premiumBtn").addEventListener("click", () => { const m = $("premiumMsg"); m.textContent = "Génial ! On te préviendra dès le lancement de Gold 🎉"; });
+    // Aperçu de mon profil public (ce que voient les autres)
+    $("previewProfileBtn").addEventListener("click", () => {
+      if (!myProfile) return;
+      goToTab("connexions");              // sinon la fiche s'ouvre dans un onglet caché
+      openTravelerProfile(myProfile);     // = exactement la fiche que voient les autres
+      ["tpMsgBtn", "tpConnectBtn", "tpChallengeBtn", "tpBffBtn", "tpBlockBtn"].forEach((id) => { const e = $(id); if (e) e.style.display = "none"; });
+      const m = $("tpMsg"); m.style.color = "var(--retro-teal)"; m.textContent = "🪪 Aperçu — voici votre profil tel que les autres voyageurs le voient";
+      mateProfileBack = () => goToTab("profil");
+    });
     // Verrouillage des fonctionnalités Gold (ce qui se grise pour un compte gratuit)
     // Vignette Gold de l'accueil : cliquable seulement pour l'admin en vue Gold
     const GOLD_FEATURES = [
@@ -3536,6 +3569,8 @@
       const el = $("goldCompare"); if (!el) return;
       const rows = [
         ["Sécurité", "112 seul", "Complète"],
+        ["Mates ajoutés / jour", "1", "Illimité"],
+        ["Nombre de Mates max", "3", "Illimité"],
         ["Check-ins / jour", "1", "Illimités"],
         ["Quêtes & activités / jour", "1 + 1", "Illimité"],
         ["Filtres de recherche avancés", "—", "✓ complets"],
