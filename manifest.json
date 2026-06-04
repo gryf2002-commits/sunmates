@@ -9,7 +9,16 @@
   "background_color": "#fbeee9",
   "theme_color": "#f4655e",
   "lang": "fr",
+  "categories": ["social", "travel", "lifestyle"],
   "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Découvrir des Mates", "short_name": "Découvrir", "url": "./?tab=connexions", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Mes messages", "short_name": "Messages", "url": "./?tab=connexions&seg=messages", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Quêtes & jeux", "short_name": "Jeux", "url": "./?tab=jeux", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
 }

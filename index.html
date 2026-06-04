@@ -11,8 +11,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- PWA : app installable sur le téléphone -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#c25b3f" />
-  <link rel="apple-touch-icon" href="icon.svg" />
+  <meta name="theme-color" content="#f4655e" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="SunMates" />
   <!-- Leaflet : carte interactive des lieux sûrs -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -122,6 +127,44 @@
     .btn-block   { width: 100%; }
     .row { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .4rem; }
     .row > button { flex: 1; }
+
+    /* Tuiles d'action colorées (fiche profil voyageur) */
+    .act-tile { display: flex; align-items: center; gap: .75rem; width: 100%; text-align: left;
+      padding: .8rem .9rem; border-radius: 14px; border: 1.5px solid transparent; font-weight: 700;
+      font-size: .95rem; cursor: pointer; transition: transform .08s ease, box-shadow .15s ease; }
+    .act-tile:hover { transform: translateY(-1px); }
+    .act-tile .ic { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; font-size: 1.15rem; flex-shrink: 0; }
+    .act-tile .lbl { flex: 1; }
+    .act-tile .arr { opacity: .45; font-size: 1.2rem; font-weight: 800; }
+    .act-challenge { background: #f3f0ff; color: #5b3df5; border-color: #e4dcff; }
+    .act-challenge .ic { background: #e4dcff; }
+    .act-challenge:hover { box-shadow: 0 8px 18px rgba(122,92,255,.22); }
+    .act-bff { background: #fff6e8; color: #b9740a; border-color: #ffe6c2; }
+    .act-bff .ic { background: #ffe6c2; }
+    .act-bff:hover { box-shadow: 0 8px 18px rgba(255,178,116,.3); }
+    .act-block { background: #fef2f2; color: #dc2626; border-color: #fbd5d5; }
+    .act-block .ic { background: #fbd5d5; }
+    .act-block:hover { box-shadow: 0 8px 18px rgba(239,68,68,.18); }
+    body.theme-dusk .act-challenge { background: rgba(122,92,255,.16); color: #c9bcff; border-color: rgba(122,92,255,.32); }
+    body.theme-dusk .act-challenge .ic { background: rgba(122,92,255,.32); }
+    body.theme-dusk .act-bff { background: rgba(255,178,116,.16); color: #ffce9b; border-color: rgba(255,178,116,.32); }
+    body.theme-dusk .act-bff .ic { background: rgba(255,178,116,.32); }
+    body.theme-dusk .act-block { background: rgba(239,68,68,.15); color: #ff9b9b; border-color: rgba(239,68,68,.32); }
+    body.theme-dusk .act-block .ic { background: rgba(239,68,68,.32); }
+
+    /* Bannière d'installation PWA (cachée par défaut, glisse depuis le haut) */
+    .pwa-banner { position: fixed; left: 50%; top: .6rem; z-index: 400;
+      width: calc(100% - 1.2rem); max-width: 460px; display: flex; align-items: center; gap: .7rem;
+      padding: .7rem .8rem; background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.22); opacity: 0; pointer-events: none;
+      transform: translateX(-50%) translateY(-160%); transition: transform .42s cubic-bezier(.2,.8,.2,1), opacity .3s ease; }
+    .pwa-banner.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+    .pwa-ic { width: 42px; height: 42px; border-radius: 12px; background: var(--accent-grad); display: grid; place-items: center; font-size: 1.35rem; flex-shrink: 0; }
+    .pwa-txt { flex: 1; display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+    .pwa-txt b { font-size: .95rem; }
+    .pwa-txt span { font-size: .76rem; color: var(--muted); }
+    .pwa-cta { background: var(--accent-grad); color: #fff; border: 0; border-radius: 999px; padding: .55rem .95rem; font-weight: 800; font-size: .85rem; cursor: pointer; flex-shrink: 0; box-shadow: 0 6px 14px rgba(244,101,94,.35); }
+    .pwa-x { background: transparent; border: 0; color: var(--muted); font-size: 1rem; cursor: pointer; padding: .2rem .35rem; flex-shrink: 0; }
 
     /* ----------------------------- Badges --------------------------- */
     .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 700; }
@@ -1158,6 +1201,17 @@
   <!-- Notifications éphémères (toasts) -->
   <div id="toastWrap"></div>
 
+  <!-- Bannière « Installer l'app » (PWA) -->
+  <div id="pwaBanner" class="pwa-banner">
+    <div class="pwa-ic">📲</div>
+    <div class="pwa-txt">
+      <b>Installer SunMates</b>
+      <span id="pwaSub">Accès direct depuis ton écran d'accueil, comme une vraie app.</span>
+    </div>
+    <button id="pwaInstall" class="pwa-cta">Installer</button>
+    <button id="pwaClose" class="pwa-x" aria-label="Fermer">✕</button>
+  </div>
+
   <!-- ===== Onboarding « du futur » (nouveaux comptes + existants pas encore guidés) ===== -->
   <div id="onboarding" class="onb hidden">
     <div class="onb-bg"><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span></div>
@@ -1508,9 +1562,12 @@
             <div class="bgrid" id="tpBadges"></div>
           </div>
           <!-- Actions secondaires (moins fréquentes) -->
-          <button class="btn-ghost btn-block" id="tpChallengeBtn" style="margin-top:.6rem">🎯 Proposer un défi</button>
-          <button class="btn-ghost btn-block" id="tpBffBtn" style="margin-top:.5rem;display:none">⭐ Définir comme BFF du moment</button>
-          <button class="btn-ghost btn-block" id="tpBlockBtn" style="margin-top:.5rem;color:var(--danger)">🚫 Bloquer ce voyageur</button>
+          <button class="act-tile act-challenge" id="tpChallengeBtn" style="margin-top:.7rem">
+            <span class="ic">🎯</span><span class="lbl">Proposer un défi</span><span class="arr">›</span></button>
+          <button class="act-tile act-bff" id="tpBffBtn" style="margin-top:.5rem;display:none">
+            <span class="ic">⭐</span><span class="lbl">Définir comme BFF du moment</span><span class="arr">›</span></button>
+          <button class="act-tile act-block" id="tpBlockBtn" style="margin-top:.5rem">
+            <span class="ic">🚫</span><span class="lbl">Bloquer ce voyageur</span><span class="arr">›</span></button>
         </div>
 
         <!-- Vue chat -->
@@ -5302,6 +5359,50 @@
         } else { new Notification(title, { body: body, icon: "icon.svg" }); }
       } catch (e) {}
     }
+
+    // ====================== INSTALLATION DE L'APP (PWA) ======================
+    // Propose d'installer SunMates sur l'écran d'accueil, via une bannière maison
+    // (le menu natif du navigateur est trop caché). Gère Android/Chrome (événement
+    // beforeinstallprompt) ET iPhone/iPad (pas d'événement → on explique le geste).
+    (function setupInstallBanner() {
+      const banner = $("pwaBanner"); if (!banner) return;
+      const sub = $("pwaSub"), installBtn = $("pwaInstall"), closeBtn = $("pwaClose");
+      const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+      const dismissed = localStorage.getItem("sm_pwa_dismissed") === "1";
+      let deferredPrompt = null;
+
+      const showBanner = () => { if (!dismissed && !isStandalone) banner.classList.add("show"); };
+      const hideBanner = () => banner.classList.remove("show");
+      const remember = () => { try { localStorage.setItem("sm_pwa_dismissed", "1"); } catch (e) {} };
+
+      closeBtn.addEventListener("click", () => { hideBanner(); remember(); });
+
+      // Android / Chrome / Edge : on intercepte l'invite native pour la déclencher nous-mêmes.
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        sub.textContent = "Accès direct depuis ton écran d'accueil, comme une vraie app.";
+        installBtn.style.display = "";
+        showBanner();
+      });
+      window.addEventListener("appinstalled", () => { hideBanner(); remember(); });
+
+      installBtn.addEventListener("click", () => once("pwa-install", async () => {
+        if (!deferredPrompt) { hideBanner(); return; }
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch (e) {}
+        deferredPrompt = null;
+        hideBanner();
+      }));
+
+      // iPhone / iPad : Safari ne supporte pas beforeinstallprompt → on guide l'utilisateur.
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS && !isStandalone && !dismissed) {
+        sub.textContent = "Appuie sur Partager ⬆️ puis « Sur l'écran d'accueil ».";
+        installBtn.style.display = "none"; // pas de bouton sur iOS : juste l'instruction
+        setTimeout(showBanner, 1800);
+      }
+    })();
 
     // Au chargement : vérifie s'il y a déjà une session
     db.auth.getSession().then(({ data }) => render(data.session));

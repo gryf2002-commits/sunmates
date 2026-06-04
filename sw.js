@@ -2,8 +2,9 @@
 // Met en cache la "coquille" de l'app pour un démarrage rapide et un
 // fonctionnement de base hors-ligne. Les appels Supabase/CDN passent
 // toujours par le réseau (non mis en cache).
-const CACHE = "sunmates-v3";
-const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg"];
+const CACHE = "sunmates-v4";
+const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg",
+  "./icon-192.png", "./icon-512.png", "./icon-180.png", "./icon-maskable-512.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).catch(() => {}));
