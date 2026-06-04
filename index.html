@@ -2099,6 +2099,33 @@
     // --- Petits raccourcis ---
     const $ = (id) => document.getElementById(id);
     const show = (el, on) => el.classList.toggle("hidden", !on);
+
+    // --- Anti double-envoi (anti-spam) ---
+    // Tant qu'une action identifiée par "key" est en cours, les clics suivants
+    // sont ignorés. Empêche les doublons (demandes de connexion, défis, check-ins,
+    // notifications…) qui partaient en rafale et saturaient le serveur.
+    // `fn` doit être une fonction async ; on attend qu'elle se termine avant de
+    // relâcher le verrou. Renvoie le résultat de fn, ou undefined si un clic en
+    // double a été ignoré.
+    const _pendingActions = new Set();
+    async function once(key, fn) {
+      if (_pendingActions.has(key)) return; // déjà en cours → on ignore ce clic
+      _pendingActions.add(key);
+      try { return await fn(); }
+      finally { _pendingActions.delete(key); }
+    }
+
+    // --- Anti double-notification ---
+    // Renvoie true UNE seule fois par "key". Empêche une même notification/toast
+    // de s'afficher deux fois si Supabase redélivre le même événement temps réel
+    // (reconnexion réseau, double abonnement…).
+    const _notifiedEvents = new Set();
+    function notifyOnce(key) {
+      if (_notifiedEvents.has(key)) return false;
+      _notifiedEvents.add(key);
+      if (_notifiedEvents.size > 500) _notifiedEvents.delete(_notifiedEvents.values().next().value);
+      return true;
+    }
     let myUserId = null; // id de l'utilisateur connecté (défini à la connexion)
     let myEmail = null;  // email de l'utilisateur connecté (pour la ré-authentification admin)
 
@@ -2638,18 +2665,20 @@
       if (!myUserId) return;
       const code = prompt("Entre le code affiché à « " + (cafeName || "ce lieu") + " » pour valider ton check-in :");
       if (code === null) return; // annulé
-      msg.style.color = "var(--muted)"; msg.textContent = "Vérification du code…";
-      const { data, error } = await db.rpc("redeem_checkin", { p_cafe_id: cafeId, p_code: code });
-      if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; return; }
-      const res = data || {};
-      msg.style.color = res.ok ? "var(--ok)" : "var(--danger)";
-      msg.textContent = res.message || (res.ok ? "Check-in validé ✅" : "Échec.");
-      if (res.ok) {
-        cafeCheckins[cafeId] = (cafeCheckins[cafeId] || 0) + 1; // maj immédiate du compteur
-        if (typeof renderCafesList === "function") renderCafesList();
-        await Promise.all([loadProfile(), loadCheckins()]);
-        if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap();
-      }
+      return once("checkin:" + cafeId, async () => {
+        msg.style.color = "var(--muted)"; msg.textContent = "Vérification du code…";
+        const { data, error } = await db.rpc("redeem_checkin", { p_cafe_id: cafeId, p_code: code });
+        if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; return; }
+        const res = data || {};
+        msg.style.color = res.ok ? "var(--ok)" : "var(--danger)";
+        msg.textContent = res.message || (res.ok ? "Check-in validé ✅" : "Échec.");
+        if (res.ok) {
+          cafeCheckins[cafeId] = (cafeCheckins[cafeId] || 0) + 1; // maj immédiate du compteur
+          if (typeof renderCafesList === "function") renderCafesList();
+          await Promise.all([loadProfile(), loadCheckins()]);
+          if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap();
+        }
+      });
     }
 
     // ====================== CHECK-INS ======================
@@ -3318,23 +3347,38 @@
       renderTravelers($("travSearch").value);
     });
 
+    // Renvoie { ok, already, error } — already = "pending"|"accepted" si une
+    // demande/connexion existe déjà (on n'en crée PAS une deuxième).
     async function sendConnection(otherId) {
-      const msg = $("connMsg");
-      if (!myUserId) return;
-      const { error } = await db.from("matches_connections")
-        .insert({ user_a: myUserId, user_b: otherId, status: "pending" });
-      msg.style.color = error ? "var(--danger)" : "var(--ok)";
-      msg.textContent = error ? "Erreur : " + error.message : "Demande envoyée ✅";
-      await loadConnections();
+      if (!myUserId || !otherId) return { ok: false };
+      return once("connect:" + otherId, async () => {
+        // Déjà une demande ou une connexion entre nous (dans un sens ou l'autre) ?
+        const { data: existing } = await db.from("matches_connections")
+          .select("id,status")
+          .or(`and(user_a.eq.${myUserId},user_b.eq.${otherId}),and(user_a.eq.${otherId},user_b.eq.${myUserId})`)
+          .in("status", ["pending", "accepted"]).limit(1);
+        if (existing && existing.length) {
+          await loadConnections();
+          return { ok: true, already: existing[0].status };
+        }
+        const { error } = await db.from("matches_connections")
+          .insert({ user_a: myUserId, user_b: otherId, status: "pending" });
+        if (!error) await loadConnections();
+        return { ok: !error, error };
+      });
     }
 
     async function acceptConnection(connId) {
-      const msg = $("connMsg");
-      const { error } = await db.from("matches_connections")
-        .update({ status: "accepted" }).eq("id", connId);
-      msg.style.color = error ? "var(--danger)" : "var(--ok)";
-      msg.textContent = error ? "Erreur : " + error.message : "Connexion acceptée ✅";
-      await loadConnections();
+      return once("accept:" + connId, async () => {
+        const msg = $("connMsg");
+        const { error } = await db.from("matches_connections")
+          .update({ status: "accepted" }).eq("id", connId);
+        if (msg) {
+          msg.style.color = error ? "var(--danger)" : "var(--ok)";
+          msg.textContent = error ? "Erreur : " + error.message : "Connexion acceptée ✅";
+        }
+        await loadConnections();
+      });
     }
 
     // ====================== UTILITAIRE ======================
@@ -3550,28 +3594,34 @@
     // Rejoindre une quête
     $("detailJoinBtn").addEventListener("click", async () => {
       if (!currentQuest || !myUserId) return;
-      const m = $("detailMsg"); m.style.color = "var(--muted)"; m.textContent = "…";
-      const { error } = await db.from("user_quests")
-        .upsert({ user_id: myUserId, quest_key: currentQuest.key, status: "joined" }, { onConflict: "user_id,quest_key" });
-      if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
-      myQuestStatus[currentQuest.key] = "joined";
-      openDetail(currentQuest);
-      m.style.color = "var(--ok)"; m.textContent = "Quête rejointe ! 🎒";
+      const qkey = currentQuest.key;
+      await once("join:" + qkey, async () => {
+        const m = $("detailMsg"); m.style.color = "var(--muted)"; m.textContent = "…";
+        const { error } = await db.from("user_quests")
+          .upsert({ user_id: myUserId, quest_key: qkey, status: "joined" }, { onConflict: "user_id,quest_key" });
+        if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
+        myQuestStatus[qkey] = "joined";
+        openDetail(currentQuest);
+        m.style.color = "var(--ok)"; m.textContent = "Quête rejointe ! 🎒";
+      });
     });
 
     // Marquer comme accompli → valide le code si requis, attribue badge + coupon + points
     $("detailCompleteBtn").addEventListener("click", async () => {
       if (!currentQuest || !myUserId) return;
       const m = $("detailMsg");
+      const qkey = currentQuest.key;
       const code = currentQuest.requires_code ? ($("detailCode").value || "").trim() : null;
       if (currentQuest.requires_code && !code) { m.style.color = "var(--danger)"; m.textContent = "Entre le code du lieu pour valider."; return; }
-      m.style.color = "var(--muted)"; m.textContent = "Validation…";
-      const { data, error } = await db.rpc("complete_quest", { p_quest_key: currentQuest.key, p_code: code });
-      if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
-      const res = data || {};
-      m.style.color = res.ok ? "var(--ok)" : "var(--danger)";
-      m.textContent = res.message || (res.ok ? "Accompli ✅" : "Échec.");
-      if (res.ok) { await Promise.all([loadGameData(), loadProfile()]); const q = questByKey(currentQuest.key); if (q) openDetail(q); }
+      await once("complete:" + qkey, async () => {
+        m.style.color = "var(--muted)"; m.textContent = "Validation…";
+        const { data, error } = await db.rpc("complete_quest", { p_quest_key: qkey, p_code: code });
+        if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
+        const res = data || {};
+        m.style.color = res.ok ? "var(--ok)" : "var(--danger)";
+        m.textContent = res.message || (res.ok ? "Accompli ✅" : "Échec.");
+        if (res.ok) { await Promise.all([loadGameData(), loadProfile()]); const q = questByKey(qkey); if (q) openDetail(q); }
+      });
     });
 
     // Proposer la quête à un Mate (section dédiée + message dans le chat)
@@ -3594,14 +3644,23 @@
 
     async function suggestQuestTo(toUserId, quest, msgEl) {
       closePicker();
-      const m = msgEl || $("detailMsg"); m.style.color = "var(--muted)"; m.textContent = "Envoi du défi…";
-      const { error } = await db.from("quest_suggestions").insert({
-        from_user: myUserId, to_user: toUserId, quest_key: quest.key, quest_title: quest.title,
+      const m = msgEl || $("detailMsg");
+      if (!myUserId || !toUserId || !quest) return;
+      return once("suggest:" + toUserId + ":" + quest.key, async () => {
+        m.style.color = "var(--muted)"; m.textContent = "Envoi du défi…";
+        // Déjà un défi en attente pour cette quête → on ne le renvoie pas.
+        const { data: dup } = await db.from("quest_suggestions")
+          .select("id").eq("from_user", myUserId).eq("to_user", toUserId)
+          .eq("quest_key", quest.key).eq("status", "pending").limit(1);
+        if (dup && dup.length) { m.style.color = "var(--ok)"; m.textContent = "Défi déjà proposé ✅"; return; }
+        const { error } = await db.from("quest_suggestions").insert({
+          from_user: myUserId, to_user: toUserId, quest_key: quest.key, quest_title: quest.title,
+        });
+        if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
+        // + un message dans le chat (option « les deux »), seulement si le défi est bien parti
+        await db.from("messages").insert({ sender_id: myUserId, recipient_id: toUserId, content: "🎯 Je te propose la quête : " + quest.title });
+        m.style.color = "var(--ok)"; m.textContent = "Défi proposé ✅";
       });
-      // + un message dans le chat (option « les deux »)
-      await db.from("messages").insert({ sender_id: myUserId, recipient_id: toUserId, content: "🎯 Je te propose la quête : " + quest.title });
-      if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
-      m.style.color = "var(--ok)"; m.textContent = "Défi proposé ✅";
     }
 
     // Boutons "Retour" des sous-vues + accès badges/coupons
@@ -3846,8 +3905,10 @@
         }, 1100);
         return;
       }
-      const { error } = await db.from("messages")
-        .insert({ sender_id: myUserId, recipient_id: currentChatUserId, content: text });
+      const recipient = currentChatUserId;
+      const { error } = await once("msg:" + recipient + ":" + text, async () =>
+        db.from("messages").insert({ sender_id: myUserId, recipient_id: recipient, content: text })
+      ) || {};
       if (error) {
         $("chatBody").insertAdjacentHTML("beforeend",
           `<div class="bubble them" style="background:#fde2e2;color:#b91c1c">Échec de l'envoi : ${escapeHtml(error.message)}</div>`);
@@ -3875,7 +3936,7 @@
             if (ph) $("chatBody").innerHTML = "";
             $("chatBody").insertAdjacentHTML("beforeend", bubbleHtml(m));
             scrollChatBottom();
-          } else if (m.recipient_id === myUserId && m.sender_id !== myUserId) {
+          } else if (m.recipient_id === myUserId && m.sender_id !== myUserId && notifyOnce("msg:" + m.id)) {
             // message reçu hors conversation ouverte → toast + pastille
             if (typeof unhideConv === "function") unhideConv(m.sender_id); // un nouveau message ré-affiche la conv
             unreadList.unshift({ sender_id: m.sender_id, content: m.content, created_at: m.created_at });
@@ -4012,8 +4073,16 @@
       const m = $("tpMsg");
       if (!currentTravelerId) return;
       m.style.color = "var(--muted)"; m.textContent = "Envoi…";
-      await sendConnection(currentTravelerId); // vraie demande Supabase
-      m.style.color = "var(--ok)"; m.textContent = "Demande de connexion envoyée ✅";
+      const res = await sendConnection(currentTravelerId); // vraie demande Supabase
+      if (!res) return; // clic en double ignoré (demande déjà en cours d'envoi)
+      if (res.already) {
+        m.style.color = "var(--ok)";
+        m.textContent = res.already === "accepted" ? "Vous êtes déjà connectés ✅" : "Demande déjà envoyée ✅";
+      } else if (res.ok) {
+        m.style.color = "var(--ok)"; m.textContent = "Demande de connexion envoyée ✅";
+      } else {
+        m.style.color = "var(--danger)"; m.textContent = "Erreur : " + ((res.error && res.error.message) || "réessaie");
+      }
     });
 
     // Boutons "Retour" des sous-vues Mates
@@ -4045,7 +4114,9 @@
           closePicker();
           const reason = prompt("Pour quelle raison signales-tu « " + it.label + " » ?");
           if (!reason) return;
-          const { error } = await db.from("reports").insert({ reporter: myUserId, reported_user: it.id, reason });
+          const { error } = await once("report:" + it.id, async () =>
+            db.from("reports").insert({ reporter: myUserId, reported_user: it.id, reason })
+          ) || {};
           m.style.color = error ? "var(--danger)" : "var(--ok)";
           m.textContent = error ? "Erreur : " + error.message : "Signalement envoyé. Merci, on regarde ça. 🙏";
         });
@@ -4549,12 +4620,14 @@
       const title = $("actTitle").value.trim(), note = $("actNote").value.trim(), m = $("actMsg");
       if (!title) { m.style.color = "var(--danger)"; m.textContent = "Donne un titre à ton activité."; return; }
       if (!homeAddLatLng || !myUserId) return;
-      m.style.color = "var(--muted)"; m.textContent = "Publication…";
-      const { error } = await db.from("map_activities").insert({ creator: myUserId, title, note: note || null, lat: homeAddLatLng.lat, lng: homeAddLatLng.lng });
-      if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
-      $("actCreate").classList.add("hidden");
-      if (typeof toast === "function") toast("📣", "Activité publiée sur la carte ✅");
-      renderHomeMap();
+      await once("mapact:" + myUserId, async () => {
+        m.style.color = "var(--muted)"; m.textContent = "Publication…";
+        const { error } = await db.from("map_activities").insert({ creator: myUserId, title, note: note || null, lat: homeAddLatLng.lat, lng: homeAddLatLng.lng });
+        if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
+        $("actCreate").classList.add("hidden");
+        if (typeof toast === "function") toast("📣", "Activité publiée sur la carte ✅");
+        renderHomeMap();
+      });
     }
     async function deleteMapActivity(id) {
       if (!confirm("Supprimer cette activité ?")) return;
@@ -4892,14 +4965,16 @@
       const m = $("b2bMsg");
       const company = $("b2bCompany").value.trim(), email = $("b2bEmail").value.trim();
       if (!company || !email) { m.style.color = "var(--danger)"; m.textContent = "Nom de l'établissement et email requis."; return; }
-      m.style.color = "var(--muted)"; m.textContent = "Envoi…";
-      const { error } = await db.from("quote_requests").insert({
-        user_id: myUserId || null, company, contact_name: $("b2bName").value.trim(), email,
-        category: $("b2bCategory").value, need: $("b2bNeed").value.trim(),
+      await once("quote:" + company + ":" + email, async () => {
+        m.style.color = "var(--muted)"; m.textContent = "Envoi…";
+        const { error } = await db.from("quote_requests").insert({
+          user_id: myUserId || null, company, contact_name: $("b2bName").value.trim(), email,
+          category: $("b2bCategory").value, need: $("b2bNeed").value.trim(),
+        });
+        m.style.color = error ? "var(--danger)" : "var(--ok)";
+        m.textContent = error ? "Erreur : " + error.message : "Demande envoyée ! On vous recontacte sous 48 h. 🤝";
+        if (!error) { ["b2bCompany", "b2bName", "b2bEmail", "b2bNeed"].forEach((id) => { $(id).value = ""; }); }
       });
-      m.style.color = error ? "var(--danger)" : "var(--ok)";
-      m.textContent = error ? "Erreur : " + error.message : "Demande envoyée ! On vous recontacte sous 48 h. 🤝";
-      if (!error) { ["b2bCompany", "b2bName", "b2bEmail", "b2bNeed"].forEach((id) => { $(id).value = ""; }); }
     });
 
     // ---- Paramètres du compte (email / mot de passe) ----
@@ -4932,14 +5007,18 @@
 
     // ---- Accepter / refuser un défi reçu (la notif disparaît ensuite) ----
     async function acceptSuggestion(id, key) {
-      await db.from("quest_suggestions").update({ status: "accepted" }).eq("id", id);
-      await loadGameData();
-      const q = questByKey(key); if (q) { goToTab("jeux"); openDetail(q); }
+      return once("acceptsugg:" + id, async () => {
+        await db.from("quest_suggestions").update({ status: "accepted" }).eq("id", id);
+        await loadGameData();
+        const q = questByKey(key); if (q) { goToTab("jeux"); openDetail(q); }
+      });
     }
     async function dismissSuggestion(id) {
-      await db.from("quest_suggestions").update({ status: "dismissed" }).eq("id", id);
-      toast("👍", "Défi refusé");
-      await loadGameData();
+      return once("dismisssugg:" + id, async () => {
+        await db.from("quest_suggestions").update({ status: "dismissed" }).eq("id", id);
+        toast("👍", "Défi refusé");
+        await loadGameData();
+      });
     }
     // ---- Utiliser un coupon ----
     async function useCoupon(id) {
@@ -4954,11 +5033,13 @@
     async function blockUser(uid) {
       if (!uid || !myUserId) return;
       if (!confirm("Bloquer ce voyageur ? Il n'apparaîtra plus dans ta découverte ni tes messages.")) return;
-      const { error } = await db.from("blocks").insert({ blocker: myUserId, blocked: uid });
-      if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
-      toast("🚫", "Voyageur bloqué");
-      showMatesView("matesHome");
-      await loadConnections();
+      await once("block:" + uid, async () => {
+        const { error } = await db.from("blocks").insert({ blocker: myUserId, blocked: uid });
+        if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+        toast("🚫", "Voyageur bloqué");
+        showMatesView("matesHome");
+        await loadConnections();
+      });
     }
 
     // ---- BFF du moment ----
@@ -5115,17 +5196,18 @@
       }));
 
     // ---- Temps réel : nouvelles demandes de connexion ----
+    // (notifyOnce, défini en haut, garantit une seule notif par événement.)
     let connChannel = null, suggChannel = null;
     function subscribeConnections() {
       if (connChannel) return;
       connChannel = db.channel("conn-rt").on("postgres_changes",
         { event: "*", schema: "public", table: "matches_connections" }, (payload) => {
           const row = payload.new || payload.old; if (!row) return;
-          if (payload.eventType === "INSERT" && row.user_b === myUserId) {
+          if (payload.eventType === "INSERT" && row.user_b === myUserId && notifyOnce("conn-new:" + row.id)) {
             toast("📨", `<b>${escapeHtml(nameById(row.user_a))}</b> souhaite se connecter`, () => goToTab("connexions"));
             sysNotify("Nouvelle demande 📨", nameById(row.user_a) + " souhaite se connecter");
           }
-          if (payload.eventType === "UPDATE" && row.status === "accepted" && (row.user_a === myUserId || row.user_b === myUserId)) {
+          if (payload.eventType === "UPDATE" && row.status === "accepted" && (row.user_a === myUserId || row.user_b === myUserId) && notifyOnce("conn-acc:" + row.id)) {
             const other = row.user_a === myUserId ? row.user_b : row.user_a;
             toast("✅", `<b>${escapeHtml(nameById(other))}</b> a accepté ta connexion`, () => goToTab("connexions"));
           }
@@ -5139,8 +5221,10 @@
       suggChannel = db.channel("sugg-rt").on("postgres_changes",
         { event: "INSERT", schema: "public", table: "quest_suggestions" }, (payload) => {
           const row = payload.new; if (!row || row.to_user !== myUserId) return;
-          toast("🎯", `<b>${escapeHtml(nameById(row.from_user))}</b> te propose : ${escapeHtml(row.quest_title || "une quête")}`, () => goToTab("jeux"));
-          sysNotify("Nouveau défi 🎯", nameById(row.from_user) + " te propose : " + (row.quest_title || "une quête"));
+          if (notifyOnce("sugg-new:" + row.id)) {
+            toast("🎯", `<b>${escapeHtml(nameById(row.from_user))}</b> te propose : ${escapeHtml(row.quest_title || "une quête")}`, () => goToTab("jeux"));
+            sysNotify("Nouveau défi 🎯", nameById(row.from_user) + " te propose : " + (row.quest_title || "une quête"));
+          }
           loadGameData();
         }).subscribe();
     }
