@@ -226,6 +226,22 @@
     .fpost-empty .fe-title { font-weight: 800; color: var(--ink); }
     .fpost-empty .fe-sub { font-size: .82rem; color: var(--muted); margin-top: .2rem; }
 
+    /* ---- Cartes de lieux (onglet Lieux) : visuelles, photo plein cadre ---- */
+    .pcard { background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; margin-bottom: .85rem; box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease; }
+    .pcard:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .pcard .pcard-photo { height: 168px; position: relative; background-size: cover; background-position: center; background-color: var(--cream); }
+    .pcard .pcard-grad { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 42%, rgba(0,0,0,.62)); }
+    .pcard .pcard-title { position: absolute; left: .85rem; right: .85rem; bottom: .55rem; color: #fff; font-weight: 800; font-size: 1.18rem; line-height: 1.15; text-shadow: 0 2px 10px rgba(0,0,0,.45); }
+    .pcard .pcard-chip { position: absolute; top: .6rem; font-size: .72rem; font-weight: 800; padding: .26rem .55rem; border-radius: 999px; box-shadow: 0 3px 8px rgba(0,0,0,.18); }
+    .pcard .pcard-eco { left: .6rem; background: #19b36b; color: #fff; }
+    .pcard .pcard-ck { right: .6rem; background: rgba(255,255,255,.96); color: #0e9a5f; }
+    .pcard .pcard-body { padding: .7rem .85rem .85rem; }
+    .pcard .pcard-meta { color: var(--muted); font-size: .82rem; font-weight: 600; }
+    .pcard .pcard-addr { color: var(--muted); font-size: .8rem; margin-top: .22rem; }
+    .pcard .pcard-note { color: var(--ink); font-size: .79rem; margin-top: .4rem; background: var(--accent-soft); padding: .35rem .55rem; border-radius: 9px; }
+    .pcard .pcard-actions { display: flex; gap: .5rem; margin-top: .7rem; }
+    .pcard .pcard-actions button { flex: 1; }
+
     /* Bannière d'installation PWA (cachée par défaut, glisse depuis le haut) */
     .pwa-banner { position: fixed; left: 50%; top: .6rem; z-index: 400;
       width: calc(100% - 1.2rem); max-width: 460px; display: flex; align-items: center; gap: .7rem;
@@ -280,12 +296,13 @@
     @keyframes confettiFall { to { transform: translateY(108vh) rotate(600deg); opacity: .85; } }
 
     /* ---- Bouton « effacer » (✕) dans les champs de recherche ---- */
-    .search { position: relative; }
     .search input { padding-right: 2.4rem; }
     .search-clear { position: absolute; right: .5rem; top: 50%; transform: translateY(-50%); width: 26px; height: 26px;
       border-radius: 50%; border: 0; background: rgba(0,0,0,.09); color: var(--ink); font-size: .76rem; cursor: pointer;
-      display: grid; place-items: center; padding: 0; line-height: 1; }
+      display: grid; place-items: center; padding: 0; line-height: 1; touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent; transition: background .12s ease, transform .08s ease; }
     .search-clear:hover { background: rgba(0,0,0,.17); }
+    .search-clear:active { transform: translateY(-50%) scale(.82); background: rgba(0,0,0,.24); }
     body.theme-dusk .search-clear { background: rgba(255,255,255,.14); color: #fff; }
     body.theme-dusk .search-clear:hover { background: rgba(255,255,255,.24); }
 
@@ -296,9 +313,9 @@
     .char-count { display: block; text-align: right; font-size: .72rem; color: var(--muted); margin-top: .25rem; }
     .char-count.over { color: var(--danger); font-weight: 700; }
 
-    /* ---- Fondu entre les onglets (et les segments du profil) — bien visible ---- */
+    /* ---- Fondu entre les onglets (et les segments du profil) — bien visible ----
+       (la règle .tab-panel:not(.hidden) est définie une seule fois, plus bas) ---- */
     @keyframes tabFade { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
-    .tab-panel:not(.hidden) { animation: tabFade .34s cubic-bezier(.22,.8,.3,1); }
     .prof-seg:not(.hidden) { animation: tabFade .3s cubic-bezier(.22,.8,.3,1); }
 
     /* ---- Textareas : plus d'étirement infini (auto-grow géré en JS, hauteur plafonnée) ---- */
@@ -311,12 +328,6 @@
       100% { box-shadow: 0 0 0 0 rgba(244,101,94,0); }
     }
     .flash-ok { animation: flashOk .9s ease; border-radius: inherit; }
-
-    /* ---- Bouton ✕ de recherche : plus réactif (pas de délai tactile, retour au clic) ---- */
-    .search-clear { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-      transition: background .12s ease, transform .08s ease; }
-    .search-clear:hover { background: rgba(0,0,0,.17); }
-    .search-clear:active { transform: translateY(-50%) scale(.82); background: rgba(0,0,0,.24); }
 
     /* ----------------------------- Badges --------------------------- */
     .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 700; }
@@ -758,9 +769,8 @@
       background: radial-gradient(circle, rgba(255,255,255,.45), rgba(255,255,255,0) 70%); top: -70px; right: -50px; }
     .auth-hero .logo-badge, .auth-hero .logo-text, .auth-hero .logo-tag { position: relative; z-index: 1; }
 
-    /* Apparition des panneaux au changement d'onglet (voir keyframes tabFade plus haut) */
+    /* Apparition des panneaux au changement d'onglet (keyframes tabFade défini plus haut) */
     .tab-panel:not(.hidden) { animation: tabFade .34s cubic-bezier(.22,.8,.3,1) both; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     /* ===================================================================
        POLISH v2 — finitions écran par écran
        =================================================================== */
@@ -1596,11 +1606,9 @@
           <button class="chip" data-cf="near">📍 Près de moi</button>
         </div>
         <div id="cafesCount" class="muted" style="font-size:.8rem;margin-bottom:.5rem"></div>
-        <div class="card">
-          <div class="gold-only-note">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
-          <div id="cafesList"><p class="muted">Chargement…</p></div>
-          <div class="msg" id="cafesMsg"></div>
-        </div>
+        <div class="gold-only-note" style="margin-bottom:.7rem">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
+        <div id="cafesList"><p class="muted">Chargement…</p></div>
+        <div class="msg" id="cafesMsg"></div>
       </div>
 
       <!-- ---------------- Onglet MATES (connexions + messagerie) ---------------- -->
@@ -2880,16 +2888,22 @@
       list.innerHTML = goldPlace + (arr.length ? arr.map((c) => {
         const nCk = cafeCheckins[c.id] || 0;
         const dist = (c._km != null) ? `<span class="badge ok">${c._km < 1 ? Math.round(c._km * 1000) + " m" : c._km.toFixed(1) + " km"}</span>` : "";
-        return `<div class="place" data-cafecard="${c.id}">
-          <div class="place-photo" style="background-image:url('${cafeImage(c)}')"></div>
-          <div class="name">${escapeHtml(c.name)} ${c.is_eco ? '<span class="eco">🌱 éco</span>' : ''}</div>
-          <div class="meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')} ${dist}</div>
-          ${c.address ? `<div class="meta">📍 ${escapeHtml(c.address)}</div>` : ''}
-          ${c.safety_note ? `<div class="meta">🛟 ${escapeHtml(c.safety_note)}</div>` : ''}
-          <div class="meta">${nCk ? '✅ ' + nCk + ' check-in' + (nCk > 1 ? 's' : '') : '✨ Sois le·la 1er·ère à checker !'}</div>
-          <div class="row" style="margin-top:.4rem">
-            <button class="btn-accent" data-checkin="${c.id}" data-name="${escapeHtml(c.name)}">🔒 Check-in (+10)</button>
-            ${c.lat != null && c.lng != null ? `<button class="btn-ghost" data-mapcafe="${c.id}">📍 Carte</button>` : ""}
+        return `<div class="place pcard" data-cafecard="${c.id}">
+          <div class="pcard-photo" style="background-image:url('${cafeImage(c)}')">
+            ${c.is_eco ? '<span class="pcard-chip pcard-eco">🌱 éco</span>' : ''}
+            ${nCk ? `<span class="pcard-chip pcard-ck">✅ ${nCk} check-in${nCk > 1 ? 's' : ''}</span>` : ''}
+            <div class="pcard-grad"></div>
+            <div class="pcard-title">${escapeHtml(c.name)}</div>
+          </div>
+          <div class="pcard-body">
+            <div class="pcard-meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')} ${dist}</div>
+            ${c.address ? `<div class="pcard-addr">📍 ${escapeHtml(c.address)}</div>` : ''}
+            ${c.safety_note ? `<div class="pcard-note">🛟 ${escapeHtml(c.safety_note)}</div>` : ''}
+            ${!nCk ? '<div class="pcard-addr">✨ Sois le·la 1er·ère à checker !</div>' : ''}
+            <div class="pcard-actions">
+              <button class="btn-accent" data-checkin="${c.id}" data-name="${escapeHtml(c.name)}">🔒 Check-in (+10)</button>
+              ${c.lat != null && c.lng != null ? `<button class="btn-ghost" data-mapcafe="${c.id}">📍 Carte</button>` : ""}
+            </div>
           </div>
         </div>`;
       }).join("") : '<p class="muted">Aucun lieu ne correspond. Essaie un autre filtre.</p>');
@@ -3525,27 +3539,7 @@
     }
 
     // Carte « Pour toi » : top 3 matchs
-    function renderRecos() {
-      const top = travelersCache
-        .filter((p) => p.is_demo) // recommandations basées sur les profils démo/IA
-        .map((p) => ({ p, pct: compatibility(myMatchProfile, p), reasons: matchReasons(myMatchProfile, p) }))
-        .filter((o) => o.pct > 0)
-        .sort((a, b) => b.pct - a.pct)
-        .slice(0, 3);
-      const sec = $("recoSection");
-      if (!top.length) { sec.style.display = "none"; return; }
-      sec.style.display = "";
-      $("recoList").innerHTML = top.map(({ p, pct, reasons }) => `
-        <div class="reco trav-open" data-profile="${p.id}">
-          ${avatarMarkup(p.username, p.avatar_url, "lg")}
-          <div class="reco-name">${escapeHtml(p.username || "Voyageur")}</div>
-          <div class="reco-meta">${escapeHtml(p.city || "—")}</div>
-          <div class="reco-pct">❤️ ${pct}%</div>
-          ${reasons[0] ? `<div class="reco-reason">${escapeHtml(reasons[0])}</div>` : ""}
-        </div>`).join("");
-      $("recoList").querySelectorAll("[data-profile]").forEach((el) =>
-        el.addEventListener("click", () => openTravelerProfile(travelerMap[el.dataset.profile])));
-    }
+    // (renderRecos supprimée : code mort, référençait #recoSection/#recoList inexistants.)
 
     // Liste des voyageurs : recherche + filtres + tri
     let travelersCache = [];
@@ -4685,11 +4679,12 @@
         // Comportement au clic sur un point regroupé.
         homeCluster.on("clusterclick", (a) => {
           const cl = a.layer, kids = cl.getAllChildMarkers();
-          const p0 = kids[0].getLatLng();
-          const samePlace = kids.every((m) => m.getLatLng().distanceTo(p0) < 8); // < 8 m = vraiment le même endroit
-          if (!samePlace) { try { homeLeaf.fitBounds(cl.getBounds().pad(0.25)); } catch (e) {} return; } // lieux différents → on zoome
-          if (kids.length <= 6) { cl.spiderfy(); return; }                       // même endroit, peu d'éléments → rosace
-          openColocatedList(cl.getLatLng(), kids, cl);                            // beaucoup d'éléments → liste élégante
+          // Clic sur un point regroupé → on déroule TOUJOURS en ÉVENTAIL sur place
+          // (jamais de zoom/split : la carte ne bouge pas). Si trop d'éléments (>6),
+          // une spirale serait illisible → on affiche une petite liste à la place.
+          // (Le zoom reste possible à la main avec les boutons +/− jusqu'au max.)
+          if (kids.length <= 6) { cl.spiderfy(); return; }
+          openColocatedList(cl.getLatLng(), kids, cl);
         });
         homeLeaf.on("popupopen", (e) => {
           const node = e.popup._contentNode; if (!node) return;
