@@ -4740,12 +4740,11 @@
       const mates = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)));
       homeCafeMarkerById = {};
 
-      // Petit décalage déterministe (~80 m) pour ne pas empiler exactement deux pastilles
-      function jitterAt(cafe, seedId) {
-        let h = 0; const s = String(seedId || "");
-        for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
-        return [cafe.lat + (((h % 100) / 100 - 0.5) * 0.0016), cafe.lng + (((Math.floor(h / 100) % 100) / 100 - 0.5) * 0.0016)];
-      }
+      // Position d'un marqueur rattaché à un lieu : COORDONNÉES EXACTES du lieu (plus de
+      // décalage). Ainsi tout ce qui se passe au même endroit (lieu + mates + check-ins +
+      // quêtes) se regroupe en UN point unique qui s'ouvre en rosace au zoom max — au lieu
+      // de pastilles éparpillées qui se séparaient quand on zoomait trop.
+      function jitterAt(cafe) { return [cafe.lat, cafe.lng]; }
       // Lieu de référence d'un membre : son dernier check-in. Sinon, pour une IA, un vrai lieu
       // déterministe (de sa ville si possible). Un vrai utilisateur sans position → absent de la carte.
       function cafeForMember(p) {
