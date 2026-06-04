@@ -309,6 +309,11 @@
     /* ---- Cibles tactiles plus confortables (≥40px) sur les boutons-icônes ---- */
     .iconbtn { min-width: 40px; min-height: 40px; }
 
+    /* ---- Nav du bas : icônes seules, libellé uniquement sur l'onglet ACTIF ---- */
+    .bottom-nav .nav-lbl { display: none; font-weight: 700; }
+    .bottom-nav button.active .nav-lbl { display: block; }
+    .bottom-nav button.active { background: var(--accent-soft); border-radius: 14px; }
+
     /* ---- Compteur de caractères (ex. bio) ---- */
     .char-count { display: block; text-align: right; font-size: .72rem; color: var(--muted); margin-top: .25rem; }
     .char-count.over { color: var(--danger); font-weight: 700; }
@@ -2250,12 +2255,12 @@
 
     <!-- ---------------- Barre de navigation (bas) ---------------- -->
     <nav class="bottom-nav">
-      <button data-tab="accueil" class="active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Accueil</button>
-      <button data-tab="lieux"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>Lieux</button>
-      <button data-tab="jeux"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8 4.8-2.2Z"/></svg>Jeux<span class="navbadge hidden" id="navJeux"></span></button>
-      <button data-tab="connexions"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.2"/><path d="M3.6 19a5.5 5.5 0 0 1 10.8 0"/><path d="M16 7.6a3 3 0 0 1 0 5.6"/><path d="M17.8 19a5 5 0 0 0-3-4.7"/></svg>Mates<span class="navbadge hidden" id="navMates"></span></button>
-      <button data-tab="securite"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/></svg>Sécurité</button>
-      <button data-tab="profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>Profil</button>
+      <button data-tab="accueil" class="active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span class="nav-lbl">Accueil</span></button>
+      <button data-tab="lieux"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg><span class="nav-lbl">Lieux</span></button>
+      <button data-tab="jeux"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8 4.8-2.2Z"/></svg><span class="nav-lbl">Jeux</span><span class="navbadge hidden" id="navJeux"></span></button>
+      <button data-tab="connexions"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.2"/><path d="M3.6 19a5.5 5.5 0 0 1 10.8 0"/><path d="M16 7.6a3 3 0 0 1 0 5.6"/><path d="M17.8 19a5 5 0 0 0-3-4.7"/></svg><span class="nav-lbl">Mates</span><span class="navbadge hidden" id="navMates"></span></button>
+      <button data-tab="securite"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/></svg><span class="nav-lbl">Sécurité</span></button>
+      <button data-tab="profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg><span class="nav-lbl">Profil</span></button>
     </nav>
   </section>
 
@@ -4678,13 +4683,19 @@
         homeCluster.addTo(homeLeaf);
         // Comportement au clic sur un point regroupé.
         homeCluster.on("clusterclick", (a) => {
-          const cl = a.layer, kids = cl.getAllChildMarkers();
-          // Clic sur un point regroupé → on déroule TOUJOURS en ÉVENTAIL sur place
-          // (jamais de zoom/split : la carte ne bouge pas). Si trop d'éléments (>6),
-          // une spirale serait illisible → on affiche une petite liste à la place.
-          // (Le zoom reste possible à la main avec les boutons +/− jusqu'au max.)
-          if (kids.length <= 6) { cl.spiderfy(); return; }
-          openColocatedList(cl.getLatLng(), kids, cl);
+          const cl = a.layer;
+          const curZoom = homeLeaf.getZoom(), maxZoom = homeLeaf.getMaxZoom();
+          // Tant qu'on n'est PAS au zoom max → on ZOOME pour séparer le groupe.
+          // Des lieux différents se scindent en plusieurs points (puis plusieurs rosaces) ;
+          // un même endroit reste groupé et la carte se rapproche jusqu'au max.
+          if (curZoom < maxZoom) {
+            try { homeLeaf.fitBounds(cl.getBounds().pad(0.2), { maxZoom: maxZoom }); } catch (e) {}
+            return;
+          }
+          // Au zoom MAX (impossible de séparer davantage) → on ouvre la rosace.
+          const kids = cl.getAllChildMarkers();
+          if (kids.length <= 6) { cl.spiderfy(); return; }     // peu d'éléments → éventail
+          openColocatedList(cl.getLatLng(), kids, cl);          // beaucoup → liste (jamais 16 côte à côte)
         });
         homeLeaf.on("popupopen", (e) => {
           const node = e.popup._contentNode; if (!node) return;
