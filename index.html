@@ -203,6 +203,29 @@
     .coloc-row b { color: var(--accent); }
     .coloc-btn { margin-top: .6rem; width: 100%; background: var(--accent-grad); color: #fff; border: 0; border-radius: 10px; padding: .5rem; font-weight: 800; font-size: .82rem; cursor: pointer; }
 
+    /* ---- Fil d'actualité (posts) : cartes à bandeau coloré ---- */
+    .fpost { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .7rem; box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease; cursor: pointer; }
+    .fpost:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .fpost-top { display: flex; align-items: center; gap: .6rem; }
+    .fpost-who { flex: 1; display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+    .fpost-who b { font-size: .9rem; color: var(--ink); }
+    .fpost-who span { font-size: .76rem; color: var(--muted); }
+    .fpost-time { font-size: .72rem; color: var(--muted); white-space: nowrap; }
+    .fpost-badge { display: flex; align-items: center; gap: .7rem; margin-top: .6rem; padding: .65rem .8rem; border-radius: 14px; color: #fff; box-shadow: 0 6px 16px rgba(244,101,94,.22); }
+    .fpost-emoji { font-size: 1.9rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+    .fpost-txt { flex: 1; display: flex; flex-direction: column; line-height: 1.25; }
+    .fpost-txt b { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; opacity: .92; }
+    .fpost-txt span { font-size: .98rem; font-weight: 800; }
+    .fpost-spark { font-size: 1.15rem; opacity: .9; }
+    .grad-0 { background: linear-gradient(120deg,#ff8a7d,#f4655e); }
+    .grad-1 { background: linear-gradient(120deg,#ffb274,#ff8a3d); }
+    .grad-2 { background: linear-gradient(120deg,#b9a6ff,#7c5cff); }
+    .grad-3 { background: linear-gradient(120deg,#ffd15c,#f4a11e); }
+    .fpost-empty { text-align: center; padding: 1.6rem 1rem; background: var(--card); border: 1px dashed var(--line); border-radius: 18px; }
+    .fpost-empty .fe-emoji { font-size: 2.2rem; display: block; margin-bottom: .4rem; }
+    .fpost-empty .fe-title { font-weight: 800; color: var(--ink); }
+    .fpost-empty .fe-sub { font-size: .82rem; color: var(--muted); margin-top: .2rem; }
+
     /* Bannière d'installation PWA (cachée par défaut, glisse depuis le haut) */
     .pwa-banner { position: fixed; left: 50%; top: .6rem; z-index: 400;
       width: calc(100% - 1.2rem); max-width: 460px; display: flex; align-items: center; gap: .7rem;
@@ -1547,11 +1570,11 @@
 
         <div class="section-head"><h3>Accès rapide</h3></div>
         <div class="grid2">
-          <div class="tile" data-goto="connexions"><div class="thumb purp">🤝</div><div class="t-name">Mes Mates</div><div class="t-meta">Rencontre &amp; discute</div></div>
+          <div class="tile" data-goto="connexions"><div class="thumb purp">🤝</div><div class="t-name">Mes Mates</div><div class="t-meta" id="qaMates">Rencontre &amp; discute</div></div>
           <div class="tile" data-goto="securite"><div class="thumb">🚨</div><div class="t-name">Sécurité</div><div class="t-meta">Position & alerte</div></div>
-          <div class="tile" data-goto="lieux"><div class="thumb green">🛟</div><div class="t-name">Lieux sûrs</div><div class="t-meta">Check-ins</div></div>
-          <div class="tile" data-goto="profil"><div class="thumb blue">👤</div><div class="t-name">Mon profil</div><div class="t-meta">Score de confiance</div></div>
-          <div class="tile" data-goto="jeux"><div class="thumb">🎮</div><div class="t-name">Jeux & Quêtes</div><div class="t-meta">Gagne des badges</div></div>
+          <div class="tile" data-goto="lieux"><div class="thumb green">🛟</div><div class="t-name">Lieux sûrs</div><div class="t-meta" id="qaLieux">Check-ins</div></div>
+          <div class="tile" data-goto="profil"><div class="thumb blue">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Score de confiance</div></div>
+          <div class="tile" data-goto="jeux"><div class="thumb">🎮</div><div class="t-name">Jeux & Quêtes</div><div class="t-meta" id="qaJeux">Gagne des badges</div></div>
           <div class="tile soon" id="goldHomeTile"><div class="thumb">👑</div><div class="t-name">SunMates Gold</div><div class="t-meta">Bientôt dispo · Gold 👑</div></div>
         </div>
       </div>
@@ -5536,6 +5559,25 @@
         if (bell > _lastBellCount) { btn.classList.remove("ring"); void btn.offsetWidth; btn.classList.add("ring"); }
       }
       _lastBellCount = bell;
+      updateQuickAccess();
+    }
+
+    // Accès rapides « vivants » : les sous-titres affichent de l'info en direct
+    // (demandes, score de confiance, badges, check-ins) au lieu d'un texte fixe.
+    function updateQuickAccess() {
+      const set = (id, txt) => { const e = $(id); if (e) e.textContent = txt; };
+      const reqs = pendingRequestsList.length, msgs = unreadMsgCount;
+      if (reqs || msgs) {
+        const parts = [];
+        if (reqs) parts.push(reqs + " demande" + (reqs > 1 ? "s" : ""));
+        if (msgs) parts.push(msgs + " message" + (msgs > 1 ? "s" : ""));
+        set("qaMates", parts.join(" · "));
+      } else set("qaMates", "Rencontre & discute");
+      if (myProfile) set("qaProfil", "Confiance : " + (myProfile.trust_score ?? 0) + (myProfile.is_verified ? " ✅" : ""));
+      const nb = (myBadges || []).length;
+      set("qaJeux", nb ? nb + " badge" + (nb > 1 ? "s" : "") + " 🏅" : "Gagne des badges");
+      const ckEl = $("checkinCount");
+      if (ckEl && ckEl.textContent) { const n = parseInt(ckEl.textContent, 10) || 0; set("qaLieux", n ? n + " check-in" + (n > 1 ? "s" : "") + " 🛟" : "Fais ton 1er check-in"); }
     }
 
     // ---- Panneau de notifications (cloche) ----
@@ -5573,21 +5615,23 @@
             uid: b.user_id, isMe, avatar: p.avatar_url,
             name: isMe ? "Toi" : (p.username || "Un voyageur"),
             emoji: b.emoji || "🏅",
-            title: "a accompli une quête",
-            sub: "Badge « " + (b.name || "") + " » débloqué 🎉",
+            title: isMe ? "as débloqué un badge" : "a débloqué un badge",
+            badgeName: b.name || "Nouveau badge",
             time: timeAgo(b.earned_at),
           };
         });
       if (!posts.length) {
-        feed.innerHTML = '<div class="post"><div class="post-body"><div class="pemoji">🌅</div><div><div class="pb-title">Rien de neuf ces 3 derniers jours</div><div class="pb-sub">Accomplis une quête dans l\'onglet Jeux pour animer le fil 🎉</div></div></div></div>';
+        feed.innerHTML = '<div class="fpost-empty"><span class="fe-emoji">🌅</span><div class="fe-title">Rien de neuf ces 3 derniers jours</div><div class="fe-sub">Accomplis une quête dans l\'onglet Jeux pour animer le fil 🎉</div></div>';
         return;
       }
-      feed.innerHTML = posts.map((po, i) => `<div class="post" data-pf="${i}">
-          <div class="post-head">${avatarMarkup(po.name, po.avatar)}
-            <div><div class="ph-name">${escapeHtml(po.name)}</div><div class="ph-time" style="margin:0">${escapeHtml(po.title)}</div></div>
-            <div class="ph-time">${po.time}</div></div>
-          <div class="post-body"><div class="pemoji">${po.emoji}</div>
-            <div><div class="pb-title">${escapeHtml(po.sub)}</div></div></div>
+      feed.innerHTML = posts.map((po, i) => `<div class="fpost" data-pf="${i}">
+          <div class="fpost-top">${avatarMarkup(po.name, po.avatar)}
+            <div class="fpost-who"><b>${escapeHtml(po.name)}</b><span>${escapeHtml(po.title)}</span></div>
+            <span class="fpost-time">${po.time}</span></div>
+          <div class="fpost-badge grad-${i % 4}">
+            <span class="fpost-emoji">${po.emoji}</span>
+            <div class="fpost-txt"><b>Badge débloqué</b><span>${escapeHtml(po.badgeName)}</span></div>
+            <span class="fpost-spark">✨</span></div>
         </div>`).join("");
       feed.querySelectorAll("[data-pf]").forEach((el) => el.addEventListener("click", () => {
         const po = posts[Number(el.dataset.pf)];
