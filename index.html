@@ -1482,11 +1482,17 @@
             <div class="dh-emoji" id="tpEmoji">🧑</div>
             <div class="dh-body"><div class="dh-name" id="tpName">—</div><div class="dh-city" id="tpCity">📍 —</div></div>
           </div>
-          <div class="dstats" style="margin-bottom:1rem">
+          <div class="dstats" style="margin-bottom:.8rem">
             <div class="dstat"><b id="tpCompat">—</b><span>Compatibilité ❤️</span></div>
             <div class="dstat"><b id="tpMates">0</b><span>Mates 🛡️</span></div>
             <div class="dstat"><b id="tpTrust">0</b><span>Confiance</span></div>
           </div>
+          <!-- Actions principales : visibles tout de suite, sans scroll -->
+          <div class="row">
+            <button class="btn-primary" id="tpMsgBtn">💬 Message</button>
+            <button class="btn-accent" id="tpConnectBtn">🤝 Se connecter</button>
+          </div>
+          <div class="msg" id="tpMsg" style="text-align:center;margin:.5rem 0 1rem"></div>
           <div class="card">
             <div class="section-head" style="margin-bottom:.4rem"><h3 style="margin:0">À propos</h3><span class="badge no" id="tpVerif">Non vérifié</span></div>
             <p class="muted" id="tpBio" style="line-height:1.5">—</p>
@@ -1501,14 +1507,10 @@
             <h3 style="margin-top:0">🏅 Badges</h3>
             <div class="bgrid" id="tpBadges"></div>
           </div>
-          <div class="row">
-            <button class="btn-primary" id="tpMsgBtn">Envoyer un message</button>
-            <button class="btn-accent" id="tpConnectBtn">Connexion</button>
-          </div>
+          <!-- Actions secondaires (moins fréquentes) -->
           <button class="btn-ghost btn-block" id="tpChallengeBtn" style="margin-top:.6rem">🎯 Proposer un défi</button>
           <button class="btn-ghost btn-block" id="tpBffBtn" style="margin-top:.5rem;display:none">⭐ Définir comme BFF du moment</button>
           <button class="btn-ghost btn-block" id="tpBlockBtn" style="margin-top:.5rem;color:var(--danger)">🚫 Bloquer ce voyageur</button>
-          <div class="msg" id="tpMsg" style="text-align:center"></div>
         </div>
 
         <!-- Vue chat -->
