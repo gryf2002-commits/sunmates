@@ -16,6 +16,10 @@
   <!-- Leaflet : carte interactive des lieux sûrs -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Regroupement de marqueurs (évite les pastilles superposées illisibles) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
@@ -153,9 +157,34 @@
     .homemap-filters .chip b { font-weight: 800; opacity: .85; }
     .homemap-wrap { position: relative; }
     .homemap { height: 340px; border-radius: 14px; overflow: hidden; background: var(--cream); }
-    .homemap-tools { position: absolute; right: .55rem; bottom: .55rem; z-index: 500; display: flex; flex-direction: column; gap: .4rem; align-items: flex-end; }
+    /* Plein écran : TOUTE la carte (filtres + carte + légende) passe en plein écran */
+    .homemap-fsclose { display: none; }
+    .homemap-card.fs { position: fixed; inset: 0; z-index: 3500; margin: 0; border-radius: 0; padding: .55rem;
+      display: flex; flex-direction: column; background: var(--card); }
+    .homemap-card.fs .homemap-wrap { flex: 1; min-height: 0; margin: .4rem 0; }
+    .homemap-card.fs .homemap { height: 100% !important; border-radius: 12px; }
+    .homemap-card.fs .homemap-fsclose { display: inline-flex; position: absolute; top: .7rem; right: .7rem; z-index: 1200;
+      background: var(--card); color: var(--ink); border: 0; border-radius: 999px; padding: .5rem .9rem; font-weight: 800; font-size: .82rem; box-shadow: var(--shadow); cursor: pointer; }
+    .homemap-card.fs .homemap-legend { padding-bottom: env(safe-area-inset-bottom, .2rem); }
+    .homemap-tools { position: absolute; right: .55rem; bottom: .55rem; z-index: 1100; display: flex; flex-direction: column; gap: .4rem; align-items: flex-end; }
     .homemap-tools button { background: var(--card); color: var(--ink); border: 1px solid rgba(0,0,0,.08); border-radius: 999px; padding: .4rem .7rem; font-size: .76rem; font-weight: 700; box-shadow: var(--shadow-sm); cursor: pointer; }
     .homemap-tools button:hover { background: var(--accent-grad); color: #fff; }
+    .homemap-tools #hmAdd { background: var(--accent-grad); color: #fff; border-color: transparent; box-shadow: 0 6px 16px rgba(244,101,94,.4); }
+    .homemap-hint { position: absolute; top: .55rem; left: 50%; transform: translateX(-50%); z-index: 500;
+      background: var(--ink); color: #fff; padding: .42rem .85rem; border-radius: 999px; font-size: .76rem; box-shadow: var(--shadow-sm); white-space: nowrap; }
+    .homemap-hint a { color: #ffd15c; cursor: pointer; font-weight: 800; }
+    .act-overlay { position: fixed; inset: 0; z-index: 4300; display: grid; place-items: center; background: rgba(12,7,32,.55); padding: 1.2rem; }
+    .act-card { width: 100%; max-width: 380px; background: var(--card); color: var(--ink); border-radius: 20px; padding: 1.2rem; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+    /* Contrôles Leaflet raccord avec le design (zoom, attribution, popups) */
+    .leaflet-control-attribution { font-size: 9px !important; line-height: 1.4 !important; background: rgba(255,255,255,.6) !important; color: var(--muted) !important; padding: 1px 6px !important; border-radius: 0 8px 0 0 !important; }
+    .leaflet-control-attribution a { color: var(--muted) !important; }
+    .leaflet-control-zoom { border: 0 !important; box-shadow: var(--shadow-sm) !important; border-radius: 12px !important; overflow: hidden; margin: 12px !important; }
+    .leaflet-control-zoom a { background: var(--card) !important; color: var(--ink) !important; border: 0 !important; width: 32px !important; height: 32px !important; line-height: 32px !important; font-size: 18px !important; font-weight: 700; }
+    .leaflet-control-zoom a:hover { background: var(--cream) !important; color: var(--accent) !important; }
+    .leaflet-popup-content-wrapper { border-radius: 14px !important; box-shadow: 0 14px 34px rgba(0,0,0,.2) !important; }
+    .leaflet-popup-content { margin: 12px 14px !important; font-size: .82rem; line-height: 1.45; }
+    body.theme-dusk .leaflet-control-attribution { background: rgba(36,27,53,.7) !important; color: #a99fbe !important; }
+    body.theme-dusk .leaflet-control-zoom a { background: #241b35 !important; color: #ede6f2 !important; }
 
     /* --------------------- Onboarding « du futur » -------------------- */
     .onb { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 1.2rem;
@@ -212,9 +241,11 @@
     .homemap-legend span { display: inline-flex; align-items: center; gap: .3rem; }
     .homemap-legend i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
     /* Marqueurs personnalisés (pastilles emoji colorées) */
-    .epin { width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
-      display: grid; place-items: center; box-shadow: 0 3px 8px rgba(0,0,0,.32); border: 2px solid #fff; }
-    .epin > span { transform: rotate(45deg); font-size: 15px; line-height: 1; }
+    .epin { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+      display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,.4); border: 2.5px solid #fff; transition: transform .15s ease; }
+    .epin > span { transform: rotate(45deg); font-size: 17px; line-height: 1; }
+    .epin-wrap:hover .epin { transform: rotate(-45deg) scale(1.14); z-index: 600; }
+    .epin-cluster { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; border: 2.5px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
     .epin.me { animation: pinPulse 2s ease-out infinite; }
     @keyframes pinPulse { 0% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(244,101,94,.5); } 70% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 12px rgba(244,101,94,0); } 100% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(244,101,94,0); } }
     .mappop-mini { text-align: center; }
@@ -738,6 +769,8 @@
     .conv-preview { color: var(--muted); font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
     .conv-unread { background: var(--accent); color: #fff; font-size: .62rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
     /* Actions sur ses propres messages (éditer / supprimer) */
+    .bubble-time { display: block; font-size: .66rem; opacity: .6; margin-top: .25rem; text-align: right; }
+    .bubble.them .bubble-time { text-align: left; }
     .bubble-act { display: flex; gap: .3rem; margin-top: .3rem; justify-content: flex-end; opacity: .85; }
     .bubble-act button { background: rgba(255,255,255,.25); border: 0; border-radius: 7px; padding: .12rem .4rem; font-size: .72rem; cursor: pointer; line-height: 1; }
     .bubble.me .bubble-act button:hover { background: rgba(255,255,255,.45); }
@@ -1127,6 +1160,20 @@
     </div>
   </div>
 
+  <!-- ===== Créer une activité partagée sur la carte ===== -->
+  <div id="actCreate" class="act-overlay hidden">
+    <div class="act-card">
+      <div class="picker-head"><h3 style="margin:0">📣 Partager une activité</h3><button id="actCancel" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
+      <label>Titre</label>
+      <input id="actTitle" type="text" placeholder="Ex : Café découverte ☕, Balade nature 🥾" maxlength="60" />
+      <label style="margin-top:.6rem">Détail (optionnel)</label>
+      <input id="actNote" type="text" placeholder="Quand, où exactement, niveau…" maxlength="120" />
+      <div class="muted" id="actPos" style="font-size:.78rem;margin:.5rem 0"></div>
+      <button class="btn-primary btn-block" id="actSave" style="margin-top:.3rem">Publier sur la carte</button>
+      <div class="msg" id="actMsg" style="text-align:center"></div>
+    </div>
+  </div>
+
   <!-- Panneau de notifications (ouvert par la cloche) -->
   <div id="notifPanel" class="hidden">
     <div class="notif-card">
@@ -1202,8 +1249,8 @@
         <div id="searchResults"></div>
 
         <!-- ===== Carte « tout-en-un » : lieux, Mates, activités, check-ins ===== -->
-        <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3><a data-goto="lieux">Plein écran</a></div>
-        <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Une seule carte pour tout voir. Touche les filtres pour afficher/masquer, et <b>clique une pastille</b> pour agir (check-in, message, activité…).</p>
+        <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3><a id="hmFull" style="cursor:pointer">⛶ Plein écran</a></div>
+        <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Filtre, puis <b>touche une pastille</b> pour agir 👇</p>
         <div class="card homemap-card">
           <div class="chips wrap homemap-filters" id="homeMapFilters">
             <button class="chip active" data-layer="places">📍 Lieux <b data-cnt></b></button>
@@ -1213,7 +1260,10 @@
           </div>
           <div class="homemap-wrap">
             <div id="homeMap" class="homemap"></div>
+            <button class="homemap-fsclose" id="hmFullClose">✕ Fermer</button>
+            <div class="homemap-hint hidden" id="homeMapHint">👆 Touche la carte pour placer ton activité · <a id="homeMapHintCancel">Annuler</a></div>
             <div class="homemap-tools">
+              <button id="hmAdd" title="Partager une activité sur la carte">➕ Partager</button>
               <button id="hmLocate" title="Centrer sur ma position">📍 Autour de moi</button>
               <button id="hmFit" title="Tout afficher">🔄 Tout voir</button>
             </div>
@@ -1247,10 +1297,14 @@
       <!-- ---------------- Onglet LIEUX SÛRS ---------------- -->
       <div class="tab-panel hidden" data-panel="lieux">
         <h1>Lieux sûrs</h1>
-        <p class="muted" style="margin-top:0">Des espaces validés pour des rencontres en sécurité. Fais un check-in pour gagner des points de confiance.</p>
-        <div class="card" style="padding:.5rem">
-          <div id="map" style="height:280px;border-radius:14px;overflow:hidden;background:var(--cream)"></div>
+        <p class="muted" style="margin-top:0">Les lieux validés — check-in pour gagner des points 🛟</p>
+        <div class="search" style="margin-top:.2rem"><span class="ico">🔍</span><input id="cafeSearch" type="text" placeholder="Rechercher un lieu ou une ville…" /></div>
+        <div class="chips wrap" id="cafeFilters" style="margin-bottom:.5rem">
+          <button class="chip active" data-cf="all">Tous</button>
+          <button class="chip" data-cf="eco">🌱 Éco-responsables</button>
+          <button class="chip" data-cf="near">📍 Près de moi</button>
         </div>
+        <div id="cafesCount" class="muted" style="font-size:.8rem;margin-bottom:.5rem"></div>
         <div class="card">
           <div class="gold-only-note">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
           <div id="cafesList"><p class="muted">Chargement…</p></div>
@@ -2063,6 +2117,8 @@
             const row = payload.new;
             if (!myUserId || row.user_id === myUserId) return; // on ignore nos propres positions
             await loadCircleLocations(); // met à jour la liste (déjà filtrée par RLS)
+            if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap(); // + sur la carte
+
             if (row.is_emergency) {
               const { data: prof } = await db.from("profiles")
                 .select("username").eq("id", row.user_id).maybeSingle();
@@ -2103,12 +2159,12 @@
     });
 
     function goToTab(target) {
+      if (typeof toggleHomeFull === "function") toggleHomeFull(false); // sort du plein écran carte si actif
       document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle("active", b.dataset.tab === target));
       document.querySelectorAll(".tab-panel").forEach((p) => show(p, p.dataset.panel === target));
       if (target === "jeux" && typeof showJeuxView === "function") { showJeuxView("jeuxHome"); if (typeof loadGameData === "function" && myUserId) loadGameData(); }
       if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
-      if (target === "lieux" && typeof renderMap === "function") renderMap();
       if (target === "accueil" && typeof renderHomeMap === "function") setTimeout(renderHomeMap, 60);
       if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2129,7 +2185,7 @@
         </div>`).join("") + '</div>';
       // Clic sur un lieu → onglet Lieux + zoom direct sur CE lieu (carte)
       wrap.querySelectorAll('[data-homecafe]').forEach((el) =>
-        el.addEventListener("click", () => { goToTab("lieux"); if (typeof focusMapOn === "function") setTimeout(() => focusMapOn(Number(el.dataset.homecafe)), 80); }));
+        el.addEventListener("click", () => { if (typeof focusHomeMapOn === "function") focusHomeMapOn(Number(el.dataset.homecafe)); }));
     }
 
     // ====================== PROFIL ======================
@@ -2355,12 +2411,49 @@
     });
 
     // ====================== LIEUX SÛRS ======================
+    let cafeFilter = { q: "", mode: "all" }; // recherche + filtre actif de l'onglet Lieux
+    let cafeCheckins = {};                   // cafe_id -> nombre de check-ins
+    let myGeo = null;                        // ma position GPS (pour « Près de moi »)
+
+    function haversineKm(a, b) {
+      const R = 6371, toR = (d) => d * Math.PI / 180;
+      const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
+      const s = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a.lat)) * Math.cos(toR(b.lat)) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(s));
+    }
+
     async function loadCafes() {
       const { data, error } = await db.from("partner_cafes").select("*").order("name");
-      const list = $("cafesList");
-      if (error) { list.innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
-      allCafes = data || []; // pour la recherche globale de l'accueil
-      if (!data.length) { list.innerHTML = '<p class="muted">Aucun lieu pour l\'instant.</p>'; return; }
+      if (error) { $("cafesList").innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
+      allCafes = data || []; // pour la recherche globale de l'accueil + la carte
+      try {
+        const r = await db.from("checkpoints").select("cafe_id");
+        cafeCheckins = {}; (r.data || []).forEach((c) => { cafeCheckins[c.cafe_id] = (cafeCheckins[c.cafe_id] || 0) + 1; });
+      } catch (e) {}
+      renderCafesList();
+      loadHome(); // garde l'accueil synchronisé
+      if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap(); // rafraîchit la carte d'accueil
+    }
+
+    function setCafeChipActive(mode) {
+      document.querySelectorAll("#cafeFilters .chip").forEach((b) => b.classList.toggle("active", b.dataset.cf === mode));
+    }
+
+    function renderCafesList() {
+      const list = $("cafesList"); if (!list) return;
+      if (!allCafes.length) { list.innerHTML = '<p class="muted">Aucun lieu pour l\'instant.</p>'; $("cafesCount").textContent = ""; return; }
+      const q = (cafeFilter.q || "").toLowerCase();
+      let arr = allCafes.filter((c) => {
+        if (cafeFilter.mode === "eco" && !c.is_eco) return false;
+        if (q && !((c.name || "").toLowerCase().includes(q) || (c.city || "").toLowerCase().includes(q))) return false;
+        return true;
+      });
+      // « Près de moi » : on garde les lieux géolocalisés et on trie par distance
+      if (cafeFilter.mode === "near" && myGeo) {
+        arr = arr.filter((c) => c.lat != null && c.lng != null)
+          .map((c) => Object.assign({ _km: haversineKm(myGeo, { lat: c.lat, lng: c.lng }) }, c))
+          .sort((a, b) => a._km - b._km);
+      }
       const goldPlace = goldView() ? `
         <div class="place gold-place">
           <div class="place-photo" style="background-image:url('${flickrImg("rooftop,bar,night", "goldplace")}')"></div>
@@ -2369,27 +2462,48 @@
           <div class="meta">Accès réservé aux membres Gold</div>
           <div class="row" style="margin-top:.4rem"><button class="btn-accent" data-goldcheckin="1">✨ Check-in Gold (+20)</button></div>
         </div>` : "";
-      list.innerHTML = goldPlace + data.map((c) => `
-        <div class="place">
+      const cities = new Set(arr.map((c) => c.city).filter(Boolean));
+      $("cafesCount").textContent = `${arr.length} lieu${arr.length > 1 ? "x" : ""}${cafeFilter.mode === "eco" ? " éco-responsables" : ""} · ${cities.size} ville${cities.size > 1 ? "s" : ""}`;
+      list.innerHTML = goldPlace + (arr.length ? arr.map((c) => {
+        const nCk = cafeCheckins[c.id] || 0;
+        const dist = (c._km != null) ? `<span class="badge ok">${c._km < 1 ? Math.round(c._km * 1000) + " m" : c._km.toFixed(1) + " km"}</span>` : "";
+        return `<div class="place">
           <div class="place-photo" style="background-image:url('${cafeImage(c)}')"></div>
           <div class="name">${escapeHtml(c.name)} ${c.is_eco ? '<span class="eco">🌱 éco</span>' : ''}</div>
-          <div class="meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')}</div>
-          <div class="meta">${escapeHtml(c.safety_note || '')}</div>
+          <div class="meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')} ${dist}</div>
+          ${c.safety_note ? `<div class="meta">🛟 ${escapeHtml(c.safety_note)}</div>` : ''}
+          <div class="meta">${nCk ? '✅ ' + nCk + ' check-in' + (nCk > 1 ? 's' : '') : '✨ Sois le·la 1er·ère à checker !'}</div>
           <div class="row" style="margin-top:.4rem">
             <button class="btn-accent" data-checkin="${c.id}" data-name="${escapeHtml(c.name)}">🔒 Check-in (+10)</button>
             ${c.lat != null && c.lng != null ? `<button class="btn-ghost" data-mapcafe="${c.id}">📍 Carte</button>` : ""}
           </div>
-        </div>`).join("");
+        </div>`;
+      }).join("") : '<p class="muted">Aucun lieu ne correspond. Essaie un autre filtre.</p>');
       list.querySelectorAll("[data-checkin]").forEach((b) =>
         b.addEventListener("click", () => checkIn(Number(b.dataset.checkin), b.dataset.name)));
       list.querySelectorAll("[data-mapcafe]").forEach((b) =>
-        b.addEventListener("click", () => focusMapOn(Number(b.dataset.mapcafe))));
+        b.addEventListener("click", () => focusHomeMapOn(Number(b.dataset.mapcafe))));
       const gc = list.querySelector("[data-goldcheckin]");
       if (gc) gc.addEventListener("click", () => toast("👑", "Lieu exclusif Gold — check-in premium ✨ (démo)"));
-      loadHome(); // garde l'accueil synchronisé
-      if (typeof renderMap === "function" && leafMap) renderMap(); // rafraîchit les marqueurs
-      if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap(); // + carte de l'accueil
     }
+
+    // Recherche + filtres de l'onglet Lieux
+    (function () {
+      const s = $("cafeSearch"); if (s) s.addEventListener("input", () => { cafeFilter.q = s.value.trim(); renderCafesList(); });
+      const f = $("cafeFilters"); if (!f) return;
+      f.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", () => {
+        const mode = b.dataset.cf;
+        if (mode === "near") {
+          b.textContent = "📍 Localisation…";
+          getGeo(
+            (g) => { myGeo = g; cafeFilter.mode = "near"; setCafeChipActive("near"); b.textContent = "📍 Près de moi"; renderCafesList(); },
+            () => { b.textContent = "📍 Près de moi"; if (typeof toast === "function") toast("📍", "Position indisponible. Autorise la localisation (cadenas 🔒 à gauche de l'URL)."); }
+          );
+          return;
+        }
+        cafeFilter.mode = mode; setCafeChipActive(mode); renderCafesList();
+      }));
+    })();
 
     // Check-in SÉCURISÉ : il faut le CODE affiché sur place. Les points sont
     // attribués par la fonction serveur redeem_checkin (anti-triche) : le
@@ -2405,7 +2519,12 @@
       const res = data || {};
       msg.style.color = res.ok ? "var(--ok)" : "var(--danger)";
       msg.textContent = res.message || (res.ok ? "Check-in validé ✅" : "Échec.");
-      if (res.ok) await Promise.all([loadProfile(), loadCheckins()]);
+      if (res.ok) {
+        cafeCheckins[cafeId] = (cafeCheckins[cafeId] || 0) + 1; // maj immédiate du compteur
+        if (typeof renderCafesList === "function") renderCafesList();
+        await Promise.all([loadProfile(), loadCheckins()]);
+        if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap();
+      }
     }
 
     // ====================== CHECK-INS ======================
@@ -2631,24 +2750,26 @@
 
     function sendLocation(isEmergency, msg, okText) {
       msg.style.color = "var(--muted)"; msg.textContent = "Localisation en cours…";
-      if (!navigator.geolocation) { msg.style.color = "var(--danger)"; msg.textContent = "Géolocalisation non disponible sur cet appareil."; return; }
-      navigator.geolocation.getCurrentPosition(async (pos) => {
+      getGeo(async (g) => {
         const { error } = await db.from("locations_realtime").insert({
-          user_id: myUserId, lat: pos.coords.latitude, lng: pos.coords.longitude, is_emergency: isEmergency,
+          user_id: myUserId, lat: g.lat, lng: g.lng, is_emergency: isEmergency,
         });
         msg.style.color = error ? "var(--danger)" : (isEmergency ? "var(--danger)" : "var(--ok)");
-        msg.textContent = error ? "Erreur : " + error.message : okText;
+        msg.textContent = error ? "Erreur : " + error.message : okText + " (visible 1 h sur la carte)";
+        if (!error) { await loadCircleLocations(); if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap(); }
       }, () => { msg.style.color = "var(--danger)"; msg.textContent = "Autorise la géolocalisation dans ton navigateur pour partager ta position."; });
     }
 
     // Positions partagées par mon cercle de confiance (RLS : seules les connexions
     // acceptées peuvent lire mes positions, et inversement).
+    let circleLocs = []; // positions partagées (les miennes + mon cercle), pour la carte d'accueil
     async function loadCircleLocations() {
       if (!myUserId) return;
       const [{ data: locs }, { data: profiles }] = await Promise.all([
         db.from("locations_realtime").select("*").order("created_at", { ascending: false }).limit(50),
         db.from("profiles").select("id, username"),
       ]);
+      circleLocs = locs || [];
       const nameOf = (id) => (profiles || []).find((p) => p.id === id)?.username || "Voyageur";
       // On affiche les positions des AUTRES (mon cercle), pas les miennes.
       const circle = (locs || []).filter((l) => l.user_id !== myUserId);
@@ -3262,29 +3383,29 @@
       setTimeout(() => { b.scrollTop = b.scrollHeight; }, 30);
     }
 
+    // Heure (et date si autre jour) d'un message
+    function msgTime(iso) {
+      if (!iso) return "";
+      const d = new Date(iso); if (isNaN(d)) return "";
+      const now = new Date();
+      const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+      if (d.toDateString() === now.toDateString()) return time;
+      return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" }) + " · " + time;
+    }
     function bubbleHtml(m) {
       const mine = m.sender_id === myUserId;
-      const act = mine ? `<div class="bubble-act"><button class="msg-edit" data-mid="${m.id}">✏️</button><button class="msg-del" data-mid="${m.id}">🗑️</button></div>` : "";
-      return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}" data-content="${escapeHtml(m.content)}"><span class="bubble-txt">${escapeHtml(m.content)}</span>${act}</div>`;
+      const act = mine ? `<div class="bubble-act"><button class="msg-del" data-mid="${m.id}">🗑️</button></div>` : "";
+      return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}"><span class="bubble-txt">${escapeHtml(m.content)}</span><span class="bubble-time">${msgTime(m.created_at)}</span>${act}</div>`;
     }
     // Éditer / supprimer ses propres messages (délégation sur le conteneur)
     $("chatBody").addEventListener("click", async (e) => {
       const del = e.target.closest(".msg-del");
-      const ed = e.target.closest(".msg-edit");
       if (del) {
         const id = del.dataset.mid;
         if (!confirm("Supprimer ce message ?")) return;
         const { error } = await db.from("messages").delete().eq("id", id);
         if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
         const b = document.querySelector(`.bubble[data-mid="${id}"]`); if (b) b.remove();
-      } else if (ed) {
-        const id = ed.dataset.mid;
-        const b = document.querySelector(`.bubble[data-mid="${id}"]`);
-        const nv = prompt("Modifier le message :", b ? b.dataset.content : "");
-        if (nv == null || !nv.trim()) return;
-        const { error } = await db.from("messages").update({ content: nv.trim() }).eq("id", id);
-        if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
-        if (currentChatUserId) openChat(currentChatUserId);
       }
     });
 
@@ -3300,15 +3421,16 @@
     ];
     function demoIntro(p) {
       const city = p.city || "le coin";
+      const now = Date.now();
       return [
-        { them: true, text: `Coucou ! Moi c'est ${p.username || "un voyageur"} 👋 Je suis à ${city} en ce moment.` },
-        { them: true, text: "Tu cherches un bon spot sûr pour se rencontrer ? J'en connais quelques-uns ☕" },
+        { them: true, text: `Coucou ! Moi c'est ${p.username || "un voyageur"} 👋 Je suis à ${city} en ce moment.`, t: new Date(now - 120000).toISOString() },
+        { them: true, text: "Tu cherches un bon spot sûr pour se rencontrer ? J'en connais quelques-uns ☕", t: new Date(now - 90000).toISOString() },
       ];
     }
     function renderDemoChat(id) {
       const body = $("chatBody"); if (!body) return;
       const log = demoChats[id] || [];
-      body.innerHTML = log.map((m) => `<div class="bubble ${m.them ? "them" : "me"}"><span class="bubble-txt">${escapeHtml(m.text)}</span></div>`).join("");
+      body.innerHTML = log.map((m) => `<div class="bubble ${m.them ? "them" : "me"}"><span class="bubble-txt">${escapeHtml(m.text)}</span><span class="bubble-time">${msgTime(m.t)}</span></div>`).join("");
       scrollChatBottom();
     }
 
@@ -3354,11 +3476,11 @@
       if (dp.is_demo) {
         const id = currentChatUserId;
         demoChats[id] = demoChats[id] || [];
-        demoChats[id].push({ them: false, text });
+        demoChats[id].push({ them: false, text, t: new Date().toISOString() });
         renderDemoChat(id);
         setTimeout(() => {
           const reply = DEMO_REPLIES[Math.floor(Math.random() * DEMO_REPLIES.length)];
-          demoChats[id].push({ them: true, text: reply });
+          demoChats[id].push({ them: true, text: reply, t: new Date().toISOString() });
           if (currentChatUserId === id) renderDemoChat(id);
         }, 1100);
         return;
@@ -3651,6 +3773,7 @@
       if (!leafMap) {
         leafMap = L.map(el, { scrollWheelZoom: false }).setView([46.6, 2.3], 4);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(leafMap);
+        leafMap.attributionControl.setPrefix(false).setPosition("bottomleft");
         leafMap.on("popupopen", (e) => {
           const b = e.popup._contentNode && e.popup._contentNode.querySelector(".mappop");
           if (b) b.addEventListener("click", () => checkIn(Number(b.dataset.cid), b.dataset.cname));
@@ -3713,6 +3836,10 @@
     }
 
     let homeAllMarkers = [], homeGpsMarker = null;
+    let homeAddMode = false, homeAddLatLng = null;
+    let homeMapToken = 0; // évite que deux rendus concurrents dupliquent les marqueurs
+    let homeCafeMarkerById = {}; // id de lieu -> marqueur (pour centrer la carte depuis l'onglet Lieux)
+    let homeFitDone = false; // on ne recadre la carte qu'une fois (sinon elle "snap" à chaque rendu)
 
     // Personas IA intégrés : toujours disponibles pour animer la carte et la messagerie.
     const IA_PERSONAS = [
@@ -3734,9 +3861,22 @@
       const el = $("homeMap"); if (!el) return;
       ensureIaPersonas();
       if (!homeLeaf) {
-        homeLeaf = L.map(el, { scrollWheelZoom: false }).setView([46.6, 2.3], 4);
+        homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.5, wheelPxPerZoomLevel: 140, zoomControl: true }).setView([46.6, 2.3], 4);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(homeLeaf);
-        ["places", "mates", "activities", "checkins"].forEach((k) => { homeLayers[k] = L.layerGroup().addTo(homeLeaf); });
+        homeLeaf.attributionControl.setPrefix(false).setPosition("bottomleft"); // retire le logo Leaflet, déplace à gauche
+        const LAYER_COLORS = { places: "#f4655e", mates: "#7a5cff", activities: "#ff9f1c", checkins: "#19b36b" };
+        ["places", "mates", "activities", "checkins"].forEach((k) => {
+          homeLayers[k] = (typeof L.markerClusterGroup === "function")
+            ? L.markerClusterGroup({
+                maxClusterRadius: 40, showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.4,
+                iconCreateFunction: (cluster) => L.divIcon({
+                  html: `<div class="epin-cluster" style="background:${LAYER_COLORS[k]}">${cluster.getChildCount()}</div>`,
+                  className: "epin-cluster-wrap", iconSize: [38, 38],
+                }),
+              })
+            : L.layerGroup();
+          homeLayers[k].addTo(homeLeaf);
+        });
         homeLeaf.on("popupopen", (e) => {
           const node = e.popup._contentNode; if (!node) return;
           // Check-in sur un lieu
@@ -3747,42 +3887,69 @@
           node.querySelectorAll("[data-hmchat]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("connexions"); if (typeof openChat === "function") openChat(b.dataset.hmchat); }));
           // Proposer une activité à un Mate
           node.querySelectorAll("[data-hmsuggest]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); mapProposeActivity(travelerMap[b.dataset.hmsuggest]); }));
-          // Aller voir le lieu en grand (onglet Lieux)
-          node.querySelectorAll("[data-hmgocafe]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("lieux"); if (typeof focusMapOn === "function") setTimeout(() => focusMapOn(Number(b.dataset.hmgocafe)), 80); }));
+          // Supprimer une de mes activités partagées
+          node.querySelectorAll("[data-hmdelact]").forEach((b) => b.addEventListener("click", () => deleteMapActivity(b.dataset.hmdelact)));
         });
+        // Clic sur la carte en mode « placement » → créer une activité ici
+        homeLeaf.on("click", (e) => { if (homeAddMode) { setHomeAddMode(false); openActCreate(e.latlng); } });
       }
+      // --- On charge TOUTES les données d'abord (évite les doublons si 2 rendus se chevauchent) ---
+      const token = ++homeMapToken;
+      let cks = [], userActs = [];
+      try { const r = await db.from("checkpoints").select("user_id, cafe_id, created_at").order("created_at", { ascending: false }).limit(40); cks = r.data || []; } catch (e) {}
+      try { const r = await db.from("map_activities").select("*").order("created_at", { ascending: false }).limit(50); userActs = r.data || []; } catch (e) {}
+      if (token !== homeMapToken) return; // un rendu plus récent a démarré → on abandonne celui-ci
+
+      // À partir d'ici tout est synchrone : on vide puis on reconstruit d'un bloc.
       Object.values(homeLayers).forEach((g) => g.clearLayers());
       if (homeMeMarker) { homeLeaf.removeLayer(homeMeMarker); homeMeMarker = null; }
       const allMarkers = [];
 
-      // --- On charge d'abord les données dynamiques pour enrichir les popups ---
-      let cks = [], acts = [];
-      try { const r = await db.from("checkpoints").select("user_id, cafe_id, created_at").order("created_at", { ascending: false }).limit(30); cks = r.data || []; } catch (e) {}
-      try {
-        const r = await db.from("quest_suggestions").select("from_user, to_user, quest_key, status, created_at")
-          .or(`from_user.eq.${myUserId},to_user.eq.${myUserId}`).eq("status", "accepted").order("created_at", { ascending: false }).limit(20);
-        acts = r.data || [];
-      } catch (e) {}
-
-      // Index : nb de check-ins par lieu, nb de Mates par ville
-      const ckByCafe = {}; cks.forEach((ck) => { ckByCafe[ck.cafe_id] = (ckByCafe[ck.cafe_id] || 0) + 1; });
-      const mates = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)));
-      const matesByCity = {}; mates.forEach((p) => { const c = (p.city || "").toLowerCase(); matesByCity[c] = (matesByCity[c] || 0) + 1; });
-
-      // 📍 Lieux sûrs (popup enrichie : photo + compteurs)
+      // --- Tout est ancré aux VRAIES coordonnées des lieux (plus d'invention de position) ---
       const places = (allCafes || []).filter((c) => c.lat != null && c.lng != null);
+      const cafeById = {}; places.forEach((c) => { cafeById[c.id] = c; });
+      // Un check-in expire après 1 h (la personne n'y est généralement plus)
+      const HOUR = 3600000, nowMs = Date.now();
+      const recentCks = cks.filter((ck) => nowMs - new Date(ck.created_at).getTime() < HOUR);
+      const ckByCafe = {}; recentCks.forEach((ck) => { ckByCafe[ck.cafe_id] = (ckByCafe[ck.cafe_id] || 0) + 1; });
+      // Dernier check-in RÉCENT par utilisateur = sa vraie position connue (sinon il n'y est plus)
+      const lastCkByUser = {}; recentCks.forEach((ck) => { if (!(ck.user_id in lastCkByUser)) lastCkByUser[ck.user_id] = ck.cafe_id; });
+      const mates = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)));
+      homeCafeMarkerById = {};
+
+      // Petit décalage déterministe (~80 m) pour ne pas empiler exactement deux pastilles
+      function jitterAt(cafe, seedId) {
+        let h = 0; const s = String(seedId || "");
+        for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
+        return [cafe.lat + (((h % 100) / 100 - 0.5) * 0.0016), cafe.lng + (((Math.floor(h / 100) % 100) / 100 - 0.5) * 0.0016)];
+      }
+      // Lieu de référence d'un membre : son dernier check-in. Sinon, pour une IA, un vrai lieu
+      // déterministe (de sa ville si possible). Un vrai utilisateur sans position → absent de la carte.
+      function cafeForMember(p) {
+        const cid = lastCkByUser[p.id];
+        if (cid != null && cafeById[cid]) return cafeById[cid];
+        if (p.is_demo && places.length) {
+          let h = 0; const s = String(p.id);
+          for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
+          return places.find((c) => (c.city || "").toLowerCase() === (p.city || "").toLowerCase()) || places[h % places.length];
+        }
+        return null;
+      }
+
+      // 📍 Lieux sûrs — à leurs vraies coordonnées
       places.forEach((c) => {
-        const nCk = ckByCafe[c.id] || 0, nMates = matesByCity[(c.city || "").toLowerCase()] || 0;
+        const nCk = ckByCafe[c.id] || 0;
         const photo = c.image_url ? `<img src="${escapeHtml(c.image_url)}" style="width:100%;height:72px;object-fit:cover;border-radius:8px;margin-bottom:5px" alt="">` : "";
-        const stats = `<div class="muted" style="margin:.2rem 0">${nCk ? "✅ " + nCk + " check-in" + (nCk > 1 ? "s" : "") : "Sois le·la 1er·ère à checker !"}${nMates ? " · 🧑 " + nMates + " Mate" + (nMates > 1 ? "s" : "") : ""}</div>`;
+        const stats = `<div class="muted" style="margin:.2rem 0">${nCk ? "✅ " + nCk + " ici récemment" : "✨ Sois le·la 1er·ère à checker !"}${c.is_eco ? " · 🌱 éco" : ""}</div>`;
         const mk = L.marker([c.lat, c.lng], { icon: epinIcon("📍", "#f4655e") })
-          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${escapeHtml(c.city || "")}${c.is_eco ? " · 🌱" : ""}${stats}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button><button class="mappop-btn ghost" data-hmgocafe="${c.id}">Voir en grand</button></div>`);
-        homeLayers.places.addLayer(mk); allMarkers.push(mk);
+          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${escapeHtml(c.city || "")}${stats}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button></div>`);
+        homeLayers.places.addLayer(mk); allMarkers.push(mk); homeCafeMarkerById[c.id] = mk;
       });
 
-      // 🧑 Mates (profils démo + Mates connectés), placés près de leur ville
+      // 🧑 Mates — placés à leur vrai lieu de check-in (IA : un vrai lieu), sinon absents
       mates.forEach((p) => {
-        const co = cityCoords(p.city, p.id); if (!co) return;
+        const cafe = cafeForMember(p); if (!cafe) return;
+        const co = jitterAt(cafe, "mate-" + p.id);
         const photo = p.avatar_url ? `<img src="${escapeHtml(p.avatar_url)}" style="width:54px;height:54px;object-fit:cover;border-radius:50%;margin-bottom:5px" alt="">` : "";
         const connected = connectedIds.has(p.id);
         const tag = p.is_demo ? '<span style="font-size:.7rem;color:#7a5cff">🤖 Compte démo</span><br>' : "";
@@ -3790,62 +3957,81 @@
         const suggestBtn = connected ? `<button class="mappop-btn alt" data-hmsuggest="${p.id}">🎯 Proposer une activité</button>` : "";
         const actions = chatBtn + suggestBtn + `<button class="mappop-btn ghost" data-hmprofile="${p.id}">Voir le profil</button>`;
         const mk = L.marker(co, { icon: epinIcon(p.is_demo ? "🤖" : "🧑", "#7a5cff") })
-          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(p.username || "Voyageur")}${p.is_verified ? " ✅" : ""}</b><br>${tag}${escapeHtml(p.city || "")}<br>${actions}</div>`);
+          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(p.username || "Voyageur")}${p.is_verified ? " ✅" : ""}</b><br>${tag}📍 ${escapeHtml(cafe.name)}<br>${actions}</div>`);
         homeLayers.mates.addLayer(mk); allMarkers.push(mk);
       });
 
-      // ✅ Check-ins récents (au lieu correspondant, légèrement décalés)
-      cks.slice(0, 20).forEach((ck) => {
-        const cafe = places.find((c) => c.id === ck.cafe_id); if (!cafe) return;
+      // ✅ Check-ins RÉCENTS (< 1 h) — AU lieu exact (léger décalage déterministe)
+      recentCks.slice(0, 25).forEach((ck, i) => {
+        const cafe = cafeById[ck.cafe_id]; if (!cafe) return;
         const who = travelerMap[ck.user_id]?.username || (ck.user_id === myUserId ? "Toi" : "Un voyageur");
         const knowWho = ck.user_id !== myUserId && travelerMap[ck.user_id] && (travelerMap[ck.user_id].is_demo || connectedIds.has(ck.user_id));
         const whoBtn = knowWho ? `<button class="mappop-btn ghost" data-hmprofile="${ck.user_id}">Voir le profil</button>` : "";
-        const mk = L.marker([cafe.lat + 0.012, cafe.lng + 0.012], { icon: epinIcon("✅", "#19b36b") })
-          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(who)}</b><br>check-in · ${escapeHtml(cafe.name)}<br><span class="muted">${timeAgo(ck.created_at)}</span><br><button class="mappop-btn" data-hmgocafe="${cafe.id}">📍 Voir le lieu</button>${whoBtn}</div>`);
+        const mins = Math.max(1, Math.round((HOUR - (nowMs - new Date(ck.created_at).getTime())) / 60000));
+        const mk = L.marker(jitterAt(cafe, "ck-" + ck.user_id + "-" + i), { icon: epinIcon("✅", "#19b36b") })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(who)}</b><br>check-in · ${escapeHtml(cafe.name)}<br><span class="muted">${timeAgo(ck.created_at)} · disparaît dans ~${mins} min</span>${whoBtn}</div>`);
         homeLayers.checkins.addLayer(mk); allMarkers.push(mk);
       });
 
-      // 🎉 Activités à venir (défis acceptés), placées sur le Mate concerné
-      acts.forEach((a) => {
-        const otherId = a.from_user === myUserId ? a.to_user : a.from_user;
-        const other = travelerMap[otherId];
-        const co = cityCoords(other?.city, "act-" + otherId); if (!co) return;
-        const q = (typeof questByKey === "function" && questByKey(a.quest_key)) || null;
-        const title = q ? (q.title || "Défi") : "Défi entre Mates";
-        const actBtn = connectedIds.has(otherId)
-          ? `<button class="mappop-btn" data-hmchat="${otherId}">💬 En parler</button>`
-          : `<button class="mappop-btn ghost" data-hmprofile="${otherId}">Voir le profil</button>`;
-        const mk = L.marker(co, { icon: epinIcon("🎉", "#ff9f1c") })
-          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(title)}</b><br>avec ${escapeHtml(other?.username || "un Mate")}<br>${actBtn}</div>`);
+      // ✅ Check-ins d'exemple des IA — au MÊME vrai lieu que l'IA (cohérent)
+      mates.filter((p) => p.is_demo).slice(0, 6).forEach((p) => {
+        const cafe = cafeForMember(p); if (!cafe) return;
+        const mk = L.marker(jitterAt(cafe, "ckdemo-" + p.id), { icon: epinIcon("✅", "#19b36b") })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(p.username)}</b> <span style="font-size:.7rem;color:#7a5cff">🤖</span><br>check-in · ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Message</button></div>`);
+        homeLayers.checkins.addLayer(mk); allMarkers.push(mk);
+      });
+
+      // 📣 Activités partagées par les membres — vraies coordonnées choisies
+      userActs.forEach((a) => {
+        const mine = a.creator === myUserId;
+        const creator = travelerMap[a.creator];
+        const byName = mine ? "toi" : (creator?.username || "un voyageur");
+        const actions = mine
+          ? `<button class="mappop-btn ghost" data-hmdelact="${a.id}">🗑️ Supprimer</button>`
+          : (creator ? `<button class="mappop-btn" data-hmchat="${a.creator}">💬 Message</button>` : "");
+        const mk = L.marker([a.lat, a.lng], { icon: epinIcon("📣", "#ff5e9f") })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(a.title)}</b><br><span class="muted">partagé par ${escapeHtml(byName)}</span>${a.note ? "<br>" + escapeHtml(a.note) : ""}<br>${actions}</div>`);
         homeLayers.activities.addLayer(mk); allMarkers.push(mk);
       });
 
-      // 🤖 Exemples vivants avec les comptes IA (démo) : check-ins + activités
+      // 🎉 Exemples d'activités IA — sur de vrais lieux (cohérent avec leur position)
       const DEMO_ACTIVITIES = ["☕ Café découverte", "🌅 Lever de soleil ensemble", "🥾 Balade nature", "🍷 Apéro voyageurs", "🏄 Spot surf & co", "📸 Walk photo"];
-      const demoMates = mates.filter((p) => p.is_demo);
-      demoMates.slice(0, 8).forEach((p, idx) => {
-        if (!places.length) return;
-        const cafe = places.find((c) => (c.city || "").toLowerCase() === (p.city || "").toLowerCase()) || places[idx % places.length];
-        const ck = L.marker([cafe.lat - 0.013, cafe.lng + 0.013], { icon: epinIcon("✅", "#19b36b") })
-          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(p.username)}</b> <span style="font-size:.7rem;color:#7a5cff">🤖</span><br>a fait un check-in · ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Message</button></div>`);
-        homeLayers.checkins.addLayer(ck); allMarkers.push(ck);
-        if (idx % 2 === 0) {
-          const title = DEMO_ACTIVITIES[idx % DEMO_ACTIVITIES.length];
-          const am = L.marker([cafe.lat + 0.015, cafe.lng - 0.011], { icon: epinIcon("🎉", "#ff9f1c") })
-            .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(title)}</b><br>proposé par ${escapeHtml(p.username)} 🤖<br>à ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Rejoindre</button>
-               <button class="mappop-btn ghost" data-hmprofile="${p.id}">Voir le profil</button></div>`);
-          homeLayers.activities.addLayer(am); allMarkers.push(am);
-        }
+      mates.filter((p) => p.is_demo).slice(0, 6).forEach((p, idx) => {
+        if (idx % 2 !== 0) return;
+        const cafe = cafeForMember(p); if (!cafe) return;
+        const title = DEMO_ACTIVITIES[idx % DEMO_ACTIVITIES.length];
+        const am = L.marker(jitterAt(cafe, "act-" + p.id), { icon: epinIcon("🎉", "#ff9f1c") })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(title)}</b><br>proposé par ${escapeHtml(p.username)} 🤖<br>à ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Rejoindre</button><button class="mappop-btn ghost" data-hmprofile="${p.id}">Voir le profil</button></div>`);
+        homeLayers.activities.addLayer(am); allMarkers.push(am);
       });
 
-      // 📌 Toi (toujours visible)
-      if (myProfile && myProfile.city) {
-        const co = cityCoords(myProfile.city, "me-" + myUserId);
-        if (co) {
-          homeMeMarker = L.marker(co, { icon: epinIcon("📌", "#f4655e", "me"), zIndexOffset: 1000 })
-            .bindPopup(`<div class="mappop-mini"><b>Toi</b><br>${escapeHtml(myProfile.city)}</div>`).addTo(homeLeaf);
-          allMarkers.push(homeMeMarker);
-        }
+      // 🛟 Positions partagées au cercle (GPS réel) — visibles 1 h puis expirées
+      const recentShares = (circleLocs || []).filter((l) => l.lat != null && nowMs - new Date(l.created_at).getTime() < HOUR);
+      let myShare = null; const seenShareUser = new Set();
+      recentShares.forEach((l) => {
+        if (l.user_id === myUserId) { if (!myShare) myShare = l; return; }
+        if (seenShareUser.has(l.user_id)) return; seenShareUser.add(l.user_id); // 1 seul marqueur (le + récent) par membre
+        const name = travelerMap[l.user_id]?.username || "Un Mate";
+        const mins = Math.max(1, Math.round((HOUR - (nowMs - new Date(l.created_at).getTime())) / 60000));
+        const mk = L.marker([l.lat, l.lng], { icon: epinIcon(l.is_emergency ? "🚨" : "🛟", l.is_emergency ? "#e23b3b" : "#7a5cff", "me"), zIndexOffset: 900 })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(name)}</b>${l.is_emergency ? ' <span style="color:#e23b3b;font-weight:800">🚨 URGENCE</span>' : ''}<br>position partagée · ${timeAgo(l.created_at)}<br><span class="muted">expire dans ~${mins} min</span><br><button class="mappop-btn" data-hmchat="${l.user_id}">💬 Message</button></div>`);
+        homeLayers.mates.addLayer(mk); allMarkers.push(mk);
+      });
+
+      // 📌 Toi — position partagée récente (réelle) en priorité ; sinon ton dernier check-in
+      let meLatLng = null, meLabel = "";
+      if (myShare) {
+        meLatLng = [myShare.lat, myShare.lng];
+        const mins = Math.max(1, Math.round((HOUR - (nowMs - new Date(myShare.created_at).getTime())) / 60000));
+        meLabel = `🛟 Position partagée · expire dans ~${mins} min`;
+      } else {
+        const myCafe = cafeById[lastCkByUser[myUserId]];
+        if (myCafe) { meLatLng = jitterAt(myCafe, "me-" + myUserId); meLabel = "📍 " + myCafe.name; }
+      }
+      if (meLatLng) {
+        homeMeMarker = L.marker(meLatLng, { icon: epinIcon("📌", "#f4655e", "me"), zIndexOffset: 1000 })
+          .bindPopup(`<div class="mappop-mini"><b>Toi</b><br>${escapeHtml(meLabel)}</div>`).addTo(homeLeaf);
+        allMarkers.push(homeMeMarker);
       }
 
       // Compteurs sur les filtres = nombre réel de pastilles affichées
@@ -3856,9 +4042,27 @@
 
       homeAllMarkers = allMarkers;
       applyHomeLayers();
-      if (allMarkers.length) { try { homeLeaf.fitBounds(L.featureGroup(allMarkers).getBounds().pad(0.25)); } catch (e) {} }
+      // On ne recadre qu'au tout premier rendu : ensuite on préserve la vue de l'utilisateur
+      if (!homeFitDone && allMarkers.length) { try { homeLeaf.fitBounds(L.featureGroup(allMarkers).getBounds().pad(0.25)); homeFitDone = true; } catch (e) {} }
       setTimeout(() => { try { homeLeaf.invalidateSize(); } catch (e) {} }, 120);
       renderHomeLegend();
+    }
+
+    // Centre la carte d'accueil sur un lieu (depuis l'onglet Lieux) et ouvre sa bulle
+    function focusHomeMapOn(cafeId) {
+      goToTab("accueil");
+      const go = () => {
+        const c = (allCafes || []).find((x) => x.id === cafeId);
+        if (!homeLeaf || !c || c.lat == null) return;
+        homeLeaf.invalidateSize();
+        homeLeaf.setView([c.lat, c.lng], 15, { animate: true });
+        const mk = homeCafeMarkerById[cafeId];
+        if (mk) {
+          if (homeLayers.places && typeof homeLayers.places.zoomToShowLayer === "function") homeLayers.places.zoomToShowLayer(mk, () => mk.openPopup());
+          else mk.openPopup();
+        }
+      };
+      if (!homeLeaf) { renderHomeMap().then(() => setTimeout(go, 200)); } else setTimeout(go, 160);
     }
 
     function setHomeChipCount(layer, n) {
@@ -3872,25 +4076,101 @@
       try { homeLeaf.fitBounds(L.featureGroup(homeAllMarkers).getBounds().pad(0.25)); } catch (e) {}
     }
 
+    // Plein écran de la carte d'accueil — utilise le plein écran NATIF du navigateur
+    // (tout le contenu s'affiche normalement) ; repli en CSS fixe si l'API est absente.
+    let homeFsFallback = false;
+    function applyHomeFsClass() {
+      const card = document.querySelector(".homemap-card"); if (!card) return;
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      const on = (fsEl === card) || homeFsFallback;
+      card.classList.toggle("fs", on);
+      document.body.style.overflow = homeFsFallback ? "hidden" : "";
+      const link = $("hmFull"); if (link) link.textContent = on ? "✕ Quitter le plein écran" : "⛶ Plein écran";
+      if (homeLeaf) {
+        if (homeLeaf.scrollWheelZoom) { on ? homeLeaf.scrollWheelZoom.enable() : homeLeaf.scrollWheelZoom.disable(); }
+        [60, 220, 450].forEach((d) => setTimeout(() => { try { homeLeaf.invalidateSize(); } catch (e) {} }, d));
+      }
+    }
+    function toggleHomeFull(on) {
+      const card = document.querySelector(".homemap-card"); if (!card) return;
+      const want = (on != null) ? on : !card.classList.contains("fs");
+      if (want) {
+        const req = card.requestFullscreen || card.webkitRequestFullscreen;
+        if (req) { homeFsFallback = false; try { Promise.resolve(req.call(card)).catch(() => { homeFsFallback = true; applyHomeFsClass(); }); } catch (e) { homeFsFallback = true; applyHomeFsClass(); } }
+        else { homeFsFallback = true; applyHomeFsClass(); }
+      } else {
+        homeFsFallback = false;
+        const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fsEl) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} }
+        applyHomeFsClass();
+      }
+    }
+    document.addEventListener("fullscreenchange", applyHomeFsClass);
+    document.addEventListener("webkitfullscreenchange", applyHomeFsClass);
+
+    // Géolocalisation robuste : on tente la haute précision, puis on retombe sur la
+    // basse précision (plus rapide/fiable, surtout sur ordinateur) en cas de timeout.
+    let lastKnownGeo = null;
+    function getGeo(onOk, onErr) {
+      if (!navigator.geolocation) { if (onErr) onErr({ code: 0, message: "indisponible" }); return; }
+      const ok = (pos) => { lastKnownGeo = { lat: pos.coords.latitude, lng: pos.coords.longitude }; onOk(lastKnownGeo); };
+      navigator.geolocation.getCurrentPosition(ok,
+        () => navigator.geolocation.getCurrentPosition(ok, (e) => { if (onErr) onErr(e); }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }),
+        { enableHighAccuracy: true, timeout: 9000, maximumAge: 60000 });
+    }
+
     // Centre la carte sur la vraie position GPS de l'utilisateur
     function homeLocateMe() {
       if (!homeLeaf) return;
       const btn = $("hmLocate");
-      if (!navigator.geolocation) { if (typeof toast === "function") toast("📍", "Géolocalisation indisponible sur cet appareil."); return; }
       if (btn) btn.textContent = "⏳ Localisation…";
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const ll = [pos.coords.latitude, pos.coords.longitude];
+      getGeo(
+        (g) => {
+          const ll = [g.lat, g.lng];
           if (homeGpsMarker) homeLeaf.removeLayer(homeGpsMarker);
           homeGpsMarker = L.marker(ll, { icon: epinIcon("🧭", "#0ea5e9", "me"), zIndexOffset: 1200 })
             .bindPopup('<div class="mappop-mini"><b>Ta position actuelle</b></div>').addTo(homeLeaf);
-          homeLeaf.setView(ll, 13, { animate: true });
+          homeLeaf.setView(ll, 14, { animate: true });
           homeGpsMarker.openPopup();
           if (btn) btn.textContent = "📍 Autour de moi";
         },
-        () => { if (btn) btn.textContent = "📍 Autour de moi"; if (typeof toast === "function") toast("📍", "Impossible d'obtenir ta position (autorisation refusée ?)."); },
-        { enableHighAccuracy: true, timeout: 8000 }
+        () => { if (btn) btn.textContent = "📍 Autour de moi"; if (typeof toast === "function") toast("📍", "Impossible d'obtenir ta position. Autorise la localisation dans ton navigateur (cadenas 🔒 à gauche de l'URL)."); }
       );
+    }
+
+    // Active/désactive le mode « placer une activité » (clic sur la carte)
+    function setHomeAddMode(on) {
+      homeAddMode = on;
+      const hint = $("homeMapHint"); if (hint) hint.classList.toggle("hidden", !on);
+      const btn = $("hmAdd"); if (btn) btn.textContent = on ? "✕ Annuler" : "➕ Partager";
+      const el = $("homeMap"); if (el) el.style.cursor = on ? "crosshair" : "";
+    }
+    // Ouvre la fenêtre de création à l'endroit cliqué
+    function openActCreate(latlng) {
+      homeAddLatLng = latlng;
+      $("actTitle").value = ""; $("actNote").value = ""; $("actMsg").textContent = "";
+      $("actPos").textContent = "📍 Position choisie : " + latlng.lat.toFixed(4) + ", " + latlng.lng.toFixed(4);
+      $("actCreate").classList.remove("hidden");
+      setTimeout(() => $("actTitle").focus(), 50);
+    }
+    async function saveMapActivity() {
+      const title = $("actTitle").value.trim(), note = $("actNote").value.trim(), m = $("actMsg");
+      if (!title) { m.style.color = "var(--danger)"; m.textContent = "Donne un titre à ton activité."; return; }
+      if (!homeAddLatLng || !myUserId) return;
+      m.style.color = "var(--muted)"; m.textContent = "Publication…";
+      const { error } = await db.from("map_activities").insert({ creator: myUserId, title, note: note || null, lat: homeAddLatLng.lat, lng: homeAddLatLng.lng });
+      if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
+      $("actCreate").classList.add("hidden");
+      if (typeof toast === "function") toast("📣", "Activité publiée sur la carte ✅");
+      renderHomeMap();
+    }
+    async function deleteMapActivity(id) {
+      if (!confirm("Supprimer cette activité ?")) return;
+      if (homeLeaf) homeLeaf.closePopup();
+      const { error } = await db.from("map_activities").delete().eq("id", id);
+      if (error) { if (typeof toast === "function") toast("⚠️", "Erreur : " + error.message); return; }
+      if (typeof toast === "function") toast("🗑️", "Activité supprimée");
+      renderHomeMap();
     }
 
     // Depuis la carte : proposer une activité (quête) à un Mate connecté
@@ -3918,7 +4198,7 @@
 
     function renderHomeLegend() {
       const el = $("homeMapLegend"); if (!el) return;
-      el.innerHTML = [["#f4655e", "📍 Lieux sûrs"], ["#7a5cff", "🧑 Mates"], ["#ff9f1c", "🎉 Activités"], ["#19b36b", "✅ Check-ins"]]
+      el.innerHTML = [["#f4655e", "📍 Lieux sûrs"], ["#7a5cff", "🧑 Mates"], ["#ff9f1c", "🎉 Activités"], ["#19b36b", "✅ Check-ins"], ["#ff5e9f", "📣 Partagées"]]
         .map(([c, l]) => `<span><i style="background:${c}"></i>${l}</span>`).join("");
     }
 
@@ -3931,6 +4211,16 @@
       }));
       const loc = $("hmLocate"); if (loc) loc.addEventListener("click", homeLocateMe);
       const fit = $("hmFit"); if (fit) fit.addEventListener("click", homeFitAll);
+      const add = $("hmAdd"); if (add) add.addEventListener("click", () => setHomeAddMode(!homeAddMode));
+      const hc = $("homeMapHintCancel"); if (hc) hc.addEventListener("click", () => setHomeAddMode(false));
+      const full = $("hmFull"); if (full) full.addEventListener("click", () => { if (!homeLeaf) renderHomeMap(); toggleHomeFull(); });
+      const fullC = $("hmFullClose"); if (fullC) fullC.addEventListener("click", () => toggleHomeFull(false));
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") toggleHomeFull(false); });
+      // Rafraîchit la carte toutes les 2,5 min : check-ins / positions de + d'1 h disparaissent tout seuls
+      setInterval(() => { if (homeLeaf && !document.hidden) renderHomeMap(); }, 150000);
+      const as = $("actSave"); if (as) as.addEventListener("click", saveMapActivity);
+      const ac = $("actCancel"); if (ac) ac.addEventListener("click", () => $("actCreate").classList.add("hidden"));
+      const at = $("actTitle"); if (at) at.addEventListener("keydown", (e) => { if (e.key === "Enter") saveMapActivity(); });
     })();
 
     // ============ Onboarding « du futur » ============
