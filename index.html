@@ -6,7 +6,6 @@
   <title>SunMates · pars solo, trouve ta bande</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- Identité SunMates : Fraunces (titres éditoriaux) + Manrope (interface) -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- PWA : app installable sur le téléphone -->
@@ -98,7 +97,7 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; }
     body {
-      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
       margin: 0; background: var(--bg); color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
@@ -325,6 +324,12 @@
     /* ---- Cibles tactiles plus confortables (≥40px) sur les boutons-icônes ---- */
     .iconbtn { min-width: 40px; min-height: 40px; }
 
+    /* ---- Bandeau d'état réseau (hors-ligne) ---- */
+    .net-banner { position: fixed; top: 0; left: 0; right: 0; z-index: var(--z-confetti);
+      background: #b91c1c; color: #fff; text-align: center; font-size: .82rem; font-weight: 700;
+      padding: .5rem .8rem; transform: translateY(-100%); transition: transform .3s ease; pointer-events: none; }
+    .net-banner.show { transform: translateY(0); }
+
     /* ---- Nav du bas : icônes seules, libellé uniquement sur l'onglet ACTIF ---- */
     .bottom-nav .nav-lbl { display: none; font-weight: 700; }
     .bottom-nav button.active .nav-lbl { display: block; }
@@ -370,7 +375,7 @@
 
     /* ------------------------- Liste de lieux ----------------------- */
     /* Démo guidée automatique (barre de narration) */
-    .ad-bar { position: fixed; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: calc(100% - 1.2rem); max-width: 448px; z-index: var(--z-demo);
+    .ad-bar { position: fixed; left: 50%; bottom: calc(.45rem + env(safe-area-inset-bottom)); transform: translateX(-50%); width: calc(100% - 1.2rem); max-width: 448px; z-index: var(--z-demo);
       background: linear-gradient(135deg, #2a1850, #160b2e); color: #fff; border-radius: 18px;
       padding: .85rem 1.05rem; box-shadow: 0 18px 44px rgba(0,0,0,.5); animation: adIn .35s ease; transition: opacity .35s ease; }
     /* Auto-replié quand on ne touche pas : le texte et les boutons se rétractent en douceur
@@ -869,7 +874,7 @@
 
     /* --- Typographie éditoriale : titres en serif rétro chaleureux --- */
     h1, h2, h3, .brand b, .logo-text, #homeHello, .auth-title h1, .stat, .feature h2, .detail-hero h2 {
-      font-family: "Fraunces", "Poppins", Georgia, serif;
+      font-family: "Fraunces", Georgia, "Times New Roman", serif;
       font-optical-sizing: auto;
     }
     h1, h2 { font-weight: 600; letter-spacing: -.015em; color: var(--ink-warm); }
@@ -1385,6 +1390,9 @@
 
   <!-- Notifications éphémères (toasts) -->
   <div id="toastWrap"></div>
+
+  <!-- Bandeau d'état réseau (hors-ligne / Supabase injoignable) -->
+  <div id="netBanner" class="net-banner">📡 Hors-ligne — vérifie ta connexion</div>
 
   <!-- Bannière « Installer l'app » (PWA) -->
   <div id="pwaBanner" class="pwa-banner">
@@ -2048,6 +2056,7 @@
             <button class="btn-primary" id="saveProfileBtn">Enregistrer</button>
             <button class="btn-accent" id="verifyBtn">Demander la vérification</button>
           </div>
+          <p class="muted" style="font-size:.74rem;margin:.5rem 0 0;text-align:center">🔎 Vérification <b>simulée</b> (démo MVP) — la vraie vérification d'identité arrivera avec le backend.</p>
           <div class="msg" id="profileMsg"></div>
         </div>
         </div><!-- /prof-seg edit -->
@@ -5796,6 +5805,15 @@
         } else { new Notification(title, { body: body, icon: "icon.svg" }); }
       } catch (e) {}
     }
+
+    // Bandeau d'état réseau : prévient quand on est hors-ligne (Supabase devient injoignable).
+    (function netStatus() {
+      const b = $("netBanner"); if (!b) return;
+      const update = () => b.classList.toggle("show", !navigator.onLine);
+      window.addEventListener("online", update);
+      window.addEventListener("offline", update);
+      update();
+    })();
 
     // Bouton « effacer » (✕) dans chaque champ de recherche + touche Échap pour vider.
     document.querySelectorAll(".search").forEach((wrap) => {
