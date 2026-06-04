@@ -92,7 +92,7 @@
     h3 { font-size: 1rem; color: var(--ink); font-weight: 700; margin: 1.2rem 0 .5rem; }
     .muted { color: var(--muted); }
     .section-head { display: flex; align-items: center; justify-content: space-between; }
-    .section-head a { color: var(--accent); font-size: .8rem; font-weight: 600; text-decoration: none; }
+    .section-head a { color: var(--accent); font-size: .8rem; font-weight: 600; text-decoration: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
 
     /* ----------------------------- Cartes --------------------------- */
     main { flex: 1; padding: 0 1.25rem 6.5rem; }
@@ -142,7 +142,21 @@
     .chip.active { background: var(--accent-grad); color: #fff; box-shadow: 0 6px 14px rgba(244,101,94,.3); }
 
     /* ------------------------- Liste de lieux ----------------------- */
-    .place { display: flex; flex-direction: column; gap: .15rem; padding: .9rem 0; border-bottom: 1px solid var(--line); }
+    /* Carte « score de confiance » */
+    .stat-click { cursor: pointer; transition: transform .15s ease; user-select: none; }
+    .stat-click:hover { transform: translateY(-2px); }
+    .stat-click:active { transform: scale(.97); }
+    .trust-explain .te-head { font-weight: 800; margin-bottom: .3rem; }
+    .trust-explain .te-sub { color: var(--muted); font-size: .84rem; margin: 0 0 .6rem; line-height: 1.45; }
+    .trust-explain .te-row { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .45rem 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
+    .trust-explain .te-row:last-of-type { border-bottom: 0; }
+    .te-ok { color: var(--ok); font-weight: 700; white-space: nowrap; }
+    .te-todo { color: var(--accent); font-weight: 700; white-space: nowrap; }
+    .trust-explain .te-note { color: var(--muted); font-size: .78rem; margin: .65rem 0 0; line-height: 1.5; }
+
+    .place { display: flex; flex-direction: column; gap: .15rem; padding: .9rem 0; border-bottom: 1px solid var(--line); border-radius: 12px; }
+    .place.flash { animation: placeFlash 1.8s ease; }
+    @keyframes placeFlash { 0%, 100% { background: transparent; } 25% { background: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent) inset; } }
     .place:last-child { border-bottom: 0; padding-bottom: 0; }
     .place .name { font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: .4rem; }
     .place .meta { color: var(--muted); font-size: .85rem; }
@@ -170,7 +184,8 @@
     .homemap-tools button { background: var(--card); color: var(--ink); border: 1px solid rgba(0,0,0,.08); border-radius: 999px; padding: .4rem .7rem; font-size: .76rem; font-weight: 700; box-shadow: var(--shadow-sm); cursor: pointer; }
     .homemap-tools button:hover { background: var(--accent-grad); color: #fff; }
     .homemap-tools #hmAdd { background: var(--accent-grad); color: #fff; border-color: transparent; box-shadow: 0 6px 16px rgba(244,101,94,.4); }
-    .homemap-hint { position: absolute; top: .55rem; left: 50%; transform: translateX(-50%); z-index: 500;
+    .homemap-capture { position: absolute; inset: 0; z-index: 1050; cursor: crosshair; background: rgba(122,92,255,.06); }
+    .homemap-hint { position: absolute; top: .55rem; left: 50%; transform: translateX(-50%); z-index: 1100;
       background: var(--ink); color: #fff; padding: .42rem .85rem; border-radius: 999px; font-size: .76rem; box-shadow: var(--shadow-sm); white-space: nowrap; }
     .homemap-hint a { color: #ffd15c; cursor: pointer; font-weight: 800; }
     .act-overlay { position: fixed; inset: 0; z-index: 4300; display: grid; place-items: center; background: rgba(12,7,32,.55); padding: 1.2rem; }
@@ -769,6 +784,8 @@
     .conv-preview { color: var(--muted); font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
     .conv-unread { background: var(--accent); color: #fff; font-size: .62rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
     /* Actions sur ses propres messages (éditer / supprimer) */
+    .msg-quest { display: inline-block; margin-top: .4rem; background: rgba(255,255,255,.25); color: inherit; border: 1px solid rgba(255,255,255,.4); border-radius: 999px; padding: .2rem .7rem; font-size: .76rem; font-weight: 700; cursor: pointer; }
+    .bubble.them .msg-quest { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     .bubble-time { display: block; font-size: .66rem; opacity: .6; margin-top: .25rem; text-align: right; }
     .bubble.them .bubble-time { text-align: left; }
     .bubble-act { display: flex; gap: .3rem; margin-top: .3rem; justify-content: flex-end; opacity: .85; }
@@ -1160,17 +1177,20 @@
     </div>
   </div>
 
-  <!-- ===== Créer une activité partagée sur la carte ===== -->
-  <div id="actCreate" class="act-overlay hidden">
+
+  <!-- ===== Pop-up : mes connexions (ouverte par le compteur de Mates) ===== -->
+  <div id="matesListModal" class="act-overlay hidden">
     <div class="act-card">
-      <div class="picker-head"><h3 style="margin:0">📣 Partager une activité</h3><button id="actCancel" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
-      <label>Titre</label>
-      <input id="actTitle" type="text" placeholder="Ex : Café découverte ☕, Balade nature 🥾" maxlength="60" />
-      <label style="margin-top:.6rem">Détail (optionnel)</label>
-      <input id="actNote" type="text" placeholder="Quand, où exactement, niveau…" maxlength="120" />
-      <div class="muted" id="actPos" style="font-size:.78rem;margin:.5rem 0"></div>
-      <button class="btn-primary btn-block" id="actSave" style="margin-top:.3rem">Publier sur la carte</button>
-      <div class="msg" id="actMsg" style="text-align:center"></div>
+      <div class="picker-head"><h3 style="margin:0">✅ Mes connexions</h3><button id="matesListClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
+      <div id="myConnectionsList" style="max-height:60vh;overflow-y:auto"><p class="muted">—</p></div>
+    </div>
+  </div>
+
+  <!-- ===== Pop-up : explication du score de confiance ===== -->
+  <div id="trustModal" class="act-overlay hidden">
+    <div class="act-card trust-explain">
+      <div class="picker-head"><h3 style="margin:0">🛡️ Score de confiance</h3><button id="trustClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
+      <div id="trustExplain"></div>
     </div>
   </div>
 
@@ -1260,6 +1280,7 @@
           </div>
           <div class="homemap-wrap">
             <div id="homeMap" class="homemap"></div>
+            <div class="homemap-capture hidden" id="homeMapCapture"></div>
             <button class="homemap-fsclose" id="hmFullClose">✕ Fermer</button>
             <div class="homemap-hint hidden" id="homeMapHint">👆 Touche la carte pour placer ton activité · <a id="homeMapHintCancel">Annuler</a></div>
             <div class="homemap-tools">
@@ -1269,6 +1290,19 @@
             </div>
           </div>
           <div class="homemap-legend" id="homeMapLegend"></div>
+          <!-- Fenêtre de création (DANS la carte pour rester visible en plein écran) -->
+          <div id="actCreate" class="act-overlay hidden">
+            <div class="act-card">
+              <div class="picker-head"><h3 style="margin:0">📣 Partager une activité</h3><button id="actCancel" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
+              <label>Titre</label>
+              <input id="actTitle" type="text" placeholder="Ex : Café découverte ☕, Balade nature 🥾" maxlength="60" />
+              <label style="margin-top:.6rem">Détail (optionnel)</label>
+              <input id="actNote" type="text" placeholder="Quand, où exactement, niveau…" maxlength="120" />
+              <div class="muted" id="actPos" style="font-size:.78rem;margin:.5rem 0"></div>
+              <button class="btn-primary btn-block" id="actSave" style="margin-top:.3rem">Publier sur la carte</button>
+              <div class="msg" id="actMsg" style="text-align:center"></div>
+            </div>
+          </div>
         </div>
 
         <div class="section-head">
@@ -1318,7 +1352,7 @@
         <!-- Vue principale (sous-onglets) -->
         <div id="matesHome" class="mates-view">
           <h1>Mes Mates</h1>
-          <div class="mates-stat"><b id="matesCount">0</b><span>Mates de confiance 🛡️</span></div>
+          <div class="mates-stat stat-click" id="matesStatBtn" title="Voir mes connexions"><b id="matesCount">0</b><span>Mates de confiance 🛡️ ›</span></div>
 
           <div class="mseg">
             <button data-mseg="messages" class="active">💬 Messages<span class="segb hidden" id="segMsg"></span></button>
@@ -1392,10 +1426,6 @@
               <h3 style="margin-top:0">📨 Demandes reçues</h3>
               <div id="requestsList"><p class="muted">—</p></div>
             </div>
-            <div class="card">
-              <h3 style="margin-top:0">✅ Mes connexions</h3>
-              <div id="myConnectionsList"><p class="muted">—</p></div>
-            </div>
           </div>
         </div>
 
@@ -1443,6 +1473,7 @@
               <div class="avatar" id="chatAvatar">M</div>
               <div><div class="name" style="font-weight:700;color:var(--ink)" id="chatName">—</div><div class="meta muted" style="font-size:.78rem" id="chatStatus">Voir le profil ›</div></div>
             </div>
+            <button class="iconbtn" id="chatDeleteBtn" title="Supprimer la conversation" style="font-size:1rem">🗑️</button>
           </div>
           <div class="chat-body" id="chatBody"></div>
           <div class="chat-input">
@@ -1549,9 +1580,9 @@
             </div>
           </div>
           <div class="stat-row" style="margin-top:1rem">
-            <div class="stat-box"><div class="stat" id="trustScore">0</div><div class="lbl">Confiance</div></div>
-            <div class="stat-box"><div class="stat" id="matesCountSelf">0</div><div class="lbl">Mates</div></div>
-            <div class="stat-box"><div class="stat" id="checkinCount">0</div><div class="lbl">Check-ins</div></div>
+            <div class="stat-box stat-click" data-stat="trust"><div class="stat" id="trustScore">0</div><div class="lbl">Confiance ⓘ</div></div>
+            <div class="stat-box stat-click" data-stat="mates"><div class="stat" id="matesCountSelf">0</div><div class="lbl">Mates</div></div>
+            <div class="stat-box stat-click" data-stat="checkins"><div class="stat" id="checkinCount">0</div><div class="lbl">Check-ins</div></div>
           </div>
           <div class="completion">
             <div class="completion-bar"><span id="completionFill"></span></div>
@@ -1898,6 +1929,7 @@
           <button class="btn-primary btn-block" id="detailJoinBtn">➕ Rejoindre la quête</button>
           <button class="btn-accent btn-block" id="detailCompleteBtn" style="margin-top:.5rem">✅ Marquer comme accompli</button>
           <button class="btn-ghost btn-block" id="detailSuggestBtn" style="margin-top:.5rem">🤝 Proposer à un Mate</button>
+          <button class="btn-ghost btn-block" id="detailMapBtn" style="margin-top:.5rem">📍 Voir sur la carte</button>
           <div class="msg" id="detailMsg" style="text-align:center"></div>
         </div>
 
@@ -2185,7 +2217,7 @@
         </div>`).join("") + '</div>';
       // Clic sur un lieu → onglet Lieux + zoom direct sur CE lieu (carte)
       wrap.querySelectorAll('[data-homecafe]').forEach((el) =>
-        el.addEventListener("click", () => { if (typeof focusHomeMapOn === "function") focusHomeMapOn(Number(el.dataset.homecafe)); }));
+        el.addEventListener("click", () => { if (typeof focusCafeInList === "function") focusCafeInList(Number(el.dataset.homecafe)); }));
     }
 
     // ====================== PROFIL ======================
@@ -2276,6 +2308,24 @@
     }
 
     const setV = (id, v) => { const el = $(id); if (el) el.value = (v ?? ""); };
+    // Explique le score de confiance de façon transparente (ce qui le fait grimper)
+    function renderTrustExplain() {
+      const el = $("trustExplain"); if (!el) return;
+      const verified = !!(myProfile && myProfile.is_verified);
+      const ck = parseInt(($("checkinCount") || {}).textContent) || 0;
+      const mates = parseInt(($("matesCountSelf") || {}).textContent) || 0;
+      const row = (icon, label, val, done) => `<div class="te-row"><span>${icon} ${label}</span><span class="${done ? "te-ok" : "te-todo"}">${val}</span></div>`;
+      el.innerHTML = `
+        <div class="te-head">🛡️ C'est quoi, ton score de confiance ?</div>
+        <p class="te-sub">Des preuves <b>réelles</b> et difficiles à falsifier que tu es un voyageur fiable, avec qui se rencontrer en sécurité :</p>
+        ${row("✅", "Identité vérifiée", verified ? "Vérifié" : "À faire", verified)}
+        ${row("📍", "Check-ins dans des lieux validés", ck, ck > 0)}
+        ${row("🛟", "Lieux sûrs différents visités", myDistinctPlaces, myDistinctPlaces > 0)}
+        ${row("🤝", "Mates qui te font confiance", mates, mates > 0)}
+        ${row("🎮", "Quêtes accomplies", "+ points", true)}
+        <p class="te-note">Un check-in se valide avec un <b>code affiché sur place</b> : impossible à tricher à distance. Plus tu te montres dans des lieux sûrs et tisses des liens, plus les autres peuvent te faire confiance. 🌍</p>`;
+    }
+
     async function loadProfile() {
       if (!myUserId) return;
       // On filtre sur MON id (avec plusieurs comptes, maybeSingle recevrait trop de lignes).
@@ -2298,6 +2348,7 @@
       setV("pChildren", data.children); setV("pReligion", data.religion); setV("pPolitics", data.politics);
       setV("pFavPlaces", (data.favorite_places || []).join(", ")); setV("pBucket", data.bucket_list); setV("pInstagram", data.instagram);
       $("trustScore").textContent = data.trust_score ?? 0;
+      if (typeof renderTrustExplain === "function") renderTrustExplain();
       // Sélections multiples (chips)
       selInterests.clear(); (data.interests || []).forEach((x) => selInterests.add(x));
       selLanguages.clear(); (data.languages || []).forEach((x) => selLanguages.add(x));
@@ -2414,6 +2465,7 @@
     let cafeFilter = { q: "", mode: "all" }; // recherche + filtre actif de l'onglet Lieux
     let cafeCheckins = {};                   // cafe_id -> nombre de check-ins
     let myGeo = null;                        // ma position GPS (pour « Près de moi »)
+    let myDistinctPlaces = 0;                // nombre de lieux sûrs différents où j'ai check-in
 
     function haversineKm(a, b) {
       const R = 6371, toR = (d) => d * Math.PI / 180;
@@ -2454,7 +2506,9 @@
           .map((c) => Object.assign({ _km: haversineKm(myGeo, { lat: c.lat, lng: c.lng }) }, c))
           .sort((a, b) => a._km - b._km);
       }
-      const goldPlace = goldView() ? `
+      const gq = (cafeFilter.q || "").toLowerCase();
+      const goldMatch = !gq || "rooftop club sunmates".includes(gq) || "lisbonne".includes(gq);
+      const goldPlace = (goldView() && cafeFilter.mode === "all" && goldMatch) ? `
         <div class="place gold-place">
           <div class="place-photo" style="background-image:url('${flickrImg("rooftop,bar,night", "goldplace")}')"></div>
           <div class="name">Rooftop Club SunMates 👑 <span class="badge warn">Exclusif Gold</span></div>
@@ -2463,11 +2517,17 @@
           <div class="row" style="margin-top:.4rem"><button class="btn-accent" data-goldcheckin="1">✨ Check-in Gold (+20)</button></div>
         </div>` : "";
       const cities = new Set(arr.map((c) => c.city).filter(Boolean));
-      $("cafesCount").textContent = `${arr.length} lieu${arr.length > 1 ? "x" : ""}${cafeFilter.mode === "eco" ? " éco-responsables" : ""} · ${cities.size} ville${cities.size > 1 ? "s" : ""}`;
+      const goldShown = !!goldPlace;
+      if (goldShown) cities.add("Lisbonne");
+      let countTxt = `${arr.length} lieu${arr.length > 1 ? "x" : ""}`;
+      if (goldShown) countTxt += " · 👑 1 Gold";
+      if (cafeFilter.mode === "eco") countTxt += " éco-responsables";
+      countTxt += ` · ${cities.size} ville${cities.size > 1 ? "s" : ""}`;
+      $("cafesCount").textContent = countTxt;
       list.innerHTML = goldPlace + (arr.length ? arr.map((c) => {
         const nCk = cafeCheckins[c.id] || 0;
         const dist = (c._km != null) ? `<span class="badge ok">${c._km < 1 ? Math.round(c._km * 1000) + " m" : c._km.toFixed(1) + " km"}</span>` : "";
-        return `<div class="place">
+        return `<div class="place" data-cafecard="${c.id}">
           <div class="place-photo" style="background-image:url('${cafeImage(c)}')"></div>
           <div class="name">${escapeHtml(c.name)} ${c.is_eco ? '<span class="eco">🌱 éco</span>' : ''}</div>
           <div class="meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')} ${dist}</div>
@@ -2536,6 +2596,8 @@
       if (error) return;
       const list = data || [];
       $("checkinCount").textContent = list.length;
+      myDistinctPlaces = new Set(list.map((c) => c.partner_cafes?.name).filter(Boolean)).size;
+      if (typeof renderTrustExplain === "function") renderTrustExplain();
       // Regroupe les check-ins par lieu (un lieu fait plusieurs fois = une seule tuile ×N)
       const groups = {};
       list.forEach((c) => {
@@ -2788,9 +2850,13 @@
     // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
     let connectedIds = new Set(); // ids des Mates déjà connectés (statut accepté)
     let connHistory = [];         // historique : {uid, since, msgs} par connexion acceptée
+    let hiddenConvs = new Set();  // conversations supprimées (masquées de la liste)
+    function persistHidden() { try { localStorage.setItem("sm_hidden_convs_" + myUserId, JSON.stringify([...hiddenConvs])); } catch (e) {} }
+    function unhideConv(id) { if (hiddenConvs.has(id)) { hiddenConvs.delete(id); persistHidden(); } }
     async function loadConnections() {
       if (!myUserId) return;
       const myId = myUserId;
+      try { hiddenConvs = new Set(JSON.parse(localStorage.getItem("sm_hidden_convs_" + myUserId) || "[]")); } catch (e) { hiddenConvs = new Set(); }
       const [{ data: profiles }, { data: conns }, { data: msgs }, { data: blk }] = await Promise.all([
         db.from("profiles").select("*"),
         db.from("matches_connections").select("*"),
@@ -2814,8 +2880,12 @@
       myMatchProfile = all.find((p) => p.id === myId) || myProfile;
       const avatarOf = (id) => travelerMap[id]?.avatar_url;
 
-      // Demandes reçues (je suis user_b, statut en attente)
-      const received = list.filter((c) => c.user_b === myId && c.status === "pending");
+      // Connexions acceptées (calculées d'abord pour exclure les Mates déjà connectés des demandes)
+      const accepted = list.filter((c) => c.status === "accepted" && (c.user_a === myId || c.user_b === myId));
+      connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)).filter((id) => !blockedIds.has(id)));
+
+      // Demandes reçues (je suis user_b, en attente) — JAMAIS quelqu'un déjà connecté
+      const received = list.filter((c) => c.user_b === myId && c.status === "pending" && !connectedIds.has(c.user_a));
       pendingRequestsList = received.map((c) => ({ connId: c.id, fromId: c.user_a }));
       $("requestsList").innerHTML = received.length
         ? received.map((c) => `<div class="person">
@@ -2826,9 +2896,7 @@
       $("requestsList").querySelectorAll("[data-accept]").forEach((b) =>
         b.addEventListener("click", () => acceptConnection(Number(b.dataset.accept))));
 
-      // Connexions acceptées (d'un côté ou de l'autre)
-      const accepted = list.filter((c) => c.status === "accepted" && (c.user_a === myId || c.user_b === myId));
-      connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)).filter((id) => !blockedIds.has(id)));
+      // (connexions acceptées déjà calculées plus haut)
       const msgCountByPeer = {};
       (msgs || []).forEach((mm) => { const peer = mm.sender_id === myId ? mm.recipient_id : mm.sender_id; msgCountByPeer[peer] = (msgCountByPeer[peer] || 0) + 1; });
       connHistory = accepted.map((c) => { const uid = c.user_a === myId ? c.user_b : c.user_a; return { uid, since: c.created_at, msgs: msgCountByPeer[uid] || 0 }; }).filter((h) => !blockedIds.has(h.uid));
@@ -2840,11 +2908,12 @@
               <span class="badge ok">✅</span></div>`).join("")
         : '<p class="muted">Aucune connexion pour l\'instant.</p>';
       $("myConnectionsList").querySelectorAll("[data-profile]").forEach((el) =>
-        el.addEventListener("click", () => openTravelerProfile(travelerMap[el.dataset.profile])));
+        el.addEventListener("click", () => { const mm = $("matesListModal"); if (mm) mm.classList.add("hidden"); openTravelerProfile(travelerMap[el.dataset.profile]); }));
 
-      // « Mes conversations » = connexions acceptées, triées par dernier message, avec aperçu
-      $("convList").innerHTML = connectedIds.size
-        ? [...connectedIds]
+      // « Mes conversations » = connexions acceptées (hors supprimées), triées par dernier message
+      const convIds = [...connectedIds].filter((id) => !hiddenConvs.has(id));
+      $("convList").innerHTML = convIds.length
+        ? convIds
             .sort((a, b) => (lastByPeer[b]?.created_at || "").localeCompare(lastByPeer[a]?.created_at || ""))
             .map((other) => {
               const lm = lastByPeer[other];
@@ -2858,6 +2927,7 @@
         : '<p class="muted">Pas encore de conversation. Va dans « Découvrir » pour rencontrer des voyageurs 👇</p>';
       $("convList").querySelectorAll("[data-chat]").forEach((el) =>
         el.addEventListener("click", () => openChat(el.dataset.chat)));
+      if (typeof appendDemoConvs === "function") appendDemoConvs(); // + les conversations IA en cours
 
       // Voyageurs à rencontrer (autres profils, hors connexions/demandes déjà existantes)
       const related = new Set();
@@ -2869,6 +2939,7 @@
       renderTravelers($("travSearch") ? $("travSearch").value : "");
       const mc = $("matesCount"); if (mc) mc.textContent = connectedIds.size;
       const ms = $("matesCountSelf"); if (ms) ms.textContent = connectedIds.size;
+      if (typeof renderTrustExplain === "function") renderTrustExplain();
       if (typeof updateNotifBadges === "function") updateNotifBadges();
       if (typeof buildHomeFeed === "function") buildHomeFeed();
       if (typeof renderBff === "function") renderBff();
@@ -3276,6 +3347,13 @@
     });
 
     // Proposer la quête à un Mate (section dédiée + message dans le chat)
+    $("detailMapBtn").addEventListener("click", () => {
+      if (!currentQuest) return;
+      const places = (allCafes || []).filter((c) => c.lat != null && c.lng != null);
+      if (!places.length) { if (typeof toast === "function") toast("📍", "Aucun lieu géolocalisé pour l'instant."); return; }
+      let h = 0; const s = String(currentQuest.key); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
+      focusHomeMapOn(places[h % places.length].id);
+    });
     $("detailSuggestBtn").addEventListener("click", () => {
       if (!currentQuest) return;
       const mates = [...connectedIds].map((id) => travelerMap[id]).filter(Boolean);
@@ -3392,13 +3470,28 @@
       if (d.toDateString() === now.toDateString()) return time;
       return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" }) + " · " + time;
     }
+    const QUEST_MSG_PREFIX = "🎯 Je te propose la quête : ";
     function bubbleHtml(m) {
       const mine = m.sender_id === myUserId;
       const act = mine ? `<div class="bubble-act"><button class="msg-del" data-mid="${m.id}">🗑️</button></div>` : "";
-      return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}"><span class="bubble-txt">${escapeHtml(m.content)}</span><span class="bubble-time">${msgTime(m.created_at)}</span>${act}</div>`;
+      // Si le message propose une quête/activité → petit bouton pour la visualiser
+      let questBtn = "";
+      if ((m.content || "").startsWith(QUEST_MSG_PREFIX) && typeof allQuests !== "undefined") {
+        const title = m.content.slice(QUEST_MSG_PREFIX.length).trim();
+        const q = allQuests.find((x) => (x.title || "") === title);
+        if (q) questBtn = `<button class="msg-quest" data-qview="${escapeHtml(q.key)}">▶ Voir la quête</button>`;
+      }
+      return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}"><span class="bubble-txt">${escapeHtml(m.content)}</span>${questBtn}<span class="bubble-time">${msgTime(m.created_at)}</span>${act}</div>`;
     }
     // Éditer / supprimer ses propres messages (délégation sur le conteneur)
     $("chatBody").addEventListener("click", async (e) => {
+      const qv = e.target.closest(".msg-quest");
+      if (qv) {
+        goToTab("jeux");
+        const q = (typeof questByKey === "function") && questByKey(qv.dataset.qview);
+        if (q && typeof openDetail === "function") setTimeout(() => openDetail(q), 80);
+        return;
+      }
       const del = e.target.closest(".msg-del");
       if (del) {
         const id = del.dataset.mid;
@@ -3433,10 +3526,30 @@
       body.innerHTML = log.map((m) => `<div class="bubble ${m.them ? "them" : "me"}"><span class="bubble-txt">${escapeHtml(m.text)}</span><span class="bubble-time">${msgTime(m.t)}</span></div>`).join("");
       scrollChatBottom();
     }
+    // Ajoute les conversations IA (démo) en haut de la liste Messages des Mates
+    function appendDemoConvs() {
+      const box = $("convList"); if (!box) return;
+      box.querySelectorAll("[data-demochat]").forEach((e) => e.remove());
+      const ids = Object.keys(demoChats).filter((id) => (demoChats[id] || []).length && !hiddenConvs.has(id));
+      if (!ids.length) return;
+      const ph = box.querySelector("p.muted"); if (ph) ph.remove(); // retire « pas encore de conversation »
+      const html = ids.map((id) => {
+        const p = travelerMap[id] || {};
+        const log = demoChats[id], last = log[log.length - 1];
+        const preview = (last.them ? "" : "Toi : ") + last.text;
+        return `<div class="person conv-open" data-demochat="${id}" style="cursor:pointer">
+          ${avatarMarkup(p.username || "IA", p.avatar_url)}
+          <div class="info"><div class="name">${escapeHtml(p.username || "IA")} 🤖</div><div class="conv-preview">${escapeHtml(preview)}</div></div>
+          <div class="qarrow">›</div></div>`;
+      }).join("");
+      box.insertAdjacentHTML("afterbegin", html);
+      box.querySelectorAll("[data-demochat]").forEach((el) => el.addEventListener("click", () => openChat(el.dataset.demochat)));
+    }
 
     // Ouvre la conversation avec un Mate (identifié par son id utilisateur)
     async function openChat(otherUserId) {
       currentChatUserId = otherUserId;
+      if (typeof unhideConv === "function") unhideConv(otherUserId); // rouvrir = ré-afficher dans la liste
       const p = travelerMap[otherUserId] || {};
       const name = p.username || "Voyageur";
       $("chatName").textContent = name;
@@ -3448,6 +3561,7 @@
       if (p.is_demo) {
         if (!demoChats[otherUserId]) demoChats[otherUserId] = demoIntro(p);
         renderDemoChat(otherUserId);
+        if (typeof appendDemoConvs === "function") appendDemoConvs(); // visible dans Mates → Messages
         return;
       }
       // Historique : messages échangés entre moi et cet interlocuteur (RLS = uniquement les miens)
@@ -3466,6 +3580,23 @@
       if (currentChatUserId) openTravelerProfile(travelerMap[currentChatUserId]);
     });
 
+    // Supprimer la conversation en cours
+    async function deleteConversation() {
+      const id = currentChatUserId; if (!id) return;
+      if (!confirm("Supprimer cette conversation ?")) return;
+      if (travelerMap[id] && travelerMap[id].is_demo) {
+        delete demoChats[id]; // conversation IA = effacée côté navigateur
+      } else {
+        // on supprime nos propres messages (la RLS interdit d'effacer ceux des autres)
+        try { await db.from("messages").delete().eq("sender_id", myUserId).eq("recipient_id", id); } catch (e) {}
+      }
+      hiddenConvs.add(id); persistHidden(); // masque la conversation de la liste
+      if (typeof toast === "function") toast("🗑️", "Conversation supprimée");
+      showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages");
+      await loadConnections(); // reconstruit la liste (+ appendDemoConvs)
+    }
+    $("chatDeleteBtn").addEventListener("click", deleteConversation);
+
     async function sendChatMessage() {
       const input = $("chatInput");
       const text = input.value.trim();
@@ -3478,10 +3609,12 @@
         demoChats[id] = demoChats[id] || [];
         demoChats[id].push({ them: false, text, t: new Date().toISOString() });
         renderDemoChat(id);
+        if (typeof appendDemoConvs === "function") appendDemoConvs();
         setTimeout(() => {
           const reply = DEMO_REPLIES[Math.floor(Math.random() * DEMO_REPLIES.length)];
           demoChats[id].push({ them: true, text: reply, t: new Date().toISOString() });
           if (currentChatUserId === id) renderDemoChat(id);
+          if (typeof appendDemoConvs === "function") appendDemoConvs();
         }, 1100);
         return;
       }
@@ -3516,6 +3649,7 @@
             scrollChatBottom();
           } else if (m.recipient_id === myUserId && m.sender_id !== myUserId) {
             // message reçu hors conversation ouverte → toast + pastille
+            if (typeof unhideConv === "function") unhideConv(m.sender_id); // un nouveau message ré-affiche la conv
             unreadList.unshift({ sender_id: m.sender_id, content: m.content, created_at: m.created_at });
             unreadMsgCount = unreadList.length;
             updateNotifBadges();
@@ -3761,7 +3895,7 @@
         places.map((c) => `<div class="sresult" data-splace="${c.id}"><div class="sicon">🛟</div><div class="info"><div class="sname">${escapeHtml(c.name)}</div><div class="smeta">${escapeHtml(c.city || "")}${c.is_eco ? " · 🌱" : ""}</div></div></div>`).join("") + "</div>";
       box.innerHTML = html || '<div class="card"><p class="muted">Aucun résultat pour « ' + escapeHtml(q) + ' ».</p></div>';
       box.querySelectorAll("[data-sp]").forEach((el) => el.addEventListener("click", () => { goToTab("connexions"); openTravelerProfile(travelerMap[el.dataset.sp]); }));
-      box.querySelectorAll("[data-splace]").forEach((el) => el.addEventListener("click", () => goToTab("lieux")));
+      box.querySelectorAll("[data-splace]").forEach((el) => el.addEventListener("click", () => { box.innerHTML = ""; $("homeSearch").value = ""; if (typeof focusCafeInList === "function") focusCafeInList(Number(el.dataset.splace)); }));
     }
     $("homeSearch").addEventListener("input", (e) => renderSearch(e.target.value));
 
@@ -3889,6 +4023,8 @@
           node.querySelectorAll("[data-hmsuggest]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); mapProposeActivity(travelerMap[b.dataset.hmsuggest]); }));
           // Supprimer une de mes activités partagées
           node.querySelectorAll("[data-hmdelact]").forEach((b) => b.addEventListener("click", () => deleteMapActivity(b.dataset.hmdelact)));
+          // Ouvrir une quête depuis la carte
+          node.querySelectorAll("[data-hmquest]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("jeux"); const q = (typeof questByKey === "function") && questByKey(b.dataset.hmquest); if (q && typeof openDetail === "function") setTimeout(() => openDetail(q), 80); }));
         });
         // Clic sur la carte en mode « placement » → créer une activité ici
         homeLeaf.on("click", (e) => { if (homeAddMode) { setHomeAddMode(false); openActCreate(e.latlng); } });
@@ -4005,6 +4141,17 @@
         homeLayers.activities.addLayer(am); allMarkers.push(am);
       });
 
+      // 🎮 Quêtes à faire (dans des lieux partenaires) — accès direct depuis la carte
+      if (typeof allQuests !== "undefined" && allQuests.length && places.length) {
+        allQuests.filter((q) => q.kind === "quest").slice(0, 5).forEach((q) => {
+          let h = 0; const s = String(q.key); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
+          const cafe = places[h % places.length];
+          const mk = L.marker(jitterAt(cafe, "quest-" + q.key), { icon: epinIcon("🎮", "#ff9f1c") })
+            .bindPopup(`<div class="mappop-mini"><b>${escapeHtml((q.emoji || "🎮") + " " + (q.title || "Quête"))}</b><br><span class="muted">Quête à faire · ${escapeHtml(cafe.name)}</span><br><button class="mappop-btn" data-hmquest="${escapeHtml(q.key)}">▶ Voir la quête</button></div>`);
+          homeLayers.activities.addLayer(mk); allMarkers.push(mk);
+        });
+      }
+
       // 🛟 Positions partagées au cercle (GPS réel) — visibles 1 h puis expirées
       const recentShares = (circleLocs || []).filter((l) => l.lat != null && nowMs - new Date(l.created_at).getTime() < HOUR);
       let myShare = null; const seenShareUser = new Set();
@@ -4055,14 +4202,26 @@
         const c = (allCafes || []).find((x) => x.id === cafeId);
         if (!homeLeaf || !c || c.lat == null) return;
         homeLeaf.invalidateSize();
-        homeLeaf.setView([c.lat, c.lng], 15, { animate: true });
+        const open = () => { const mk = homeCafeMarkerById[cafeId]; if (mk) { homeLeaf.setView(mk.getLatLng(), 17, { animate: true }); mk.openPopup(); } else { homeLeaf.setView([c.lat, c.lng], 17, { animate: true }); } };
         const mk = homeCafeMarkerById[cafeId];
-        if (mk) {
-          if (homeLayers.places && typeof homeLayers.places.zoomToShowLayer === "function") homeLayers.places.zoomToShowLayer(mk, () => mk.openPopup());
-          else mk.openPopup();
-        }
+        if (mk && homeLayers.places && typeof homeLayers.places.zoomToShowLayer === "function") homeLayers.places.zoomToShowLayer(mk, open);
+        else open();
       };
-      if (!homeLeaf) { renderHomeMap().then(() => setTimeout(go, 200)); } else setTimeout(go, 160);
+      // délai large pour passer APRÈS le rendu déclenché par goToTab (sinon la bulle se referme)
+      if (!homeLeaf) { renderHomeMap().then(() => setTimeout(go, 250)); } else setTimeout(go, 550);
+    }
+
+    // Depuis la recherche : ouvre la fiche descriptive du lieu dans l'onglet Lieux
+    function focusCafeInList(cafeId) {
+      goToTab("lieux");
+      cafeFilter = { q: "", mode: "all" };
+      const s = $("cafeSearch"); if (s) s.value = "";
+      setCafeChipActive("all");
+      renderCafesList();
+      setTimeout(() => {
+        const card = document.querySelector(`#cafesList [data-cafecard="${cafeId}"]`);
+        if (card) { card.scrollIntoView({ behavior: "smooth", block: "center" }); card.classList.add("flash"); setTimeout(() => card.classList.remove("flash"), 1800); }
+      }, 140);
     }
 
     function setHomeChipCount(layer, n) {
@@ -4142,15 +4301,19 @@
     function setHomeAddMode(on) {
       homeAddMode = on;
       const hint = $("homeMapHint"); if (hint) hint.classList.toggle("hidden", !on);
+      const cap = $("homeMapCapture"); if (cap) cap.classList.toggle("hidden", !on); // couche qui capte le tap
       const btn = $("hmAdd"); if (btn) btn.textContent = on ? "✕ Annuler" : "➕ Partager";
-      const el = $("homeMap"); if (el) el.style.cursor = on ? "crosshair" : "";
     }
     // Ouvre la fenêtre de création à l'endroit cliqué
     function openActCreate(latlng) {
       homeAddLatLng = latlng;
+      const modal = $("actCreate");
+      // On rattache la fenêtre au bon parent : l'élément plein écran s'il y en a un
+      // (sinon elle serait invisible), ou le <body> (centrage correct hors plein écran).
+      (document.fullscreenElement || document.body).appendChild(modal);
       $("actTitle").value = ""; $("actNote").value = ""; $("actMsg").textContent = "";
       $("actPos").textContent = "📍 Position choisie : " + latlng.lat.toFixed(4) + ", " + latlng.lng.toFixed(4);
-      $("actCreate").classList.remove("hidden");
+      modal.classList.remove("hidden");
       setTimeout(() => $("actTitle").focus(), 50);
     }
     async function saveMapActivity() {
@@ -4213,6 +4376,15 @@
       const fit = $("hmFit"); if (fit) fit.addEventListener("click", homeFitAll);
       const add = $("hmAdd"); if (add) add.addEventListener("click", () => setHomeAddMode(!homeAddMode));
       const hc = $("homeMapHintCancel"); if (hc) hc.addEventListener("click", () => setHomeAddMode(false));
+      // La couche de capture transforme le tap (même sur un marqueur) en position
+      const cap = $("homeMapCapture");
+      if (cap) cap.addEventListener("click", (ev) => {
+        if (!homeAddMode || !homeLeaf) return;
+        const rect = $("homeMap").getBoundingClientRect();
+        const latlng = homeLeaf.containerPointToLatLng([ev.clientX - rect.left, ev.clientY - rect.top]);
+        setHomeAddMode(false);
+        openActCreate(latlng);
+      });
       const full = $("hmFull"); if (full) full.addEventListener("click", () => { if (!homeLeaf) renderHomeMap(); toggleHomeFull(); });
       const fullC = $("hmFullClose"); if (fullC) fullC.addEventListener("click", () => toggleHomeFull(false));
       document.addEventListener("keydown", (e) => { if (e.key === "Escape") toggleHomeFull(false); });
@@ -4344,6 +4516,20 @@
       if (seg === "admin" && typeof showAdminSegment === "function") showAdminSegment("dash");
     }
     document.querySelectorAll("[data-pseg]").forEach((b) => b.addEventListener("click", () => showProfileSegment(b.dataset.pseg)));
+    // Chiffres du profil cliquables
+    function openTrustModal() { if (typeof renderTrustExplain === "function") renderTrustExplain(); const m = $("trustModal"); if (m) m.classList.remove("hidden"); }
+    document.querySelectorAll("[data-stat]").forEach((b) => b.addEventListener("click", () => {
+      const s = b.dataset.stat;
+      if (s === "trust") openTrustModal();
+      else if (s === "mates") { goToTab("connexions"); if (typeof showMatesView === "function") showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
+      else if (s === "checkins") showProfileSegment("checkins");
+    }));
+    $("trustClose").addEventListener("click", () => $("trustModal").classList.add("hidden"));
+    $("trustModal").addEventListener("click", (e) => { if (e.target.id === "trustModal") $("trustModal").classList.add("hidden"); });
+    // « X Mates » → pop-up de mes connexions
+    const matesStatBtn = $("matesStatBtn"); if (matesStatBtn) matesStatBtn.addEventListener("click", () => $("matesListModal").classList.remove("hidden"));
+    $("matesListClose").addEventListener("click", () => $("matesListModal").classList.add("hidden"));
+    $("matesListModal").addEventListener("click", (e) => { if (e.target.id === "matesListModal") $("matesListModal").classList.add("hidden"); });
     $("premiumBtn").addEventListener("click", () => { const m = $("premiumMsg"); m.textContent = "Génial ! On te préviendra dès le lancement de Gold 🎉"; });
     // Aperçu de mon profil public (ce que voient les autres)
     $("previewProfileBtn").addEventListener("click", () => {
@@ -4647,21 +4833,26 @@
     async function buildHomeFeed() {
       const feed = $("homeFeed"); if (!feed) return;
       const { data: badges } = await db.from("user_badges")
-        .select("user_id,name,emoji,earned_at").order("earned_at", { ascending: false }).limit(15);
-      const posts = (badges || []).map((b) => {
-        const p = travelerMap[b.user_id] || {};
-        const isMe = b.user_id === myUserId;
-        return {
-          uid: b.user_id, isMe, avatar: p.avatar_url,
-          name: isMe ? "Toi" : (p.username || "Un voyageur"),
-          emoji: b.emoji || "🏅",
-          title: "a accompli une quête",
-          sub: "Badge « " + (b.name || "") + " » débloqué 🎉",
-          time: timeAgo(b.earned_at),
-        };
-      });
+        .select("user_id,name,emoji,earned_at").order("earned_at", { ascending: false }).limit(40);
+      // On ne garde que les temps forts des 3 derniers jours
+      const cutoff = Date.now() - 3 * 24 * 3600 * 1000;
+      const posts = (badges || [])
+        .filter((b) => b.earned_at && new Date(b.earned_at).getTime() >= cutoff)
+        .slice(0, 8)
+        .map((b) => {
+          const p = travelerMap[b.user_id] || {};
+          const isMe = b.user_id === myUserId;
+          return {
+            uid: b.user_id, isMe, avatar: p.avatar_url,
+            name: isMe ? "Toi" : (p.username || "Un voyageur"),
+            emoji: b.emoji || "🏅",
+            title: "a accompli une quête",
+            sub: "Badge « " + (b.name || "") + " » débloqué 🎉",
+            time: timeAgo(b.earned_at),
+          };
+        });
       if (!posts.length) {
-        feed.innerHTML = '<div class="post"><div class="post-body"><div class="pemoji">🌅</div><div><div class="pb-title">Le fil est encore vide</div><div class="pb-sub">Accomplis une quête dans l\'onglet Jeux pour ouvrir le bal 🎉</div></div></div></div>';
+        feed.innerHTML = '<div class="post"><div class="post-body"><div class="pemoji">🌅</div><div><div class="pb-title">Rien de neuf ces 3 derniers jours</div><div class="pb-sub">Accomplis une quête dans l\'onglet Jeux pour animer le fil 🎉</div></div></div></div>';
         return;
       }
       feed.innerHTML = posts.map((po, i) => `<div class="post" data-pf="${i}">
