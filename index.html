@@ -1038,7 +1038,6 @@
         <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" />
         <button type="button" id="authPwToggle" class="pw-eye" title="Afficher / masquer le mot de passe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
       </div>
-      <button class="btn-primary btn-block" id="authSubmit" style="margin-top:1.2rem">Se connecter</button>
       <div class="auth-play"><button id="authPlay" title="Valider">▶</button></div>
       <div class="msg" id="authMsg" style="text-align:center"></div>
     </div>
@@ -1816,7 +1815,6 @@
       authMode = mode;
       $("tabLogin").classList.toggle("active", mode === "login");
       $("tabSignup").classList.toggle("active", mode === "signup");
-      $("authSubmit").textContent = mode === "login" ? "Se connecter" : "Créer mon compte";
       $("authMsg").textContent = "";
     }
 
@@ -1835,7 +1833,6 @@
       if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; }
       else if (authMode === "signup") { msg.style.color = "var(--ok)"; msg.textContent = "Compte créé ! Tu peux te connecter."; }
     }
-    $("authSubmit").addEventListener("click", submitAuth);
     $("authPlay").addEventListener("click", submitAuth);
     const EYE_OPEN = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
     const EYE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
