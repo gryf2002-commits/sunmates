@@ -239,6 +239,25 @@
     .char-count { display: block; text-align: right; font-size: .72rem; color: var(--muted); margin-top: .25rem; }
     .char-count.over { color: var(--danger); font-weight: 700; }
 
+    /* ---- Fondu doux entre les onglets (et les segments du profil) ---- */
+    @keyframes tabFade { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+    .tab-panel:not(.hidden) { animation: tabFade .26s ease; }
+    .prof-seg:not(.hidden) { animation: tabFade .22s ease; }
+
+    /* ---- Flash de succès (DA SunMates : coucher de soleil ambre → corail) ---- */
+    @keyframes flashOk {
+      0%   { box-shadow: 0 0 0 0 rgba(255,140,90,.55); }
+      60%  { box-shadow: 0 0 0 10px rgba(244,101,94,0); }
+      100% { box-shadow: 0 0 0 0 rgba(244,101,94,0); }
+    }
+    .flash-ok { animation: flashOk .9s ease; border-radius: inherit; }
+
+    /* ---- Bouton ✕ de recherche : plus réactif (pas de délai tactile, retour au clic) ---- */
+    .search-clear { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+      transition: background .12s ease, transform .08s ease; }
+    .search-clear:hover { background: rgba(0,0,0,.17); }
+    .search-clear:active { transform: translateY(-50%) scale(.82); background: rgba(0,0,0,.24); }
+
     /* ----------------------------- Badges --------------------------- */
     .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 700; }
     .badge.ok { background: rgba(34,197,94,.12); color: var(--ok); }
@@ -901,8 +920,8 @@
     .pf-head { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1rem; cursor: pointer; font-weight: 700; color: var(--ink-warm); font-family: "Fraunces", serif; font-size: 1rem; }
     .pf-head .chev { transition: transform .2s; color: var(--muted); }
     .pf-section.open .pf-head .chev { transform: rotate(90deg); }
-    .pf-body { display: none; padding: 0 1rem 1rem; }
-    .pf-section.open .pf-body { display: block; }
+    .pf-body { max-height: 0; overflow: hidden; padding: 0 1rem; transition: max-height .32s ease; }
+    .pf-section.open .pf-body { padding-bottom: 1rem; }
 
     /* ===== SESSION 4 — sous-onglets Mates, feed "posts", recherche ===== */
     /* Sous-onglets (Mates) */
@@ -2663,7 +2682,7 @@
       const err = error || errPhone;
       msg.style.color = err ? "var(--danger)" : "var(--ok)";
       msg.textContent = err ? "Erreur : " + err.message : "Profil enregistré ✅";
-      if (!err) await Promise.all([loadProfile(), loadConnections()]);
+      if (!err) { flashOk($("saveProfileBtn")); await Promise.all([loadProfile(), loadConnections()]); }
     }));
 
     $("verifyBtn").addEventListener("click", () => once("verify", async () => {
@@ -2841,6 +2860,7 @@
         msg.style.color = res.ok ? "var(--ok)" : "var(--danger)";
         msg.textContent = res.message || (res.ok ? "Check-in validé ✅" : "Échec.");
         if (res.ok) {
+          flashOk($("cafesMsg"));
           cafeCheckins[cafeId] = (cafeCheckins[cafeId] || 0) + 1; // maj immédiate du compteur
           if (typeof renderCafesList === "function") renderCafesList();
           await Promise.all([loadProfile(), loadCheckins()]);
@@ -3554,6 +3574,7 @@
         if (msg) {
           msg.style.color = error ? "var(--danger)" : "var(--ok)";
           msg.textContent = error ? "Erreur : " + error.message : "Connexion acceptée ✅";
+          if (!error) flashOk(msg);
         }
         await loadConnections();
       });
@@ -3793,7 +3814,7 @@
         if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
         myQuestStatus[qkey] = "joined";
         openDetail(currentQuest);
-        m.style.color = "var(--ok)"; m.textContent = "Quête rejointe ! 🎒";
+        m.style.color = "var(--ok)"; m.textContent = "Quête rejointe ! 🎒"; flashOk(m);
       });
     });
 
@@ -5341,6 +5362,14 @@
       setTimeout(() => wrap.remove(), 3600);
     }
 
+    // ---- Flash de succès (halo chaud, DA SunMates) sur l'élément qui vient de réussir ----
+    function flashOk(el) {
+      if (!el) return;
+      el.classList.remove("flash-ok"); void el.offsetWidth; // relance l'animation même si déjà flashé
+      el.classList.add("flash-ok");
+      setTimeout(() => el.classList.remove("flash-ok"), 950);
+    }
+
     // ---- Messages non lus (basé sur un horodatage stocké localement) ----
     const seenKey = () => "sm_seen_msgs_" + myUserId;
     async function loadUnread() {
@@ -5444,8 +5473,25 @@
     $("feedRefresh").addEventListener("click", () => { buildHomeFeed(); });
 
     // ---- Accordéon du formulaire de profil ----
+    // Accordéon du profil : ouverture/fermeture FLUIDE (on anime la hauteur réelle,
+    // mesurée au pixel près, plutôt qu'un display none/block qui saute d'un coup).
     document.querySelectorAll(".pf-head").forEach((h) =>
-      h.addEventListener("click", () => h.parentElement.classList.toggle("open")));
+      h.addEventListener("click", () => {
+        const sec = h.parentElement;
+        const body = sec.querySelector(".pf-body"); if (!body) return;
+        const opening = !sec.classList.contains("open");
+        sec.classList.toggle("open", opening);
+        if (opening) {
+          body.style.maxHeight = body.scrollHeight + "px";
+          // une fois ouvert, on retire la contrainte pour que le contenu reste flexible
+          const done = (e) => { if (e.propertyName === "max-height") { body.style.maxHeight = "none"; body.removeEventListener("transitionend", done); } };
+          body.addEventListener("transitionend", done);
+        } else {
+          body.style.maxHeight = body.scrollHeight + "px"; // repart de la hauteur actuelle…
+          void body.offsetHeight;                          // …force un reflow…
+          body.style.maxHeight = "0px";                    // …puis collapse en douceur
+        }
+      }));
 
     // ---- Accès rapides de l'écran Sécurité ----
     document.querySelectorAll("[data-secuquick]").forEach((el) =>
