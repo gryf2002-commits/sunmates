@@ -183,6 +183,36 @@
     .pwa-cta { background: var(--accent-grad); color: #fff; border: 0; border-radius: 999px; padding: .55rem .95rem; font-weight: 800; font-size: .85rem; cursor: pointer; flex-shrink: 0; box-shadow: 0 6px 14px rgba(244,101,94,.35); }
     .pwa-x { background: transparent; border: 0; color: var(--muted); font-size: 1rem; cursor: pointer; padding: .2rem .35rem; flex-shrink: 0; }
 
+    /* ---- Skeletons de chargement (perception de rapidité) ---- */
+    .skel { position: relative; overflow: hidden; background: #ece7e3; border-radius: 12px; }
+    .skel::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent); animation: shimmer 1.25s infinite; }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .skel-row { display: flex; gap: .75rem; align-items: center; padding: .65rem .5rem; }
+    .skel-av { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
+    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+    .skel-line { height: 11px; border-radius: 6px; }
+    .skel-line.s { width: 40%; } .skel-line.m { width: 65%; } .skel-line.l { width: 88%; }
+    .skel-card { height: 116px; border-radius: 16px; }
+    .skel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+    body.theme-dusk .skel { background: rgba(255,255,255,.08); }
+    body.theme-dusk .skel::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent); }
+
+    /* ---- Cloche : petite sonnerie quand il y a des notifs ---- */
+    @keyframes bellRing { 0%,100% { transform: rotate(0); } 12% { transform: rotate(13deg); } 24% { transform: rotate(-11deg); }
+      36% { transform: rotate(8deg); } 48% { transform: rotate(-6deg); } 60% { transform: rotate(3deg); } }
+    .iconbtn.ring { animation: bellRing 1.1s ease; }
+
+    /* ---- États vides plus chaleureux ---- */
+    .empty { text-align: center; padding: 1.6rem 1rem; color: var(--muted); }
+    .empty .emoji { font-size: 2.2rem; display: block; margin-bottom: .5rem; opacity: .9; }
+    .empty .etitle { font-weight: 700; color: var(--ink); margin-bottom: .2rem; }
+    .empty .esub { font-size: .86rem; margin-bottom: .9rem; }
+    .empty .btn-primary, .empty .btn-accent { display: inline-flex; width: auto; padding: .55rem 1.1rem; }
+
+    /* ---- Focus clavier visible (accessibilité) ---- */
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
     /* ----------------------------- Badges --------------------------- */
     .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 700; }
     .badge.ok { background: rgba(34,197,94,.12); color: var(--ok); }
@@ -1366,8 +1396,8 @@
         <svg class="logo-night" viewBox="0 0 64 64" width="20" height="20"><g stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"><line x1="32" y1="13" x2="32" y2="18"/><line x1="18" y1="20" x2="22" y2="24"/><line x1="46" y1="20" x2="42" y2="24"/></g><circle cx="32" cy="37" r="11" fill="#fff"/><path d="M10 41h44" stroke="#FFD15C" stroke-width="3.6" stroke-linecap="round"/><path d="M17 47h30" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></svg>
       </span><b><span class="sun">Sun</span>Mates</b></div>
       <div class="topbar-actions hidden" id="userBox">
-        <button class="iconbtn" id="themeToggle" title="Changer de thème">🌙</button>
-        <button class="iconbtn" id="notifBell">🔔<span class="nbadge hidden" id="notifBellCount">0</span></button>
+        <button class="iconbtn" id="themeToggle" title="Changer de thème" aria-label="Changer de thème jour / nuit">🌙</button>
+        <button class="iconbtn" id="notifBell" aria-label="Notifications">🔔<span class="nbadge hidden" id="notifBellCount">0</span></button>
         <button class="btn-ghost" id="logoutBtn" style="padding:.5rem .8rem;font-size:.82rem">Déconnexion</button>
       </div>
     </header>
@@ -2202,6 +2232,22 @@
       if (_notifiedEvents.size > 500) _notifiedEvents.delete(_notifiedEvents.values().next().value);
       return true;
     }
+
+    // --- Skeletons de chargement ---
+    // Génère des lignes/cartes grises animées pendant un chargement.
+    function skelRows(n) { let h = ""; for (let i = 0; i < (n || 4); i++) h += '<div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div>'; return h; }
+    function skelCards(n) { let h = '<div class="skel-grid">'; for (let i = 0; i < (n || 4); i++) h += '<div class="skel skel-card"></div>'; return h + '</div>'; }
+    // N'affiche le skeleton qu'au TOUT PREMIER chargement d'un conteneur (pas à chaque
+    // rafraîchissement → évite le clignotement quand on recharge une liste déjà remplie).
+    const _skelShown = new Set();
+    function skelFirst(id, html) { if (_skelShown.has(id)) return; _skelShown.add(id); const el = $(id); if (el) el.innerHTML = html; }
+
+    // --- État vide chaleureux (emoji + titre + sous-titre + bouton d'action optionnel) ---
+    // actId/actLabel : si fournis, ajoute un bouton ; le câblage du clic se fait via [data-empty-act].
+    function emptyState(emoji, title, sub, actLabel, actId) {
+      const btn = actLabel ? `<button class="btn-primary" data-empty-act="${actId || ''}">${escapeHtml(actLabel)}</button>` : "";
+      return `<div class="empty"><span class="emoji">${emoji}</span><div class="etitle">${escapeHtml(title)}</div><div class="esub">${escapeHtml(sub)}</div>${btn}</div>`;
+    }
     let myUserId = null; // id de l'utilisateur connecté (défini à la connexion)
     let myEmail = null;  // email de l'utilisateur connecté (pour la ré-authentification admin)
 
@@ -2642,6 +2688,7 @@
     }
 
     async function loadCafes() {
+      skelFirst("cafesList", skelRows(4));
       const { data, error } = await db.from("partner_cafes").select("*").order("name");
       if (error) { $("cafesList").innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
       allCafes = data || []; // pour la recherche globale de l'accueil + la carte
@@ -2781,7 +2828,7 @@
               <div class="bname">${escapeHtml(g.name)}</div>
               <div class="bprog">${g.count > 1 ? "×" + g.count : escapeHtml(g.city)}</div>
             </div>`).join("") + '</div>'
-        : '<p class="muted">Aucun check-in pour l\'instant. File dans « Lieux sûrs » !</p>';
+        : emptyState("📍", "Aucun check-in encore", "Valide un check-in dans un lieu partenaire pour gagner des points de confiance.", "Voir les lieux sûrs", "lieux");
       $("checkinList").querySelectorAll("[data-cig]").forEach((el) => el.addEventListener("click", () => {
         const g = arr[Number(el.dataset.cig)];
         const dates = g.dates.slice().sort((a, b) => (b || "").localeCompare(a || "")).map((d) => "• " + new Date(d).toLocaleString("fr-FR")).join("<br>");
@@ -3192,6 +3239,10 @@
     async function loadConnections() {
       if (!myUserId) return;
       const myId = myUserId;
+      // Skeletons au tout premier chargement (ressenti de rapidité)
+      skelFirst("travelersList", skelRows(5));
+      skelFirst("convList", skelRows(4));
+      skelFirst("requestsList", skelRows(2));
       try { hiddenConvs = new Set(JSON.parse(localStorage.getItem("sm_hidden_convs_" + myUserId) || "[]")); } catch (e) { hiddenConvs = new Set(); }
       const [{ data: profiles }, { data: conns }, { data: msgs }, { data: blk }] = await Promise.all([
         db.from("profiles").select("*"),
@@ -3242,7 +3293,7 @@
               ${avatarMarkup(nameOf(other), avatarOf(other))}
               <div class="info"><div class="name">${escapeHtml(nameOf(other))}</div><div class="meta">Voir le profil ›</div></div>
               <span class="badge ok">✅</span></div>`).join("")
-        : '<p class="muted">Aucune connexion pour l\'instant.</p>';
+        : emptyState("🛡️", "Aucune connexion pour l'instant", "Trouve des voyageurs de confiance et envoie une demande de connexion.", "Découvrir des Mates", "discover");
       $("myConnectionsList").querySelectorAll("[data-profile]").forEach((el) =>
         el.addEventListener("click", () => { const mm = $("matesListModal"); if (mm) mm.classList.add("hidden"); openTravelerProfile(travelerMap[el.dataset.profile]); }));
 
@@ -3260,7 +3311,7 @@
                 <div class="info"><div class="name">${escapeHtml(nameOf(other))}</div><div class="conv-preview">${escapeHtml(preview)}</div></div>
                 <div style="text-align:right;white-space:nowrap"><div class="muted" style="font-size:.7rem">${t}</div><div class="qarrow">›</div></div></div>`;
             }).join("")
-        : '<p class="muted">Pas encore de conversation. Va dans « Découvrir » pour rencontrer des voyageurs 👇</p>';
+        : emptyState("💬", "Pas encore de conversation", "Connecte-toi avec des voyageurs pour commencer à discuter en sécurité.", "Découvrir des Mates", "discover");
       $("convList").querySelectorAll("[data-chat]").forEach((el) =>
         el.addEventListener("click", () => openChat(el.dataset.chat)));
       if (typeof appendDemoConvs === "function") appendDemoConvs(); // + les conversations IA en cours
@@ -3489,6 +3540,8 @@
     // Charge toutes les données de jeu de l'utilisateur connecté.
     async function loadGameData() {
       if (!myUserId) return;
+      skelFirst("badgeGrid", skelCards(4));
+      skelFirst("couponList", skelRows(2));
       const [qs, uq, ub, uc, sg] = await Promise.all([
         db.from("quests").select("*").order("sort_order"),
         db.from("user_quests").select("quest_key,status").eq("user_id", myUserId),
@@ -5209,14 +5262,23 @@
       if (n > 0) { el.textContent = n > 9 ? "9+" : String(n); el.classList.remove("hidden"); }
       else el.classList.add("hidden");
     }
+    let _lastBellCount = 0;
     function updateNotifBadges() {
       const mates = pendingRequestsList.length + unreadMsgCount;
       const jeux = (mySuggestions || []).length;
       setBadge("navMates", mates);
       setBadge("navJeux", jeux);
-      setBadge("notifBellCount", mates + jeux);
+      const bell = mates + jeux;
+      setBadge("notifBellCount", bell);
       setBadge("segMsg", unreadMsgCount);
       setBadge("segReq", pendingRequestsList.length);
+      // La cloche « sonne » quand le nombre de notifs AUGMENTE (nouvelle arrivée).
+      const btn = $("notifBell");
+      if (btn) {
+        btn.setAttribute("aria-label", bell > 0 ? bell + " notification(s)" : "Notifications");
+        if (bell > _lastBellCount) { btn.classList.remove("ring"); void btn.offsetWidth; btn.classList.add("ring"); }
+      }
+      _lastBellCount = bell;
     }
 
     // ---- Panneau de notifications (cloche) ----
@@ -5239,6 +5301,7 @@
     // ---- Fil d'actualité : vrais "posts" (quêtes accomplies récemment) ----
     async function buildHomeFeed() {
       const feed = $("homeFeed"); if (!feed) return;
+      skelFirst("homeFeed", skelRows(3));
       const { data: badges } = await db.from("user_badges")
         .select("user_id,name,emoji,earned_at").order("earned_at", { ascending: false }).limit(40);
       // On ne garde que les temps forts des 3 derniers jours
@@ -5390,6 +5453,18 @@
         } else { new Notification(title, { body: body, icon: "icon.svg" }); }
       } catch (e) {}
     }
+
+    // Boutons d'action des états vides (« Découvrir des Mates », « Voir les lieux »…)
+    document.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-empty-act]"); if (!b) return;
+      const a = b.dataset.emptyAct;
+      if (a === "discover") {
+        goToTab("connexions");
+        if (typeof showMatesView === "function") showMatesView("matesHome");
+        if (typeof showMatesSegment === "function") showMatesSegment("discover");
+      } else if (a === "lieux") { goToTab("lieux"); }
+      else if (a === "jeux") { goToTab("jeux"); }
+    });
 
     // ====================== INSTALLATION DE L'APP (PWA) ======================
     // Propose d'installer SunMates sur l'écran d'accueil, via une bannière maison
