@@ -3366,6 +3366,8 @@
         }
         const { error } = await db.from("matches_connections")
           .insert({ user_a: myUserId, user_b: otherId, status: "pending" });
+        // 23505 = violation d'unicité (filet de sécurité base) → demande déjà existante
+        if (error && error.code === "23505") { await loadConnections(); return { ok: true, already: "pending" }; }
         if (!error) await loadConnections();
         return { ok: !error, error };
       });
@@ -3659,6 +3661,8 @@
         const { error } = await db.from("quest_suggestions").insert({
           from_user: myUserId, to_user: toUserId, quest_key: quest.key, quest_title: quest.title,
         });
+        // 23505 = violation d'unicité (filet de sécurité base) → défi déjà en attente
+        if (error && error.code === "23505") { m.style.color = "var(--ok)"; m.textContent = "Défi déjà proposé ✅"; return; }
         if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
         // + un message dans le chat (option « les deux »), seulement si le défi est bien parti
         await db.from("messages").insert({ sender_id: myUserId, recipient_id: toUserId, content: "🎯 Je te propose la quête : " + quest.title });
