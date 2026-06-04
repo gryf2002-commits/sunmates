@@ -2594,6 +2594,12 @@
       const badge = $("verifBadge");
       badge.textContent = data.is_verified ? "✅ Vérifié" : "Non vérifié";
       badge.className = "badge " + (data.is_verified ? "ok" : "no");
+      // Bouton de vérification : désactivé/masqué une fois vérifié (plus de re-clic).
+      const vb = $("verifyBtn");
+      if (vb) {
+        if (data.is_verified) { vb.disabled = true; vb.textContent = "✅ Profil vérifié"; vb.style.opacity = ".6"; vb.style.cursor = "default"; }
+        else { vb.disabled = false; vb.textContent = "Demander la vérification"; vb.style.opacity = ""; vb.style.cursor = ""; }
+      }
       const cp = $("contactPrefVal"); if (cp) cp.textContent = (data.allow_contact === "connections") ? "Connexions ›" : "Tout le monde ›";
       myBffId = data.bff_id || null;
       renderBff();
@@ -2643,9 +2649,20 @@
     $("verifyBtn").addEventListener("click", () => once("verify", async () => {
       const msg = $("profileMsg");
       if (!myUserId) return;
-      // MVP : la "vérification" est simulée — elle passe le badge à vérifié (+30 points).
+      // On relit l'état FRAIS en base (évite un score périmé côté client).
+      const { data: cur, error: errRead } = await db.from("profiles")
+        .select("trust_score,is_verified").eq("id", myUserId).maybeSingle();
+      if (errRead) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + errRead.message; return; }
+      // Déjà vérifié → on ne re-crédite PAS (vérification = une seule fois).
+      if (cur && cur.is_verified) {
+        msg.style.color = "var(--muted)"; msg.textContent = "Ton profil est déjà vérifié ✅";
+        await loadProfile();
+        return;
+      }
+      // ADDITIF : on AJOUTE 30 au score existant (ne JAMAIS écraser les points gagnés).
+      const base = (cur && cur.trust_score) || 0;
       const { error } = await db.from("profiles")
-        .update({ is_verified: true, trust_score: 30 }).eq("id", myUserId);
+        .update({ is_verified: true, trust_score: base + 30 }).eq("id", myUserId);
       if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; }
       else { msg.style.color = "var(--ok)"; msg.textContent = "Profil vérifié ✅ (+30 points)"; await loadProfile(); }
     }));
