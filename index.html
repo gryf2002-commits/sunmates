@@ -4505,7 +4505,8 @@
     // les activités à venir (défis acceptés) et les check-ins récents. Chaque type
     // est une couche que l'on peut afficher/masquer via les filtres.
     let homeLeaf = null;
-    const homeLayers = {};                                   // { places, mates, activities, checkins } -> L.layerGroup
+    let homeCluster = null;                                  // UN SEUL groupe de cluster → les marqueurs au même endroit fusionnent (rosace au clic)
+    let homeMarkersByType = { places: [], mates: [], activities: [], checkins: [] }; // marqueurs par type (pour les filtres)
     const homeLayerOn = { places: true, mates: true, activities: true, checkins: true };
     let homeMeMarker = null;
 
@@ -4588,18 +4589,21 @@
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(homeLeaf);
         homeLeaf.attributionControl.setPrefix(false).setPosition("bottomleft"); // retire le logo Leaflet, déplace à gauche
         const LAYER_COLORS = { places: "#f4655e", mates: "#7a5cff", activities: "#ff9f1c", checkins: "#19b36b" };
-        ["places", "mates", "activities", "checkins"].forEach((k) => {
-          homeLayers[k] = (typeof L.markerClusterGroup === "function")
-            ? L.markerClusterGroup({
-                maxClusterRadius: 40, showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.4,
-                iconCreateFunction: (cluster) => L.divIcon({
-                  html: `<div class="epin-cluster" style="background:${LAYER_COLORS[k]}">${cluster.getChildCount()}</div>`,
-                  className: "epin-cluster-wrap", iconSize: [38, 38],
-                }),
-              })
-            : L.layerGroup();
-          homeLayers[k].addTo(homeLeaf);
-        });
+        homeCluster = (typeof L.markerClusterGroup === "function")
+          ? L.markerClusterGroup({
+              maxClusterRadius: 38, showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.8,
+              spiderfyOnMaxZoom: true, zoomToBoundsOnClick: true,
+              // Couleur du point unique = type dominant des marqueurs regroupés (lieu/mate/activité/check-in).
+              iconCreateFunction: (cluster) => {
+                const counts = {};
+                cluster.getAllChildMarkers().forEach((m) => { const t = m.smType || "places"; counts[t] = (counts[t] || 0) + 1; });
+                let best = "places", bestN = -1;
+                Object.keys(counts).forEach((t) => { if (counts[t] > bestN) { bestN = counts[t]; best = t; } });
+                return L.divIcon({ html: `<div class="epin-cluster" style="background:${LAYER_COLORS[best]}">${cluster.getChildCount()}</div>`, className: "epin-cluster-wrap", iconSize: [38, 38] });
+              },
+            })
+          : L.layerGroup();
+        homeCluster.addTo(homeLeaf);
         homeLeaf.on("popupopen", (e) => {
           const node = e.popup._contentNode; if (!node) return;
           // Check-in sur un lieu
@@ -4626,7 +4630,8 @@
       if (token !== homeMapToken) return; // un rendu plus récent a démarré → on abandonne celui-ci
 
       // À partir d'ici tout est synchrone : on vide puis on reconstruit d'un bloc.
-      Object.values(homeLayers).forEach((g) => g.clearLayers());
+      if (homeCluster) homeCluster.clearLayers();
+      homeMarkersByType = { places: [], mates: [], activities: [], checkins: [] };
       if (homeMeMarker) { homeLeaf.removeLayer(homeMeMarker); homeMeMarker = null; }
       const allMarkers = [];
 
@@ -4668,7 +4673,7 @@
         const stats = `<div class="muted" style="margin:.2rem 0">${nCk ? "✅ " + nCk + " ici récemment" : "✨ Sois le·la 1er·ère à checker !"}${c.is_eco ? " · 🌱 éco" : ""}</div>`;
         const mk = L.marker([c.lat, c.lng], { icon: epinIcon("📍", "#f4655e") })
           .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${c.address ? `<span class="muted" style="font-size:.72rem">📍 ${escapeHtml(c.address)}</span>` : escapeHtml(c.city || "")}${stats}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button></div>`);
-        homeLayers.places.addLayer(mk); allMarkers.push(mk); homeCafeMarkerById[c.id] = mk;
+        mk.smType = "places"; homeMarkersByType.places.push(mk); allMarkers.push(mk); homeCafeMarkerById[c.id] = mk;
       });
 
       // 🧑 Mates — placés à leur vrai lieu de check-in (IA : un vrai lieu), sinon absents
@@ -4683,7 +4688,7 @@
         const actions = chatBtn + suggestBtn + `<button class="mappop-btn ghost" data-hmprofile="${p.id}">Voir le profil</button>`;
         const mk = L.marker(co, { icon: epinIcon(p.is_demo ? "🤖" : "🧑", "#7a5cff") })
           .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(p.username || "Voyageur")}${p.is_verified ? " ✅" : ""}</b><br>${tag}📍 ${escapeHtml(cafe.name)}<br>${actions}</div>`);
-        homeLayers.mates.addLayer(mk); allMarkers.push(mk);
+        mk.smType = "mates"; homeMarkersByType.mates.push(mk); allMarkers.push(mk);
       });
 
       // ✅ Check-ins RÉCENTS (< 1 h) — AU lieu exact (léger décalage déterministe)
@@ -4695,7 +4700,7 @@
         const mins = Math.max(1, Math.round((HOUR - (nowMs - new Date(ck.created_at).getTime())) / 60000));
         const mk = L.marker(jitterAt(cafe, "ck-" + ck.user_id + "-" + i), { icon: epinIcon("✅", "#19b36b") })
           .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(who)}</b><br>check-in · ${escapeHtml(cafe.name)}<br><span class="muted">${timeAgo(ck.created_at)} · disparaît dans ~${mins} min</span>${whoBtn}</div>`);
-        homeLayers.checkins.addLayer(mk); allMarkers.push(mk);
+        mk.smType = "checkins"; homeMarkersByType.checkins.push(mk); allMarkers.push(mk);
       });
 
       // ✅ Check-ins d'exemple des IA — au MÊME vrai lieu que l'IA (cohérent)
@@ -4703,7 +4708,7 @@
         const cafe = cafeForMember(p); if (!cafe) return;
         const mk = L.marker(jitterAt(cafe, "ckdemo-" + p.id), { icon: epinIcon("✅", "#19b36b") })
           .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(p.username)}</b> <span style="font-size:.7rem;color:#7a5cff">🤖</span><br>check-in · ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Message</button></div>`);
-        homeLayers.checkins.addLayer(mk); allMarkers.push(mk);
+        mk.smType = "checkins"; homeMarkersByType.checkins.push(mk); allMarkers.push(mk);
       });
 
       // 📣 Activités partagées par les membres — vraies coordonnées choisies
@@ -4716,7 +4721,7 @@
           : (creator ? `<button class="mappop-btn" data-hmchat="${a.creator}">💬 Message</button>` : "");
         const mk = L.marker([a.lat, a.lng], { icon: epinIcon("📣", "#ff5e9f") })
           .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(a.title)}</b><br><span class="muted">partagé par ${escapeHtml(byName)}</span>${a.address ? `<br><span class="muted" style="font-size:.72rem">📍 ${escapeHtml(a.address)}</span>` : ""}${a.note ? "<br>" + escapeHtml(a.note) : ""}<br>${actions}</div>`);
-        homeLayers.activities.addLayer(mk); allMarkers.push(mk);
+        mk.smType = "activities"; homeMarkersByType.activities.push(mk); allMarkers.push(mk);
       });
 
       // 🎉 Exemples d'activités IA — sur de vrais lieux (cohérent avec leur position)
@@ -4727,7 +4732,7 @@
         const title = DEMO_ACTIVITIES[idx % DEMO_ACTIVITIES.length];
         const am = L.marker(jitterAt(cafe, "act-" + p.id), { icon: epinIcon("🎉", "#ff9f1c") })
           .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(title)}</b><br>proposé par ${escapeHtml(p.username)} 🤖<br>à ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Rejoindre</button><button class="mappop-btn ghost" data-hmprofile="${p.id}">Voir le profil</button></div>`);
-        homeLayers.activities.addLayer(am); allMarkers.push(am);
+        am.smType = "activities"; homeMarkersByType.activities.push(am); allMarkers.push(am);
       });
 
       // 🎮 Quêtes à faire (dans des lieux partenaires) — accès direct depuis la carte
@@ -4737,7 +4742,7 @@
           const cafe = places[h % places.length];
           const mk = L.marker(jitterAt(cafe, "quest-" + q.key), { icon: epinIcon("🎮", "#ff9f1c") })
             .bindPopup(`<div class="mappop-mini"><b>${escapeHtml((q.emoji || "🎮") + " " + (q.title || "Quête"))}</b><br><span class="muted">Quête à faire · ${escapeHtml(cafe.name)}</span><br><button class="mappop-btn" data-hmquest="${escapeHtml(q.key)}">▶ Voir la quête</button></div>`);
-          homeLayers.activities.addLayer(mk); allMarkers.push(mk);
+          mk.smType = "activities"; homeMarkersByType.activities.push(mk); allMarkers.push(mk);
         });
       }
 
@@ -4751,7 +4756,7 @@
         const mins = Math.max(1, Math.round((HOUR - (nowMs - new Date(l.created_at).getTime())) / 60000));
         const mk = L.marker([l.lat, l.lng], { icon: epinIcon(l.is_emergency ? "🚨" : "🛟", l.is_emergency ? "#e23b3b" : "#7a5cff", "me"), zIndexOffset: 900 })
           .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(name)}</b>${l.is_emergency ? ' <span style="color:#e23b3b;font-weight:800">🚨 URGENCE</span>' : ''}<br>position partagée · ${timeAgo(l.created_at)}<br><span class="muted">expire dans ~${mins} min</span><br><button class="mappop-btn" data-hmchat="${l.user_id}">💬 Message</button></div>`);
-        homeLayers.mates.addLayer(mk); allMarkers.push(mk);
+        mk.smType = "mates"; homeMarkersByType.mates.push(mk); allMarkers.push(mk);
       });
 
       // 📌 Toi — position partagée récente (réelle) en priorité ; sinon ton dernier check-in
@@ -4771,10 +4776,10 @@
       }
 
       // Compteurs sur les filtres = nombre réel de pastilles affichées
-      setHomeChipCount("places", homeLayers.places.getLayers().length);
-      setHomeChipCount("mates", homeLayers.mates.getLayers().length);
-      setHomeChipCount("activities", homeLayers.activities.getLayers().length);
-      setHomeChipCount("checkins", homeLayers.checkins.getLayers().length);
+      setHomeChipCount("places", homeMarkersByType.places.length);
+      setHomeChipCount("mates", homeMarkersByType.mates.length);
+      setHomeChipCount("activities", homeMarkersByType.activities.length);
+      setHomeChipCount("checkins", homeMarkersByType.checkins.length);
 
       homeAllMarkers = allMarkers;
       applyHomeLayers();
@@ -4794,7 +4799,7 @@
         homeLeaf.invalidateSize();
         const open = () => { const mk = homeCafeMarkerById[cafeId]; if (mk) { homeLeaf.setView(mk.getLatLng(), 17, { animate: true }); mk.openPopup(); } else { homeLeaf.setView([c.lat, c.lng], 17, { animate: true }); } };
         const mk = homeCafeMarkerById[cafeId];
-        if (mk && homeLayers.places && typeof homeLayers.places.zoomToShowLayer === "function") homeLayers.places.zoomToShowLayer(mk, open);
+        if (mk && homeCluster && typeof homeCluster.zoomToShowLayer === "function" && homeCluster.hasLayer(mk)) homeCluster.zoomToShowLayer(mk, open);
         else open();
       };
       // délai large pour passer APRÈS le rendu déclenché par goToTab (sinon la bulle se referme)
@@ -4846,9 +4851,7 @@
             const c = homeLeaf.getCenter(), z = homeLeaf.getZoom();
             homeLeaf.invalidateSize(true);
             homeLeaf.setView(c, z, { animate: false });
-            Object.values(homeLayers || {}).forEach((lyr) => {
-              if (lyr && typeof lyr.refreshClusters === "function") { try { lyr.refreshClusters(); } catch (e) {} }
-            });
+            if (homeCluster && typeof homeCluster.refreshClusters === "function") { try { homeCluster.refreshClusters(); } catch (e) {} }
           } catch (e) {}
         };
         [60, 220, 450, 800].forEach((d) => setTimeout(redraw, d));
@@ -4968,12 +4971,12 @@
 
     // Affiche/masque les couches selon l'état des filtres.
     function applyHomeLayers() {
-      if (!homeLeaf) return;
-      Object.keys(homeLayers).forEach((k) => {
-        const on = homeLayerOn[k], has = homeLeaf.hasLayer(homeLayers[k]);
-        if (on && !has) homeLeaf.addLayer(homeLayers[k]);
-        else if (!on && has) homeLeaf.removeLayer(homeLayers[k]);
-      });
+      if (!homeCluster) return;
+      // On reconstruit le contenu du groupe unique selon les filtres actifs.
+      homeCluster.clearLayers();
+      const toAdd = [];
+      Object.keys(homeMarkersByType).forEach((k) => { if (homeLayerOn[k]) toAdd.push(...homeMarkersByType[k]); });
+      if (toAdd.length) homeCluster.addLayers(toAdd);
     }
 
     function renderHomeLegend() {
