@@ -145,6 +145,84 @@
     .place .eco { color: var(--ok); font-size: .78rem; font-weight: 600; }
     .place button { align-self: flex-start; margin-top: .5rem; padding: .55rem 1rem; font-size: .85rem; }
 
+    /* --------------------- Carte tout-en-un (accueil) -------------------- */
+    .homemap-card { padding: .55rem; }
+    .homemap-filters { margin-bottom: .55rem; gap: .4rem; }
+    .homemap-filters .chip { font-size: .78rem; padding: .35rem .7rem; opacity: .5; }
+    .homemap-filters .chip.active { opacity: 1; }
+    .homemap-filters .chip b { font-weight: 800; opacity: .85; }
+    .homemap-wrap { position: relative; }
+    .homemap { height: 340px; border-radius: 14px; overflow: hidden; background: var(--cream); }
+    .homemap-tools { position: absolute; right: .55rem; bottom: .55rem; z-index: 500; display: flex; flex-direction: column; gap: .4rem; align-items: flex-end; }
+    .homemap-tools button { background: var(--card); color: var(--ink); border: 1px solid rgba(0,0,0,.08); border-radius: 999px; padding: .4rem .7rem; font-size: .76rem; font-weight: 700; box-shadow: var(--shadow-sm); cursor: pointer; }
+    .homemap-tools button:hover { background: var(--accent-grad); color: #fff; }
+
+    /* --------------------- Onboarding « du futur » -------------------- */
+    .onb { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 1.2rem;
+      background: radial-gradient(120% 120% at 50% 0%, #2a1850 0%, #160b2e 55%, #0c0720 100%); overflow: hidden; }
+    .onb.show { animation: onbFade .4s ease; }
+    @keyframes onbFade { from { opacity: 0; } to { opacity: 1; } }
+    .onb-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .onb-bg .orb { position: absolute; border-radius: 50%; filter: blur(42px); opacity: .55; animation: orbFloat 9s ease-in-out infinite; }
+    .onb-bg .o1 { width: 240px; height: 240px; background: #ff7e5f; top: -40px; left: -30px; }
+    .onb-bg .o2 { width: 200px; height: 200px; background: #6a5cff; bottom: -30px; right: -20px; animation-delay: -3s; }
+    .onb-bg .o3 { width: 160px; height: 160px; background: #29d8c2; top: 42%; right: 26%; animation-delay: -6s; }
+    @keyframes orbFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-26px) scale(1.08); } }
+    .onb-card { position: relative; width: 100%; max-width: 420px; background: rgba(255,255,255,.08);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.16);
+      border-radius: 28px; padding: 2.4rem 1.6rem 1.4rem; color: #fff; box-shadow: 0 30px 80px rgba(0,0,0,.45); text-align: center; }
+    .onb-skip { position: absolute; top: 1rem; right: 1.1rem; background: none; border: 0; color: rgba(255,255,255,.7); font-size: .82rem; cursor: pointer; }
+    .onb-stage { position: relative; min-height: 280px; }
+    .onb-step { position: absolute; inset: 0; opacity: 0; transform: translateX(34px); transition: opacity .42s ease, transform .42s ease;
+      pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .onb-step.active { opacity: 1; transform: none; pointer-events: auto; }
+    .onb-step.left { transform: translateX(-34px); }
+    .onb-emoji { font-size: 72px; margin-bottom: .8rem; filter: drop-shadow(0 10px 18px rgba(0,0,0,.4)); animation: floaty 3s ease-in-out infinite; }
+    .onb-step h2 { font-size: 1.6rem; margin: 0 0 .6rem; color: #fff; }
+    .onb-step h2 span { background: linear-gradient(90deg,#ffd15c,#ff7e5f); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .onb-step p { color: rgba(255,255,255,.85); font-size: .98rem; line-height: 1.5; max-width: 320px; }
+    .onb-step p b { color: #fff; }
+    .onb-dots { display: flex; gap: .5rem; justify-content: center; margin: 1rem 0; }
+    .onb-dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.3); transition: all .3s; }
+    .onb-dots i.on { width: 26px; border-radius: 999px; background: linear-gradient(90deg,#ffd15c,#ff7e5f); }
+    .onb-actions { display: flex; gap: .7rem; }
+    .onb-actions button { flex: 1; padding: .9rem; border-radius: 999px; font-weight: 800; cursor: pointer; border: 0; font-size: .95rem; }
+    .onb-next { background: linear-gradient(135deg,#ffb274,#ff7e5f 60%,#f4655e); color: #fff; box-shadow: 0 10px 24px rgba(244,101,94,.45); }
+    .onb-next:hover { transform: translateY(-2px); }
+    .onb-prev { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.18); flex: 0 0 32%; }
+
+    /* --------------------- Visite guidée (spotlights) -------------------- */
+    .tour { position: fixed; inset: 0; z-index: 4200; }
+    .tour-catch { position: absolute; inset: 0; }                  /* avale les clics pendant la visite */
+    .tour-spot { position: absolute; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(12,7,32,.72);
+      border: 2px solid rgba(255,255,255,.9); transition: all .35s cubic-bezier(.4,0,.2,1); pointer-events: none; }
+    .tour-pop { position: absolute; left: 50%; transform: translateX(-50%); width: calc(100% - 2rem); max-width: 360px;
+      background: var(--card); color: var(--ink); border-radius: 20px; padding: 1.1rem 1.2rem; box-shadow: 0 24px 60px rgba(0,0,0,.5);
+      text-align: center; animation: tourPop .3s ease; }
+    @keyframes tourPop { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; } }
+    .tour-emoji { font-size: 40px; margin-bottom: .3rem; }
+    .tour-pop h4 { margin: 0 0 .35rem; font-size: 1.15rem; }
+    .tour-pop p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    .tour-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; }
+    .tour-prog { font-size: .78rem; color: var(--muted); font-weight: 700; }
+    .tour-btns { display: flex; gap: .5rem; }
+    .tour-skip { background: none; border: 0; color: var(--muted); font-size: .82rem; cursor: pointer; }
+    .tour-next { background: var(--accent-grad); color: #fff; border: 0; border-radius: 999px; padding: .55rem 1.1rem; font-weight: 800; cursor: pointer; }
+    .homemap-legend { display: flex; flex-wrap: wrap; gap: .5rem .9rem; padding: .55rem .35rem .15rem; font-size: .74rem; color: var(--muted); }
+    .homemap-legend span { display: inline-flex; align-items: center; gap: .3rem; }
+    .homemap-legend i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    /* Marqueurs personnalisés (pastilles emoji colorées) */
+    .epin { width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+      display: grid; place-items: center; box-shadow: 0 3px 8px rgba(0,0,0,.32); border: 2px solid #fff; }
+    .epin > span { transform: rotate(45deg); font-size: 15px; line-height: 1; }
+    .epin.me { animation: pinPulse 2s ease-out infinite; }
+    @keyframes pinPulse { 0% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(244,101,94,.5); } 70% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 12px rgba(244,101,94,0); } 100% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(244,101,94,0); } }
+    .mappop-mini { text-align: center; }
+    .mappop-mini b { font-size: .9rem; }
+    .mappop-btn { display: block; width: 100%; margin-top: 6px; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: .4rem .6rem; cursor: pointer; font-weight: 700; font-size: .8rem; }
+    .mappop-btn.alt { background: #7a5cff; }
+    .mappop-btn.ghost { background: transparent; color: var(--accent); border: 1px solid rgba(244,101,94,.4); }
+
     /* --------------------- Grille cartes accueil -------------------- */
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
     .tile {
@@ -996,6 +1074,59 @@
   <!-- Notifications éphémères (toasts) -->
   <div id="toastWrap"></div>
 
+  <!-- ===== Onboarding « du futur » (nouveaux comptes + existants pas encore guidés) ===== -->
+  <div id="onboarding" class="onb hidden">
+    <div class="onb-bg"><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span></div>
+    <div class="onb-card">
+      <button id="onbSkip" class="onb-skip">Passer</button>
+      <div class="onb-stage" id="onbStage">
+        <section class="onb-step active" data-step="0">
+          <div class="onb-emoji">👋</div>
+          <h2>Bienvenue<span id="onbName"></span> !</h2>
+          <p>SunMates transforme tes rencontres de voyage en connexions <b>sûres</b> et vérifiées. Voyage seul·e, jamais seul·e. ☀️</p>
+        </section>
+        <section class="onb-step" data-step="1">
+          <div class="onb-emoji">🛡️</div>
+          <h2>La sécurité d'abord</h2>
+          <p>Profils <b>vérifiés</b>, bouton <b>SOS</b> et partage de position avec ton cercle de confiance, à tout moment.</p>
+        </section>
+        <section class="onb-step" data-step="2">
+          <div class="onb-emoji">🗺️</div>
+          <h2>Ta carte vivante</h2>
+          <p>Sur l'accueil, une seule carte montre tout : <b>lieux sûrs</b>, <b>Mates</b>, <b>activités à venir</b> et <b>check-ins</b>.</p>
+        </section>
+        <section class="onb-step" data-step="3">
+          <div class="onb-emoji">🎮</div>
+          <h2>Gagne en confiance</h2>
+          <p>Fais des <b>check-ins</b> dans des lieux éco-responsables, débloque des <b>badges</b> et lance des <b>défis</b> à tes Mates.</p>
+        </section>
+      </div>
+      <div class="onb-dots" id="onbDots"></div>
+      <div class="onb-actions">
+        <button id="onbPrev" class="onb-prev hidden">Retour</button>
+        <button id="onbNext" class="onb-next">Suivant →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Visite guidée interactive (spotlights sur l'app) ===== -->
+  <div id="tour" class="tour hidden">
+    <div class="tour-catch"></div>
+    <div class="tour-spot" id="tourSpot"></div>
+    <div class="tour-pop" id="tourPop">
+      <div class="tour-emoji" id="tourEmoji">✨</div>
+      <h4 id="tourTitle"></h4>
+      <p id="tourText"></p>
+      <div class="tour-foot">
+        <span class="tour-prog" id="tourProg"></span>
+        <div class="tour-btns">
+          <button id="tourSkip" class="tour-skip">Quitter</button>
+          <button id="tourNext" class="tour-next">Suivant →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Panneau de notifications (ouvert par la cloche) -->
   <div id="notifPanel" class="hidden">
     <div class="notif-card">
@@ -1069,6 +1200,26 @@
           <input id="homeSearch" type="text" placeholder="Rechercher un lieu ou un·e voyageur·se…" />
         </div>
         <div id="searchResults"></div>
+
+        <!-- ===== Carte « tout-en-un » : lieux, Mates, activités, check-ins ===== -->
+        <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3><a data-goto="lieux">Plein écran</a></div>
+        <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Une seule carte pour tout voir. Touche les filtres pour afficher/masquer, et <b>clique une pastille</b> pour agir (check-in, message, activité…).</p>
+        <div class="card homemap-card">
+          <div class="chips wrap homemap-filters" id="homeMapFilters">
+            <button class="chip active" data-layer="places">📍 Lieux <b data-cnt></b></button>
+            <button class="chip active" data-layer="mates">🧑 Mates <b data-cnt></b></button>
+            <button class="chip active" data-layer="activities">🎉 Activités <b data-cnt></b></button>
+            <button class="chip active" data-layer="checkins">✅ Check-ins <b data-cnt></b></button>
+          </div>
+          <div class="homemap-wrap">
+            <div id="homeMap" class="homemap"></div>
+            <div class="homemap-tools">
+              <button id="hmLocate" title="Centrer sur ma position">📍 Autour de moi</button>
+              <button id="hmFit" title="Tout afficher">🔄 Tout voir</button>
+            </div>
+          </div>
+          <div class="homemap-legend" id="homeMapLegend"></div>
+        </div>
 
         <div class="section-head">
           <h3 style="margin-top:.4rem">Ton fil ✨</h3>
@@ -1626,6 +1777,7 @@
           <label style="margin-top:1rem">Nouveau mot de passe</label>
           <input id="setPassword" type="password" placeholder="Au moins 6 caractères" />
           <button class="btn-accent btn-block" id="savePasswordBtn" style="margin-top:.4rem">Changer le mot de passe</button>
+          <button class="btn-ghost btn-block" id="replayOnbBtn" style="margin-top:1rem">🚀 Revoir la présentation</button>
           <div class="msg" id="settingsMsg"></div>
         </div>
       </div>
@@ -1866,6 +2018,8 @@
         await loadGameData(); // après loadConnections : travelerMap dispo pour les noms des défis
         await loadUnread();
         buildHomeFeed();
+        if (typeof renderHomeMap === "function") setTimeout(renderHomeMap, 80);
+        if (typeof maybeShowOnboarding === "function") maybeShowOnboarding();
         subscribeToCircle();
         subscribeMessages();
         subscribeConnections();
@@ -1955,6 +2109,7 @@
       if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
       if (target === "lieux" && typeof renderMap === "function") renderMap();
+      if (target === "accueil" && typeof renderHomeMap === "function") setTimeout(renderHomeMap, 60);
       if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -2233,6 +2388,7 @@
       if (gc) gc.addEventListener("click", () => toast("👑", "Lieu exclusif Gold — check-in premium ✨ (démo)"));
       loadHome(); // garde l'accueil synchronisé
       if (typeof renderMap === "function" && leafMap) renderMap(); // rafraîchit les marqueurs
+      if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap(); // + carte de l'accueil
     }
 
     // Check-in SÉCURISÉ : il faut le CODE affiché sur place. Les points sont
@@ -3132,6 +3288,30 @@
       }
     });
 
+    // ---- Conversations d'exemple avec les comptes IA (démo), côté navigateur ----
+    const demoChats = {}; // id -> [{ them:bool, text:string }]  (persiste le temps de la session)
+    const DEMO_REPLIES = [
+      "Trop bien ! On se fait un check-in dans un café partenaire ? ☕",
+      "Carrément partant·e 😄 Tu es vérifié·e sur SunMates ?",
+      "Haha j'adore ! Je suis dispo cette semaine pour une activité 🎉",
+      "Bonne idée ! Je t'envoie ma position dès qu'on cale un lieu sûr 📍",
+      "Avec plaisir ! La sécurité d'abord — on se voit dans un lieu validé 🛟",
+      "Oh oui ! J'ai justement repéré un super spot éco-responsable 🌿",
+    ];
+    function demoIntro(p) {
+      const city = p.city || "le coin";
+      return [
+        { them: true, text: `Coucou ! Moi c'est ${p.username || "un voyageur"} 👋 Je suis à ${city} en ce moment.` },
+        { them: true, text: "Tu cherches un bon spot sûr pour se rencontrer ? J'en connais quelques-uns ☕" },
+      ];
+    }
+    function renderDemoChat(id) {
+      const body = $("chatBody"); if (!body) return;
+      const log = demoChats[id] || [];
+      body.innerHTML = log.map((m) => `<div class="bubble ${m.them ? "them" : "me"}"><span class="bubble-txt">${escapeHtml(m.text)}</span></div>`).join("");
+      scrollChatBottom();
+    }
+
     // Ouvre la conversation avec un Mate (identifié par son id utilisateur)
     async function openChat(otherUserId) {
       currentChatUserId = otherUserId;
@@ -3142,6 +3322,12 @@
       $("chatStatus").textContent = "Voir le profil ›";
       $("chatBody").innerHTML = '<p class="muted" style="text-align:center">Chargement…</p>';
       showMatesView("matesChat");
+      // Compte IA (démo) : conversation d'exemple simulée côté navigateur
+      if (p.is_demo) {
+        if (!demoChats[otherUserId]) demoChats[otherUserId] = demoIntro(p);
+        renderDemoChat(otherUserId);
+        return;
+      }
       // Historique : messages échangés entre moi et cet interlocuteur (RLS = uniquement les miens)
       const { data, error } = await db.from("messages").select("*")
         .or(`and(sender_id.eq.${myUserId},recipient_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},recipient_id.eq.${myUserId})`)
@@ -3163,6 +3349,20 @@
       const text = input.value.trim();
       if (!text || !currentChatUserId) return;
       input.value = "";
+      // Compte IA (démo) : on simule l'échange côté navigateur (mon message + une réponse)
+      const dp = travelerMap[currentChatUserId] || {};
+      if (dp.is_demo) {
+        const id = currentChatUserId;
+        demoChats[id] = demoChats[id] || [];
+        demoChats[id].push({ them: false, text });
+        renderDemoChat(id);
+        setTimeout(() => {
+          const reply = DEMO_REPLIES[Math.floor(Math.random() * DEMO_REPLIES.length)];
+          demoChats[id].push({ them: true, text: reply });
+          if (currentChatUserId === id) renderDemoChat(id);
+        }, 1100);
+        return;
+      }
       const { error } = await db.from("messages")
         .insert({ sender_id: myUserId, recipient_id: currentChatUserId, content: text });
       if (error) {
@@ -3227,6 +3427,8 @@
       mateProfileBack = null; // par défaut, le retour ramène à la liste Mates
       currentTravelerId = p.id;
       ["tpMsgBtn", "tpConnectBtn", "tpChallengeBtn", "tpBlockBtn"].forEach((id) => { const e = $(id); if (e) e.style.display = ""; });
+      // Persona IA intégré : seul le message a du sens (pas de connexion/défi réels)
+      if (String(p.id).startsWith("ia-")) { ["tpConnectBtn", "tpChallengeBtn", "tpBlockBtn"].forEach((id) => { const e = $(id); if (e) e.style.display = "none"; }); }
       const name = p.username || "Voyageur";
       $("tpName").textContent = name;
       $("tpCity").textContent = "📍 " + (p.city || "Quelque part dans le monde");
@@ -3473,6 +3675,358 @@
       setTimeout(() => { leafMap.invalidateSize(); leafMap.setView(mk.getLatLng(), 15, { animate: true }); mk.openPopup(); }, 180);
     }
 
+    // ============ Carte « tout-en-un » de l'accueil ============
+    // Affiche, sur une seule carte : les lieux sûrs, les Mates (démo + connectés),
+    // les activités à venir (défis acceptés) et les check-ins récents. Chaque type
+    // est une couche que l'on peut afficher/masquer via les filtres.
+    let homeLeaf = null;
+    const homeLayers = {};                                   // { places, mates, activities, checkins } -> L.layerGroup
+    const homeLayerOn = { places: true, mates: true, activities: true, checkins: true };
+    let homeMeMarker = null;
+
+    // Pastille emoji colorée comme marqueur (au lieu du marqueur bleu par défaut).
+    function epinIcon(emoji, bg, extra) {
+      return L.divIcon({
+        className: "epin-wrap",
+        html: `<div class="epin ${extra || ""}" style="background:${bg}"><span>${emoji}</span></div>`,
+        iconSize: [32, 32], iconAnchor: [16, 30], popupAnchor: [0, -28],
+      });
+    }
+
+    // Trouve des coordonnées pour une ville à partir des lieux connus, avec un petit
+    // décalage déterministe (basé sur l'id) pour ne pas empiler tous les marqueurs.
+    function cityCoords(city, seedId) {
+      let h = 0; const s = String(seedId || "");
+      for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
+      const geo = (allCafes || []).filter((p) => p.lat != null && p.lng != null);
+      let baseLat, baseLng;
+      if (geo.length) {
+        // 1) un lieu dans la même ville si possible… 2) sinon un lieu déterministe
+        const ref = geo.find((p) => (p.city || "").toLowerCase() === (city || "").toLowerCase()) || geo[h % geo.length];
+        baseLat = ref.lat; baseLng = ref.lng;
+      } else {
+        baseLat = 38.72; baseLng = -9.14; // centre par défaut (Lisbonne) si aucun lieu géolocalisé
+      }
+      const dx = ((h % 100) / 100 - 0.5) * 0.06;
+      const dy = ((Math.floor(h / 100) % 100) / 100 - 0.5) * 0.06;
+      return [baseLat + dy, baseLng + dx];
+    }
+
+    let homeAllMarkers = [], homeGpsMarker = null;
+
+    // Personas IA intégrés : toujours disponibles pour animer la carte et la messagerie.
+    const IA_PERSONAS = [
+      { id: "ia-lina",  username: "Lina",  city: "Lisbonne",  bio: "Slow travel & couchers de soleil 🌅", avatar_url: "https://i.pravatar.cc/120?img=47", interests: ["Photo", "Plage", "Slow travel"] },
+      { id: "ia-tom",   username: "Tom",   city: "Biarritz",  bio: "Surf, océan et bonnes vibes 🏄",       avatar_url: "https://i.pravatar.cc/120?img=12", interests: ["Sport", "Aventure", "Nature"] },
+      { id: "ia-sofia", username: "Sofia", city: "Barcelone", bio: "Street art, cafés et rencontres 📸",    avatar_url: "https://i.pravatar.cc/120?img=32", interests: ["Culture", "Photo", "Fête"] },
+      { id: "ia-marco", username: "Marco", city: "Nice",      bio: "Randos et marchés locaux 🥾",          avatar_url: "https://i.pravatar.cc/120?img=15", interests: ["Randonnée", "Gastronomie", "Nature"] },
+      { id: "ia-aicha", username: "Aïcha", city: "Marseille", bio: "Voyageuse solo, team apéro 🍷",        avatar_url: "https://i.pravatar.cc/120?img=45", interests: ["Fête", "Culture", "Plage"] },
+    ];
+    // Ajoute les personas IA au travelerMap s'ils n'y sont pas déjà (rechargé à chaque connexion).
+    function ensureIaPersonas() {
+      IA_PERSONAS.forEach((p) => {
+        if (!travelerMap[p.id]) travelerMap[p.id] = Object.assign({ is_demo: true, is_verified: true, trust_score: 80 }, p);
+      });
+    }
+
+    async function renderHomeMap() {
+      if (typeof L === "undefined") return;
+      const el = $("homeMap"); if (!el) return;
+      ensureIaPersonas();
+      if (!homeLeaf) {
+        homeLeaf = L.map(el, { scrollWheelZoom: false }).setView([46.6, 2.3], 4);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(homeLeaf);
+        ["places", "mates", "activities", "checkins"].forEach((k) => { homeLayers[k] = L.layerGroup().addTo(homeLeaf); });
+        homeLeaf.on("popupopen", (e) => {
+          const node = e.popup._contentNode; if (!node) return;
+          // Check-in sur un lieu
+          node.querySelectorAll("[data-hmcid]").forEach((b) => b.addEventListener("click", () => checkIn(Number(b.dataset.hmcid), b.dataset.hmcname)));
+          // Ouvrir un profil
+          node.querySelectorAll("[data-hmprofile]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("connexions"); if (typeof openTravelerProfile === "function") openTravelerProfile(travelerMap[b.dataset.hmprofile]); }));
+          // Démarrer une conversation avec un Mate connecté
+          node.querySelectorAll("[data-hmchat]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("connexions"); if (typeof openChat === "function") openChat(b.dataset.hmchat); }));
+          // Proposer une activité à un Mate
+          node.querySelectorAll("[data-hmsuggest]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); mapProposeActivity(travelerMap[b.dataset.hmsuggest]); }));
+          // Aller voir le lieu en grand (onglet Lieux)
+          node.querySelectorAll("[data-hmgocafe]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("lieux"); if (typeof focusMapOn === "function") setTimeout(() => focusMapOn(Number(b.dataset.hmgocafe)), 80); }));
+        });
+      }
+      Object.values(homeLayers).forEach((g) => g.clearLayers());
+      if (homeMeMarker) { homeLeaf.removeLayer(homeMeMarker); homeMeMarker = null; }
+      const allMarkers = [];
+
+      // --- On charge d'abord les données dynamiques pour enrichir les popups ---
+      let cks = [], acts = [];
+      try { const r = await db.from("checkpoints").select("user_id, cafe_id, created_at").order("created_at", { ascending: false }).limit(30); cks = r.data || []; } catch (e) {}
+      try {
+        const r = await db.from("quest_suggestions").select("from_user, to_user, quest_key, status, created_at")
+          .or(`from_user.eq.${myUserId},to_user.eq.${myUserId}`).eq("status", "accepted").order("created_at", { ascending: false }).limit(20);
+        acts = r.data || [];
+      } catch (e) {}
+
+      // Index : nb de check-ins par lieu, nb de Mates par ville
+      const ckByCafe = {}; cks.forEach((ck) => { ckByCafe[ck.cafe_id] = (ckByCafe[ck.cafe_id] || 0) + 1; });
+      const mates = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)));
+      const matesByCity = {}; mates.forEach((p) => { const c = (p.city || "").toLowerCase(); matesByCity[c] = (matesByCity[c] || 0) + 1; });
+
+      // 📍 Lieux sûrs (popup enrichie : photo + compteurs)
+      const places = (allCafes || []).filter((c) => c.lat != null && c.lng != null);
+      places.forEach((c) => {
+        const nCk = ckByCafe[c.id] || 0, nMates = matesByCity[(c.city || "").toLowerCase()] || 0;
+        const photo = c.image_url ? `<img src="${escapeHtml(c.image_url)}" style="width:100%;height:72px;object-fit:cover;border-radius:8px;margin-bottom:5px" alt="">` : "";
+        const stats = `<div class="muted" style="margin:.2rem 0">${nCk ? "✅ " + nCk + " check-in" + (nCk > 1 ? "s" : "") : "Sois le·la 1er·ère à checker !"}${nMates ? " · 🧑 " + nMates + " Mate" + (nMates > 1 ? "s" : "") : ""}</div>`;
+        const mk = L.marker([c.lat, c.lng], { icon: epinIcon("📍", "#f4655e") })
+          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${escapeHtml(c.city || "")}${c.is_eco ? " · 🌱" : ""}${stats}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button><button class="mappop-btn ghost" data-hmgocafe="${c.id}">Voir en grand</button></div>`);
+        homeLayers.places.addLayer(mk); allMarkers.push(mk);
+      });
+
+      // 🧑 Mates (profils démo + Mates connectés), placés près de leur ville
+      mates.forEach((p) => {
+        const co = cityCoords(p.city, p.id); if (!co) return;
+        const photo = p.avatar_url ? `<img src="${escapeHtml(p.avatar_url)}" style="width:54px;height:54px;object-fit:cover;border-radius:50%;margin-bottom:5px" alt="">` : "";
+        const connected = connectedIds.has(p.id);
+        const tag = p.is_demo ? '<span style="font-size:.7rem;color:#7a5cff">🤖 Compte démo</span><br>' : "";
+        const chatBtn = (connected || p.is_demo) ? `<button class="mappop-btn" data-hmchat="${p.id}">💬 Message</button>` : "";
+        const suggestBtn = connected ? `<button class="mappop-btn alt" data-hmsuggest="${p.id}">🎯 Proposer une activité</button>` : "";
+        const actions = chatBtn + suggestBtn + `<button class="mappop-btn ghost" data-hmprofile="${p.id}">Voir le profil</button>`;
+        const mk = L.marker(co, { icon: epinIcon(p.is_demo ? "🤖" : "🧑", "#7a5cff") })
+          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(p.username || "Voyageur")}${p.is_verified ? " ✅" : ""}</b><br>${tag}${escapeHtml(p.city || "")}<br>${actions}</div>`);
+        homeLayers.mates.addLayer(mk); allMarkers.push(mk);
+      });
+
+      // ✅ Check-ins récents (au lieu correspondant, légèrement décalés)
+      cks.slice(0, 20).forEach((ck) => {
+        const cafe = places.find((c) => c.id === ck.cafe_id); if (!cafe) return;
+        const who = travelerMap[ck.user_id]?.username || (ck.user_id === myUserId ? "Toi" : "Un voyageur");
+        const knowWho = ck.user_id !== myUserId && travelerMap[ck.user_id] && (travelerMap[ck.user_id].is_demo || connectedIds.has(ck.user_id));
+        const whoBtn = knowWho ? `<button class="mappop-btn ghost" data-hmprofile="${ck.user_id}">Voir le profil</button>` : "";
+        const mk = L.marker([cafe.lat + 0.012, cafe.lng + 0.012], { icon: epinIcon("✅", "#19b36b") })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(who)}</b><br>check-in · ${escapeHtml(cafe.name)}<br><span class="muted">${timeAgo(ck.created_at)}</span><br><button class="mappop-btn" data-hmgocafe="${cafe.id}">📍 Voir le lieu</button>${whoBtn}</div>`);
+        homeLayers.checkins.addLayer(mk); allMarkers.push(mk);
+      });
+
+      // 🎉 Activités à venir (défis acceptés), placées sur le Mate concerné
+      acts.forEach((a) => {
+        const otherId = a.from_user === myUserId ? a.to_user : a.from_user;
+        const other = travelerMap[otherId];
+        const co = cityCoords(other?.city, "act-" + otherId); if (!co) return;
+        const q = (typeof questByKey === "function" && questByKey(a.quest_key)) || null;
+        const title = q ? (q.title || "Défi") : "Défi entre Mates";
+        const actBtn = connectedIds.has(otherId)
+          ? `<button class="mappop-btn" data-hmchat="${otherId}">💬 En parler</button>`
+          : `<button class="mappop-btn ghost" data-hmprofile="${otherId}">Voir le profil</button>`;
+        const mk = L.marker(co, { icon: epinIcon("🎉", "#ff9f1c") })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(title)}</b><br>avec ${escapeHtml(other?.username || "un Mate")}<br>${actBtn}</div>`);
+        homeLayers.activities.addLayer(mk); allMarkers.push(mk);
+      });
+
+      // 🤖 Exemples vivants avec les comptes IA (démo) : check-ins + activités
+      const DEMO_ACTIVITIES = ["☕ Café découverte", "🌅 Lever de soleil ensemble", "🥾 Balade nature", "🍷 Apéro voyageurs", "🏄 Spot surf & co", "📸 Walk photo"];
+      const demoMates = mates.filter((p) => p.is_demo);
+      demoMates.slice(0, 8).forEach((p, idx) => {
+        if (!places.length) return;
+        const cafe = places.find((c) => (c.city || "").toLowerCase() === (p.city || "").toLowerCase()) || places[idx % places.length];
+        const ck = L.marker([cafe.lat - 0.013, cafe.lng + 0.013], { icon: epinIcon("✅", "#19b36b") })
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(p.username)}</b> <span style="font-size:.7rem;color:#7a5cff">🤖</span><br>a fait un check-in · ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Message</button></div>`);
+        homeLayers.checkins.addLayer(ck); allMarkers.push(ck);
+        if (idx % 2 === 0) {
+          const title = DEMO_ACTIVITIES[idx % DEMO_ACTIVITIES.length];
+          const am = L.marker([cafe.lat + 0.015, cafe.lng - 0.011], { icon: epinIcon("🎉", "#ff9f1c") })
+            .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(title)}</b><br>proposé par ${escapeHtml(p.username)} 🤖<br>à ${escapeHtml(cafe.name)}<br><button class="mappop-btn" data-hmchat="${p.id}">💬 Rejoindre</button>
+               <button class="mappop-btn ghost" data-hmprofile="${p.id}">Voir le profil</button></div>`);
+          homeLayers.activities.addLayer(am); allMarkers.push(am);
+        }
+      });
+
+      // 📌 Toi (toujours visible)
+      if (myProfile && myProfile.city) {
+        const co = cityCoords(myProfile.city, "me-" + myUserId);
+        if (co) {
+          homeMeMarker = L.marker(co, { icon: epinIcon("📌", "#f4655e", "me"), zIndexOffset: 1000 })
+            .bindPopup(`<div class="mappop-mini"><b>Toi</b><br>${escapeHtml(myProfile.city)}</div>`).addTo(homeLeaf);
+          allMarkers.push(homeMeMarker);
+        }
+      }
+
+      // Compteurs sur les filtres = nombre réel de pastilles affichées
+      setHomeChipCount("places", homeLayers.places.getLayers().length);
+      setHomeChipCount("mates", homeLayers.mates.getLayers().length);
+      setHomeChipCount("activities", homeLayers.activities.getLayers().length);
+      setHomeChipCount("checkins", homeLayers.checkins.getLayers().length);
+
+      homeAllMarkers = allMarkers;
+      applyHomeLayers();
+      if (allMarkers.length) { try { homeLeaf.fitBounds(L.featureGroup(allMarkers).getBounds().pad(0.25)); } catch (e) {} }
+      setTimeout(() => { try { homeLeaf.invalidateSize(); } catch (e) {} }, 120);
+      renderHomeLegend();
+    }
+
+    function setHomeChipCount(layer, n) {
+      const b = document.querySelector(`#homeMapFilters .chip[data-layer="${layer}"] b[data-cnt]`);
+      if (b) b.textContent = n ? n : "";
+    }
+
+    // Recadre la carte sur tous les marqueurs visibles
+    function homeFitAll() {
+      if (!homeLeaf || !homeAllMarkers.length) return;
+      try { homeLeaf.fitBounds(L.featureGroup(homeAllMarkers).getBounds().pad(0.25)); } catch (e) {}
+    }
+
+    // Centre la carte sur la vraie position GPS de l'utilisateur
+    function homeLocateMe() {
+      if (!homeLeaf) return;
+      const btn = $("hmLocate");
+      if (!navigator.geolocation) { if (typeof toast === "function") toast("📍", "Géolocalisation indisponible sur cet appareil."); return; }
+      if (btn) btn.textContent = "⏳ Localisation…";
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const ll = [pos.coords.latitude, pos.coords.longitude];
+          if (homeGpsMarker) homeLeaf.removeLayer(homeGpsMarker);
+          homeGpsMarker = L.marker(ll, { icon: epinIcon("🧭", "#0ea5e9", "me"), zIndexOffset: 1200 })
+            .bindPopup('<div class="mappop-mini"><b>Ta position actuelle</b></div>').addTo(homeLeaf);
+          homeLeaf.setView(ll, 13, { animate: true });
+          homeGpsMarker.openPopup();
+          if (btn) btn.textContent = "📍 Autour de moi";
+        },
+        () => { if (btn) btn.textContent = "📍 Autour de moi"; if (typeof toast === "function") toast("📍", "Impossible d'obtenir ta position (autorisation refusée ?)."); },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
+
+    // Depuis la carte : proposer une activité (quête) à un Mate connecté
+    function mapProposeActivity(mate) {
+      if (!mate) return;
+      if (!allQuests.length) { if (typeof toast === "function") toast("🎯", "Aucune activité disponible (lance le script SQL)."); return; }
+      openPicker("Proposer une activité à " + (mate.username || "ce Mate"),
+        allQuests.map((q) => ({ label: (q.emoji || "🎯") + " " + q.title, key: q.key })),
+        (item) => {
+          const q = questByKey(item.key); if (!q) return;
+          suggestQuestTo(mate.id, q, document.createElement("div"))
+            .then(() => { if (typeof toast === "function") toast("🎯", "Activité proposée à " + (mate.username || "ton Mate") + " ✅"); });
+        });
+    }
+
+    // Affiche/masque les couches selon l'état des filtres.
+    function applyHomeLayers() {
+      if (!homeLeaf) return;
+      Object.keys(homeLayers).forEach((k) => {
+        const on = homeLayerOn[k], has = homeLeaf.hasLayer(homeLayers[k]);
+        if (on && !has) homeLeaf.addLayer(homeLayers[k]);
+        else if (!on && has) homeLeaf.removeLayer(homeLayers[k]);
+      });
+    }
+
+    function renderHomeLegend() {
+      const el = $("homeMapLegend"); if (!el) return;
+      el.innerHTML = [["#f4655e", "📍 Lieux sûrs"], ["#7a5cff", "🧑 Mates"], ["#ff9f1c", "🎉 Activités"], ["#19b36b", "✅ Check-ins"]]
+        .map(([c, l]) => `<span><i style="background:${c}"></i>${l}</span>`).join("");
+    }
+
+    // Filtres (afficher/masquer une couche au clic)
+    (function () {
+      const f = $("homeMapFilters"); if (!f) return;
+      f.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", () => {
+        const k = b.dataset.layer; homeLayerOn[k] = !homeLayerOn[k];
+        b.classList.toggle("active", homeLayerOn[k]); applyHomeLayers();
+      }));
+      const loc = $("hmLocate"); if (loc) loc.addEventListener("click", homeLocateMe);
+      const fit = $("hmFit"); if (fit) fit.addEventListener("click", homeFitAll);
+    })();
+
+    // ============ Onboarding « du futur » ============
+    const ONB_STEPS = 4;
+    let onbStep = 0;
+    function buildOnbDots() {
+      const d = $("onbDots"); if (!d) return;
+      d.innerHTML = Array.from({ length: ONB_STEPS }, (_, i) => `<i class="${i === 0 ? "on" : ""}"></i>`).join("");
+    }
+    function showOnbStep(i) {
+      onbStep = Math.max(0, Math.min(ONB_STEPS - 1, i));
+      document.querySelectorAll("#onbStage .onb-step").forEach((s, idx) => {
+        s.classList.toggle("active", idx === onbStep);
+        s.classList.toggle("left", idx < onbStep);
+      });
+      document.querySelectorAll("#onbDots i").forEach((d, idx) => d.classList.toggle("on", idx === onbStep));
+      show($("onbPrev"), onbStep > 0);
+      $("onbNext").textContent = onbStep === ONB_STEPS - 1 ? "C'est parti ! 🚀" : "Suivant →";
+    }
+    function openOnboarding() {
+      const ov = $("onboarding"); if (!ov) return;
+      const who = myProfile && (myProfile.first_name || myProfile.username);
+      $("onbName").textContent = who ? ", " + who : "";
+      buildOnbDots(); showOnbStep(0);
+      ov.classList.remove("hidden"); ov.classList.add("show");
+    }
+    function closeOnbSlides() {
+      const ov = $("onboarding"); if (ov) { ov.classList.add("hidden"); ov.classList.remove("show"); }
+    }
+    async function finishOnboarding() {
+      closeOnbSlides();
+      try { localStorage.setItem("sm_onboarded_" + (myUserId || "x"), "1"); } catch (e) {}
+      try { if (myUserId) await db.from("profiles").update({ onboarded: true }).eq("id", myUserId); } catch (e) {}
+    }
+    // Affiche l'onboarding si jamais vu (colonne profiles.onboarded OU secours localStorage)
+    function maybeShowOnboarding() {
+      // Forçage manuel pour re-tester : ouvrir l'app avec #onb à la fin de l'URL
+      const h = (location.hash || "").toLowerCase();
+      if (h.indexOf("onb") >= 0 || h.indexOf("tour") >= 0) { setTimeout(openOnboarding, 500); return; }
+      let seenLocal = false;
+      try { seenLocal = localStorage.getItem("sm_onboarded_" + (myUserId || "x")) === "1"; } catch (e) {}
+      const seenDb = myProfile && myProfile.onboarded === true;
+      if (!seenLocal && !seenDb) setTimeout(openOnboarding, 600);
+    }
+    (function () {
+      const nx = $("onbNext"); if (nx) nx.addEventListener("click", () => { if (onbStep >= ONB_STEPS - 1) { closeOnbSlides(); startTour(); } else showOnbStep(onbStep + 1); });
+      const pv = $("onbPrev"); if (pv) pv.addEventListener("click", () => showOnbStep(onbStep - 1));
+      const sk = $("onbSkip"); if (sk) sk.addEventListener("click", finishOnboarding);
+    })();
+
+    // ============ Visite guidée interactive (« balade » dans l'app) ============
+    const TOUR_STEPS = [
+      { tab: "accueil",    sel: '[data-tab="accueil"]',    emoji: "🏠", title: "L'accueil & ta carte", text: "Ta carte vivante regroupe lieux sûrs, Mates, activités et check-ins. Filtre et clique sur les pastilles !" },
+      { tab: "lieux",      sel: '[data-tab="lieux"]',      emoji: "📍", title: "Les lieux sûrs",        text: "Des cafés et co-livings validés. Un check-in te rapporte des points de confiance." },
+      { tab: "connexions", sel: '[data-tab="connexions"]', emoji: "🤝", title: "Tes Mates",             text: "Découvre des voyageurs vérifiés, discute et accepte des demandes de connexion." },
+      { tab: "jeux",       sel: '[data-tab="jeux"]',       emoji: "🎮", title: "Jeux & quêtes",         text: "Relève des défis, gagne des badges et débloque des coupons." },
+      { tab: "securite",   sel: '[data-tab="securite"]',   emoji: "🛡️", title: "Sécurité d'abord",       text: "Le bouton SOS et le partage de position sont toujours accessibles ici." },
+      { tab: "profil",     sel: '[data-tab="profil"]',     emoji: "👤", title: "Ton profil",            text: "Ton score de confiance, tes badges et tes paramètres. Tu pourras revoir ce tuto ici à tout moment !" },
+    ];
+    let tourIdx = 0;
+
+    function startTour() {
+      const t = $("tour"); if (!t) { finishOnboarding(); return; }
+      tourIdx = 0; t.classList.remove("hidden");
+      showTourStep(0);
+    }
+    function showTourStep(i) {
+      if (i >= TOUR_STEPS.length) { endTour(); return; }
+      tourIdx = i; const st = TOUR_STEPS[i];
+      if (typeof goToTab === "function") goToTab(st.tab);
+      $("tourEmoji").textContent = st.emoji;
+      $("tourTitle").textContent = st.title;
+      $("tourText").textContent = st.text;
+      $("tourProg").textContent = (i + 1) + " / " + TOUR_STEPS.length;
+      $("tourNext").textContent = i === TOUR_STEPS.length - 1 ? "Terminer 🎉" : "Suivant →";
+      setTimeout(() => positionTour(st), 280);
+    }
+    function positionTour(st) {
+      const el = document.querySelector(st.sel), spot = $("tourSpot"), pop = $("tourPop");
+      if (!spot || !pop) return;
+      if (!el) { spot.style.opacity = "0"; pop.style.top = "auto"; pop.style.bottom = "42%"; return; }
+      const r = el.getBoundingClientRect(), pad = 8;
+      spot.style.opacity = "1";
+      spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
+      spot.style.width = (r.width + pad * 2) + "px"; spot.style.height = (r.height + pad * 2) + "px";
+      // Place la bulle au-dessus ou en dessous selon la place disponible
+      if (window.innerHeight - r.bottom > 220) { pop.style.top = (r.bottom + 14) + "px"; pop.style.bottom = "auto"; }
+      else { pop.style.bottom = (window.innerHeight - r.top + 14) + "px"; pop.style.top = "auto"; }
+    }
+    function endTour() { const t = $("tour"); if (t) t.classList.add("hidden"); finishOnboarding(); }
+    (function () {
+      const nx = $("tourNext"); if (nx) nx.addEventListener("click", () => showTourStep(tourIdx + 1));
+      const sk = $("tourSkip"); if (sk) sk.addEventListener("click", endTour);
+      window.addEventListener("resize", () => { const t = $("tour"); if (t && !t.classList.contains("hidden")) positionTour(TOUR_STEPS[tourIdx]); });
+    })();
+
     // Temps relatif (« il y a 5 min »)
     function timeAgo(iso) {
       if (!iso) return "";
@@ -3652,6 +4206,7 @@
     $("settingsBack").addEventListener("click", () => {
       show($("settingsCard"), false); show($("profMain"), true);
     });
+    $("replayOnbBtn").addEventListener("click", () => { if (typeof openOnboarding === "function") openOnboarding(); });
     $("saveEmailBtn").addEventListener("click", async () => {
       const m = $("settingsMsg"); const email = $("setEmail").value.trim();
       if (!email) { m.style.color = "var(--danger)"; m.textContent = "Entre un nouvel email."; return; }
