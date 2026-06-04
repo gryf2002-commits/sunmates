@@ -324,6 +324,11 @@
     /* ---- Cibles tactiles plus confortables (≥40px) sur les boutons-icônes ---- */
     .iconbtn { min-width: 40px; min-height: 40px; }
 
+    /* ---- Séparateur de jour dans le chat ---- */
+    .chat-daysep { text-align: center; margin: .85rem 0 .5rem; }
+    .chat-daysep span { display: inline-block; background: rgba(0,0,0,.06); color: var(--muted); font-size: .72rem; font-weight: 700; padding: .25rem .75rem; border-radius: 999px; text-transform: capitalize; }
+    body.theme-dusk .chat-daysep span { background: rgba(255,255,255,.1); }
+
     /* ---- Détail du score de compatibilité (transparence) ---- */
     .cbrk { display: flex; align-items: center; gap: .5rem; margin: .4rem 0; font-size: .82rem; }
     .cbrk-l { flex: 0 0 44%; color: var(--ink); }
@@ -4135,6 +4140,25 @@
       }
       return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}"><span class="bubble-txt">${escapeHtml(m.content)}</span>${questBtn}<span class="bubble-time">${msgTime(m.created_at)}</span>${act}</div>`;
     }
+    // Étiquette de jour pour les séparateurs du chat (« Aujourd'hui », « Hier », sinon la date).
+    function chatDayLabel(iso) {
+      const d = new Date(iso); if (isNaN(d)) return "";
+      const now = new Date(); const sd = (a, b) => a.toDateString() === b.toDateString();
+      const yest = new Date(now); yest.setDate(now.getDate() - 1);
+      if (sd(d, now)) return "Aujourd'hui";
+      if (sd(d, yest)) return "Hier";
+      return d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+    }
+    // Rend les messages avec un séparateur quand le jour change (regroupement par jour).
+    function chatHtml(msgs) {
+      let html = "", lastDay = "";
+      msgs.forEach((m) => {
+        const d = new Date(m.created_at); const dk = isNaN(d) ? "" : d.toDateString();
+        if (dk && dk !== lastDay) { lastDay = dk; html += `<div class="chat-daysep"><span>${escapeHtml(chatDayLabel(m.created_at))}</span></div>`; }
+        html += bubbleHtml(m);
+      });
+      return html;
+    }
     // Éditer / supprimer ses propres messages (délégation sur le conteneur)
     $("chatBody").addEventListener("click", async (e) => {
       const qv = e.target.closest(".msg-quest");
@@ -4223,7 +4247,7 @@
       const body = $("chatBody");
       if (error) { body.innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
       body.innerHTML = data.length
-        ? data.map(bubbleHtml).join("")
+        ? chatHtml(data)
         : '<p class="muted" style="text-align:center">Démarrez la conversation 👋</p>';
       scrollChatBottom();
     }
@@ -5270,7 +5294,17 @@
       if (window.innerHeight - r.bottom > 220) { pop.style.top = (r.bottom + 14) + "px"; pop.style.bottom = "auto"; }
       else { pop.style.bottom = (window.innerHeight - r.top + 14) + "px"; pop.style.top = "auto"; }
     }
-    function endTour() { const t = $("tour"); if (t) t.classList.add("hidden"); finishOnboarding(); }
+    function endTour() {
+      const t = $("tour"); if (t) t.classList.add("hidden");
+      finishOnboarding();
+      // Onboarding → ACTION : on emmène l'utilisateur compléter son profil (meilleurs
+      // matchs + points de confiance) plutôt que de le laisser sur un écran vide.
+      setTimeout(() => {
+        goToTab("profil");
+        if (typeof showProfileSegment === "function") showProfileSegment("edit");
+        if (typeof toast === "function") toast("🎯", "Complète ton profil : de meilleurs matchs et plus de points de confiance t'attendent !", () => goToTab("profil"));
+      }, 450);
+    }
     (function () {
       const nx = $("tourNext"); if (nx) nx.addEventListener("click", () => showTourStep(tourIdx + 1));
       const sk = $("tourSkip"); if (sk) sk.addEventListener("click", endTour);
