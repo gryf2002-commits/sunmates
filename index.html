@@ -729,9 +729,11 @@
     /* « Passer » en haut à droite, comme dans les slides d'onboarding (uniformité) */
     .tour-pass { position: absolute; top: .6rem; right: .8rem; background: none; border: 0; color: var(--muted); font-size: .8rem; font-weight: 600; cursor: pointer; padding: .2rem .3rem; }
     .tour-next { background: var(--accent-grad); color: #fff; border: 0; border-radius: 999px; padding: .55rem 1.1rem; font-weight: 800; cursor: pointer; }
-    /* Pastille de couleur dans les chips-filtres = légende intégrée (couleur des marqueurs) */
-    .homemap-filters .chip .lc { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: .35rem; vertical-align: middle; }
-    .homemap-filters .chip:not(.active) .lc { filter: grayscale(1); opacity: .6; }
+    /* Chips colorés = couleur des marqueurs (l'âme SunMates), actifs = pleine couleur */
+    .homemap-filters .chip.cl-places.active   { background: #FF5A4D; color: #fff; box-shadow: 0 4px 12px rgba(255,90,77,.32); }
+    .homemap-filters .chip.cl-mates.active     { background: #7a5cff; color: #fff; box-shadow: 0 4px 12px rgba(122,92,255,.32); }
+    .homemap-filters .chip.cl-acts.active      { background: #ff9f1c; color: #fff; box-shadow: 0 4px 12px rgba(255,159,28,.32); }
+    .homemap-filters .chip.cl-checkins.active  { background: #19b36b; color: #fff; box-shadow: 0 4px 12px rgba(25,179,107,.32); }
     /* Marqueurs personnalisés (pastilles emoji colorées) */
     .epin { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
       display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,.4); border: 2.5px solid #fff; transition: transform .15s ease; }
@@ -851,11 +853,12 @@
     .gcard .ghead.purp  { background: linear-gradient(135deg,#b9a6ff,#7c5cff); }
     /* Emoji en BADGE dans le coin (plus au milieu de la photo) */
     /* Bandeau XP (onglet Jeux) */
-    .xp-banner { display: flex; align-items: center; gap: .35rem; background: linear-gradient(135deg,rgba(255,201,60,.16),rgba(255,138,61,.12)); border: 1px solid rgba(232,155,43,.26); border-radius: 10px; padding: .35rem .7rem; margin: .5rem 0 .2rem; font-size: .82rem; }
-    .xp-banner .xp-ic { font-size: .95rem; }
-    .xp-banner b { color: #B5740E; font-size: .95rem; }
-    .xp-banner .xp-sub { color: var(--muted); font-size: .74rem; }
-    .xp-banner .xp-info { margin-left: auto; background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .95rem; padding: .1rem .3rem; }
+    /* Ligne XP DISCRÈTE (plus de gros bandeau) */
+    .xp-banner { display: flex; align-items: center; gap: .3rem; margin: .3rem 0 .1rem; font-size: .8rem; color: var(--muted); }
+    .xp-banner .xp-ic { font-size: .9rem; }
+    .xp-banner b { color: #B5740E; font-size: .85rem; }
+    .xp-banner .xp-sub { color: var(--muted); font-size: .72rem; }
+    .xp-banner .xp-info { margin-left: auto; background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .9rem; padding: .1rem .3rem; }
     /* Cartes « Mes récompenses » (plus jolies, uniformes) */
     .reward-card { display: flex; align-items: center; gap: .6rem; text-align: left; padding: .7rem .8rem; border: 0; border-radius: var(--radius-sm); cursor: pointer;
       background: linear-gradient(135deg, rgba(255,201,60,.22), rgba(255,138,61,.18)); box-shadow: var(--shadow-sm); transition: transform .12s, box-shadow .15s; }
@@ -930,6 +933,7 @@
     body.theme-dusk .star-input span { color: #4a4360; }
     body.theme-dusk .star-input span.on { color: #FFC93C; }
     .reviews-form { border-top: 1px solid var(--line); padding-top: .6rem; }
+    .reviews-form textarea { margin-top: .7rem; } /* espace sous les étoiles */
     .review-item { display: flex; gap: .6rem; padding: .55rem 0; border-bottom: 1px solid var(--line); }
     .review-item:last-child { border-bottom: 0; }
     .review-item .avatar { width: 36px; height: 36px; }
@@ -2084,12 +2088,12 @@
         <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3><a id="hmFull" style="cursor:pointer">⛶ Plein écran</a></div>
         <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Filtre, puis <b>touche une pastille</b> pour agir 👇</p>
         <div class="card homemap-card">
-          <!-- Les chips portent la COULEUR des marqueurs (= légende intégrée, un seul repère par item) -->
+          <!-- Chips colorés + emojis (l'âme SunMates) : couleur = type de marqueur sur la carte -->
           <div class="chips wrap homemap-filters" id="homeMapFilters">
-            <button class="chip active" data-layer="places"><i class="lc" style="background:#FF5A4D"></i>Lieux <b data-cnt></b></button>
-            <button class="chip active" data-layer="mates"><i class="lc" style="background:#7a5cff"></i>Mates <b data-cnt></b></button>
-            <button class="chip active" data-layer="activities"><i class="lc" style="background:#ff9f1c"></i>Activités <b data-cnt></b></button>
-            <button class="chip active" data-layer="checkins"><i class="lc" style="background:#19b36b"></i>Check-ins <b data-cnt></b></button>
+            <button class="chip active cl-places" data-layer="places">📍 Lieux <b data-cnt></b></button>
+            <button class="chip active cl-mates" data-layer="mates">🧑 Mates <b data-cnt></b></button>
+            <button class="chip active cl-acts" data-layer="activities">🎉 Activités <b data-cnt></b></button>
+            <button class="chip active cl-checkins" data-layer="checkins">✅ Check-ins <b data-cnt></b></button>
           </div>
           <div class="homemap-wrap">
             <div id="homeMap" class="homemap"></div>
@@ -2099,7 +2103,7 @@
             <div class="homemap-tools">
               <button id="hmAdd" title="Partager une activité sur la carte">➕ Partager</button>
               <button id="hmLocate" title="Centrer sur ma position">📍 Autour de moi</button>
-              <button id="hmFit" title="Tout afficher">🔄 Tout voir</button>
+              <button id="hmFit" title="Tout afficher">🌍 Tout voir</button>
             </div>
           </div>
           <!-- Légende supprimée : les chips colorés au-dessus font office de légende (anti-surcharge). -->
@@ -2569,7 +2573,7 @@
             <div class="pf-body">
               <label>Je suis ici pour <span class="lbl-hint">· 1 choix</span></label>
               <div class="chips wrap" id="intentChips"></div>
-              <label>Centres d'intérêt <span class="lbl-hint">· 5 max</span></label>
+              <label>Centres d'intérêt <span class="lbl-hint">· autant que tu veux</span></label>
               <div class="chips wrap" id="interestChips"></div>
               <label>Langues parlées <span class="lbl-hint">· autant que tu veux</span></label>
               <div class="chips wrap" id="languageChips"></div>
@@ -3467,7 +3471,7 @@
       selPets.clear(); (data.pets || []).forEach((x) => selPets.add(x));
       selMusic.clear(); (data.music || []).forEach((x) => selMusic.add(x));
       selStyle = data.travel_style || null;
-      buildChips("interestChips", INTEREST_OPTS, selInterests, false, 5);
+      buildChips("interestChips", INTEREST_OPTS, selInterests, false);
       buildChips("languageChips", LANGUAGE_OPTS, selLanguages, false);
       buildChips("styleChips", STYLE_OPTS, null, true);
       buildChips("intentChips", INTENT_OPTS, selIntent, false, 1);
