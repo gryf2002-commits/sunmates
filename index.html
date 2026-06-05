@@ -3295,7 +3295,7 @@
       const { error } = await db.from("profiles")
         .update({ is_verified: true, trust_score: base + 30 }).eq("id", myUserId);
       if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; }
-      else { msg.style.color = "var(--ok)"; msg.textContent = "Profil vérifié ✅ (+30 points)"; await loadProfile(); }
+      else { msg.textContent = ""; toast("✅", "Profil vérifié — +30 points de confiance 🛡️"); await loadProfile(); }
     }));
 
     // ---- Avatar : applique une image OU une initiale dans un élément .avatar ----
@@ -3328,7 +3328,7 @@
       const url = pub.data.publicUrl + "?t=" + Date.now(); // anti-cache pour voir la nouvelle photo
       const { error } = await db.from("profiles").update({ avatar_url: url }).eq("id", myUserId);
       if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; return; }
-      msg.style.color = "var(--ok)"; msg.textContent = "Photo mise à jour ✅";
+      msg.textContent = ""; toast("📷", "Photo de profil mise à jour");
       await Promise.all([loadProfile(), loadConnections()]);
     });
 
@@ -4583,7 +4583,7 @@
         if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
         myQuestStatus[qkey] = "joined";
         openDetail(currentQuest);
-        m.style.color = "var(--ok)"; m.textContent = "Quête rejointe ! 🎒"; flashOk(m);
+        m.textContent = ""; toast("🎒", "Quête rejointe !");
       });
     });
 
@@ -5232,10 +5232,10 @@
       const res = await sendConnection(currentTravelerId); // vraie demande Supabase
       if (!res) return; // clic en double ignoré (demande déjà en cours d'envoi)
       if (res.already) {
-        m.style.color = "var(--ok)";
-        m.textContent = res.already === "accepted" ? "Vous êtes déjà connectés ✅" : "Demande déjà envoyée ✅";
+        m.textContent = "";
+        toast("🤝", res.already === "accepted" ? "Vous êtes déjà connectés" : "Demande déjà envoyée");
       } else if (res.ok) {
-        m.style.color = "var(--ok)"; m.textContent = "Demande de connexion envoyée ✅";
+        m.textContent = ""; toast("🤝", "Demande de connexion envoyée !");
       } else {
         m.style.color = "var(--danger)"; m.textContent = "Erreur : " + ((res.error && res.error.message) || "réessaie");
       }
