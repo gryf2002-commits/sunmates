@@ -633,9 +633,11 @@
       display: flex; flex-direction: column; background: var(--card); }
     .homemap-card.fs .homemap-wrap { flex: 1; min-height: 0; margin: .4rem 0; }
     .homemap-card.fs .homemap { height: 100% !important; border-radius: 12px; }
-    .homemap-card.fs .homemap-fsclose { display: inline-flex; position: absolute; top: .7rem; right: .7rem; z-index: 1200;
+    .homemap-card.fs .homemap-fsclose { display: inline-flex; position: absolute; top: calc(.7rem + env(safe-area-inset-top, 0px)); right: .7rem; z-index: 1400;
       background: var(--card); color: var(--ink); border: 0; border-radius: 999px; padding: .5rem .9rem; font-weight: 800; font-size: .82rem; box-shadow: var(--shadow); cursor: pointer; }
-    .homemap-card.fs .homemap-legend { padding-bottom: env(safe-area-inset-bottom, .2rem); }
+    /* En plein écran : les outils (Tout voir / Autour de moi / Partager) restent visibles,
+       au-dessus des tuiles Leaflet et de la barre gestuelle (safe-area). */
+    .homemap-card.fs .homemap-tools { bottom: calc(.7rem + env(safe-area-inset-bottom, 0px)); right: .7rem; z-index: 1400; }
     .homemap-tools { position: absolute; right: .55rem; bottom: .55rem; z-index: 1100; display: flex; flex-direction: column; gap: .4rem; align-items: flex-end; }
     .homemap-tools button { background: var(--card); color: var(--ink); border: 1px solid rgba(0,0,0,.08); border-radius: 999px; padding: .4rem .7rem; font-size: .76rem; font-weight: 700; box-shadow: var(--shadow-sm); cursor: pointer; }
     .homemap-tools button:hover { background: var(--accent-grad); color: #fff; }
@@ -834,10 +836,11 @@
     .gcard .ghead.purp  { background: linear-gradient(135deg,#b9a6ff,#7c5cff); }
     /* Emoji en BADGE dans le coin (plus au milieu de la photo) */
     /* Bandeau XP (onglet Jeux) */
-    .xp-banner { display: flex; align-items: center; gap: .4rem; background: linear-gradient(135deg,rgba(255,201,60,.2),rgba(255,138,61,.16)); border: 1px solid rgba(232,155,43,.3); border-radius: 12px; padding: .5rem .8rem; margin: .5rem 0 .2rem; font-size: .9rem; flex-wrap: wrap; }
-    .xp-banner .xp-ic { font-size: 1.1rem; }
-    .xp-banner b { color: #B5740E; font-size: 1.05rem; }
-    .xp-banner .xp-sub { color: var(--muted); font-size: .76rem; }
+    .xp-banner { display: flex; align-items: center; gap: .35rem; background: linear-gradient(135deg,rgba(255,201,60,.16),rgba(255,138,61,.12)); border: 1px solid rgba(232,155,43,.26); border-radius: 10px; padding: .35rem .7rem; margin: .5rem 0 .2rem; font-size: .82rem; }
+    .xp-banner .xp-ic { font-size: .95rem; }
+    .xp-banner b { color: #B5740E; font-size: .95rem; }
+    .xp-banner .xp-sub { color: var(--muted); font-size: .74rem; }
+    .xp-banner .xp-info { margin-left: auto; background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .95rem; padding: .1rem .3rem; }
     /* Cartes « Mes récompenses » (plus jolies, uniformes) */
     .reward-card { display: flex; align-items: center; gap: .6rem; text-align: left; padding: .7rem .8rem; border: 0; border-radius: var(--radius-sm); cursor: pointer;
       background: linear-gradient(135deg, rgba(255,201,60,.22), rgba(255,138,61,.18)); box-shadow: var(--shadow-sm); transition: transform .12s, box-shadow .15s; }
@@ -2269,7 +2272,6 @@
           </div>
 
           <div class="section-head"><h3>Accès rapides</h3></div>
-          <div class="safe-free-note">🛡️ La sécurité est <b>incluse pour tous</b>, gratuitement — toujours.</div>
           <div class="grid2">
             <div class="tile" data-secuquick="position"><div class="thumb">📍</div><div class="t-name">Partager ma position</div><div class="t-meta">À mon cercle</div></div>
             <div class="tile" data-secuquick="emergency"><div class="thumb">🚨</div><div class="t-name">Alerte d'urgence</div><div class="t-meta">Diffuser ma position</div></div>
@@ -2296,7 +2298,6 @@
               <div><b style="color:var(--accent)">📍 Ma position</b> : partagée avec ton <b>cercle de confiance</b> (connexions acceptées), visible 24 h.</div>
               <div style="margin-top:.35rem"><b style="color:var(--danger)">🚨 Alerte</b> : diffuse aussitôt ta position à ton cercle en cas d'urgence.</div>
             </div>
-            <div class="safe-free-note" style="margin-top:.7rem;margin-bottom:0">🛡️ Tout ça est <b>gratuit pour tous</b>, toujours.</div>
           </div>
 
           <div class="card" id="circleCard">
@@ -4628,9 +4629,16 @@
       const games = allQuests.filter((q) => q.kind === "game");
       const quests = allQuests.filter((q) => q.kind === "quest");
 
-      // Bandeau XP (monnaie de jeu, séparée du score de confiance)
+      // Bandeau XP (monnaie de jeu, séparée du score de confiance) — compact + explication
       const xpb = $("xpBanner");
-      if (xpb) xpb.innerHTML = `<span class="xp-ic">⭐</span><b>${(myProfile && myProfile.xp) || 0} XP</b><span class="xp-sub">· monnaie de jeu · grimpe au classement 🏆</span>`;
+      if (xpb) {
+        xpb.innerHTML = `<span class="xp-ic">⭐</span><b>${(myProfile && myProfile.xp) || 0}</b><span class="xp-sub">XP · monnaie de jeu</span><button class="xp-info" id="xpInfoBtn" title="Comment ça marche ?">ⓘ</button>`;
+        const xi = $("xpInfoBtn"); if (xi) xi.onclick = () => showInfo("⭐ L'XP, comment ça marche ?", `<div style="line-height:1.6;font-size:.9rem">
+          <p style="margin:.2rem 0">Tu gagnes de l'<b>XP</b> en accomplissant des <b>quêtes</b> (3 par jour max, pour éviter la triche).</p>
+          <p style="margin:.2rem 0">Les <b>quêtes de groupe</b> (confirmées par un Mate) rapportent un <b>bonus</b> ✨</p>
+          <p style="margin:.2rem 0">⚠️ L'XP est une <b>monnaie de jeu</b> : elle ne change <b>pas</b> ton score de confiance 🛡️ (qui, lui, repose sur des preuves réelles).</p>
+          <p style="margin:.2rem 0">Plus d'XP = tu grimpes dans le <b>Classement</b> 🏆</p></div>`);
+      }
 
       // Rangée de mes badges sur la carte profil (motivant, visible hors onglet Jeux)
       const pb = $("profileBadges");
