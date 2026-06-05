@@ -891,6 +891,24 @@
     .lb-me { border: 1.5px solid var(--accent); background: var(--accent-soft); }
     .lb-you { font-size: .62rem; font-weight: 800; background: var(--accent); color: #fff; padding: .04rem .35rem; border-radius: 999px; vertical-align: middle; }
     .lb-tip { margin-top: .6rem; text-align: center; font-size: .82rem; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 12px; padding: .6rem .8rem; }
+    /* Avis sur les lieux */
+    .rate-chip { display: inline-flex; align-items: center; gap: .15rem; font-size: .76rem; font-weight: 800; color: #B5740E; background: rgba(255,177,60,.18); padding: .05rem .4rem; border-radius: 999px; white-space: nowrap; }
+    .rate-chip.empty { color: var(--muted); background: var(--cream); font-weight: 600; }
+    .rate-chip b { font-weight: 700; opacity: .7; }
+    .reviews-avg { text-align: center; padding: .3rem 0 .2rem; }
+    .star-input { display: flex; gap: .25rem; font-size: 1.9rem; line-height: 1; cursor: pointer; }
+    .star-input span { color: #d8d2cc; transition: color .1s, transform .1s; }
+    .star-input span.on { color: #FFB52E; }
+    .star-input span:active { transform: scale(1.2); }
+    body.theme-dusk .star-input span { color: #4a4360; }
+    body.theme-dusk .star-input span.on { color: #FFC93C; }
+    .reviews-form { border-top: 1px solid var(--line); padding-top: .6rem; }
+    .review-item { display: flex; gap: .6rem; padding: .55rem 0; border-bottom: 1px solid var(--line); }
+    .review-item:last-child { border-bottom: 0; }
+    .review-item .avatar { width: 36px; height: 36px; }
+    .review-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .review-stars { color: #FFB52E; font-size: .82rem; letter-spacing: 1px; flex-shrink: 0; }
+    .review-txt { font-size: .85rem; color: var(--text); line-height: 1.4; margin-top: .15rem; }
     .bitem { text-align: center; }
     .hex { width: 62px; height: 62px; margin: 0 auto .4rem; background: var(--accent-grad);
       clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
@@ -1683,6 +1701,24 @@
       <ol class="install-steps" id="installSteps"></ol>
       <button class="btn-primary btn-block" id="installNowBtn" style="margin-top:.4rem">Installer maintenant</button>
       <div class="muted" id="installNote" style="font-size:.76rem;margin-top:.6rem;text-align:center"></div>
+    </div>
+  </div>
+
+  <!-- ===== Avis sur un lieu (note ⭐ + commentaires) ===== -->
+  <div id="reviewsModal" class="act-overlay hidden">
+    <div class="act-card" style="max-width:380px;max-height:86vh;display:flex;flex-direction:column">
+      <div class="picker-head"><h3 style="margin:0" id="reviewsTitle">Avis</h3><button id="reviewsClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
+      <div id="reviewsAvg" class="reviews-avg"></div>
+      <div id="reviewsList" style="overflow-y:auto;flex:1;margin:.4rem 0;min-height:60px"></div>
+      <div class="reviews-form">
+        <div class="muted" style="font-size:.78rem;margin-bottom:.2rem">Ta note</div>
+        <div class="star-input" id="starInput">
+          <span data-star="1">★</span><span data-star="2">★</span><span data-star="3">★</span><span data-star="4">★</span><span data-star="5">★</span>
+        </div>
+        <textarea id="reviewComment" rows="2" maxlength="280" placeholder="Ambiance, sécurité, accueil… (optionnel)"></textarea>
+        <button class="btn-primary btn-block" id="reviewSubmit" style="margin-top:.4rem">Publier mon avis</button>
+        <div class="msg" id="reviewMsg" style="text-align:center"></div>
+      </div>
     </div>
   </div>
 
@@ -3341,6 +3377,7 @@
     // ====================== LIEUX SÛRS ======================
     let cafeFilter = { q: "", mode: "all" }; // recherche + filtre actif de l'onglet Lieux
     let cafeCheckins = {};                   // cafe_id -> nombre de check-ins
+    let cafeRatings = {};                    // cafe_id -> { avg, cnt } (avis)
     let myGeo = null;                        // ma position GPS (pour « Près de moi »)
     let myDistinctPlaces = 0;                // nombre de lieux sûrs différents où j'ai check-in
 
@@ -3359,6 +3396,11 @@
       try {
         const r = await db.from("checkpoints").select("cafe_id");
         cafeCheckins = {}; (r.data || []).forEach((c) => { cafeCheckins[c.cafe_id] = (cafeCheckins[c.cafe_id] || 0) + 1; });
+      } catch (e) {}
+      try {
+        // Moyennes d'avis par lieu (vide si migration session 21 pas lancée)
+        const { data: rt } = await db.rpc("place_ratings");
+        cafeRatings = {}; (rt || []).forEach((r) => { cafeRatings[r.cafe_id] = { avg: Number(r.avg), cnt: Number(r.cnt) }; });
       } catch (e) {}
       renderCafesList();
       loadHome(); // garde l'accueil synchronisé
@@ -3413,12 +3455,13 @@
             <div class="pcard-title">${escapeHtml(c.name)}</div>
           </div>
           <div class="pcard-body">
-            <div class="pcard-meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')} ${dist}</div>
+            <div class="pcard-meta">${escapeHtml(c.category || '')} · ${escapeHtml(c.city || '')} ${dist} ${ratingChip(c.id)}</div>
             ${c.address ? `<div class="pcard-addr">📍 ${escapeHtml(c.address)}</div>` : ''}
             ${c.safety_note ? `<div class="pcard-note">🛟 ${escapeHtml(c.safety_note)}</div>` : ''}
             ${!nCk ? '<div class="pcard-addr">✨ Sois le·la 1er·ère à checker !</div>' : ''}
             <div class="pcard-actions">
               <button class="btn-accent" data-checkin="${c.id}" data-name="${escapeHtml(c.name)}">🔒 Check-in (+10)</button>
+              <button class="btn-ghost" data-reviews="${c.id}" data-name="${escapeHtml(c.name)}">⭐ Avis</button>
               ${c.lat != null && c.lng != null ? `<button class="btn-ghost" data-mapcafe="${c.id}">📍 Carte</button>` : ""}
             </div>
           </div>
@@ -3428,9 +3471,69 @@
         b.addEventListener("click", () => checkIn(Number(b.dataset.checkin), b.dataset.name)));
       list.querySelectorAll("[data-mapcafe]").forEach((b) =>
         b.addEventListener("click", () => focusHomeMapOn(Number(b.dataset.mapcafe))));
+      list.querySelectorAll("[data-reviews]").forEach((b) =>
+        b.addEventListener("click", () => openReviews(Number(b.dataset.reviews), b.dataset.name)));
       const gc = list.querySelector("[data-goldcheckin]");
       if (gc) gc.addEventListener("click", () => toast("👑", "Lieu exclusif Gold : check-in premium ✨ (démo)"));
     }
+
+    // Pastille de note ⭐ sur la carte d'un lieu (vide si aucun avis)
+    function ratingChip(cafeId) {
+      const r = cafeRatings[cafeId];
+      if (!r || !r.cnt) return '<span class="rate-chip empty">⭐ Pas d\'avis</span>';
+      return `<span class="rate-chip">⭐ ${r.avg.toFixed(1)} <b>(${r.cnt})</b></span>`;
+    }
+
+    // ---- Avis sur les lieux (note ⭐ + commentaires) ----
+    let reviewCafeId = null, reviewStars = 0;
+    function setStars(n) { reviewStars = n; document.querySelectorAll("#starInput [data-star]").forEach((s) => s.classList.toggle("on", Number(s.dataset.star) <= n)); }
+    function closeReviews() { const m = $("reviewsModal"); if (m) m.classList.add("hidden"); }
+    async function openReviews(cafeId, name) {
+      reviewCafeId = cafeId;
+      $("reviewsTitle").textContent = "⭐ Avis · " + (name || "Lieu");
+      $("reviewComment").value = ""; setStars(0); $("reviewMsg").textContent = "";
+      $("reviewSubmit").textContent = "Publier mon avis";
+      $("reviewsModal").classList.remove("hidden");
+      await loadReviews(cafeId);
+    }
+    async function loadReviews(cafeId) {
+      const box = $("reviewsList"); box.innerHTML = '<p class="muted">Chargement…</p>';
+      const { data, error } = await db.from("place_reviews").select("rating,comment,created_at,user_id").eq("cafe_id", cafeId).order("created_at", { ascending: false });
+      if (error) { box.innerHTML = '<p class="muted" style="text-align:center;padding:.6rem">Avis indisponibles pour l\'instant.</p>'; $("reviewsAvg").textContent = ""; return; }
+      const rows = data || [];
+      const ids = [...new Set(rows.map((r) => r.user_id))];
+      const names = {};
+      if (ids.length) { const { data: ps } = await db.from("profiles").select("id,username,avatar_url").in("id", ids); (ps || []).forEach((p) => names[p.id] = p); }
+      const avg = rows.length ? rows.reduce((s, r) => s + r.rating, 0) / rows.length : 0;
+      $("reviewsAvg").innerHTML = rows.length
+        ? `<b style="font-size:1.5rem;color:var(--accent)">⭐ ${avg.toFixed(1)}</b> <span class="muted">/5 · ${rows.length} avis</span>`
+        : '<span class="muted">Aucun avis — sois le·la premier·ère ! ✨</span>';
+      const mine = rows.find((r) => r.user_id === myUserId);
+      if (mine) { setStars(mine.rating); $("reviewComment").value = mine.comment || ""; $("reviewSubmit").textContent = "Modifier mon avis"; }
+      box.innerHTML = rows.length ? rows.map((r) => {
+        const p = names[r.user_id] || {}; const me = r.user_id === myUserId;
+        return `<div class="review-item">${avatarMarkup(p.username, p.avatar_url)}
+          <div style="flex:1;min-width:0">
+            <div class="review-head"><b>${escapeHtml(p.username || "Voyageur")}${me ? ' <span class="lb-you">toi</span>' : ""}</b><span class="review-stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span></div>
+            ${r.comment ? `<div class="review-txt">${escapeHtml(r.comment)}</div>` : ""}
+            <div class="muted" style="font-size:.72rem;margin-top:.15rem">${timeAgo(r.created_at)}</div>
+          </div></div>`;
+      }).join("") : '<p class="muted" style="text-align:center;padding:.6rem">Pas encore d\'avis sur ce lieu.</p>';
+    }
+    document.querySelectorAll("#starInput [data-star]").forEach((s) => s.addEventListener("click", () => setStars(Number(s.dataset.star))));
+    { const c = $("reviewsClose"); if (c) c.addEventListener("click", closeReviews); }
+    { const m = $("reviewsModal"); if (m) m.addEventListener("click", (e) => { if (e.target.id === "reviewsModal") closeReviews(); }); }
+    { const sb = $("reviewSubmit"); if (sb) sb.addEventListener("click", () => once("review:" + reviewCafeId, async () => {
+      if (!reviewStars) { const m = $("reviewMsg"); m.style.color = "var(--danger)"; m.textContent = "Choisis une note (1 à 5 ⭐)."; return; }
+      const { error } = await db.from("place_reviews").upsert(
+        { cafe_id: reviewCafeId, user_id: myUserId, rating: reviewStars, comment: ($("reviewComment").value || "").trim() || null },
+        { onConflict: "cafe_id,user_id" });
+      if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+      $("reviewMsg").textContent = ""; toast("⭐", "Merci pour ton avis !");
+      await loadReviews(reviewCafeId);
+      // Rafraîchit les moyennes sur les cartes
+      try { const { data: rt } = await db.rpc("place_ratings"); cafeRatings = {}; (rt || []).forEach((r) => cafeRatings[r.cafe_id] = { avg: Number(r.avg), cnt: Number(r.cnt) }); renderCafesList(); } catch (e) {}
+    })); }
 
     // Recherche + filtres de l'onglet Lieux
     (function () {
