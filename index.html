@@ -2699,7 +2699,6 @@
             <button data-aseg="places">📍</button>
             <button data-aseg="reports">🚩</button>
             <button data-aseg="quotes">💼</button>
-            <button data-aseg="kb">📒</button>
           </div>
 
           <div class="aseg" data-asegpanel="demo">
@@ -2765,13 +2764,6 @@
             <div class="card"><h3 style="margin-top:0">💼 Demandes de devis B2B</h3><div id="adminQuotes"><p class="muted">Chargement…</p></div></div>
           </div>
 
-          <div class="aseg hidden" data-asegpanel="kb">
-            <div class="card">
-              <h3 style="margin-top:0">📒 Knowledge base / Changelog</h3>
-              <p class="muted" style="font-size:.8rem;margin-top:0">Tenu à jour à chaque session. Visible uniquement par l'admin.</p>
-              <div id="adminKb"></div>
-            </div>
-          </div>
         </div><!-- /prof-seg admin -->
         </div><!-- /profMain -->
 
@@ -3881,23 +3873,8 @@
       else if (seg === "places") loadAdminPlaces();
       else if (seg === "reports") loadReports();
       else if (seg === "quotes") loadAdminQuotes();
-      else if (seg === "kb") renderAdminKb();
     }
     document.querySelectorAll("[data-aseg]").forEach((b) => b.addEventListener("click", () => showAdminSegment(b.dataset.aseg)));
-
-    // 📒 Knowledge base / changelog — tenu à jour à chaque session (visible admin uniquement).
-    const SM_CHANGELOG = [
-      { v: "Migrations Supabase à lancer (dans l'ordre)", body: "17 (XP+classement), 18 (badges_catalog), 19 (signalements antispam), 20 (quêtes de groupe), 21 (avis lieux), 22 (badges jalons), 23 (profil public/privé)." },
-      { v: "Règles produit", body: "Sécurité jamais payante · quêtes = XP (jamais de confiance), 3/jour + cooldown, groupe confirmé par un mate (+bonus) · badges secrets cachés (admin voit la condition) · DA sunset (pas de vert criard) · profil privé = hors classement." },
-      { v: "Features", body: "Avis sur les lieux (⭐ + commentaires, tri, top noté) · Mon parcours (récap journée/quêtes) + carte souvenir partageable · Classement multi-onglets · Check-in « Tout va bien » + FAQ premiers secours · Faux appel · Numéros d'urgence par pays (~30) · Contacts d'urgence (ICE, local) · XP/badges sur le profil." },
-      { v: "Sécurité (boîte à outils solo)", body: "112/SOS + alerte cercle · faux appel · signal lumineux d'aide · numéros par pays · contacts ICE · FAQ premiers secours & voyage · cercle de confiance (alertes 24 h) · pastille « tout va bien »." },
-      { v: "Migrations lancées", body: "17→23 toutes lancées et vérifiées en live (XP, badges, signalements, quêtes groupe, avis, badges jalons, profil privé)." },
-      { v: "À surveiller", body: "Garder ce changelog à jour à chaque session · vérifier les nouvelles features sur mobile." },
-    ];
-    function renderAdminKb() {
-      const el = $("adminKb"); if (!el) return;
-      el.innerHTML = SM_CHANGELOG.map((e) => `<div class="qrow" style="cursor:default;align-items:flex-start"><div class="qico">•</div><div class="qname" style="white-space:normal"><b>${escapeHtml(e.v)}</b><div class="meta muted" style="font-size:.78rem;white-space:normal;line-height:1.5;margin-top:.2rem">${escapeHtml(e.body)}</div></div></div>`).join("");
-    }
 
     // ---- Knowledge base : l'aperçu complet de TOUT ce que l'app permet (onglet 🎤) ----
     // La liste est générée depuis le scénario de la démo, donc toujours à jour et exhaustive.
@@ -4401,6 +4378,7 @@
     }
     { const b = $("signalBtn"); if (b) b.addEventListener("click", openSignal); }
     { const c = $("signalClose"); if (c) c.addEventListener("click", closeSignal); }
+    { const sc = $("signalScreen"); if (sc) sc.addEventListener("click", closeSignal); } // tap n'importe où pour fermer vite
 
     // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
     let connectedIds = new Set(); // ids des Mates déjà connectés (statut accepté)
@@ -5890,48 +5868,45 @@
 
     // ---- Numéros d'urgence par pays (utile pour un·e voyageur·se solo à l'étranger) ----
     // n = numéro général ; p = police ; a = ambulance/SAMU (quand distincts).
+    // pop = affiché par défaut (destinations courantes) ; le reste apparaît à la recherche.
     const EMERGENCY_NUMBERS = [
-      { c: "France", f: "🇫🇷", n: "112", p: "17", a: "15" },
-      { c: "Belgique", f: "🇧🇪", n: "112", p: "101", a: "112" },
+      { c: "Europe (UE)", f: "🇪🇺", n: "112", pop: 1, note: "112 partout dans l'Union européenne" },
+      { c: "France", f: "🇫🇷", n: "112", p: "17", a: "15", pop: 1 },
+      { c: "Royaume-Uni", f: "🇬🇧", n: "999", pop: 1 },
       { c: "Suisse", f: "🇨🇭", n: "112", p: "117", a: "144" },
-      { c: "Espagne", f: "🇪🇸", n: "112" },
-      { c: "Portugal", f: "🇵🇹", n: "112" },
-      { c: "Italie", f: "🇮🇹", n: "112" },
       { c: "Allemagne", f: "🇩🇪", n: "112", p: "110" },
-      { c: "Royaume-Uni", f: "🇬🇧", n: "999", p: "999", a: "999" },
-      { c: "Pays-Bas", f: "🇳🇱", n: "112" },
-      { c: "Irlande", f: "🇮🇪", n: "112" },
       { c: "Grèce", f: "🇬🇷", n: "112", p: "100", a: "166" },
-      { c: "Croatie", f: "🇭🇷", n: "112" },
-      { c: "Maroc", f: "🇲🇦", n: "112", p: "19", a: "15" },
+      { c: "Maroc", f: "🇲🇦", n: "112", p: "19", a: "15", pop: 1 },
       { c: "Égypte", f: "🇪🇬", n: "112", p: "122", a: "123" },
       { c: "Afrique du Sud", f: "🇿🇦", n: "112", p: "10111", a: "10177" },
-      { c: "États-Unis", f: "🇺🇸", n: "911" },
+      { c: "États-Unis", f: "🇺🇸", n: "911", pop: 1 },
       { c: "Canada", f: "🇨🇦", n: "911" },
-      { c: "Mexique", f: "🇲🇽", n: "911" },
-      { c: "Brésil", f: "🇧🇷", n: "190", p: "190", a: "192" },
+      { c: "Mexique", f: "🇲🇽", n: "911", pop: 1 },
+      { c: "Brésil", f: "🇧🇷", n: "190", a: "192" },
       { c: "Argentine", f: "🇦🇷", n: "911", p: "101", a: "107" },
-      { c: "Thaïlande", f: "🇹🇭", n: "191", p: "1155", a: "1669" },
-      { c: "Vietnam", f: "🇻🇳", n: "113", p: "113", a: "115" },
-      { c: "Indonésie (Bali)", f: "🇮🇩", n: "112", p: "110", a: "118" },
-      { c: "Japon", f: "🇯🇵", n: "110", p: "110", a: "119" },
-      { c: "Corée du Sud", f: "🇰🇷", n: "112", p: "112", a: "119" },
+      { c: "Thaïlande", f: "🇹🇭", n: "191", p: "1155", a: "1669", pop: 1 },
+      { c: "Vietnam", f: "🇻🇳", n: "113", a: "115" },
+      { c: "Indonésie (Bali)", f: "🇮🇩", n: "112", p: "110", a: "118", pop: 1 },
+      { c: "Japon", f: "🇯🇵", n: "110", a: "119", pop: 1 },
+      { c: "Corée du Sud", f: "🇰🇷", n: "112", a: "119" },
       { c: "Inde", f: "🇮🇳", n: "112", p: "100", a: "102" },
-      { c: "Chine", f: "🇨🇳", n: "110", p: "110", a: "120" },
-      { c: "Australie", f: "🇦🇺", n: "000", p: "000", a: "000" },
+      { c: "Chine", f: "🇨🇳", n: "110", a: "120" },
+      { c: "Australie", f: "🇦🇺", n: "000" },
       { c: "Nouvelle-Zélande", f: "🇳🇿", n: "111" },
-      { c: "Turquie", f: "🇹🇷", n: "112" },
-      { c: "Émirats (Dubaï)", f: "🇦🇪", n: "999", p: "999", a: "998" },
+      { c: "Turquie", f: "🇹🇷", n: "112", pop: 1 },
+      { c: "Émirats (Dubaï)", f: "🇦🇪", n: "999", a: "998" },
     ];
     function renderNumbers(q) {
       const box = $("numbersList"); if (!box) return;
       q = (q || "").trim().toLowerCase();
-      const list = EMERGENCY_NUMBERS.filter((e) => !q || e.c.toLowerCase().includes(q));
+      const list = EMERGENCY_NUMBERS.filter((e) => q ? e.c.toLowerCase().includes(q) : e.pop);
       const chip = (label, num) => num ? `<a href="tel:${num}" class="num-chip"><span>${label}</span><b>${num}</b></a>` : "";
-      box.innerHTML = list.length ? list.map((e) => `<div class="num-row">
+      box.innerHTML = (list.length ? list.map((e) => `<div class="num-row">
           <div class="num-head"><span class="num-flag">${e.f}</span><b>${escapeHtml(e.c)}</b></div>
           <div class="num-chips">${chip("Urgences", e.n)}${e.p && e.p !== e.n ? chip("Police", e.p) : ""}${e.a && e.a !== e.n ? chip("Ambulance", e.a) : ""}</div>
-        </div>`).join("") : '<p class="muted" style="text-align:center;padding:1rem">Pays non listé — en cas de doute, essaie le <b>112</b> (fonctionne dans beaucoup de pays).</p>';
+          ${e.note ? `<div class="muted" style="font-size:.72rem;margin-top:.2rem">${escapeHtml(e.note)}</div>` : ""}
+        </div>`).join("") : '<p class="muted" style="text-align:center;padding:1rem">Pays non listé — en cas de doute, essaie le <b>112</b>.</p>')
+        + (!q ? '<p class="muted" style="text-align:center;font-size:.78rem;padding:.6rem">🔍 Cherche un autre pays ci-dessus pour ses numéros.</p>' : "");
     }
     function openNumbers() { const m = $("numbersModal"); if (!m) return; $("numbersSearch").value = ""; renderNumbers(""); m.classList.remove("hidden"); }
     { const c = $("numbersClose"); if (c) c.addEventListener("click", () => $("numbersModal").classList.add("hidden")); }
