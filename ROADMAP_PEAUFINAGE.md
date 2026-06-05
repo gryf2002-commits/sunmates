@@ -100,7 +100,16 @@ Smoke test OK : tables (`badges_catalog`, `quest_group_runs`), colonnes (`profil
 
 > Roadmap peaufinage : **TERMINÉE** (14 lots, SW v49).
 
-## ⭐ NOUVELLE FEATURE — Avis sur les lieux (lots 20-22, SW v57)
+## 🚀 NOUVELLES FEATURES & BOOSTS (lots 20-28, SW v63)
+- **Avis sur les lieux** (lots 20-22) — voir détail ci-dessous (⚠️ migration 21).
+- **XP sur le profil** (lot 25) : stat XP cliquable → classement. **🏆 Top noté** sur les lieux ≥4.5/≥3 avis.
+- **Tri des lieux** (lot 26) : Mieux notés / Plus de check-ins / A→Z.
+- **Badges sur la carte profil** (lot 27) : rangée de mes badges débloqués (cliquable → onglet Badges).
+- **📞 Faux appel** (lot 28) : sortie de secours discrète (100 % local). Bouton dans Sécurité →
+  choix de l'appelant → après 5 s, écran « appel entrant » réaliste (vibration, Répondre/Refuser,
+  chrono). Pour s'extraire poliment d'une situation inconfortable.
+
+## ⭐ Avis sur les lieux (lots 20-22, SW v57)
 ⚠️ **LANCER une 5ᵉ migration** : `supabase_migration_session21_avis_lieux.sql`
 (table `place_reviews` + RPC `place_ratings()` + seed d'avis de démo). Tant qu'elle n'est pas
 lancée, le front affiche « Pas d'avis » et le modal indique « indisponible » (pas de crash).
