@@ -3566,18 +3566,17 @@
         const { data, error } = await db.rpc("redeem_checkin", { p_cafe_id: cafeId, p_code: code });
         if (error) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; return; }
         const res = data || {};
-        msg.style.color = res.ok ? "var(--ok)" : "var(--danger)";
-        msg.textContent = res.message || (res.ok ? "Check-in validé ✅" : "Échec.");
-        if (res.ok) {
-          cafeCheckins[cafeId] = (cafeCheckins[cafeId] || 0) + 1; // maj immédiate du compteur
-          if (typeof renderCafesList === "function") renderCafesList();
-          // Flash sur la TUILE du lieu validé (visible à l'écran), pas sur le message en haut.
-          const card = document.querySelector(`[data-cafecard="${cafeId}"]`);
-          if (card) { flashOk(card); card.scrollIntoView({ behavior: "smooth", block: "center" }); }
-          else flashOk($("cafesMsg"));
-          await Promise.all([loadProfile(), loadCheckins()]);
-          if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap();
-        }
+        if (!res.ok) { msg.style.color = "var(--danger)"; msg.textContent = res.message || "Échec."; return; }
+        msg.textContent = "";
+        cafeCheckins[cafeId] = (cafeCheckins[cafeId] || 0) + 1; // maj immédiate du compteur
+        if (typeof renderCafesList === "function") renderCafesList();
+        // Flash sur la TUILE du lieu validé.
+        const card = document.querySelector(`[data-cafecard="${cafeId}"]`);
+        if (card) { flashOk(card); card.scrollIntoView({ behavior: "smooth", block: "center" }); }
+        // Toast cliquable : invite à laisser un avis (relie check-in -> avis).
+        toast("✅", "Check-in validé ! ⭐ Touche ici pour laisser un avis", () => openReviews(cafeId, cafeName));
+        await Promise.all([loadProfile(), loadCheckins()]);
+        if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap();
       });
     }
 
