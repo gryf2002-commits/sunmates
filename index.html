@@ -2206,6 +2206,7 @@
           <div class="card">
             <h3 style="margin-top:0">Sécurité &amp; confidentialité</h3>
             <div class="qrow" data-secu="signaler"><div class="qico">🚩</div><div class="qname">Signaler un voyageur</div><div class="qarrow">›</div></div>
+            <div class="qrow" data-secu="mysignals"><div class="qico">📋</div><div class="qname">Mes signalements</div><div class="qarrow">›</div></div>
             <div class="qrow" data-secu="historique"><div class="qico">🗂️</div><div class="qname">Historique de rencontres</div><div class="qarrow">›</div></div>
           </div>
 
@@ -5178,18 +5179,40 @@
     async function handleSecu(action) {
       const m = $("helpMsg"); m.style.color = "var(--text)";
       if (action === "signaler") {
-        const people = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)));
+        const people = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)) && !blockedIds.has(p.id));
         if (!people.length) { m.style.color = "var(--danger)"; m.textContent = "Aucun voyageur à signaler pour l'instant."; return; }
         openPicker("Signaler un voyageur", people.map((p) => ({ label: p.username || "Voyageur", avatar: p.avatar_url, id: p.id })), async (it) => {
           closePicker();
-          const reason = prompt("Pour quelle raison signales-tu « " + it.label + " » ?");
+          const reason = prompt("Pour quelle raison signales-tu « " + it.label + " » ?\n(ex : comportement déplacé, faux profil, spam…)");
           if (!reason) return;
-          const { error } = await once("report:" + it.id, async () =>
-            db.from("reports").insert({ reporter: myUserId, reported_user: it.id, reason })
+          const { data, error } = await once("report:" + it.id, async () =>
+            db.rpc("report_user", { p_reported: it.id, p_reason: reason })
           ) || {};
-          m.style.color = error ? "var(--danger)" : "var(--ok)";
-          m.textContent = error ? "Erreur : " + error.message : "Signalement envoyé. Merci, on regarde ça. 🙏";
+          if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
+          const res = data || {};
+          if (!res.ok) { m.style.color = "var(--danger)"; m.textContent = res.message || "Échec."; return; }
+          m.textContent = "";
+          // On rafraîchit pour que la personne bloquée disparaisse immédiatement.
+          if (typeof loadConnections === "function") await loadConnections();
+          // Explication claire de ce qui s'est passé (étoffé).
+          showInfo("Signalement pris en compte 🛡️", `<div style="line-height:1.6;font-size:.9rem">
+            <p style="margin:.2rem 0"><b>« ${escapeHtml(it.label)} »</b> a bien été signalé.</p>
+            <p style="margin:.2rem 0">✅ Cette personne est <b>automatiquement bloquée pour toi</b> : tu ne la croiseras plus (découverte, messages, carte) le temps que notre équipe examine.</p>
+            <p style="margin:.2rem 0">🕒 Statut : <b>en attente de modération</b>. Tu peux suivre tes signalements via « Mes signalements ».</p>
+            <p class="muted" style="margin:.4rem 0 0;font-size:.8rem">On ne peut signaler une même personne qu'une seule fois. Merci de garder SunMates sûr 🙏</p>
+          </div>`);
         });
+      } else if (action === "mysignals") {
+        const { data, error } = await db.rpc("my_reports");
+        if (error) { showInfo("Mes signalements", '<p class="muted" style="text-align:center;padding:1rem">Indisponible pour l\'instant.</p>'); return; }
+        const rows = data || [];
+        if (!rows.length) { showInfo("Mes signalements", '<p class="muted" style="text-align:center;padding:1rem">Tu n\'as signalé personne. 👍</p>'); return; }
+        const statusLabel = (s, h) => h ? '<span class="badge ok">✅ Traité</span>' : '<span class="badge warn">🕒 En attente</span>';
+        showInfo("Mes signalements", rows.map((r) => `<div class="qrow" style="cursor:default">
+            <div class="qico">🚩</div>
+            <div class="qname">${escapeHtml(r.username || "Voyageur")}<div class="meta muted" style="font-size:.74rem">${escapeHtml((r.reason || "").slice(0, 60))} · ${new Date(r.created_at).toLocaleDateString("fr-FR")}</div></div>
+            ${statusLabel(r.status, r.handled)}
+          </div>`).join(""));
       } else if (action === "historique") {
         if (!connHistory.length) { showInfo("Historique des rencontres", '<p class="muted" style="text-align:center;padding:1rem">Aucune rencontre pour l\'instant. Connecte-toi avec des voyageurs !</p>'); return; }
         const rows = connHistory.slice().sort((a, b) => (b.since || "").localeCompare(a.since || "")).map((h) => {
