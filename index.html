@@ -1727,7 +1727,7 @@
   <div id="fakeCall" class="fakecall hidden">
     <div class="fc-inner">
       <div class="fc-top">
-        <div class="fc-avatar">📞</div>
+        <div class="fc-avatar" id="fcAvatar">📞</div>
         <div class="fc-name" id="fcName">Maman</div>
         <div class="fc-status" id="fcStatus">Appel entrant…</div>
       </div>
@@ -4155,7 +4155,9 @@
     // ---- Faux appel : sortie de secours discrète (voyageur solo). 100 % local, aucune donnée. ----
     let fcRingTick = null, fcCallTimer = null, fcSeconds = 0, fcStartTimeout = null;
     function startFakeCall(name) {
-      $("fcName").textContent = name || "Maman";
+      name = name || "Maman";
+      $("fcName").textContent = name;
+      { const av = $("fcAvatar"); if (av) av.textContent = /inconnu/i.test(name) ? "📞" : (name.trim()[0] || "📞").toUpperCase(); }
       $("fcStatus").textContent = "Appel entrant…";
       show($("fcRinging"), true); show($("fcInCall"), false);
       $("fakeCall").classList.remove("hidden");
