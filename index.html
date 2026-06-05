@@ -579,6 +579,23 @@
     .place .meta { color: var(--muted); font-size: .85rem; }
     .place .eco { color: var(--ok); font-size: .78rem; font-weight: 600; }
     .place button { align-self: flex-start; margin-top: .5rem; padding: .55rem 1rem; font-size: .85rem; }
+    /* Alerte d'urgence dans le cercle : carte qui DÉNOTE (rouge, bord vif, pastille pulsante). */
+    .place-sos { background: rgba(239,68,68,.08); border: 1.5px solid rgba(239,68,68,.45); padding: .8rem .85rem; margin-bottom: .5rem; }
+    body.theme-dusk .place-sos { background: rgba(239,68,68,.16); }
+    .sos-tag { display: inline-flex; align-items: center; gap: .25rem; margin-left: .4rem; background: #e23b3b; color: #fff; font-size: .68rem; font-weight: 800; padding: .12rem .5rem; border-radius: 999px; box-shadow: 0 0 0 0 rgba(226,59,59,.55); animation: sosPulse 1.6s ease-out infinite; }
+    @keyframes sosPulse { 0% { box-shadow: 0 0 0 0 rgba(226,59,59,.5); } 70% { box-shadow: 0 0 0 8px rgba(226,59,59,0); } 100% { box-shadow: 0 0 0 0 rgba(226,59,59,0); } }
+    /* Logo SOS cliquable + check-in « tout va bien » */
+    .sos-logo { font-size: 2.8rem; line-height: 1; background: none; border: 0; cursor: pointer; padding: .15rem .45rem; border-radius: 16px; transition: transform .12s; }
+    .sos-logo:hover { transform: scale(1.08); }
+    .safety-check { display: flex; align-items: center; gap: .8rem; }
+    /* Carte « En cas d'urgence » : bord rouge léger, alerte qui dénote */
+    .secu-urgent { border: 1.5px solid rgba(239,68,68,.28); }
+    .sos-alert-btn { width: 100%; background: linear-gradient(135deg,#FF6A6A,#E11D2E); color: #fff; font-weight: 800; font-size: 1.02rem;
+      padding: .95rem; border: 0; border-radius: var(--radius-sm); cursor: pointer; box-shadow: 0 8px 22px rgba(225,29,46,.4), 0 0 0 0 rgba(225,29,46,.5); animation: sosPulse 2.2s ease-out infinite; }
+    .sos-alert-btn:active { transform: scale(.98); }
+    .secu-explain { margin-top: .8rem; background: var(--cream); border: 1px solid var(--line); border-radius: 12px; padding: .7rem .85rem; font-size: .78rem; line-height: 1.5; color: var(--muted); }
+    /* Pastille sur l'onglet Sécurité (check-in en attente) : petit point ambre pulsant */
+    #navSecu { background: #F5A623; box-shadow: 0 0 0 0 rgba(245,166,35,.6); animation: sosPulse 1.9s ease-out infinite; min-width: 10px; width: 10px; height: 10px; padding: 0; font-size: 0; right: calc(50% - 16px); }
 
     /* --------------------- Carte tout-en-un (accueil) -------------------- */
     .homemap-card { padding: .55rem; }
@@ -1536,6 +1553,12 @@
     /* Sécurité : jamais monnayée. Note rassurante « inclus pour tous », ton DA corail. */
     .safe-free-note { background: var(--accent-soft); border: 1px solid rgba(255,90,77,.22); color: var(--accent); border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 700; }
     body.theme-dusk .safe-free-note { background: rgba(255,90,77,.14); color: #ffb0a6; border-color: rgba(255,90,77,.3); }
+    /* FAQ premiers secours / voyage : accordéon sobre dans la DA */
+    .faq-secu details { border: 1px solid var(--line); border-radius: 12px; padding: .55rem .8rem; margin-bottom: .5rem; background: var(--cream); }
+    .faq-secu summary { cursor: pointer; font-weight: 700; color: var(--ink); list-style: none; font-size: .9rem; }
+    .faq-secu summary::-webkit-details-marker { display: none; }
+    .faq-secu details[open] summary { margin-bottom: .4rem; color: var(--accent); }
+    .faq-secu p { margin: 0; font-size: .84rem; line-height: 1.55; color: var(--text); }
     #goldPreviewBanner { display: none; }
     body.gold-free #goldPreviewBanner { display: block; background: linear-gradient(135deg,#FFD15C,#E89B2B); color: #5a3d00; text-align: center; font-weight: 700; font-size: .8rem; padding: .5rem; }
     /* Exclus Gold (lieu / quête) — lisibles en clair ET en sombre */
@@ -2003,10 +2026,19 @@
           <p class="muted" style="margin-top:0">En cas de besoin, un seul geste. On est là pour toi.</p>
 
           <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1.2rem">
-            <div style="font-size:2.8rem;line-height:1">🆘</div>
+            <button id="sosLogo" class="sos-logo" aria-label="Ouvrir les actions d'urgence" title="Actions d'urgence">🆘</button>
             <h2 style="margin:.5rem 0 .2rem;color:var(--accent)">Besoin d'aide ?</h2>
             <p class="muted" style="font-size:.85rem;margin:0 0 1.2rem;max-width:300px">Partage de position, alerte d'urgence, cercle de confiance et plus.</p>
             <button class="btn-danger" id="needHelpBtn" style="font-size:1.15rem;padding:1.1rem 1rem;width:100%;max-width:320px">🆘 J'ai besoin d'aide</button>
+          </div>
+
+          <!-- Check-in de sécurité : la pastille reste sur l'onglet tant qu'on n'a pas confirmé. -->
+          <div class="card safety-check" id="safetyCheckCard">
+            <div style="flex:1">
+              <div style="font-weight:800;color:var(--ink)">Tout va bien aujourd'hui ?</div>
+              <div class="muted" style="font-size:.8rem">Confirme que tu vas bien — sinon, un geste suffit pour alerter ton cercle.</div>
+            </div>
+            <button class="btn-accent" id="allGoodBtn" style="flex-shrink:0;white-space:nowrap">✅ Tout va bien</button>
           </div>
 
           <div class="section-head"><h3>Accès rapides</h3></div>
@@ -2024,19 +2056,19 @@
         <div id="secuHelp" class="secu-view hidden">
           <button class="backbtn" data-sback>‹ Retour</button>
           <h1>Besoin d'aide</h1>
-          <div class="card" style="border:1px solid rgba(239,68,68,.22)">
+          <div class="card secu-urgent">
+            <h3 style="margin-top:0;display:flex;align-items:center;gap:.45rem">🆘 En cas d'urgence</h3>
             <a class="btn-danger btn-block" href="tel:112" style="text-decoration:none;text-align:center;display:block;font-size:1.05rem">☎️ Appeler les secours (112)</a>
-            <div class="safe-free-note">🛡️ Position, alerte et cercle de confiance : <b>inclus pour tous</b>, gratuitement.</div>
-            <div class="row" style="margin-top:.7rem">
-              <button class="btn-accent" id="shareLocBtn">📍 Ma position</button>
-              <button class="btn-danger" id="emergencyBtn">🚨 Alerte</button>
-            </div>
-            <div class="msg" id="locMsg" style="text-align:center"></div>
+            <!-- L'alerte DÉNOTE : pleine largeur, rouge, halo pulsant -->
+            <button class="sos-alert-btn" id="emergencyBtn" style="margin-top:.6rem">🚨 Déclencher une alerte d'urgence</button>
             <div class="msg" id="emergencyMsg" style="text-align:center"></div>
-            <div style="margin-top:.8rem;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:.7rem .85rem">
-              <div class="muted" style="font-size:.78rem;line-height:1.5"><b style="color:var(--accent)">📍 Ma position</b> : partagée avec ton <b>cercle de confiance</b> (tes connexions acceptées).</div>
-              <div class="muted" style="font-size:.78rem;line-height:1.5;margin-top:.35rem"><b style="color:var(--danger)">🚨 Alerte</b> : diffuse aussitôt ta position à ton cercle en cas d'urgence.</div>
+            <button class="btn-accent btn-block" id="shareLocBtn" style="margin-top:.55rem">📍 Partager ma position (sans urgence)</button>
+            <div class="msg" id="locMsg" style="text-align:center"></div>
+            <div class="secu-explain">
+              <div><b style="color:var(--accent)">📍 Ma position</b> : partagée avec ton <b>cercle de confiance</b> (connexions acceptées), visible 24 h.</div>
+              <div style="margin-top:.35rem"><b style="color:var(--danger)">🚨 Alerte</b> : diffuse aussitôt ta position à ton cercle en cas d'urgence.</div>
             </div>
+            <div class="safe-free-note" style="margin-top:.7rem;margin-bottom:0">🛡️ Tout ça est <b>gratuit pour tous</b>, toujours.</div>
           </div>
 
           <div class="card" id="circleCard">
@@ -2059,6 +2091,12 @@
           </div>
 
           <div class="card" style="margin-top:1.4rem">
+            <h3 style="margin-top:0">Conseils &amp; secours</h3>
+            <div class="qrow" data-secu="secours"><div class="qico">🩺</div><div class="qname">Premiers secours · gestes qui sauvent</div><div class="qarrow">›</div></div>
+            <div class="qrow" data-secu="voyage"><div class="qico">🧭</div><div class="qname">Voyager en sécurité</div><div class="qarrow">›</div></div>
+          </div>
+
+          <div class="card">
             <h3 style="margin-top:0">Sécurité &amp; confidentialité</h3>
             <div class="qrow" data-secu="signaler"><div class="qico">🚩</div><div class="qname">Signaler un voyageur</div><div class="qarrow">›</div></div>
             <div class="qrow" data-secu="historique"><div class="qico">🗂️</div><div class="qname">Historique de rencontres</div><div class="qarrow">›</div></div>
@@ -2067,7 +2105,7 @@
           <div class="card">
             <h3 style="margin-top:0">Préférences</h3>
             <div class="qrow" data-secu="contact"><div class="qico">📢</div><div class="qname">Qui peut me contacter</div><div class="qarrow" id="contactPrefVal">›</div></div>
-            <div class="qrow" data-secu="assistance"><div class="qico">🔁</div><div class="qname">Assistance</div><div class="qarrow">›</div></div>
+            <div class="qrow" data-secu="support2"><div class="qico">✉️</div><div class="qname">Nous contacter</div><div class="qarrow">›</div></div>
           </div>
 
           <div class="msg" id="helpMsg" style="text-align:center"></div>
@@ -2531,7 +2569,7 @@
       <button data-tab="lieux"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg><span class="nav-lbl" data-i18n="nav.places">Lieux</span></button>
       <button data-tab="jeux"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8 4.8-2.2Z"/></svg><span class="nav-lbl" data-i18n="nav.games">Jeux</span><span class="navbadge hidden" id="navJeux"></span></button>
       <button data-tab="connexions"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.2"/><path d="M3.6 19a5.5 5.5 0 0 1 10.8 0"/><path d="M16 7.6a3 3 0 0 1 0 5.6"/><path d="M17.8 19a5 5 0 0 0-3-4.7"/></svg><span class="nav-lbl" data-i18n="nav.mates">Mates</span><span class="navbadge hidden" id="navMates"></span></button>
-      <button data-tab="securite"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/></svg><span class="nav-lbl" data-i18n="nav.safety">Sécurité</span></button>
+      <button data-tab="securite"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/></svg><span class="nav-lbl" data-i18n="nav.safety">Sécurité</span><span class="navbadge hidden" id="navSecu">●</span></button>
       <button data-tab="profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg><span class="nav-lbl" data-i18n="nav.profile">Profil</span></button>
     </nav>
   </section>
@@ -2719,6 +2757,7 @@
         await loadUnread();
         buildHomeFeed();
         if (typeof renderHomeMap === "function") setTimeout(renderHomeMap, 80);
+        if (typeof updateSafetyBadge === "function") updateSafetyBadge();
         if (typeof maybeShowOnboarding === "function") maybeShowOnboarding();
         subscribeToCircle();
         subscribeMessages();
@@ -3672,7 +3711,11 @@
           });
           msg.style.color = error ? "var(--danger)" : (isEmergency ? "var(--danger)" : "var(--ok)");
           msg.textContent = error ? "Erreur : " + error.message : okText + " (visible 1 h sur la carte)";
-          if (!error) { await loadCircleLocations(); if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap(); }
+          if (!error) {
+            await loadCircleLocations();
+            if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap();
+            if (!isEmergency && typeof markSafetyOk === "function") markSafetyOk(true); // partager sa position = check-in OK (silencieux)
+          }
           resolve();
         }, () => { msg.style.color = "var(--danger)"; msg.textContent = "Autorise la géolocalisation dans ton navigateur pour partager ta position."; resolve(); });
       }));
@@ -3689,19 +3732,38 @@
       ]);
       circleLocs = locs || [];
       const nameOf = (id) => (profiles || []).find((p) => p.id === id)?.username || "Voyageur";
-      // On affiche les positions des AUTRES (mon cercle), pas les miennes.
-      const circle = (locs || []).filter((l) => l.user_id !== myUserId);
+      // Les alertes/positions partagées EXPIRENT après 24 h (on ne montre pas de vieilles alertes).
+      const cutoff = Date.now() - 24 * 3600 * 1000;
+      const circle = (locs || []).filter((l) => l.user_id !== myUserId && new Date(l.created_at).getTime() > cutoff)
+        .sort((a, b) => (b.is_emergency - a.is_emergency)); // urgences d'abord
       $("circleLocList").innerHTML = circle.length
-        ? circle.map((l) => `<div class="place">
+        ? circle.map((l) => `<div class="place${l.is_emergency ? ' place-sos' : ''}">
             <div class="name">${escapeHtml(nameOf(l.user_id))}
-            ${l.is_emergency ? '<span class="badge warn">🚨 URGENCE</span>' : ''}</div>
-            <div class="meta">${new Date(l.created_at).toLocaleString("fr-FR")}</div>
+            ${l.is_emergency ? '<span class="sos-tag">🚨 URGENCE</span>' : ''}</div>
+            <div class="meta">${timeAgo(l.created_at)} · ${new Date(l.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
             <a href="https://www.google.com/maps?q=${l.lat},${l.lng}" target="_blank" rel="noopener" style="color:var(--accent);font-size:.85rem;font-weight:600">Voir sur la carte 📍</a>
           </div>`).join("")
-        : '<p class="muted">Personne de ton cercle n\'a partagé de position pour l\'instant.</p>';
+        : '<p class="muted">Personne de ton cercle n\'a partagé de position dans les dernières 24 h.</p>';
     }
 
     $("refreshCircleBtn").addEventListener("click", loadCircleLocations);
+
+    // ---- Check-in de sécurité : pastille sur l'onglet Sécurité tant que l'utilisateur
+    //      n'a pas confirmé « tout va bien » aujourd'hui. Se réarme chaque jour. ----
+    function safetyTodayKey() { const d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+    function isSafetyOk() { try { return localStorage.getItem("sm_safety_ok") === safetyTodayKey(); } catch (e) { return true; } }
+    function updateSafetyBadge() {
+      const ok = isSafetyOk();
+      const b = $("navSecu"); if (b) show(b, !ok);
+      const card = $("safetyCheckCard"); if (card) card.style.display = ok ? "none" : "flex";
+    }
+    function markSafetyOk(silent) {
+      try { localStorage.setItem("sm_safety_ok", safetyTodayKey()); } catch (e) {}
+      updateSafetyBadge();
+      if (!silent && typeof toast === "function") toast("✅", "Content de te savoir en sécurité 🌞");
+    }
+    { const ag = $("allGoodBtn"); if (ag) ag.addEventListener("click", () => markSafetyOk(false)); }
+    { const sl = $("sosLogo"); if (sl) sl.addEventListener("click", () => showSecuView("secuHelp")); }
 
     // ====================== CONNEXIONS ENTRE VOYAGEURS ======================
     let connectedIds = new Set(); // ids des Mates déjà connectés (statut accepté)
@@ -4924,8 +4986,31 @@
         m.style.color = error ? "var(--danger)" : "var(--ok)";
         m.textContent = error ? "Erreur : " + error.message
           : "Préférence enregistrée : " + (next === "connections" ? "seules tes connexions peuvent te contacter" : "tout le monde peut te contacter") + " ✅";
-      } else if (action === "assistance") {
-        window.location.href = "mailto:support@sunmates.app?subject=Assistance%20SunMates";
+      } else if (action === "secours") {
+        showInfo("Premiers secours · l'essentiel 🩺", `<div class="faq-secu">
+          <p class="muted" style="font-size:.8rem;margin:0 0 .7rem">En cas de doute, appelle d'abord le <b>112</b>. Voici les gestes clés en attendant les secours.</p>
+          <details open><summary>❤️ Massage cardiaque (arrêt cardiaque)</summary>
+            <p>Personne inconsciente qui ne respire pas : appelle le <b>112</b>, puis <b>30 compressions</b> au centre de la poitrine (5–6 cm de profondeur, rythme ~100–120/min, sur l'air de « Stayin' Alive »), <b>2 insufflations</b>, et on recommence. Continue jusqu'à l'arrivée des secours ou d'un défibrillateur.</p></details>
+          <details><summary>😵‍💫 Étouffement (obstruction)</summary>
+            <p>Adulte conscient : <b>5 claques</b> dans le dos entre les omoplates, puis <b>5 compressions abdominales</b> (Heimlich). Alterne jusqu'à expulsion. Si perte de connaissance → 112 + massage cardiaque.</p></details>
+          <details><summary>🩸 Hémorragie</summary>
+            <p>Appuie <b>fort et sans relâcher</b> sur la plaie (linge propre), allonge la personne, appelle le 112. Ne retire pas un objet planté.</p></details>
+          <details><summary>😶 Perte de connaissance (qui respire)</summary>
+            <p>Mets la personne en <b>position latérale de sécurité</b> (sur le côté), surveille la respiration, appelle le 112.</p></details>
+          <details><summary>🔥 Brûlure</summary>
+            <p>Refroidis à l'<b>eau tiède 15–20 min</b>, ne perce pas les cloques, couvre d'un linge propre. 112 si étendue ou profonde.</p></details>
+          <a href="tel:112" class="btn-danger btn-block" style="text-decoration:none;text-align:center;display:block;margin-top:.7rem">☎️ Appeler le 112</a>
+          <p class="muted" style="font-size:.72rem;margin:.6rem 0 0">Ces tips ne remplacent pas une formation aux premiers secours (PSC1).</p>
+        </div>`);
+      } else if (action === "support2") {
+        window.location.href = "mailto:support@sunmates.app?subject=Contact%20SunMates";
+      } else if (action === "voyage") {
+        showInfo("Voyager en sécurité ✈️", `<div class="faq-secu">
+          <details open><summary>📍 Avant de sortir</summary><p>Préviens un proche/ton cercle de ton plan, partage ta position, garde ton téléphone chargé (et une batterie externe).</p></details>
+          <details><summary>🍸 En soirée</summary><p>Ne laisse jamais ton verre sans surveillance, garde de quoi rentrer, retrouve-toi dans des <b>lieux validés</b>. Au moindre malaise, déclenche une alerte ou rejoins un Mate de confiance.</p></details>
+          <details><summary>🤝 Rencontres</summary><p>Privilégie les profils <b>vérifiés</b> et les lieux publics. Fie-toi à ton intuition : tu peux bloquer ou signaler à tout moment.</p></details>
+          <details><summary>🧳 Tes affaires</summary><p>Copie numérique de tes papiers, répartis cash/cartes, méfie-toi des lieux bondés (pickpockets).</p></details>
+        </div>`);
       }
     }
 
