@@ -822,17 +822,25 @@
     /* Cartes de jeux */
     .gcard { background: var(--card); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform .1s; }
     .gcard:active { transform: scale(.98); }
-    .gcard .ghead { height: 92px; background: var(--accent-grad); display: grid; place-items: center; font-size: 32px; position: relative; }
+    .gcard .ghead { height: 92px; background: var(--accent-grad); position: relative; background-size: cover; background-position: center; }
     .gcard .ghead.green { background: linear-gradient(135deg,#8fe6a6,#34c77b); }
     .gcard .ghead.blue  { background: linear-gradient(135deg,#8ed0ff,#3aa0f0); }
     .gcard .ghead.purp  { background: linear-gradient(135deg,#b9a6ff,#7c5cff); }
-    .gcard .grate { position: absolute; top: .5rem; right: .5rem; background: #fff; color: var(--accent); font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 999px; }
+    /* Emoji en BADGE dans le coin (plus au milieu de la photo) */
+    .gcard .gemoji { position: absolute; left: .5rem; bottom: .5rem; width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,.94); display: grid; place-items: center; font-size: 19px; box-shadow: var(--shadow-sm); z-index: 2; }
+    .gcard .grate { position: absolute; top: .5rem; right: .5rem; background: #fff; color: var(--accent); font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 999px; z-index: 2; }
+    .gcard .gdone { position: absolute; top: .5rem; left: .5rem; background: rgba(255,177,60,.95); color: #6b4a00; font-size: .68rem; font-weight: 800; padding: .12rem .45rem; border-radius: 999px; z-index: 2; }
     .gcard .gbody { padding: .7rem .8rem; }
     .gcard .gname { font-weight: 700; color: var(--ink); font-size: .9rem; line-height: 1.2; }
     .gcard .gcity { color: var(--muted); font-size: .76rem; margin-top: .15rem; }
 
     /* Lignes de quêtes */
     .qrow { display: flex; align-items: center; gap: .8rem; padding: .85rem 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+    /* Défis reçus : carte qui ressort (accent corail + halo) pour ne plus être noyée */
+    .sugg-card { border: 1.5px solid rgba(255,90,77,.35); box-shadow: 0 8px 22px rgba(255,90,77,.16); }
+    .sugg-count { background: var(--accent); color: #fff; font-size: .7rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 .3rem; }
+    .q-inprog { margin-left: .4rem; font-size: .68rem; font-weight: 700; color: #B5740E; background: rgba(255,177,60,.18); padding: .08rem .45rem; border-radius: 999px; }
+    .qrow-done .qico { opacity: .6; }
     .qrow:last-child { border-bottom: 0; padding-bottom: 0; }
     .qico { width: 42px; height: 42px; border-radius: 12px; background: var(--accent-soft); display: grid; place-items: center; font-size: 20px; flex-shrink: 0; }
     .qrow .qname { font-weight: 600; color: var(--ink); flex: 1; }
@@ -1899,7 +1907,7 @@
         <!-- Vue principale (sous-onglets) -->
         <div id="matesHome" class="mates-view">
           <h1 data-i18n="mates.title">Mes Mates</h1>
-          <div class="mates-stat stat-click" id="matesStatBtn" title="Voir mes connexions"><b id="matesCount">0</b><span data-i18n="mates.trusted">Mates de confiance 🛡️ ›</span></div>
+          <div class="mates-stat stat-click" id="matesStatBtn" title="Voir mes connexions"><b id="matesCount">0</b><span data-i18n="mates.trusted">Mates de confiance ›</span></div>
 
           <div class="mseg">
             <button data-mseg="messages" class="active"><span data-i18n="mates.messages">💬 Messages</span><span class="segb hidden" id="segMsg"></span></button>
@@ -1918,7 +1926,7 @@
               <div class="search"><span class="ico">🔍</span><input id="travSearch" type="text" placeholder="Rechercher par pseudo ou ville…" /></div>
               <div class="chips wrap" id="travFilters" style="margin-bottom:.5rem">
                 <button class="chip" data-filter="verified" data-i18n="filter.verified">Vérifiés</button>
-                <button class="chip" data-filter="active" data-i18n="filter.active">🟢 Actifs</button>
+                <button class="chip" data-filter="active" data-i18n="filter.active">● En ligne</button>
                 <button class="chip" data-filter="city" data-i18n="filter.city">Même ville</button>
                 <button class="chip" data-filter="affinity" data-i18n="filter.affinity">Affinité 50%+</button>
               </div>
@@ -2543,8 +2551,8 @@
           </div>
           <div class="gold-only-note">👑 Gratuit : 1 quête + 1 activité par jour. Gold : illimité + <b>coupons exclusifs</b> bien plus avantageux.</div>
 
-          <div class="card" id="suggestionsSection" style="display:none">
-            <h3 style="margin-top:0">🎯 Défis reçus</h3>
+          <div class="card sugg-card" id="suggestionsSection" style="display:none">
+            <h3 style="margin-top:0;display:flex;align-items:center;gap:.4rem">🎯 Défis reçus <span class="sugg-count" id="suggCount"></span></h3>
             <div id="suggestionsList"></div>
           </div>
 
@@ -4256,8 +4264,12 @@
       // Jeux populaires (avec ambiance photo)
       $("gamesGrid").innerHTML = games.map((g, i) => `
         <div class="gcard" data-qkey="${g.key}">
-          <div class="ghead ${headColors[i % 4]}" style="background-image:url('${questImage(g)}')">${g.emoji}<span class="grate">+${g.points || 0} pts</span></div>
-          <div class="gbody"><div class="gname">${escapeHtml(g.title)}${myQuestStatus[g.key] === "completed" ? " ✅" : ""}</div><div class="gcity">${escapeHtml(g.city || "")}</div></div>
+          <div class="ghead ${headColors[i % 4]}" style="background-image:url('${questImage(g)}')">
+            <span class="gemoji">${g.emoji}</span>
+            <span class="grate">+${g.points || 0} pts</span>
+            ${myQuestStatus[g.key] === "completed" ? '<span class="gdone">✅ Fait</span>' : ""}
+          </div>
+          <div class="gbody"><div class="gname">${escapeHtml(g.title)}</div><div class="gcity">${escapeHtml(g.city || "")}</div></div>
         </div>`).join("");
 
       // Quêtes du jour
@@ -4267,12 +4279,16 @@
           <div class="qname">Soirée VIP partenaires 👑<div class="meta muted" style="font-size:.74rem">Exclusif Gold · +50 pts · cocktail premium offert</div></div>
           <div class="qarrow">›</div>
         </div>` : "";
-      $("questsList").innerHTML = goldQuestRow + (quests.length ? quests.map((q) => `
-        <div class="qrow" data-qkey="${q.key}">
+      $("questsList").innerHTML = goldQuestRow + (quests.length ? quests.map((q) => {
+        const st = myQuestStatus[q.key];
+        const tag = st === "completed" ? '<span class="badge ok" style="margin-left:.4rem">✅ Fait</span>'
+                  : (st === "joined" ? '<span class="q-inprog">⏳ En cours</span>' : "");
+        return `<div class="qrow${st === "completed" ? " qrow-done" : ""}" data-qkey="${q.key}">
           <div class="qico">${q.emoji}</div>
-          <div class="qname">${escapeHtml(q.title)}${myQuestStatus[q.key] === "completed" ? " ✅" : (myQuestStatus[q.key] === "joined" ? " · en cours" : "")}</div>
+          <div class="qname">${escapeHtml(q.title)}${tag}</div>
           <div class="qarrow">›</div>
-        </div>`).join("") : '<p class="muted">Lance le script SQL pour voir les quêtes 🙂</p>');
+        </div>`;
+      }).join("") : '<p class="muted">Lance le script SQL pour voir les quêtes 🙂</p>');
       const gq = $("questsList").querySelector("[data-goldq]");
       if (gq) gq.addEventListener("click", () => openDetail(GOLD_QUEST));
 
@@ -4311,6 +4327,7 @@
 
       // Défis reçus (proposés par mes Mates)
       const sec = $("suggestionsSection");
+      const sc = $("suggCount"); if (sc) sc.textContent = mySuggestions.length ? mySuggestions.length : "";
       if (mySuggestions.length) {
         sec.style.display = "";
         $("suggestionsList").innerHTML = mySuggestions.map((s) => {
@@ -6419,10 +6436,10 @@
       fr: {
         "back": "‹ Retour",
         "nav.home": "Accueil", "nav.places": "Lieux", "nav.games": "Jeux", "nav.mates": "Mates", "nav.safety": "Sécurité", "nav.profile": "Profil",
-        "mates.title": "Mes Mates", "mates.trusted": "Mates de confiance 🛡️ ›", "mates.messages": "💬 Messages", "mates.discover": "🔍 Découvrir", "mates.requests": "📨 Demandes",
+        "mates.title": "Mes Mates", "mates.trusted": "Mates de confiance ›", "mates.messages": "💬 Messages", "mates.discover": "🔍 Découvrir", "mates.requests": "📨 Demandes",
         "places.title": "Lieux sûrs", "profile.title": "Mon profil", "safety.title": "Sécurité", "games.title": "Jeux & Quêtes",
         "prof.seg.edit": "Mon profil", "profile.replay": "🚀 Revoir la présentation",
-        "filter.verified": "Vérifiés", "filter.active": "🟢 Actifs", "filter.city": "Même ville", "filter.affinity": "Affinité 50%+",
+        "filter.verified": "Vérifiés", "filter.active": "● En ligne", "filter.city": "Même ville", "filter.affinity": "Affinité 50%+",
         "set.title": "⚙️ Paramètres du compte", "set.lang": "🌍 Langue / Language", "set.haptics": "Vibrations (haptique)", "set.hapticsSub": "Petit retour vibrant sur les actions clés",
         "set.presence": "Afficher ma présence", "set.presenceSub": "« En ligne » sur ton avatar", "set.myQr": "🪪 Mon QR", "set.scanQr": "📷 Scanner", "set.newEmail": "Nouvel email",
         "presence.active": "En ligne",
@@ -6436,10 +6453,10 @@
       en: {
         "back": "‹ Back",
         "nav.home": "Home", "nav.places": "Places", "nav.games": "Games", "nav.mates": "Mates", "nav.safety": "Safety", "nav.profile": "Profile",
-        "mates.title": "My Mates", "mates.trusted": "Trusted Mates 🛡️ ›", "mates.messages": "💬 Messages", "mates.discover": "🔍 Discover", "mates.requests": "📨 Requests",
+        "mates.title": "My Mates", "mates.trusted": "Trusted Mates ›", "mates.messages": "💬 Messages", "mates.discover": "🔍 Discover", "mates.requests": "📨 Requests",
         "places.title": "Safe places", "profile.title": "My profile", "safety.title": "Safety", "games.title": "Games & Quests",
         "prof.seg.edit": "My profile", "profile.replay": "🚀 Replay the intro",
-        "filter.verified": "Verified", "filter.active": "🟢 Active", "filter.city": "Same city", "filter.affinity": "Affinity 50%+",
+        "filter.verified": "Verified", "filter.active": "● Online", "filter.city": "Same city", "filter.affinity": "Affinity 50%+",
         "set.title": "⚙️ Account settings", "set.lang": "🌍 Language / Langue", "set.haptics": "Vibrations (haptics)", "set.hapticsSub": "A little buzz on key actions",
         "set.presence": "Show my presence", "set.presenceSub": "“Online” on your avatar", "set.myQr": "🪪 My QR", "set.scanQr": "📷 Scan", "set.newEmail": "New email",
         "presence.active": "Online",
