@@ -89,10 +89,17 @@
 - **Badges** grisés/secrets + admin voit le caché ✅
 - **Signalements** antispam + auto-blocage + suivi « Mes signalements » ✅
 
-## ⏳ RESTE (front-end, plus petit — non bloquant)
-- Quelques messages en bas de page restants (`.msg` sécu/auth) → toasts (profil + signalement déjà faits).
-- Récompenses (onglet Jeux) : polish visuel optionnel.
-- Lieux : réduire encore le scroll si besoin.
+## ✅ FAIT — finitions (lot 14)
+- Messages bas de page → **toasts** : position/alerte, email, mot de passe (profil + signalement déjà faits).
+- **Récompenses** (Badges/Coupons) : cartes dégradées sunset uniformes.
+
+## ✅ Migrations Supabase LANCÉES et VÉRIFIÉES en live (2026-06-05)
+Smoke test OK : tables (`badges_catalog`, `quest_group_runs`), colonnes (`profiles.xp`, `quests.is_group`,
+`reports.status`), RPC (`leaderboard` x4 métriques renvoie des données, `report_user`, `my_reports`,
+`request_group_quest`, `confirm_group_quest`, `complete_quest`). **Tout est opérationnel.**
+
+> Roadmap peaufinage : **TERMINÉE** (14 lots, SW v49). Reste seulement du polish cosmétique optionnel
+> (Lieux scroll, etc.) à voir au feeling après tests mobile.
 
 ## ✅ Déjà fait (session 15, commit 3734ec8)
 safe-area, pseudo long tronqué, doublon replay, dégradé prénom, visite guidée (Précédent + ordre), bannière PWA persistante + bouton Réglages, arrondi bouton 112, plafonds chips, sécurité « gratuite pour tous » (à restyler DA), téléphone clarifié.
