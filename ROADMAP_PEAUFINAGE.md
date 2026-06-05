@@ -100,6 +100,22 @@ Smoke test OK : tables (`badges_catalog`, `quest_group_runs`), colonnes (`profil
 
 > Roadmap peaufinage : **TERMINÉE** (14 lots, SW v49).
 
+## 🔥 GROSSE PASSE 2 (lots 30-38, SW v73) — ⚠️ migrations 21, 22, 23 à lancer
+- **Page de connexion / Pro** : l'onglet Pro transforme la page (titre+pitch B2B, PAS d'identifiants,
+  juste « Démarrer »). Logo Pro d'avant restauré.
+- **Plein écran carte** : outils (Tout voir / Autour de moi / Partager) + Fermer restent visibles
+  (z-index + safe-area).
+- **Phrases « sécurité gratuite » retirées** (n'apportaient rien).
+- **XP** : bandeau compact + bouton ⓘ « comment ça marche ».
+- **Badges** : secrets vraiment cachés (teaser « N à découvrir ») + **8 badges jalons** auto-attribués
+  (migration 22).
+- **Profil public/privé** (migration 23) : privé = hors classement. Toggle dans Réglages.
+- **🧭 Mon parcours** (carte profil) : récap journée/quêtes + stats + timeline, **partageable**.
+- **Compteur de quêtes** (X/3 aujourd'hui + total).
+- **Cartes de lieux remaniées** (note ⭐ en évidence, sous-titre, corps épuré).
+- **Agencement urgence (Sécurité p2) remanié** (2 grandes actions 112 / Alerte côte à côte).
+- **Knowledge base / changelog dans le bloc admin** (segment 📒).
+
 ## 🚀 NOUVELLES FEATURES & BOOSTS (lots 20-28, SW v63)
 - **Avis sur les lieux** (lots 20-22) — voir détail ci-dessous (⚠️ migration 21).
 - **XP sur le profil** (lot 25) : stat XP cliquable → classement. **🏆 Top noté** sur les lieux ≥4.5/≥3 avis.
