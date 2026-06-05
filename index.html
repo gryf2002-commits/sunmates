@@ -3125,9 +3125,13 @@
       const total = COMPLETION_FIELDS.length + 5;
       const pct = Math.min(100, Math.round((filled / total) * 100));
       $("completionFill").style.width = pct + "%";
-      $("completionTxt").textContent = "Profil complété à " + pct + "%";
+      $("completionTxt").textContent = pct >= 100 ? "Profil complété à 100 % 🎉" : ("Profil complété à " + pct + "%");
+      // Petite fête quand on ATTEINT 100 % en éditant (pas au chargement).
+      if (_completionInit && pct === 100 && !_wasComplete) { if (typeof toast === "function") toast("🎉", "Profil complété à 100 % — bravo !"); if (typeof celebrate === "function") celebrate(); }
+      _wasComplete = pct === 100; _completionInit = true;
       updateSectionPercents();
     }
+    let _wasComplete = false, _completionInit = false;
 
     // % de complétion AFFICHÉ à côté de chaque catégorie du profil (ce qui reste à remplir).
     function updateSectionPercents() {
