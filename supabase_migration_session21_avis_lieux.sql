@@ -39,4 +39,24 @@ as $$
 $$;
 grant execute on function place_ratings() to authenticated;
 
+-- Avis de DÉMO (pour que la feature paraisse vivante dès le lancement) : jusqu'à 5 avis
+-- par lieu, écrits par des comptes de démo. Idempotent (on conflict do nothing).
+insert into place_reviews (cafe_id, user_id, rating, comment, created_at)
+select c.id, d.id,
+  (array[5,4,5,4,5])[d.rn],
+  (array[
+    'Accueil au top et ambiance hyper safe, je recommande 🙌',
+    'Spot parfait pour rencontrer des voyageurs, je m''y suis senti·e en sécurité.',
+    'Cosy et bien situé, l''équipe est adorable ☕',
+    'Bonne adresse, lumineuse et conviviale. J''y retourne !',
+    'Calme et rassurant, idéal pour un premier rendez-vous entre Mates.'
+  ])[d.rn],
+  now() - (d.rn || ' days')::interval
+from partner_cafes c
+cross join lateral (
+  select p.id, row_number() over (order by p.id) as rn
+  from profiles p where p.is_demo = true order by p.id limit 5
+) d
+on conflict (cafe_id, user_id) do nothing;
+
 -- Fin session 21.
