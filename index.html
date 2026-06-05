@@ -972,6 +972,10 @@
     .completion-bar { height: 9px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
     .completion-bar span { display: block; height: 100%; width: 0; background: var(--accent-grad); transition: width .4s ease; }
     .completion-txt { font-size: .78rem; color: var(--muted); margin-top: .35rem; }
+    /* Rangée de badges sur la carte profil */
+    .prof-badges { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin-top: .8rem; cursor: pointer; }
+    .prof-badges .pb-badge { width: 30px; height: 30px; border-radius: 9px; background: var(--accent-soft); display: grid; place-items: center; font-size: 16px; box-shadow: var(--shadow-sm); }
+    .prof-badges .pb-more { font-size: .76rem; font-weight: 800; color: var(--accent); }
 
     /* ------------------------ Compatibilité ------------------------- */
     .compat { display: inline-block; padding: .28rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 800; }
@@ -2310,6 +2314,7 @@
             <div class="completion-bar"><span id="completionFill"></span></div>
             <div class="completion-txt" id="completionTxt">Profil complété à 0%</div>
           </div>
+          <div class="prof-badges" id="profileBadges" style="display:none"></div>
         </div>
 
         <details class="card spot-card" id="spotCard">
@@ -4523,6 +4528,17 @@
       // Bandeau XP (monnaie de jeu, séparée du score de confiance)
       const xpb = $("xpBanner");
       if (xpb) xpb.innerHTML = `<span class="xp-ic">⭐</span><b>${(myProfile && myProfile.xp) || 0} XP</b><span class="xp-sub">· monnaie de jeu · grimpe au classement 🏆</span>`;
+
+      // Rangée de mes badges sur la carte profil (motivant, visible hors onglet Jeux)
+      const pb = $("profileBadges");
+      if (pb) {
+        if (myBadges.length) {
+          pb.style.display = "flex";
+          pb.innerHTML = myBadges.slice(0, 8).map((b) => `<span class="pb-badge" title="${escapeHtml(b.name || '')}">${b.emoji || "🏅"}</span>`).join("")
+            + (myBadges.length > 8 ? `<span class="pb-more">+${myBadges.length - 8}</span>` : "");
+          pb.onclick = () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); };
+        } else { pb.style.display = "none"; }
+      }
 
       // Jeux populaires (avec ambiance photo)
       $("gamesGrid").innerHTML = games.map((g, i) => `
