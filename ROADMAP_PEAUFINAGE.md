@@ -79,16 +79,20 @@
 - **Jeux** : emoji en badge (plus au milieu de la photo) ; état « accompli » ambre ; défis reçus mis en avant.
 - **Check-ins** : cartes uniformisées.
 
-## ⏳ RESTE (nécessite migration Supabase — `.sql` à écrire & lancer)
-- **Classement** multi-onglets (badges/XP/confiance/check-ins).
-- **Système XP des quêtes** (3/jour + cooldown ; quêtes de groupe = confirmation mate + bonus XP) + **retrait du trust score** des quêtes.
-- **Badges** étoffés : grisés/**secrets** (fonction cachée) + **admin voit le caché**.
-- **Signalements** antispam (1/compte, auto-blocage auteur jusqu'à modération, statut visible).
+## ✅ FAIT — bloc Supabase (lots 10→13). ⚠️ LANCER les 4 `.sql` DANS L'ORDRE :
+1. `supabase_migration_session17_xp_classement.sql` — XP (au lieu du trust), 3/jour + cooldown, RPC `leaderboard`.
+2. `supabase_migration_session18_badges.sql` — `badges_catalog` (publics + secrets).
+3. `supabase_migration_session19_signalements.sql` — antispam + auto-blocage (`report_user`, `my_reports`).
+4. `supabase_migration_session20_quetes_groupe.sql` — quêtes de groupe (`request_group_quest`, `confirm_group_quest`).
+- **Classement** multi-onglets (XP/check-ins/confiance/badges) dans Lieux ✅
+- **XP** des quêtes + retrait du trust + limites ✅ · **quêtes de groupe** confirmées par un mate + bonus ✅
+- **Badges** grisés/secrets + admin voit le caché ✅
+- **Signalements** antispam + auto-blocage + suivi « Mes signalements » ✅
 
-## ⏳ RESTE (front-end, plus petit)
-- Messages en bas de page restants (`.msg` sécu/auth…) → toasts.
-- Récompenses (onglet Jeux) : polish visuel.
-- Lieux : réduire encore le scroll, agencement global.
+## ⏳ RESTE (front-end, plus petit — non bloquant)
+- Quelques messages en bas de page restants (`.msg` sécu/auth) → toasts (profil + signalement déjà faits).
+- Récompenses (onglet Jeux) : polish visuel optionnel.
+- Lieux : réduire encore le scroll si besoin.
 
 ## ✅ Déjà fait (session 15, commit 3734ec8)
 safe-area, pseudo long tronqué, doublon replay, dégradé prénom, visite guidée (Précédent + ordre), bannière PWA persistante + bouton Réglages, arrondi bouton 112, plafonds chips, sécurité « gratuite pour tous » (à restyler DA), téléphone clarifié.
