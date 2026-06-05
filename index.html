@@ -2502,12 +2502,10 @@
           <div class="prof-badges" id="profileBadges" style="display:none"></div>
         </div>
 
-        <!-- Mon parcours : récap de ma journée & de mes quêtes, partageable -->
-        <div class="card parcours-card" id="parcoursCard">
-          <div class="section-head" style="align-items:center"><h3 style="margin-top:0">🧭 Mon parcours</h3><button class="btn-accent" id="shareParcoursBtn" style="padding:.4rem .8rem;font-size:.8rem;white-space:nowrap">📤 Partager</button></div>
-          <div id="parcoursToday"></div>
-          <div id="parcoursStats" class="parcours-stats"></div>
-          <div id="parcoursTimeline"></div>
+        <!-- Mon parcours : bandeau fin (le détail complet est dans la carte souvenir au partage) -->
+        <div class="card parcours-card" id="parcoursCard" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem">
+          <div style="flex:1;min-width:0"><b>🧭 Mon parcours</b> <span id="parcoursToday" class="muted" style="font-size:.82rem"></span></div>
+          <button class="btn-accent" id="shareParcoursBtn" style="padding:.4rem .8rem;font-size:.8rem;white-space:nowrap;flex-shrink:0">📤 Partager</button>
         </div>
 
         <details class="card spot-card" id="spotCard">
@@ -2527,7 +2525,6 @@
 
         <div class="mseg">
           <button data-pseg="edit" class="active" data-i18n="prof.seg.edit">Mon profil</button>
-          <button data-pseg="checkins">Check-ins</button>
           <button data-pseg="premium">Premium ✨</button>
           <button data-pseg="admin" id="adminSegBtn" style="display:none">Admin 🛡️</button>
         </div>
@@ -4785,26 +4782,15 @@
     // « Mon parcours » : récap (aujourd'hui + global + timeline) calculé côté client, partageable.
     function _isToday(iso) { if (!iso) return false; const d = new Date(iso), n = new Date(); return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate(); }
     function renderParcours() {
-      const card = $("parcoursCard"); if (!card) return;
-      const ckToday = myCheckinsRaw.filter((c) => _isToday(c.created_at));
-      const questsDone = myQuestRows.filter((r) => r.status === "completed");
-      const questsToday = questsDone.filter((r) => _isToday(r.completed_at));
-      const badgesToday = myBadges.filter((b) => _isToday(b.earned_at));
+      const el = $("parcoursToday"); if (!el) return;
+      const ckToday = myCheckinsRaw.filter((c) => _isToday(c.created_at)).length;
+      const qToday = myQuestRows.filter((r) => r.status === "completed" && _isToday(r.completed_at)).length;
+      const bToday = myBadges.filter((b) => _isToday(b.earned_at)).length;
       const bits = [];
-      if (ckToday.length) bits.push(`📍 ${ckToday.length} check-in${ckToday.length > 1 ? "s" : ""}`);
-      if (questsToday.length) bits.push(`🎯 ${questsToday.length} quête${questsToday.length > 1 ? "s" : ""}`);
-      if (badgesToday.length) bits.push(`🏅 ${badgesToday.length} badge${badgesToday.length > 1 ? "s" : ""}`);
-      $("parcoursToday").innerHTML = `<div class="parcours-today">${bits.length ? "<b>Aujourd'hui :</b> " + bits.join(" · ") : "<span class='muted'>Rien aujourd'hui — lance une quête ou fais un check-in ! 🌞</span>"}</div>`;
-      $("parcoursStats").innerHTML = [["📍", myCheckinsRaw.length, "check-ins"], ["🎯", questsDone.length, "quêtes"], ["🏅", myBadges.length, "badges"], ["⭐", (myProfile && myProfile.xp) || 0, "XP"]]
-        .map(([e, n, l]) => `<div class="pq"><div class="pq-n">${e} ${n}</div><div class="pq-l">${l}</div></div>`).join("");
-      const events = [];
-      myCheckinsRaw.forEach((c) => events.push({ t: c.created_at, ic: "📍", txt: "Check-in · " + (c.partner_cafes?.name || "un lieu") }));
-      questsDone.forEach((r) => { const q = questByKey(r.quest_key) || {}; events.push({ t: r.completed_at, ic: q.emoji || "🎯", txt: "Quête accomplie · " + (q.title || r.quest_key) }); });
-      myBadges.forEach((b) => events.push({ t: b.earned_at, ic: b.emoji || "🏅", txt: "Badge · " + (b.name || "débloqué") }));
-      events.sort((a, b) => (b.t || "").localeCompare(a.t || ""));
-      $("parcoursTimeline").innerHTML = events.length
-        ? '<div class="ptl">' + events.slice(0, 12).map((e) => `<div class="ptl-row"><span class="ptl-ic">${e.ic}</span><span class="ptl-tx">${escapeHtml(e.txt)}</span><span class="ptl-d muted">${timeAgo(e.t)}</span></div>`).join("") + "</div>"
-        : "";
+      if (ckToday) bits.push(`📍 ${ckToday}`);
+      if (qToday) bits.push(`🎯 ${qToday}`);
+      if (bToday) bits.push(`🏅 ${bToday}`);
+      el.textContent = bits.length ? "· aujourd'hui : " + bits.join(" · ") : "· prêt·e pour de nouvelles aventures 🌞";
     }
     function parcoursStats() {
       return { ck: myCheckinsRaw.length, q: myQuestRows.filter((r) => r.status === "completed").length, b: myBadges.length, xp: (myProfile && myProfile.xp) || 0 };
@@ -6764,7 +6750,10 @@
     document.querySelectorAll("[data-stat]").forEach((b) => b.addEventListener("click", () => {
       const s = b.dataset.stat;
       if (s === "trust") openTrustModal();
-      else if (s === "xp") { goToTab("lieux"); if (typeof showLieuxSeg === "function") showLieuxSeg("rank"); }
+      else if (s === "xp") { showInfo("⭐ Ton XP", `<div style="line-height:1.6;font-size:.9rem;text-align:center">
+        <div style="font-size:2.4rem;font-weight:800;color:#B5740E">${(myProfile && myProfile.xp) || 0} XP</div>
+        <p style="margin:.4rem 0">L'XP est ta <b>monnaie de jeu</b> : tu en gagnes en accomplissant des quêtes. Elle te fait grimper au <b>classement</b> 🏆</p>
+        <p class="muted" style="font-size:.8rem">Bientôt : débloque des <b>titres</b> et de la <b>personnalisation</b> avec ton XP 🎨</p></div>`); }
       else if (s === "mates") { goToTab("connexions"); if (typeof showMatesView === "function") showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
       else if (s === "checkins") showProfileSegment("checkins");
     }));
