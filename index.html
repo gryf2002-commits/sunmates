@@ -999,6 +999,18 @@
     .prof-badges { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin-top: .8rem; cursor: pointer; }
     .prof-badges .pb-badge { width: 30px; height: 30px; border-radius: 9px; background: var(--accent-soft); display: grid; place-items: center; font-size: 16px; box-shadow: var(--shadow-sm); }
     .prof-badges .pb-more { font-size: .76rem; font-weight: 800; color: var(--accent); }
+    /* Mon parcours */
+    .parcours-today { font-size: .88rem; margin-bottom: .7rem; }
+    .parcours-stats { display: flex; gap: .5rem; margin-bottom: .7rem; }
+    .parcours-stats .pq { flex: 1; background: var(--cream); border-radius: 12px; padding: .55rem .3rem; text-align: center; }
+    .parcours-stats .pq-n { font-weight: 800; color: var(--ink); font-size: .95rem; white-space: nowrap; }
+    .parcours-stats .pq-l { font-size: .68rem; color: var(--muted); margin-top: .1rem; }
+    .ptl { display: flex; flex-direction: column; }
+    .ptl-row { display: flex; align-items: center; gap: .6rem; padding: .45rem 0; border-bottom: 1px solid var(--line); font-size: .85rem; }
+    .ptl-row:last-child { border-bottom: 0; }
+    .ptl-ic { width: 26px; text-align: center; font-size: 1rem; flex-shrink: 0; }
+    .ptl-tx { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+    .ptl-d { font-size: .72rem; flex-shrink: 0; }
 
     /* ------------------------ Compatibilité ------------------------- */
     .compat { display: inline-block; padding: .28rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 800; }
@@ -2375,6 +2387,14 @@
           <div class="prof-badges" id="profileBadges" style="display:none"></div>
         </div>
 
+        <!-- Mon parcours : récap de ma journée & de mes quêtes, partageable -->
+        <div class="card parcours-card" id="parcoursCard">
+          <div class="section-head" style="align-items:center"><h3 style="margin-top:0">🧭 Mon parcours</h3><button class="btn-accent" id="shareParcoursBtn" style="padding:.4rem .8rem;font-size:.8rem;white-space:nowrap">📤 Partager</button></div>
+          <div id="parcoursToday"></div>
+          <div id="parcoursStats" class="parcours-stats"></div>
+          <div id="parcoursTimeline"></div>
+        </div>
+
         <details class="card spot-card" id="spotCard">
           <summary><span data-i18n="spot.title">☀️ Mon spot du jour</span><span class="sp-right"><span class="sp-sum" id="spotSummary"></span><span class="sp-chev">▸</span></span></summary>
           <p class="muted" style="font-size:.8rem;margin:.5rem 0" data-i18n="spot.sub">Dis où tu traînes aujourd'hui — visible 24 h, façon story.</p>
@@ -3699,9 +3719,11 @@
         .order("created_at", { ascending: false });
       if (error) return;
       const list = data || [];
+      myCheckinsRaw = list; // pour « Mon parcours »
       $("checkinCount").textContent = list.length;
       myDistinctPlaces = new Set(list.map((c) => c.partner_cafes?.name).filter(Boolean)).size;
       if (typeof renderTrustExplain === "function") renderTrustExplain();
+      if (typeof renderParcours === "function") renderParcours();
       // Regroupe les check-ins par lieu (un lieu fait plusieurs fois = une seule tuile ×N)
       const groups = {};
       list.forEach((c) => {
@@ -4560,6 +4582,8 @@
     let myBadges = [];           // badges débloqués (détails : nom, emoji, date)
     let allBadgeDefs = [];       // catalogue complet (publics + secrets) depuis badges_catalog
     let myGroupRuns = [];        // quêtes de groupe en attente de MA confirmation
+    let myQuestRows = [];        // user_quests (avec completed_at) pour « Mon parcours »
+    let myCheckinsRaw = [];      // check-ins bruts (created_at, lieu) pour « Mon parcours »
     let _lastCompletionPct = 0;  // dernier % de complétion du profil (pour le badge "Profil au top")
 
     // Attribue automatiquement les badges « jalons » dès que les conditions sont remplies.
@@ -4584,6 +4608,41 @@
       }
       await loadGameData(); // rafraîchit la grille + fête les nouveaux badges (confettis)
     }
+
+    // « Mon parcours » : récap (aujourd'hui + global + timeline) calculé côté client, partageable.
+    function _isToday(iso) { if (!iso) return false; const d = new Date(iso), n = new Date(); return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate(); }
+    function renderParcours() {
+      const card = $("parcoursCard"); if (!card) return;
+      const ckToday = myCheckinsRaw.filter((c) => _isToday(c.created_at));
+      const questsDone = myQuestRows.filter((r) => r.status === "completed");
+      const questsToday = questsDone.filter((r) => _isToday(r.completed_at));
+      const badgesToday = myBadges.filter((b) => _isToday(b.earned_at));
+      const bits = [];
+      if (ckToday.length) bits.push(`📍 ${ckToday.length} check-in${ckToday.length > 1 ? "s" : ""}`);
+      if (questsToday.length) bits.push(`🎯 ${questsToday.length} quête${questsToday.length > 1 ? "s" : ""}`);
+      if (badgesToday.length) bits.push(`🏅 ${badgesToday.length} badge${badgesToday.length > 1 ? "s" : ""}`);
+      $("parcoursToday").innerHTML = `<div class="parcours-today">${bits.length ? "<b>Aujourd'hui :</b> " + bits.join(" · ") : "<span class='muted'>Rien aujourd'hui — lance une quête ou fais un check-in ! 🌞</span>"}</div>`;
+      $("parcoursStats").innerHTML = [["📍", myCheckinsRaw.length, "check-ins"], ["🎯", questsDone.length, "quêtes"], ["🏅", myBadges.length, "badges"], ["⭐", (myProfile && myProfile.xp) || 0, "XP"]]
+        .map(([e, n, l]) => `<div class="pq"><div class="pq-n">${e} ${n}</div><div class="pq-l">${l}</div></div>`).join("");
+      const events = [];
+      myCheckinsRaw.forEach((c) => events.push({ t: c.created_at, ic: "📍", txt: "Check-in · " + (c.partner_cafes?.name || "un lieu") }));
+      questsDone.forEach((r) => { const q = questByKey(r.quest_key) || {}; events.push({ t: r.completed_at, ic: q.emoji || "🎯", txt: "Quête accomplie · " + (q.title || r.quest_key) }); });
+      myBadges.forEach((b) => events.push({ t: b.earned_at, ic: b.emoji || "🏅", txt: "Badge · " + (b.name || "débloqué") }));
+      events.sort((a, b) => (b.t || "").localeCompare(a.t || ""));
+      $("parcoursTimeline").innerHTML = events.length
+        ? '<div class="ptl">' + events.slice(0, 12).map((e) => `<div class="ptl-row"><span class="ptl-ic">${e.ic}</span><span class="ptl-tx">${escapeHtml(e.txt)}</span><span class="ptl-d muted">${timeAgo(e.t)}</span></div>`).join("") + "</div>"
+        : "";
+    }
+    function shareParcours() {
+      const ck = myCheckinsRaw.length, q = myQuestRows.filter((r) => r.status === "completed").length, b = myBadges.length, xp = (myProfile && myProfile.xp) || 0;
+      const name = (myProfile && myProfile.username) || "Moi";
+      const text = `🧭 Mon parcours SunMates — ${name}\n📍 ${ck} check-ins · 🎯 ${q} quêtes · 🏅 ${b} badges · ⭐ ${xp} XP\nRejoins-moi sur SunMates ☀️`;
+      if (navigator.share) { navigator.share({ title: "Mon parcours SunMates", text }).catch(() => {}); }
+      else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast("📋", "Parcours copié — colle-le où tu veux !"), () => {}); }
+      else toast("🧭", text);
+    }
+    { const sp = $("shareParcoursBtn"); if (sp) sp.addEventListener("click", shareParcours); }
+
     let _badgeKeysInit = false;  // false au tout 1er chargement (évite de fêter les badges déjà acquis)
     let myCoupons = [];          // coupons gagnés
     let mySuggestions = [];      // défis reçus (en attente)
@@ -4604,7 +4663,7 @@
       skelFirst("couponList", skelRows(2));
       const [qs, uq, ub, uc, sg, bc, gr] = await Promise.all([
         db.from("quests").select("*").order("sort_order"),
-        db.from("user_quests").select("quest_key,status").eq("user_id", myUserId),
+        db.from("user_quests").select("quest_key,status,completed_at").eq("user_id", myUserId),
         db.from("user_badges").select("badge_key,name,emoji,earned_at").eq("user_id", myUserId),
         db.from("user_coupons").select("*").eq("user_id", myUserId).order("earned_at", { ascending: false }),
         db.from("quest_suggestions").select("*").eq("to_user", myUserId).eq("status", "pending").order("created_at", { ascending: false }),
@@ -4614,7 +4673,8 @@
       allBadgeDefs = (bc && bc.data) || []; // catalogue (publics + secrets) ; vide si migration pas lancée
       myGroupRuns = (gr && gr.data) || []; // quêtes de groupe à confirmer (je suis le partenaire)
       allQuests = qs.data || [];
-      myQuestStatus = {}; (uq.data || []).forEach((r) => { myQuestStatus[r.quest_key] = r.status; });
+      myQuestRows = uq.data || []; // pour « Mon parcours » (avec completed_at)
+      myQuestStatus = {}; myQuestRows.forEach((r) => { myQuestStatus[r.quest_key] = r.status; });
       myBadges = ub.data || [];
       // Détecte les badges fraîchement débloqués (après le 1er chargement) → confettis 🎉
       if (_badgeKeysInit) {
@@ -4694,6 +4754,7 @@
           pb.onclick = () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); };
         } else { pb.style.display = "none"; }
       }
+      if (typeof renderParcours === "function") renderParcours();
 
       // Jeux populaires (avec ambiance photo)
       $("gamesGrid").innerHTML = games.map((g, i) => `
