@@ -5720,6 +5720,8 @@
           const node = e.popup._contentNode; if (!node) return;
           // Check-in sur un lieu
           node.querySelectorAll("[data-hmcid]").forEach((b) => b.addEventListener("click", () => checkIn(Number(b.dataset.hmcid), b.dataset.hmcname)));
+          // Avis du lieu (depuis la bulle de la carte)
+          node.querySelectorAll("[data-hmreviews]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); openReviews(Number(b.dataset.hmreviews), b.dataset.hmrname); }));
           // Ouvrir un profil
           node.querySelectorAll("[data-hmprofile]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("connexions"); if (typeof openTravelerProfile === "function") openTravelerProfile(travelerMap[b.dataset.hmprofile]); }));
           // Démarrer une conversation avec un Mate connecté
@@ -5781,9 +5783,11 @@
       places.forEach((c) => {
         const nCk = ckByCafe[c.id] || 0;
         const photo = c.image_url ? `<img src="${escapeHtml(c.image_url)}" style="width:100%;height:72px;object-fit:cover;border-radius:8px;margin-bottom:5px" alt="">` : "";
+        const rt = cafeRatings[c.id];
+        const rateLine = (rt && rt.cnt) ? `<div style="margin:.15rem 0;color:#B5740E;font-weight:700;font-size:.78rem">⭐ ${rt.avg.toFixed(1)} <span class="muted" style="font-weight:600">(${rt.cnt} avis)</span></div>` : "";
         const stats = `<div class="muted" style="margin:.2rem 0">${nCk ? "✅ " + nCk + " ici récemment" : "✨ Sois le·la 1er·ère à checker !"}${c.is_eco ? " · 🌱 éco" : ""}</div>`;
         const mk = L.marker([c.lat, c.lng], { icon: epinIcon("📍", "#FF5A4D") })
-          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${c.address ? `<span class="muted" style="font-size:.72rem">📍 ${escapeHtml(c.address)}</span>` : escapeHtml(c.city || "")}${stats}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button></div>`);
+          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${c.address ? `<span class="muted" style="font-size:.72rem">📍 ${escapeHtml(c.address)}</span>` : escapeHtml(c.city || "")}${rateLine}${stats}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button><button class="mappop-btn ghost" data-hmreviews="${c.id}" data-hmrname="${escapeHtml(c.name)}">⭐ Avis</button></div>`);
         mk.smType = "places"; homeMarkersByType.places.push(mk); allMarkers.push(mk); homeCafeMarkerById[c.id] = mk;
       });
 
