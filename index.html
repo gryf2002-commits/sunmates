@@ -319,21 +319,30 @@
        ==================================================================== */
     /* ---- Présence « actif récemment » : pastille verte sur l'avatar ---- */
     .avatar { position: relative; }
-    .pdot { position: absolute; right: -1px; bottom: -1px; width: 12px; height: 12px; border-radius: 50%;
-      background: var(--ok); border: 2.5px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.04); }
+    .pdot { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%;
+      background: var(--ok); border: 2px solid #fff; }
     body.theme-dusk .pdot { border-color: #241b35; }
-    .pdot.lg { width: 16px; height: 16px; border-width: 3px; }
-    @keyframes presencePulse { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); } 70% { box-shadow: 0 0 0 7px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
-    .pdot { animation: presencePulse 2.4s ease-out infinite; }
+    .pdot.lg { width: 15px; height: 15px; border-width: 2.5px; }
+    /* Petite pastille « actif » sobre, raccord avec la DA (même esprit que .badge.ok) */
+    .presence-pill { display: inline-flex; align-items: center; gap: .28rem; font-size: .72rem; font-weight: 700;
+      color: #0e9a5f; background: rgba(34,197,94,.12); padding: .08rem .45rem; border-radius: 999px; }
+    .presence-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+    body.theme-dusk .presence-pill { color: #5fe0a0; background: rgba(34,197,94,.18); }
 
-    /* ---- Vouch « Recommandé par X Mates » : rangée d'avatars ---- */
-    .vouch-head { display: flex; align-items: center; gap: .5rem; }
-    .vouch-row { display: flex; align-items: center; margin-top: .6rem; min-height: 36px; }
-    .vouch-row .avatar { width: 34px; height: 34px; font-size: .82rem; margin-left: -8px; border: 2px solid #fff; box-shadow: var(--shadow-sm); }
+    /* ---- Vouch « Recommandé par X Mates » : compact, dans la DA ---- */
+    .vouch-card { padding: .85rem 1rem; }
+    .vouch-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
+    .vouch-title { font-weight: 800; color: var(--ink); font-size: .92rem; display: flex; align-items: center; gap: .35rem; }
+    .vouch-title b { color: var(--ok); }
+    .vouch-btn { padding: .5rem .8rem; font-size: .82rem; white-space: nowrap; flex-shrink: 0; }
+    .vouch-row { display: flex; align-items: center; margin-top: .5rem; }
+    .vouch-row:empty { display: none; }
+    .vouch-row .avatar { width: 30px; height: 30px; font-size: .76rem; margin-left: -8px; border: 2px solid #fff; box-shadow: var(--shadow-sm); }
     .vouch-row .avatar:first-child { margin-left: 0; }
     body.theme-dusk .vouch-row .avatar { border-color: #241b35; }
-    .vouch-more { margin-left: -8px; width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
-      display: grid; place-items: center; font-weight: 800; font-size: .78rem; border: 2px solid #fff; z-index: 1; }
+    .vouch-more { margin-left: -8px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+      display: grid; place-items: center; font-weight: 800; font-size: .74rem; border: 2px solid #fff; z-index: 1; }
+    body.theme-dusk .vouch-more { border-color: #241b35; }
     .te-row.te-vouch { cursor: default; }
 
     /* ---- Traduction d'un message (sous la bulle, style des méta) ---- */
@@ -381,9 +390,18 @@
     .spot-ring { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5.5px var(--accent) !important; }
     .spot-compose { display: flex; gap: .5rem; align-items: center; }
     .spot-compose input[type="text"] { flex: 1; }
-    .spot-emoji-pick { display: flex; gap: .3rem; flex-wrap: wrap; margin: .5rem 0; }
-    .spot-emoji-pick button { background: var(--accent-soft); border: 1.5px solid transparent; border-radius: 10px; padding: .3rem .5rem; font-size: 1.1rem; cursor: pointer; }
+    .spot-emoji-pick { display: flex; gap: .3rem; flex-wrap: nowrap; overflow-x: auto; margin: .5rem 0; padding-bottom: .15rem; scrollbar-width: none; }
+    .spot-emoji-pick::-webkit-scrollbar { display: none; }
+    .spot-emoji-pick button { flex: 0 0 auto; background: var(--accent-soft); border: 1.5px solid transparent; border-radius: 10px; padding: .25rem .45rem; font-size: 1.05rem; cursor: pointer; }
     .spot-emoji-pick button.active { border-color: var(--accent); background: #fff; }
+    /* Carte « spot du jour » repliable pour ne pas encombrer le profil */
+    .spot-card { padding: .8rem 1rem; }
+    .spot-card > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-weight: 800; color: var(--ink); }
+    .spot-card > summary::-webkit-details-marker { display: none; }
+    .spot-card > summary .sp-right { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+    .spot-card > summary .sp-sum { font-weight: 600; font-size: .8rem; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .spot-card > summary .sp-chev { color: var(--accent); font-weight: 800; transition: transform .2s; }
+    .spot-card[open] > summary .sp-chev { transform: rotate(90deg); }
 
     /* ---- Sélecteur de langue (réglages) ---- */
     .lang-seg { display: flex; gap: .5rem; }
@@ -787,13 +805,18 @@
     .dstat span { color: var(--muted); font-size: .72rem; }
 
     /* --------------------------- CHAT ------------------------------- */
-    .chat-header { display: flex; align-items: center; gap: .7rem; padding: .2rem 0 1rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+    .chat-header { display: flex; align-items: center; gap: .7rem; padding: .2rem 0 1rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; flex-shrink: 0; }
     .chat-header .backbtn { margin-bottom: 0; padding: .4rem .7rem; }
-    .chat-body { display: flex; flex-direction: column; gap: .45rem; min-height: 48vh; padding-bottom: .5rem; }
+    /* Vue chat = vraie messagerie : occupe l'espace entre l'en-tête et la barre du bas,
+       le corps défile tout seul et la zone de saisie reste collée en bas. */
+    #matesChat { display: flex; flex-direction: column; margin-bottom: -6.5rem;
+      height: calc(100vh - 3.6rem - 5rem);
+      height: calc(100dvh - 3.6rem - 5rem - env(safe-area-inset-bottom)); }
+    .chat-body { display: flex; flex-direction: column; gap: .45rem; flex: 1 1 auto; min-height: 0; overflow-y: auto; padding-bottom: .5rem; }
     .bubble { max-width: 80%; padding: .6rem .85rem; border-radius: 16px; font-size: .9rem; line-height: 1.35; word-wrap: break-word; }
     .bubble.them { background: #ffe7e1; color: var(--text); border-bottom-left-radius: 5px; align-self: flex-start; }
     .bubble.me { background: var(--accent-grad); color: #fff; border-bottom-right-radius: 5px; align-self: flex-end; }
-    .chat-input { display: flex; gap: .5rem; align-items: center; position: sticky; bottom: 0; background: var(--bg); padding: .7rem 0 .3rem; }
+    .chat-input { display: flex; gap: .5rem; align-items: center; background: var(--bg); padding: .7rem 0 .3rem; flex-shrink: 0; }
     .chat-input input { flex: 1; box-shadow: var(--shadow-sm); border-color: #fff; }
     .chat-input button { padding: .75rem 1rem; flex-shrink: 0; }
 
@@ -1881,12 +1904,15 @@
             <p class="muted" id="tpBio" style="line-height:1.5">—</p>
             <div class="hashtags" id="tpTags"></div>
           </div>
-          <div class="card" id="tpVouchCard" style="display:none">
-            <div class="vouch-head"><h3 style="margin:0" data-i18n="vouch.title">🟢 Recommandé par des Mates</h3><b id="tpVouchCount" style="color:var(--ok)">0</b></div>
-            <p class="te-sub" style="margin:.3rem 0 0" id="tpVouchSub" data-i18n="vouch.sub">Des voyageurs de confiance se portent garants de cette personne.</p>
-            <div class="vouch-row" id="tpVouchRow"></div>
-            <button class="btn-accent btn-block" id="tpVouchBtn" style="margin-top:.7rem" data-i18n="vouch.cta">🟢 Recommander ce Mate</button>
-            <div class="msg" id="tpVouchMsg" style="text-align:center"></div>
+          <div class="card vouch-card" id="tpVouchCard" style="display:none">
+            <div class="vouch-head">
+              <div style="min-width:0">
+                <div class="vouch-title"><span data-i18n="vouch.title">🟢 Recommandé par des Mates</span> <b id="tpVouchCount">0</b></div>
+                <div class="vouch-row" id="tpVouchRow"></div>
+              </div>
+              <button class="btn-accent vouch-btn" id="tpVouchBtn" data-i18n="vouch.cta">🟢 Recommander</button>
+            </div>
+            <div class="msg" id="tpVouchMsg" style="text-align:center;margin-top:.4rem"></div>
           </div>
           <div class="card" id="tpCompatCard" style="display:none">
             <div class="section-head" style="margin-bottom:.5rem"><h3 style="margin:0">Pourquoi vous matchez ❤️</h3><b id="tpCompatPct" style="color:var(--accent)">—%</b></div>
@@ -2033,19 +2059,21 @@
             <div class="completion-bar"><span id="completionFill"></span></div>
             <div class="completion-txt" id="completionTxt">Profil complété à 0%</div>
           </div>
+          <button class="btn-ghost btn-block" id="replayOnbBtn2" style="margin-top:.9rem" data-i18n="profile.replay">🚀 Revoir la présentation</button>
         </div>
 
-        <div class="card" id="spotCard">
-          <div class="section-head" style="margin-bottom:.3rem"><h3 style="margin:0" data-i18n="spot.title">☀️ Mon spot du jour</h3><a id="spotClear" style="cursor:pointer;display:none" data-i18n="spot.clear">Effacer</a></div>
-          <p class="muted" style="font-size:.82rem;margin:0 0 .5rem" data-i18n="spot.sub">Dis où tu traînes aujourd'hui — visible 24 h, façon story.</p>
-          <div id="spotCurrent" style="display:none;margin-bottom:.6rem"></div>
+        <details class="card spot-card" id="spotCard">
+          <summary><span data-i18n="spot.title">☀️ Mon spot du jour</span><span class="sp-right"><span class="sp-sum" id="spotSummary"></span><span class="sp-chev">▸</span></span></summary>
+          <p class="muted" style="font-size:.8rem;margin:.5rem 0" data-i18n="spot.sub">Dis où tu traînes aujourd'hui — visible 24 h, façon story.</p>
+          <div id="spotCurrent" style="display:none;margin-bottom:.5rem"></div>
           <div class="spot-emoji-pick" id="spotEmojiPick"></div>
           <div class="spot-compose">
             <input id="spotInput" type="text" maxlength="60" placeholder="Ex : Café cosy à Lisbonne ☕" data-i18n-ph="spot.ph" />
             <button class="btn-primary" id="spotSave" data-i18n="spot.save">Publier</button>
           </div>
+          <div style="text-align:right;margin-top:.4rem"><a id="spotClear" style="cursor:pointer;display:none;color:var(--accent);font-weight:600;font-size:.82rem" data-i18n="spot.clear">Effacer</a></div>
           <div class="msg" id="spotMsg" style="text-align:center"></div>
-        </div>
+        </details>
 
         <div class="card" id="bffCard" style="display:none"></div>
 
@@ -2872,7 +2900,7 @@
         ${row("📍", "Check-ins dans des lieux validés", ck, ck > 0)}
         ${row("🛟", "Lieux sûrs différents visités", myDistinctPlaces, myDistinctPlaces > 0)}
         ${row("🤝", "Mates qui te font confiance", mates, mates > 0)}
-        ${row("🟢", "Mates qui te recommandent (vouch)", (window.myVouchCount || 0), (window.myVouchCount || 0) > 0)}
+        ${row("👍", "Mates qui te recommandent (vouch)", (window.myVouchCount || 0), (window.myVouchCount || 0) > 0)}
         ${row("🎮", "Quêtes accomplies", "+ points", true)}
         <p class="te-note">Un check-in se valide avec un <b>code affiché sur place</b> : impossible à tricher à distance. Plus tu te montres dans des lieux sûrs et tisses des liens, plus les autres peuvent te faire confiance. 🌍</p>`;
     }
@@ -3844,7 +3872,8 @@
             ${avatarMarkup(p.username, p.avatar_url, null, isActive(p))}
             <div class="info">
               <div class="name">${escapeHtml(p.username || 'Voyageur')} ${p.is_verified ? '<span class="badge ok">vérifié</span>' : ''}</div>
-              <div class="meta">${escapeHtml(p.city || '')} · score ${p.trust_score ?? 0}${isActive(p) ? ' · <span style="color:var(--ok);font-weight:700">'+ t('presence.active') +'</span>' : ''}</div>
+              <div class="meta">${escapeHtml(p.city || '')} · score ${p.trust_score ?? 0}</div>
+              ${isActive(p) ? '<div style="margin-top:.28rem"><span class="presence-pill">' + t('presence.active') + '</span></div>' : ''}
               ${spotChipHtml(p)}
               ${reasons.length ? `<div>${reasons.map((rr) => `<span class="afn">${escapeHtml(rr)}</span>`).join("")}</div>` : ""}
             </div>
@@ -4968,18 +4997,35 @@
     // Vue initiale de la carte d'accueil : on cadre sur la VILLE / position de l'utilisateur
     // (au lieu d'un dézoom monde). Priorité : GPS connu → dernière position partagée →
     // ville du profil (géocodée) → repli sur l'ensemble des marqueurs.
+    // Marqueur le plus proche d'un point (priorité aux activités puis aux lieux : « ce qui se passe » autour de toi)
+    function nearestMarkerTo(lat, lng, markers) {
+      if (!markers || !markers.length) return null;
+      const prefer = markers.filter((m) => m.smType === "activities");
+      const pool = prefer.length ? prefer : (markers.filter((m) => m.smType === "places").length ? markers.filter((m) => m.smType === "places") : markers);
+      let best = null, bestD = Infinity;
+      pool.forEach((m) => {
+        try { const ll = m.getLatLng(); const d = (ll.lat - lat) ** 2 + (ll.lng - lng) ** 2; if (d < bestD) { bestD = d; best = m; } } catch (e) {}
+      });
+      return best;
+    }
+    // Vue initiale : on se place près de toi, sur l'activité/le lieu le PLUS PROCHE (tu vois tout de suite quoi faire).
     async function centerHomeMapOnUser(markers) {
       if (!homeLeaf) return;
-      if (lastKnownGeo) { homeLeaf.setView([lastKnownGeo.lat, lastKnownGeo.lng], 13, { animate: false }); return; }
+      const focusNear = (lat, lng, fbZoom) => {
+        const near = nearestMarkerTo(lat, lng, markers);
+        if (near) { try { homeLeaf.setView(near.getLatLng(), 14, { animate: false }); near.openPopup && setTimeout(() => { try { near.openPopup(); } catch (e) {} }, 250); return; } catch (e) {} }
+        homeLeaf.setView([lat, lng], fbZoom, { animate: false });
+      };
+      if (lastKnownGeo) { focusNear(lastKnownGeo.lat, lastKnownGeo.lng, 13); return; }
       const mine = (circleLocs || []).find((l) => l.user_id === myUserId && l.lat != null);
-      if (mine) { homeLeaf.setView([mine.lat, mine.lng], 13, { animate: false }); return; }
+      if (mine) { focusNear(mine.lat, mine.lng, 13); return; }
       const city = myProfile && myProfile.city;
       if (city) {
-        if (homeCityCenter) { homeLeaf.setView(homeCityCenter, 12, { animate: false }); return; }
+        if (homeCityCenter) { focusNear(homeCityCenter[0], homeCityCenter[1], 12); return; }
         try {
           const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(city));
           const j = await r.json();
-          if (j && j[0]) { homeCityCenter = [parseFloat(j[0].lat), parseFloat(j[0].lon)]; homeLeaf.setView(homeCityCenter, 12, { animate: false }); return; }
+          if (j && j[0]) { homeCityCenter = [parseFloat(j[0].lat), parseFloat(j[0].lon)]; focusNear(homeCityCenter[0], homeCityCenter[1], 12); return; }
         } catch (e) {}
       }
       if (markers && markers.length) { try { homeLeaf.fitBounds(L.featureGroup(markers).getBounds().pad(0.25)); } catch (e) {} }
@@ -5247,6 +5293,7 @@
       const go = () => {
         const c = (allCafes || []).find((x) => x.id === cafeId);
         if (!homeLeaf || !c || c.lat == null) return;
+        if (typeof toggleHomeFull === "function") toggleHomeFull(true); // ouvre vraiment la carte en grand (plein écran CSS fiable)
         homeLeaf.invalidateSize();
         const open = () => { const mk = homeCafeMarkerById[cafeId]; if (mk) { homeLeaf.setView(mk.getLatLng(), 17, { animate: true }); mk.openPopup(); } else { homeLeaf.setView([c.lat, c.lng], 17, { animate: true }); } };
         const mk = homeCafeMarkerById[cafeId];
@@ -5308,20 +5355,17 @@
         [60, 220, 450, 800].forEach((d) => setTimeout(redraw, d));
       }
     }
+    // Plein écran 100 % CSS (fiable partout). L'API Fullscreen native se refermait
+    // toute seule sur certains appareils (« ça ouvre et ça se referme instant ») → on
+    // ne l'utilise plus ; la classe .fs met la carte en position:fixed inset:0.
     function toggleHomeFull(on, forceFallback) {
       const card = document.querySelector(".homemap-card"); if (!card) return;
       const want = (on != null) ? on : !card.classList.contains("fs");
-      if (want) {
-        if (forceFallback) { homeFsFallback = true; applyHomeFsClass(); return; } // plein écran CSS (garde les overlays visibles, ex. la démo)
-        const req = card.requestFullscreen || card.webkitRequestFullscreen;
-        if (req) { homeFsFallback = false; try { Promise.resolve(req.call(card)).catch(() => { homeFsFallback = true; applyHomeFsClass(); }); } catch (e) { homeFsFallback = true; applyHomeFsClass(); } }
-        else { homeFsFallback = true; applyHomeFsClass(); }
-      } else {
-        homeFsFallback = false;
-        const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-        if (fsEl) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} }
-        applyHomeFsClass();
-      }
+      // Si un vrai plein écran natif était actif, on en sort proprement.
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!want && fsEl) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} }
+      homeFsFallback = want;
+      applyHomeFsClass();
     }
     document.addEventListener("fullscreenchange", applyHomeFsClass);
     document.addEventListener("webkitfullscreenchange", applyHomeFsClass);
@@ -5766,6 +5810,7 @@
       show($("settingsCard"), false); show($("profMain"), true);
     });
     $("replayOnbBtn").addEventListener("click", () => { if (typeof openOnboarding === "function") openOnboarding(); });
+    if ($("replayOnbBtn2")) $("replayOnbBtn2").addEventListener("click", () => { if (typeof openOnboarding === "function") openOnboarding(); });
     $("saveEmailBtn").addEventListener("click", async () => {
       const m = $("settingsMsg"); const email = $("setEmail").value.trim();
       if (!email) { m.style.color = "var(--danger)"; m.textContent = "Entre un nouvel email."; return; }
@@ -6113,15 +6158,15 @@
         "nav.home": "Accueil", "nav.places": "Lieux", "nav.games": "Jeux", "nav.mates": "Mates", "nav.safety": "Sécurité", "nav.profile": "Profil",
         "mates.title": "Mes Mates", "mates.trusted": "Mates de confiance 🛡️ ›", "mates.messages": "💬 Messages", "mates.discover": "🔍 Découvrir", "mates.requests": "📨 Demandes",
         "places.title": "Lieux sûrs", "profile.title": "Mon profil", "safety.title": "Sécurité", "games.title": "Jeux & Quêtes",
-        "prof.seg.edit": "Mon profil",
+        "prof.seg.edit": "Mon profil", "profile.replay": "🚀 Revoir la présentation",
         "filter.verified": "Vérifiés", "filter.active": "🟢 Actifs", "filter.city": "Même ville", "filter.affinity": "Affinité 50%+",
         "set.title": "⚙️ Paramètres du compte", "set.lang": "🌍 Langue / Language", "set.haptics": "Vibrations (haptique)", "set.hapticsSub": "Petit retour vibrant sur les actions clés",
         "set.presence": "Afficher ma présence", "set.presenceSub": "« Actif récemment » sur ton avatar", "set.myQr": "🪪 Mon QR", "set.scanQr": "📷 Scanner", "set.newEmail": "Nouvel email",
         "presence.active": "Actif récemment",
         "chat.translate": "Traduire", "chat.seeProfile": "Voir le profil ›", "tr.loading": "Traduction…", "tr.error": "Traduction indisponible", "tr.from": "Traduit",
-        "vouch.title": "🟢 Recommandé par des Mates", "vouch.sub": "Des voyageurs de confiance se portent garants de cette personne.", "vouch.subEmpty": "Sois le premier à recommander ce Mate de confiance.", "vouch.cta": "🟢 Recommander ce Mate", "vouch.done": "✅ Recommandé", "vouch.needConnect": "Connecte-toi d'abord pour recommander", "vouch.none": "Aucune recommandation pour l'instant", "vouch.added": "Recommandation ajoutée 🟢", "vouch.removed": "Recommandation retirée",
+        "vouch.title": "👍 Recommandé par des Mates", "vouch.sub": "Des voyageurs de confiance se portent garants de cette personne.", "vouch.subEmpty": "Sois le premier à recommander ce Mate de confiance.", "vouch.cta": "Recommander", "vouch.done": "✅ Recommandé", "vouch.needConnect": "Connecte-toi d'abord pour recommander", "vouch.none": "Aucune recommandation pour l'instant", "vouch.added": "Recommandation ajoutée 🟢", "vouch.removed": "Recommandation retirée",
         "match.title": "C'est un match !", "match.sub": "Toi et {name} êtes connectés 🎉", "match.message": "💬 Envoyer un message", "match.later": "Plus tard",
-        "spot.title": "☀️ Mon spot du jour", "spot.clear": "Effacer", "spot.sub": "Dis où tu traînes aujourd'hui — visible 24 h, façon story.", "spot.ph": "Ex : Café cosy à Lisbonne ☕", "spot.save": "Publier", "spot.saved": "Spot du jour publié ☀️", "spot.cleared": "Spot du jour effacé", "spot.need": "Écris d'abord ton spot du jour.", "spot.live": "En ligne 24 h",
+        "spot.title": "☀️ Mon spot du jour", "spot.clear": "Effacer", "spot.sub": "Dis où tu traînes aujourd'hui — visible 24 h, façon story.", "spot.ph": "Ex : Café cosy à Lisbonne ☕", "spot.save": "Publier", "spot.saved": "Spot du jour publié ☀️", "spot.cleared": "Spot du jour effacé", "spot.need": "Écris d'abord ton spot du jour.", "spot.live": "En ligne 24 h", "spot.add": "Ajouter le tien ›",
         "qr.title": "🪪 Mon QR SunMates", "qr.sub": "Fais-le scanner à un voyageur rencontré en vrai pour vous connecter en un instant.", "qr.scanTitle": "📷 Scanner un QR", "qr.scanSub": "Vise le QR SunMates d'un autre voyageur.", "qr.self": "C'est ton propre QR 🙂", "qr.notfound": "Profil introuvable.", "qr.found": "Profil de {name} ouvert 🪪", "qr.noCam": "Scanner indisponible sur cet appareil.", "qr.camErr": "Accès caméra refusé.",
         "ptr.pull": "↓", "ptr.release": "↑"
       },
@@ -6130,15 +6175,15 @@
         "nav.home": "Home", "nav.places": "Places", "nav.games": "Games", "nav.mates": "Mates", "nav.safety": "Safety", "nav.profile": "Profile",
         "mates.title": "My Mates", "mates.trusted": "Trusted Mates 🛡️ ›", "mates.messages": "💬 Messages", "mates.discover": "🔍 Discover", "mates.requests": "📨 Requests",
         "places.title": "Safe places", "profile.title": "My profile", "safety.title": "Safety", "games.title": "Games & Quests",
-        "prof.seg.edit": "My profile",
+        "prof.seg.edit": "My profile", "profile.replay": "🚀 Replay the intro",
         "filter.verified": "Verified", "filter.active": "🟢 Active", "filter.city": "Same city", "filter.affinity": "Affinity 50%+",
         "set.title": "⚙️ Account settings", "set.lang": "🌍 Language / Langue", "set.haptics": "Vibrations (haptics)", "set.hapticsSub": "A little buzz on key actions",
         "set.presence": "Show my presence", "set.presenceSub": "“Active recently” on your avatar", "set.myQr": "🪪 My QR", "set.scanQr": "📷 Scan", "set.newEmail": "New email",
         "presence.active": "Active recently",
         "chat.translate": "Translate", "chat.seeProfile": "See profile ›", "tr.loading": "Translating…", "tr.error": "Translation unavailable", "tr.from": "Translated",
-        "vouch.title": "🟢 Vouched by Mates", "vouch.sub": "Trusted travellers vouch for this person.", "vouch.subEmpty": "Be the first to vouch for this trusted Mate.", "vouch.cta": "🟢 Vouch for this Mate", "vouch.done": "✅ Vouched", "vouch.needConnect": "Connect first to vouch", "vouch.none": "No recommendations yet", "vouch.added": "Vouch added 🟢", "vouch.removed": "Vouch removed",
+        "vouch.title": "👍 Vouched by Mates", "vouch.sub": "Trusted travellers vouch for this person.", "vouch.subEmpty": "Be the first to vouch for this trusted Mate.", "vouch.cta": "Vouch", "vouch.done": "✅ Vouched", "vouch.needConnect": "Connect first to vouch", "vouch.none": "No recommendations yet", "vouch.added": "Vouch added 🟢", "vouch.removed": "Vouch removed",
         "match.title": "It's a match!", "match.sub": "You and {name} are connected 🎉", "match.message": "💬 Send a message", "match.later": "Later",
-        "spot.title": "☀️ My spot of the day", "spot.clear": "Clear", "spot.sub": "Share where you're hanging out today — visible for 24h, like a story.", "spot.ph": "e.g. Cosy café in Lisbon ☕", "spot.save": "Post", "spot.saved": "Spot of the day posted ☀️", "spot.cleared": "Spot of the day cleared", "spot.need": "Write your spot of the day first.", "spot.live": "Live for 24h",
+        "spot.title": "☀️ My spot of the day", "spot.clear": "Clear", "spot.sub": "Share where you're hanging out today — visible for 24h, like a story.", "spot.ph": "e.g. Cosy café in Lisbon ☕", "spot.save": "Post", "spot.saved": "Spot of the day posted ☀️", "spot.cleared": "Spot of the day cleared", "spot.need": "Write your spot of the day first.", "spot.live": "Live for 24h", "spot.add": "Add yours ›",
         "qr.title": "🪪 My SunMates QR", "qr.sub": "Let a traveller you meet in person scan it to connect instantly.", "qr.scanTitle": "📷 Scan a QR", "qr.scanSub": "Point at another traveller's SunMates QR.", "qr.self": "That's your own QR 🙂", "qr.notfound": "Profile not found.", "qr.found": "Opened {name}'s profile 🪪", "qr.noCam": "Scanner not available on this device.", "qr.camErr": "Camera access denied.",
         "ptr.pull": "↓", "ptr.release": "↑"
       }
@@ -6198,16 +6243,18 @@
       const pick = $("spotEmojiPick"); if (!pick) return;
       pick.innerHTML = SPOT_EMOJIS.map((e) => `<button type="button" data-spotemoji="${e}" class="${e === selectedSpotEmoji ? "active" : ""}">${e}</button>`).join("");
       pick.querySelectorAll("[data-spotemoji]").forEach((b) => b.addEventListener("click", () => { selectedSpotEmoji = b.dataset.spotemoji; pick.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b)); }));
-      const cur = $("spotCurrent"), clr = $("spotClear");
+      const cur = $("spotCurrent"), clr = $("spotClear"), sum = $("spotSummary");
       if (myProfile && isSpotActive(myProfile)) {
         selectedSpotEmoji = myProfile.status_emoji || selectedSpotEmoji;
         pick.querySelectorAll("[data-spotemoji]").forEach((x) => x.classList.toggle("active", x.dataset.spotemoji === selectedSpotEmoji));
         if (cur) { cur.style.display = ""; cur.innerHTML = `<span class="spot-chip"><span class="se">${escapeHtml(myProfile.status_emoji || "☀️")}</span><span class="stxt">${escapeHtml(myProfile.status_text)}</span></span> <span class="muted" style="font-size:.72rem">· ${t("spot.live")}</span>`; }
         if ($("spotInput") && !$("spotInput").value) $("spotInput").value = myProfile.status_text;
         if (clr) clr.style.display = "";
+        if (sum) sum.textContent = (myProfile.status_emoji || "☀️") + " " + myProfile.status_text;
       } else {
         if (cur) cur.style.display = "none";
         if (clr) clr.style.display = "none";
+        if (sum) sum.textContent = t("spot.add");
       }
     }
     async function saveSpot() {
@@ -6243,7 +6290,7 @@
       // Présence + spot (chips sous le bandeau)
       const sp = $("tpSpot");
       let chips = "";
-      if (isActive(p)) chips += `<span class="spot-chip" style="background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.3)"><span class="se">🟢</span><span class="stxt">${t("presence.active")}</span></span> `;
+      if (isActive(p)) chips += `<span class="presence-pill">${t("presence.active")}</span> `;
       if (isSpotActive(p)) chips += `<span class="spot-chip"><span class="se">${escapeHtml(p.status_emoji || "☀️")}</span><span class="stxt">${escapeHtml(p.status_text)}</span></span>`;
       if (sp) { sp.innerHTML = chips; sp.style.display = chips ? "" : "none"; }
       // Présence sur le bandeau (anneau)
@@ -6255,8 +6302,9 @@
       const btn = $("tpVouchBtn"), msgEl = $("tpVouchMsg");
       if (msgEl) msgEl.textContent = "";
       const isSelf = p.id === myUserId, connected = connectedIds.has(p.id);
-      if (isSelf) { btn.style.display = "none"; }
-      else { btn.style.display = ""; if (!connected) { btn.disabled = true; btn.style.opacity = ".6"; btn.textContent = t("vouch.needConnect"); } else { btn.disabled = false; btn.style.opacity = "1"; btn.textContent = t("vouch.cta"); } }
+      // On ne peut recommander qu'un Mate connecté (et pas soi-même) → sinon, pas de bouton (compact).
+      if (isSelf || !connected) { btn.style.display = "none"; }
+      else { btn.style.display = ""; btn.disabled = false; btn.style.opacity = "1"; btn.textContent = t("vouch.cta"); }
       $("tpVouchRow").innerHTML = '<span class="muted" style="font-size:.82rem">…</span>';
       try {
         const { data } = await db.from("vouches").select("voucher").eq("vouchee", p.id);
@@ -6276,8 +6324,8 @@
       const id = currentTravelerId; if (!id || id === myUserId || !connectedIds.has(id)) return;
       await once("vouch:" + id, async () => {
         const { data } = await db.from("vouches").select("id").eq("voucher", myUserId).eq("vouchee", id).maybeSingle();
-        if (data) { await db.from("vouches").delete().eq("id", data.id); toast("🟢", t("vouch.removed")); }
-        else { const { error } = await db.from("vouches").insert({ voucher: myUserId, vouchee: id }); if (!error) { vibrate(30); toast("🟢", t("vouch.added")); } else { const m = $("tpVouchMsg"); if (m) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; } } }
+        if (data) { await db.from("vouches").delete().eq("id", data.id); toast("👍", t("vouch.removed")); }
+        else { const { error } = await db.from("vouches").insert({ voucher: myUserId, vouchee: id }); if (!error) { vibrate(30); toast("👍", t("vouch.added")); } else { const m = $("tpVouchMsg"); if (m) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; } } }
         if (travelerMap[id]) renderTravelerExtras(travelerMap[id]);
         loadMyVouchCount();
       });
