@@ -958,7 +958,14 @@
     .hex { width: 62px; height: 62px; margin: 0 auto .4rem; background: var(--accent-grad);
       clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
       display: grid; place-items: center; font-size: 26px; color: #fff; box-shadow: var(--shadow-sm); }
-    .bitem.locked .hex { background: #e9e4e4; color: #bdb6b6; box-shadow: none; }
+    /* Formes variées (collection) */
+    .hex.shape-circle { clip-path: none; border-radius: 50%; }
+    .hex.shape-shield { clip-path: polygon(50% 0, 100% 16%, 100% 60%, 50% 100%, 0 60%, 0 16%); }
+    .hex.shape-star { clip-path: polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); font-size: 22px; }
+    .hex.grad-violet { background: linear-gradient(135deg,#9b7bff,#6a4bff); }
+    .hex.grad-gold { background: linear-gradient(135deg,#FFD15C,#E89B2B); }
+    .hex.grad-teal { background: linear-gradient(135deg,#5fe0c0,#1f9e8c); }
+    .bitem.locked .hex { background: #e9e4e4 !important; color: #bdb6b6; box-shadow: none; }
     /* Badge secret (non débloqué, non-admin) : look « mystère » façon jeu vidéo */
     .bitem.secret .hex { background: linear-gradient(135deg,#3a3450,#241f33); color: #8b84a3; box-shadow: none; }
     body.theme-dusk .bitem.secret .hex { background: linear-gradient(135deg,#2a2440,#161226); }
@@ -2474,7 +2481,7 @@
             <div class="stat-box stat-click" data-stat="mates"><div class="stat" id="matesCountSelf">0</div><div class="lbl">Mates</div></div>
             <div class="stat-box stat-click" data-stat="checkins"><div class="stat" id="checkinCount">0</div><div class="lbl">Check-ins</div></div>
           </div>
-          <div class="completion">
+          <div class="completion" id="completionBox" style="cursor:pointer" title="Compléter mon profil">
             <div class="completion-bar"><span id="completionFill"></span></div>
             <div class="completion-txt" id="completionTxt">Profil complété à 0%</div>
           </div>
@@ -4943,10 +4950,14 @@
       const shown = defs.filter((b) => isAdmin || !b.is_secret || myBadgeKeys.has(b.key));
       const hiddenSecrets = isAdmin ? 0 : defs.filter((b) => b.is_secret && !myBadgeKeys.has(b.key)).length;
       const earned = shown.filter((d) => myBadgeKeys.has(d.key)).length;
+      // Formes/couleurs variées (façon collection) : déterministes par clé de badge.
+      const SHAPES = ["shape-hex", "shape-circle", "shape-shield", "shape-star"];
+      const GRADS = ["grad-sun", "grad-violet", "grad-gold", "grad-teal"];
+      const badgeStyle = (k) => { let h = 0; for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0; return SHAPES[h % SHAPES.length] + " " + GRADS[(h >> 3) % GRADS.length]; };
       $("badgeGrid").innerHTML = shown.map((b) => {
         const done = myBadgeKeys.has(b.key);
         return `<div class="bitem ${done ? "" : "locked"}" data-badge="${escapeHtml(b.key)}" style="cursor:pointer">
-          <div class="hex">${b.emoji || "🏅"}</div>
+          <div class="hex ${badgeStyle(b.key)}">${b.emoji || "🏅"}</div>
           <div class="bname">${escapeHtml(b.name || "")}${b.is_secret && isAdmin ? ' <span style="font-size:.55rem;color:var(--accent)">🔒</span>' : ""}</div>
           <div class="bprog">${done ? "✅ débloqué" : "🔒 à débloquer"}</div>
         </div>`;
@@ -6739,6 +6750,7 @@
     $("trustModal").addEventListener("click", (e) => { if (e.target.id === "trustModal") $("trustModal").classList.add("hidden"); });
     // « X Mates » → pop-up de mes connexions
     const matesStatBtn = $("matesStatBtn"); if (matesStatBtn) matesStatBtn.addEventListener("click", () => $("matesListModal").classList.remove("hidden"));
+    { const cb = $("completionBox"); if (cb) cb.addEventListener("click", () => { if (typeof showProfileSegment === "function") showProfileSegment("edit"); const ep = document.querySelector('[data-psegpanel="edit"]'); if (ep) setTimeout(() => ep.scrollIntoView({ behavior: "smooth", block: "start" }), 60); }); }
     $("matesListClose").addEventListener("click", () => $("matesListModal").classList.add("hidden"));
     $("matesListModal").addEventListener("click", (e) => { if (e.target.id === "matesListModal") $("matesListModal").classList.add("hidden"); });
     $("premiumBtn").addEventListener("click", () => { const m = $("premiumMsg"); m.textContent = "Génial ! On te préviendra dès le lancement de Gold 🎉"; });
