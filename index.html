@@ -3862,17 +3862,31 @@
         const who = travelerMap[r.reported_user]?.username || "Voyageur";
         const by = travelerMap[r.reporter]?.username || "Quelqu'un";
         const d = new Date(r.created_at).toLocaleString("fr-FR");
-        return `<div class="qrow" style="align-items:flex-start;${r.handled ? "opacity:.5" : ""}">
-            <div class="qico">🚩</div>
-            <div class="qname" style="flex:1">${escapeHtml(who)}
+        return `<div class="qrow" style="align-items:flex-start;${r.handled ? "opacity:.6" : ""}">
+            <div class="qico" data-viewrep="${r.reported_user}" style="cursor:pointer">🚩</div>
+            <div class="qname" style="flex:1;cursor:pointer" data-viewrep="${r.reported_user}">${escapeHtml(who)}
               <div class="meta muted" style="font-size:.74rem">Signalé par ${escapeHtml(by)} · ${d}</div>
-              <div class="meta" style="font-size:.82rem;margin-top:.2rem">« ${escapeHtml(r.reason || "")} »</div></div>
-            ${r.handled ? '<span class="badge ok">traité</span>' : `<button class="btn-accent" data-handle="${r.id}" style="padding:.4rem .6rem;font-size:.78rem">Traiter</button>`}
+              <div class="meta" style="font-size:.82rem;margin-top:.2rem">« ${escapeHtml(r.reason || "")} »</div>
+              <div class="muted" style="font-size:.7rem;margin-top:.2rem">👆 Touche pour vérifier le profil signalé (attention aux faux signalements)</div></div>
+            ${r.handled
+              ? `<button class="btn-ghost" data-delreport="${r.id}" style="padding:.4rem .6rem;font-size:.78rem">🗑️ Supprimer</button>`
+              : `<button class="btn-accent" data-handle="${r.id}" style="padding:.4rem .6rem;font-size:.78rem">Traiter</button>`}
           </div>`;
       }).join("") : '<p class="muted">Aucun signalement 🎉</p>';
       wrap.querySelectorAll("[data-handle]").forEach((el) => el.addEventListener("click", async () => {
-        await db.from("reports").update({ handled: true }).eq("id", Number(el.dataset.handle));
-        loadReports();
+        await db.from("reports").update({ handled: true, status: "reviewed" }).eq("id", Number(el.dataset.handle));
+        toast("✅", "Signalement traité"); loadReports();
+      }));
+      wrap.querySelectorAll("[data-delreport]").forEach((el) => el.addEventListener("click", async () => {
+        if (!confirm("Supprimer définitivement ce signalement ?")) return;
+        await db.from("reports").delete().eq("id", Number(el.dataset.delreport));
+        toast("🗑️", "Signalement supprimé"); loadReports();
+      }));
+      wrap.querySelectorAll("[data-viewrep]").forEach((el) => el.addEventListener("click", async () => {
+        const id = el.dataset.viewrep; let p = travelerMap[id];
+        if (!p) { try { const { data: d } = await db.from("profiles").select("*").eq("id", id).maybeSingle(); if (d) { p = d; travelerMap[id] = d; } } catch (e) {} }
+        if (p && typeof openTravelerProfile === "function") { goToTab("connexions"); openTravelerProfile(p); }
+        else toast("🤷", "Profil introuvable");
       }));
     }
 
