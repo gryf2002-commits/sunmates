@@ -64,3 +64,28 @@ action/question à la fois.
 ## Déploiement
 Publié automatiquement par GitHub Pages à chaque `git push` sur `main`.
 URL : `https://gryf2002-commits.github.io/bootcamp-projet/`
+
+## Règles produit (durables — décidées avec l'auteur)
+- **Sécurité jamais monnayée** : toutes les features de sécurité sont gratuites pour tous.
+- **Anti-triche quêtes** : les quêtes **ne donnent PAS de score de confiance** (trop facile
+  à farmer). Le trust ne monte que via des signaux non triviaux (vérification, check-ins
+  validés par code/RPC, vouches). Les quêtes rapportent de l'**XP** (monnaie de jeu séparée).
+  Validation : **auto-déclaration limitée à 3/jour + cooldown** ; les **quêtes de groupe**
+  demandent une **confirmation d'un mate** et donnent un **bonus XP partagé** (plus social).
+- **Classement** : onglet dans Lieux, **multi-segments** (par badges, par XP, par confiance,
+  par check-ins…).
+- **DA = coucher de soleil** : indicateurs de statut/validation en tons **sunset (ambre/doré)**,
+  jamais de vert criard ; cohérent sur toute l'app.
+- **Badges façon jeu vidéo** : badges non débloqués affichés **grisés/noirs** ; **badges
+  secrets** = fonction définie mais condition **cachée** au grand public. Un **compte admin**
+  voit les éléments cachés (badges secrets + conditions d'obtention).
+- **Rappel par fonctionnalité** : chaque fonctionnalité indique discrètement ce qu'elle débloque.
+- **Signalements** : un seul signalement par compte (antispam) ; la personne signalée est
+  **auto-bloquée pour l'auteur** jusqu'au traitement par la modération ; statut visible.
+- **DA (coucher de soleil corail)** : pas de vert vif « hors DA ». Indicateurs « en ligne » /
+  « validé » / notes info → tons raccord DA. Barre de défilement **thémée** (pas blanche).
+- **Indications** : éviter les messages collés en bas de page (invisibles) → préférer un
+  retour visible (toast en haut / inline près de l'action).
+
+## Roadmap en cours
+Voir `ROADMAP_PEAUFINAGE.md` (punch-list peaufinage).

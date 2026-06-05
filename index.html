@@ -103,6 +103,16 @@
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; }
+    /* Barre de défilement thémée DA (fini le blanc système). Firefox + WebKit/Blink.
+       Les conteneurs en scrollbar-width:none (chips, etc.) restent masqués (specificité de classe). */
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,90,77,.4) transparent; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,90,77,.38); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,90,77,.6); background-clip: padding-box; }
+    body.theme-dusk * { scrollbar-color: rgba(255,255,255,.24) transparent; }
+    body.theme-dusk ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); background-clip: padding-box; }
+    body.theme-dusk ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.34); background-clip: padding-box; }
     body {
       font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
       margin: 0; background: var(--bg); color: var(--text);
@@ -329,15 +339,15 @@
        ==================================================================== */
     /* ---- Présence « actif récemment » : pastille verte sur l'avatar ---- */
     .avatar { position: relative; }
+    /* Statut « en ligne » : ton SUNSET (ambre/doré) raccord DA, plus le vert criard. */
     .pdot { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%;
-      background: var(--ok); border: 2px solid #fff; }
+      background: #F5A623; border: 2px solid #fff; }
     body.theme-dusk .pdot { border-color: #241b35; }
     .pdot.lg { width: 15px; height: 15px; border-width: 2.5px; }
-    /* Petite pastille « actif » sobre, raccord avec la DA (même esprit que .badge.ok) */
     .presence-pill { display: inline-flex; align-items: center; gap: .28rem; font-size: .72rem; font-weight: 700;
-      color: #0e9a5f; background: rgba(34,197,94,.12); padding: .08rem .45rem; border-radius: 999px; }
-    .presence-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
-    body.theme-dusk .presence-pill { color: #5fe0a0; background: rgba(34,197,94,.18); }
+      color: #B5740E; background: rgba(255,193,77,.18); padding: .08rem .45rem; border-radius: 999px; }
+    .presence-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #F5A623; }
+    body.theme-dusk .presence-pill { color: #ffce8a; background: rgba(255,193,77,.16); }
 
     /* ---- Vouch « Recommandé par X Mates » : compact, dans la DA ---- */
     .vouch-card { padding: .85rem 1rem; }
@@ -497,7 +507,7 @@
 
     /* ----------------------------- Badges --------------------------- */
     .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 700; }
-    .badge.ok { background: rgba(34,197,94,.12); color: var(--ok); }
+    .badge.ok { background: rgba(255,177,60,.16); color: #B5740E; } /* validé/vérifié : ton sunset (DA), plus de vert */
     .badge.no { background: #f1f2f5; color: var(--muted); }
     .badge.warn { background: var(--accent-soft); color: var(--accent); }
 
@@ -1005,7 +1015,7 @@
     .chat-input input { border: 1px solid rgba(255,90,77,.10); }
 
     /* --- Badges --- */
-    .badge.ok { box-shadow: inset 0 0 0 1px rgba(34,197,94,.15); }
+    .badge.ok { box-shadow: inset 0 0 0 1px rgba(255,177,60,.22); }
 
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
@@ -1096,7 +1106,7 @@
       text-transform: uppercase; letter-spacing: .06em; font-size: .66rem;
       border-radius: 7px; border: 1.5px solid currentColor;
     }
-    .badge.ok   { background: rgba(31,158,146,.10); color: var(--retro-teal); box-shadow: inset 0 0 0 1px rgba(31,158,146,.18) !important; }
+    .badge.ok   { background: rgba(255,177,60,.16); color: #B5740E; box-shadow: inset 0 0 0 1px rgba(255,177,60,.28) !important; }
     .badge.warn { background: var(--accent-soft); color: var(--accent); }
     .badge.no   { border-color: #d9d3cc; }
 
@@ -1331,7 +1341,7 @@
     /* --- Chips / pastilles --- */
     .chip { background: var(--cream); border: 1px solid var(--line); color: var(--text); font-weight: 600; }
     .chip.active { background: var(--accent) !important; color: #fff !important; border-color: transparent; }
-    .badge.ok { background: rgba(30,122,90,.12); color: var(--ok); border-color: rgba(30,122,90,.4); }
+    .badge.ok { background: rgba(255,177,60,.16); color: #B5740E; border-color: rgba(255,177,60,.45); }
 
     /* --- Navigation basse : icônes en traits --- */
     .bottom-nav { background: rgba(255,252,246,.86); box-shadow: 0 -8px 28px rgba(70,45,20,.08); }
@@ -1432,7 +1442,7 @@
     /* Pastilles & vignettes colorées */
     .chip { background: var(--cream); border: 1px solid var(--line); color: var(--text); font-weight: 600; }
     .chip.active { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent; }
-    .badge.ok { background: rgba(17,181,160,.14); color: var(--ok); border-color: rgba(17,181,160,.4); }
+    .badge.ok { background: rgba(255,177,60,.16); color: #B5740E; border-color: rgba(255,177,60,.45); }
     .tile, .gcard { background: var(--card) !important; border: 1px solid var(--line) !important; }
     .thumb { background: var(--accent-grad); color: #fff; }
     .thumb.green { background: linear-gradient(135deg,#22D3C5,#0E9E96) !important; }
@@ -1521,9 +1531,9 @@
     body.gold-free .gold-feature { opacity: .5; filter: grayscale(.4); pointer-events: none; }
     .gold-only-note { display: none; }
     body.gold-free .gold-only-note { display: block; background: rgba(255,201,60,.18); border: 1px dashed #C98A1E; color: #8a5a00; border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 600; }
-    /* Sécurité : jamais monnayée. Note rassurante « inclus pour tous » (toujours visible, vert). */
-    .safe-free-note { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.28); color: #15803d; border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 600; }
-    body.theme-dusk .safe-free-note { background: rgba(34,197,94,.16); color: #5fe0a0; border-color: rgba(34,197,94,.32); }
+    /* Sécurité : jamais monnayée. Note rassurante « inclus pour tous », ton DA corail. */
+    .safe-free-note { background: var(--accent-soft); border: 1px solid rgba(255,90,77,.22); color: var(--accent); border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 700; }
+    body.theme-dusk .safe-free-note { background: rgba(255,90,77,.14); color: #ffb0a6; border-color: rgba(255,90,77,.3); }
     #goldPreviewBanner { display: none; }
     body.gold-free #goldPreviewBanner { display: block; background: linear-gradient(135deg,#FFD15C,#E89B2B); color: #5a3d00; text-align: center; font-weight: 700; font-size: .8rem; padding: .5rem; }
     /* Exclus Gold (lieu / quête) — lisibles en clair ET en sombre */
@@ -1677,7 +1687,8 @@
   </div>
 
   <!-- ============ ÉCRAN CONNEXION / INSCRIPTION ============ -->
-  <section id="authView" class="auth-wrap">
+  <!-- hidden au boot : on ne révèle login OU app qu'une fois l'état d'auth connu (anti-flash) -->
+  <section id="authView" class="auth-wrap hidden">
     <div class="auth-hero">
       <div class="logo-badge"><svg viewBox="0 0 64 64" width="48" height="48">
         <defs><linearGradient id="sunG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD15C"/><stop offset="0.55" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF4F6D"/></linearGradient></defs>
@@ -1851,7 +1862,7 @@
                 <button class="chip" data-filter="affinity" data-i18n="filter.affinity">Affinité 50%+</button>
               </div>
               <details id="advFilters" style="margin-bottom:.7rem">
-                <summary style="cursor:pointer;font-size:.85rem;font-weight:700;color:var(--retro-teal)">🔎 Filtres avancés</summary>
+                <summary style="cursor:pointer;font-size:.85rem;font-weight:700;color:var(--accent)">🔎 Filtres avancés</summary>
                 <div class="row" style="margin-top:.5rem">
                   <div style="flex:1"><label>Âge min</label><input id="fAgeMin" type="number" min="18" max="99" placeholder="18" /></div>
                   <div style="flex:1"><label>Âge max</label><input id="fAgeMax" type="number" min="18" max="99" placeholder="99" /></div>
@@ -2073,7 +2084,7 @@
             <div class="avatar" id="profileAvatar">😎</div>
             <div class="info">
               <div class="name"><span id="profileName">Voyageur</span> <span id="verifBadge" class="badge no">Non vérifié</span></div>
-              <div class="meta" id="userEmail"></div>
+              <div class="meta" id="profileCity"></div>
             </div>
           </div>
           <div class="stat-row" style="margin-top:1rem">
@@ -2148,7 +2159,7 @@
           <div class="pf-section">
             <div class="pf-head">🧭 Voyage &amp; affinités<span class="chev">›</span></div>
             <div class="pf-body">
-              <label>Je suis ici pour <span class="lbl-hint">· 3 max</span></label>
+              <label>Je suis ici pour <span class="lbl-hint">· 1 choix</span></label>
               <div class="chips wrap" id="intentChips"></div>
               <label>Centres d'intérêt <span class="lbl-hint">· 5 max</span></label>
               <div class="chips wrap" id="interestChips"></div>
@@ -2394,7 +2405,7 @@
             <label class="switch"><input type="checkbox" id="hapticsToggle"><span class="sl"></span></label>
           </div>
           <div class="set-toggle">
-            <div><div class="st-lbl" data-i18n="set.presence">Afficher ma présence</div><div class="st-sub" data-i18n="set.presenceSub">« Actif récemment » sur ton avatar</div></div>
+            <div><div class="st-lbl" data-i18n="set.presence">Afficher ma présence</div><div class="st-sub" data-i18n="set.presenceSub">« En ligne » sur ton avatar</div></div>
             <label class="switch"><input type="checkbox" id="presenceToggle" checked><span class="sl"></span></label>
           </div>
           <div class="row" style="margin-top:.5rem">
@@ -2688,15 +2699,17 @@
     // (verrou interne de Supabase) → au rechargement, plus rien ne se charge.
     db.auth.onAuthStateChange((_event, session) => { setTimeout(() => render(session), 0); });
 
+    let _renderedUserId = null; // anti-flicker : ne relance PAS tout le pipeline à chaque event auth (TOKEN_REFRESHED, SIGNED_IN répétés…)
     async function render(session) {
       const loggedIn = !!session;
       show($("authView"), !loggedIn);
       show($("appView"), loggedIn);
       show($("userBox"), loggedIn);
       if (loggedIn) {
+        if (_renderedUserId === session.user.id) return; // déjà initialisé pour cet utilisateur -> aucun rechargement (plus de flash)
+        _renderedUserId = session.user.id;
         myUserId = session.user.id;
-        myEmail = session.user.email;
-        $("userEmail").textContent = session.user.email;
+        myEmail = session.user.email; // email géré dans Réglages, plus affiché sous le pseudo
         await ensureAuthedSession(); // attend que le jeton soit rattaché (course au rechargement)
         await ensureProfile(session.user);
         await Promise.all([loadProfile(), loadCafes(), loadCheckins(), loadConnections(), loadCircleLocations()]);
@@ -2711,6 +2724,7 @@
         subscribeSuggestions();
         askNotifPermission();
       } else {
+        _renderedUserId = null;
         myUserId = null;
         unsubscribeCircle();
         unsubscribeMessages();
@@ -2977,7 +2991,7 @@
       buildChips("interestChips", INTEREST_OPTS, selInterests, false, 5);
       buildChips("languageChips", LANGUAGE_OPTS, selLanguages, false);
       buildChips("styleChips", STYLE_OPTS, null, true);
-      buildChips("intentChips", INTENT_OPTS, selIntent, false, 3);
+      buildChips("intentChips", INTENT_OPTS, selIntent, false, 1);
       buildChips("petsChips", PETS_OPTS, selPets, false);
       buildChips("musicChips", MUSIC_OPTS, selMusic, false);
       buildPrompts();
@@ -2986,6 +3000,8 @@
       document.querySelectorAll(".char-count[data-for]").forEach((el) => { const i = $(el.dataset.for); if (i) i.dispatchEvent(new Event("input")); });
       const uname = data.username || "Voyageur";
       $("profileName").textContent = uname + (data.is_admin ? " 👑" : "");
+      // Sous le pseudo : ville (au lieu de l'email, qui n'a pas sa place ici)
+      { const pc = $("profileCity"); if (pc) pc.textContent = [data.city, data.hometown].filter(Boolean)[0] ? ("📍 " + [data.city, data.hometown].filter(Boolean)[0]) : ""; }
       setAvatarEl($("profileAvatar"), data.avatar_url, uname[0] || "😎");
       setAvatarEl($("pAvatarPreview"), data.avatar_url, uname[0] || "😎");
       // Accueil : « Bonjour {pseudo} ». Seul le pseudo reçoit le dégradé ; « Bonjour » reste en texte normal.
@@ -3076,7 +3092,7 @@
     // Markup d'avatar pour les listes (photo si dispo, sinon initiale)
     function avatarMarkup(name, url, cls, online) {
       const c = "avatar" + (cls ? " " + cls : "");
-      const dot = online ? '<span class="pdot" title="Actif récemment"></span>' : "";
+      const dot = online ? '<span class="pdot" title="En ligne"></span>' : "";
       return url
         ? `<div class="${c}" style="background-image:url('${escapeHtml(url)}')">${dot}</div>`
         : `<div class="${c}">${(name?.[0] || "?").toUpperCase()}${dot}</div>`;
@@ -4965,6 +4981,11 @@
         leafMap = L.map(el, { scrollWheelZoom: false }).setView([46.6, 2.3], 4);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(leafMap);
         leafMap.attributionControl.setPrefix(false).setPosition("bottomleft");
+        // Même correctif définitif que la carte d'accueil : resync sur la taille réelle.
+        if (typeof ResizeObserver === "function") {
+          let _raf = 0;
+          new ResizeObserver(() => { if (_raf) cancelAnimationFrame(_raf); _raf = requestAnimationFrame(() => { try { leafMap.invalidateSize({ animate: false }); } catch (e) {} }); }).observe(el);
+        }
         leafMap.on("popupopen", (e) => {
           const b = e.popup._contentNode && e.popup._contentNode.querySelector(".mappop");
           if (b) b.addEventListener("click", () => checkIn(Number(b.dataset.cid), b.dataset.cname));
@@ -5106,6 +5127,17 @@
         homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.5, wheelPxPerZoomLevel: 140, zoomControl: true }).setView([46.6, 2.3], 4);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(homeLeaf);
         homeLeaf.attributionControl.setPrefix(false).setPosition("bottomleft"); // retire le logo Leaflet, déplace à gauche
+        // ★ Correctif plein écran DÉFINITIF : un ResizeObserver resynchronise Leaflet avec la
+        // taille RÉELLE du conteneur à chaque changement (plein écran, rotation, clavier).
+        // C'est ce qui élimine les tuiles coupées / le zoom faux, quelle que soit la plateforme.
+        if (typeof ResizeObserver === "function") {
+          let _raf = 0;
+          const ro = new ResizeObserver(() => {
+            if (_raf) cancelAnimationFrame(_raf);
+            _raf = requestAnimationFrame(() => { try { homeLeaf.invalidateSize({ animate: false }); } catch (e) {} });
+          });
+          ro.observe(el);
+        }
         const LAYER_COLORS = { places: "#FF5A4D", mates: "#7a5cff", activities: "#ff9f1c", checkins: "#19b36b" };
         homeCluster = (typeof L.markerClusterGroup === "function")
           ? L.markerClusterGroup({
@@ -6205,8 +6237,8 @@
         "prof.seg.edit": "Mon profil", "profile.replay": "🚀 Revoir la présentation",
         "filter.verified": "Vérifiés", "filter.active": "🟢 Actifs", "filter.city": "Même ville", "filter.affinity": "Affinité 50%+",
         "set.title": "⚙️ Paramètres du compte", "set.lang": "🌍 Langue / Language", "set.haptics": "Vibrations (haptique)", "set.hapticsSub": "Petit retour vibrant sur les actions clés",
-        "set.presence": "Afficher ma présence", "set.presenceSub": "« Actif récemment » sur ton avatar", "set.myQr": "🪪 Mon QR", "set.scanQr": "📷 Scanner", "set.newEmail": "Nouvel email",
-        "presence.active": "Actif récemment",
+        "set.presence": "Afficher ma présence", "set.presenceSub": "« En ligne » sur ton avatar", "set.myQr": "🪪 Mon QR", "set.scanQr": "📷 Scanner", "set.newEmail": "Nouvel email",
+        "presence.active": "En ligne",
         "chat.translate": "Traduire", "chat.seeProfile": "Voir le profil ›", "tr.loading": "Traduction…", "tr.error": "Traduction indisponible", "tr.from": "Traduit",
         "vouch.title": "👍 Recommandé par des Mates", "vouch.sub": "Des voyageurs de confiance se portent garants de cette personne.", "vouch.subEmpty": "Sois le premier à recommander ce Mate de confiance.", "vouch.cta": "Recommander", "vouch.done": "✅ Recommandé", "vouch.needConnect": "Connecte-toi d'abord pour recommander", "vouch.none": "Aucune recommandation pour l'instant", "vouch.added": "Recommandation ajoutée 🟢", "vouch.removed": "Recommandation retirée",
         "match.title": "C'est un match !", "match.sub": "Toi et {name} êtes connectés 🎉", "match.message": "💬 Envoyer un message", "match.later": "Plus tard",
@@ -6222,8 +6254,8 @@
         "prof.seg.edit": "My profile", "profile.replay": "🚀 Replay the intro",
         "filter.verified": "Verified", "filter.active": "🟢 Active", "filter.city": "Same city", "filter.affinity": "Affinity 50%+",
         "set.title": "⚙️ Account settings", "set.lang": "🌍 Language / Langue", "set.haptics": "Vibrations (haptics)", "set.hapticsSub": "A little buzz on key actions",
-        "set.presence": "Show my presence", "set.presenceSub": "“Active recently” on your avatar", "set.myQr": "🪪 My QR", "set.scanQr": "📷 Scan", "set.newEmail": "New email",
-        "presence.active": "Active recently",
+        "set.presence": "Show my presence", "set.presenceSub": "“Online” on your avatar", "set.myQr": "🪪 My QR", "set.scanQr": "📷 Scan", "set.newEmail": "New email",
+        "presence.active": "Online",
         "chat.translate": "Translate", "chat.seeProfile": "See profile ›", "tr.loading": "Translating…", "tr.error": "Translation unavailable", "tr.from": "Translated",
         "vouch.title": "👍 Vouched by Mates", "vouch.sub": "Trusted travellers vouch for this person.", "vouch.subEmpty": "Be the first to vouch for this trusted Mate.", "vouch.cta": "Vouch", "vouch.done": "✅ Vouched", "vouch.needConnect": "Connect first to vouch", "vouch.none": "No recommendations yet", "vouch.added": "Vouch added 🟢", "vouch.removed": "Vouch removed",
         "match.title": "It's a match!", "match.sub": "You and {name} are connected 🎉", "match.message": "💬 Send a message", "match.later": "Later",
