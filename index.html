@@ -280,8 +280,8 @@
     .pcard .pcard-meta { color: var(--muted); font-size: .82rem; font-weight: 600; }
     .pcard .pcard-addr { color: var(--muted); font-size: .8rem; margin-top: .22rem; }
     .pcard .pcard-note { color: var(--ink); font-size: .79rem; margin-top: .4rem; background: var(--accent-soft); padding: .35rem .55rem; border-radius: 9px; }
-    .pcard .pcard-actions { display: flex; gap: .5rem; margin-top: .7rem; }
-    .pcard .pcard-actions button { flex: 1; }
+    .pcard .pcard-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+    .pcard .pcard-actions button { flex: 1 1 calc(50% - .25rem); white-space: nowrap; } /* 2 par ligne sur petits écrans */
 
     /* Bannière d'installation PWA (cachée par défaut, glisse depuis le haut) */
     .pwa-banner { position: fixed; left: 50%; top: calc(.6rem + env(safe-area-inset-top, 0px)); z-index: var(--z-pwa);
