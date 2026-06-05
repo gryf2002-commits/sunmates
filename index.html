@@ -2146,52 +2146,25 @@
       <div class="tab-panel hidden" data-panel="lieux">
         <h1 data-i18n="places.title">Lieux sûrs</h1>
 
-        <div class="mseg">
-          <button data-lieuxseg="places" class="active">☕ Lieux</button>
-          <button data-lieuxseg="rank">🏆 Classement</button>
+        <p class="muted" style="margin-top:0">Les meilleurs spots pour se retrouver ☕ Fais un check-in pour grimper au classement 🏆</p>
+        <div class="search" style="margin-top:.2rem"><span class="ico">🔍</span><input id="cafeSearch" type="text" placeholder="Rechercher un lieu ou une ville…" /></div>
+        <!-- Filtres + tris en tuiles colorées (dans la DA) -->
+        <div class="cat-row" id="lieuxCats">
+          <div class="cat-tile active" data-catcf="all"><div class="cic c-sun">☕</div><div class="clbl">Tous</div></div>
+          <div class="cat-tile" data-catcf="eco"><div class="cic c-green">🌱</div><div class="clbl">Éco</div></div>
+          <div class="cat-tile" data-catcf="near"><div class="cic c-blue">📍</div><div class="clbl">Près de moi</div></div>
+          <div class="cat-tile" data-catsort="rating"><div class="cic c-gold">⭐</div><div class="clbl">Top notés</div></div>
+          <div class="cat-tile" data-catsort="checkins"><div class="cic c-purp">🔥</div><div class="clbl">Populaires</div></div>
         </div>
-
-        <!-- Sous-onglet : Lieux -->
-        <div class="lieux-seg" data-lieuxsegpanel="places">
-          <p class="muted" style="margin-top:0">Les meilleurs spots pour se retrouver ☕ Fais un check-in pour grimper au classement 🏆</p>
-          <div class="search" style="margin-top:.2rem"><span class="ico">🔍</span><input id="cafeSearch" type="text" placeholder="Rechercher un lieu ou une ville…" /></div>
-          <!-- Catégories en tuiles colorées (déclenchent les filtres ci-dessous) -->
-          <div class="cat-row" id="lieuxCats">
-            <div class="cat-tile active" data-catcf="all"><div class="cic c-sun">☕</div><div class="clbl">Tous</div></div>
-            <div class="cat-tile" data-catcf="eco"><div class="cic c-green">🌱</div><div class="clbl">Éco</div></div>
-            <div class="cat-tile" data-catcf="near"><div class="cic c-blue">📍</div><div class="clbl">Près de moi</div></div>
-          </div>
-          <div class="chips wrap" id="cafeFilters" style="display:none">
-            <button class="chip active" data-cf="all">Tous</button>
-            <button class="chip" data-cf="eco">🌱 Éco-responsables</button>
-            <button class="chip" data-cf="near">📍 Près de moi</button>
-          </div>
-          <div style="display:flex;align-items:center;gap:.5rem;margin:.2rem 0 .5rem">
-            <span class="muted" style="font-size:.8rem;white-space:nowrap">Trier</span>
-            <select id="cafeSort" style="flex:1">
-              <option value="default">Pertinence</option>
-              <option value="rating">⭐ Mieux notés</option>
-              <option value="checkins">✅ Plus de check-ins</option>
-              <option value="name">A→Z</option>
-            </select>
-          </div>
-          <div id="cafesCount" class="muted" style="font-size:.8rem;margin-bottom:.5rem"></div>
-          <div class="gold-only-note" style="margin-bottom:.7rem">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
-          <div id="cafesList"><p class="muted">Chargement…</p></div>
-          <div class="msg" id="cafesMsg"></div>
+        <div class="chips wrap" id="cafeFilters" style="display:none">
+          <button class="chip active" data-cf="all">Tous</button>
+          <button class="chip" data-cf="eco">🌱 Éco-responsables</button>
+          <button class="chip" data-cf="near">📍 Près de moi</button>
         </div>
-
-        <!-- Sous-onglet : Classement -->
-        <div class="lieux-seg hidden" data-lieuxsegpanel="rank">
-          <p class="muted" style="margin-top:0">Grimpe le classement de la communauté SunMates 🏆</p>
-          <div class="lb-segs" id="lbSegs">
-            <button data-lb="xp" class="active">⭐ XP</button>
-            <button data-lb="checkins">📍 Check-ins</button>
-            <button data-lb="trust">🛡️ Confiance</button>
-            <button data-lb="badges">🏅 Badges</button>
-          </div>
-          <div id="leaderboardList"><p class="muted">Chargement…</p></div>
-        </div>
+        <div id="cafesCount" class="muted" style="font-size:.8rem;margin-bottom:.5rem"></div>
+        <div class="gold-only-note" style="margin-bottom:.7rem">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
+        <div id="cafesList"><p class="muted">Chargement…</p></div>
+        <div class="msg" id="cafesMsg"></div>
       </div>
 
       <!-- ---------------- Onglet MATES (connexions + messagerie) ---------------- -->
@@ -2868,6 +2841,7 @@
             <div class="cat-tile" data-jeuxnav="games"><div class="cic c-purp">🎮</div><div class="clbl">Jeux</div></div>
             <div class="cat-tile" data-jeuxnav="badges"><div class="cic c-gold">🏅</div><div class="clbl">Badges</div></div>
             <div class="cat-tile" data-jeuxnav="coupons"><div class="cic c-green">🎟️</div><div class="clbl">Coupons</div></div>
+            <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue">🏆</div><div class="clbl">Classement</div></div>
           </div>
           <div class="gold-only-note">👑 Gratuit : 1 quête + 1 activité par jour. Gold : illimité + <b>coupons exclusifs</b> bien plus avantageux.</div>
 
@@ -2889,19 +2863,6 @@
           <div class="section-head"><h3 style="margin-top:1.4rem">🎮 Jeux populaires</h3></div>
           <div class="grid2" id="gamesGrid"></div>
 
-          <div class="section-head"><h3 style="margin-top:1.6rem">🎁 Mes récompenses</h3></div>
-          <div class="grid2" style="margin:0 0 .6rem">
-            <button class="reward-card" id="openBadges">
-              <div class="rc-ic">🏅</div>
-              <div class="rc-txt"><div class="rc-name">Badges</div><div class="t-meta rc-meta">0 débloqués</div></div>
-              <div class="rc-arr">›</div>
-            </button>
-            <button class="reward-card alt" id="openCoupons">
-              <div class="rc-ic">🎟️</div>
-              <div class="rc-txt"><div class="rc-name">Coupons</div><div class="t-meta rc-meta">0 dispo</div></div>
-              <div class="rc-arr">›</div>
-            </button>
-          </div>
         </div>
 
         <!-- Vue détail d'une quête / d'un jeu -->
@@ -2957,6 +2918,20 @@
           <h1>Coupons 🎟️</h1>
           <p class="muted" style="margin-top:0">Coupons de juin 2026</p>
           <div id="couponList"></div>
+        </div>
+
+        <!-- Vue Classement (déplacée depuis Lieux) -->
+        <div id="jeuxRank" class="jeux-view hidden">
+          <button class="backbtn" data-back>‹ Retour</button>
+          <h1>🏆 Classement</h1>
+          <p class="muted" style="margin-top:0">Grimpe le classement de la communauté SunMates.</p>
+          <div class="lb-segs" id="lbSegs">
+            <button data-lb="xp" class="active">⭐ XP</button>
+            <button data-lb="checkins">📍 Check-ins</button>
+            <button data-lb="trust">🛡️ Confiance</button>
+            <button data-lb="badges">🏅 Badges</button>
+          </div>
+          <div id="leaderboardList"><p class="muted">Chargement…</p></div>
         </div>
 
       </div>
@@ -3266,7 +3241,6 @@
       if (target === "jeux" && typeof showJeuxView === "function") { showJeuxView("jeuxHome"); if (changed && typeof loadGameData === "function" && myUserId) loadGameData(); }
       if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
-      if (target === "lieux" && typeof showLieuxSeg === "function") showLieuxSeg("places"); // toujours « Lieux », pas le dernier segment
       if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
       window.scrollTo({ top: 0, behavior: "smooth" });
       if (target === "accueil" && typeof renderHomeMap === "function") setTimeout(renderHomeMap, 60);
@@ -3784,7 +3758,6 @@
     // Recherche + filtres de l'onglet Lieux
     (function () {
       const s = $("cafeSearch"); if (s) s.addEventListener("input", () => { cafeFilter.q = s.value.trim(); renderCafesList(); });
-      const sort = $("cafeSort"); if (sort) sort.addEventListener("change", () => { cafeSortKey = sort.value; renderCafesList(); });
       const f = $("cafeFilters"); if (!f) return;
       f.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", () => {
         const mode = b.dataset.cf;
@@ -4278,12 +4251,6 @@
       document.querySelectorAll("[data-lb]").forEach((x) => x.classList.toggle("active", x === b));
       renderLeaderboard(b.dataset.lb);
     }));
-    function showLieuxSeg(seg) {
-      document.querySelectorAll("[data-lieuxseg]").forEach((b) => b.classList.toggle("active", b.dataset.lieuxseg === seg));
-      document.querySelectorAll("[data-lieuxsegpanel]").forEach((p) => show(p, p.dataset.lieuxsegpanel === seg));
-      if (seg === "rank") renderLeaderboard();
-    }
-    document.querySelectorAll("[data-lieuxseg]").forEach((b) => b.addEventListener("click", () => showLieuxSeg(b.dataset.lieuxseg)));
 
     // ====================== SÉCURITÉ ======================
     $("shareLocBtn").addEventListener("click", () => sendLocation(false, $("locMsg"), "Position partagée avec ton cercle ✅"));
@@ -4938,11 +4905,10 @@
       $("gamesGrid").innerHTML = games.map((g, i) => `
         <div class="gcard" data-qkey="${g.key}">
           <div class="ghead ${headColors[i % 4]}" style="background-image:url('${questImage(g)}')">
-            <span class="gemoji">${g.emoji}</span>
             <span class="grate">+${g.points || 0} XP</span>
             ${myQuestStatus[g.key] === "completed" ? '<span class="gdone">✅ Fait</span>' : ""}
           </div>
-          <div class="gbody"><div class="gname">${escapeHtml(g.title)}</div><div class="gcity">${escapeHtml(g.city || "")}</div></div>
+          <div class="gbody"><div class="gname">${g.emoji} ${escapeHtml(g.title)}</div><div class="gcity">${escapeHtml(g.city || "")}</div></div>
         </div>`).join("");
 
       // Quêtes du jour
@@ -5001,8 +4967,8 @@
       $("badgeGrid").querySelectorAll("[data-badge]").forEach((el) => el.addEventListener("click", () => showBadgeInfo(el.dataset.badge)));
       { const tz = $("secretTeaser"); if (tz) tz.addEventListener("click", () => showInfo("Badges secrets 🔒", `<p style="text-align:center;line-height:1.6">Il existe <b>${hiddenSecrets} badge(s) secret(s)</b> à débloquer en explorant SunMates… 👀<br><br>À toi de les découvrir — ils apparaîtront ici une fois obtenus !</p>`)); }
       // Compteurs remis à la réalité (0 si rien d'accompli)
-      const bm = $("openBadges").querySelector(".t-meta"); if (bm) bm.textContent = earned + "/" + defs.length + " débloqués";
-      const cm = $("openCoupons").querySelector(".t-meta"); if (cm) cm.textContent = myCoupons.length + " disponible" + (myCoupons.length > 1 ? "s" : "");
+      { const ob = $("openBadges"); const bm = ob && ob.querySelector(".t-meta"); if (bm) bm.textContent = earned + "/" + defs.length + " débloqués"; }
+      { const oc = $("openCoupons"); const cm = oc && oc.querySelector(".t-meta"); if (cm) cm.textContent = myCoupons.length + " disponible" + (myCoupons.length > 1 ? "s" : ""); }
       const bh = document.querySelectorAll("#jeuxBadges .badge.warn, #jeuxBadges .badge.ok");
       if (bh[0]) bh[0].textContent = earned + " / " + defs.length;
       if (bh[1]) bh[1].textContent = String(myCoupons.length);
@@ -5071,7 +5037,7 @@
 
     // Affiche une seule sous-vue de l'onglet Jeux
     function showJeuxView(id) {
-      ["jeuxHome", "jeuxDetail", "jeuxBadges", "jeuxCoupons"].forEach((v) => show($(v), v === id));
+      ["jeuxHome", "jeuxDetail", "jeuxBadges", "jeuxCoupons", "jeuxRank"].forEach((v) => show($(v), v === id));
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -5224,8 +5190,8 @@
     // Boutons "Retour" des sous-vues + accès badges/coupons
     document.querySelectorAll("[data-back]").forEach((b) =>
       b.addEventListener("click", () => showJeuxView("jeuxHome")));
-    $("openBadges").addEventListener("click", () => showJeuxView("jeuxBadges"));
-    $("openCoupons").addEventListener("click", () => showJeuxView("jeuxCoupons"));
+    { const ob = $("openBadges"); if (ob) ob.addEventListener("click", () => showJeuxView("jeuxBadges")); }
+    { const oc = $("openCoupons"); if (oc) oc.addEventListener("click", () => showJeuxView("jeuxCoupons")); }
     $("openCouponsFromBadges").addEventListener("click", () => showJeuxView("jeuxCoupons"));
 
     // ---- Sélecteur générique (overlay : choisir un Mate) ----
@@ -7770,17 +7736,25 @@
     });
 
     // Tuiles de catégories de l'onglet Lieux → déclenchent les filtres (logique existante réutilisée).
-    document.querySelectorAll("#lieuxCats [data-catcf]").forEach((t) => t.addEventListener("click", () => {
-      document.querySelectorAll("#lieuxCats [data-catcf]").forEach((x) => x.classList.toggle("active", x === t));
-      const chip = document.querySelector('#cafeFilters [data-cf="' + t.dataset.catcf + '"]');
-      if (chip) chip.click();
+    document.querySelectorAll("#lieuxCats .cat-tile").forEach((t) => t.addEventListener("click", () => {
+      if (t.dataset.catcf) {
+        document.querySelectorAll("#lieuxCats [data-catcf]").forEach((x) => x.classList.toggle("active", x === t));
+        const chip = document.querySelector('#cafeFilters [data-cf="' + t.dataset.catcf + '"]'); if (chip) chip.click();
+      } else if (t.dataset.catsort) {
+        const already = t.classList.contains("active");
+        document.querySelectorAll("#lieuxCats [data-catsort]").forEach((x) => x.classList.remove("active"));
+        cafeSortKey = already ? "default" : t.dataset.catsort;
+        if (!already) t.classList.add("active");
+        renderCafesList();
+      }
     }));
 
     // Tuiles de navigation rapide de l'onglet Jeux (Quêtes / Jeux / Badges / Coupons).
     document.querySelectorAll("#jeuxNav [data-jeuxnav]").forEach((t) => t.addEventListener("click", () => {
       const k = t.dataset.jeuxnav;
-      if (k === "badges") { const b = $("openBadges"); if (b) b.click(); return; }
-      if (k === "coupons") { const c = $("openCoupons"); if (c) c.click(); return; }
+      if (k === "badges") { showJeuxView("jeuxBadges"); return; }
+      if (k === "coupons") { showJeuxView("jeuxCoupons"); return; }
+      if (k === "rank") { showJeuxView("jeuxRank"); if (typeof renderLeaderboard === "function") renderLeaderboard(); return; }
       const target = k === "games" ? $("gamesGrid") : $("questsList");
       if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
     }));
