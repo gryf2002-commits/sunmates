@@ -100,7 +100,14 @@ Smoke test OK : tables (`badges_catalog`, `quest_group_runs`), colonnes (`profil
 
 > Roadmap peaufinage : **TERMINÉE** (14 lots, SW v49).
 
-## 🔥 GROSSE PASSE 2 (lots 30-38, SW v73) — ⚠️ migrations 21, 22, 23 à lancer
+## 🌙 SESSION TARDIVE — features sécurité solo (lots 39-42, SW v77)
+Migrations 17→23 **toutes lancées & vérifiées en live** (7 RPC OK, seed avis OK).
+- **Carte souvenir** partageable (story sunset) pour Mon parcours.
+- **Numéros d'urgence par pays** (~30 destinations, recherche, appel direct).
+- **Contacts d'urgence (ICE)** : jusqu'à 3 proches en local, appel 1 tap.
+- **Changelog admin** tenu à jour (segment 📒).
+
+## 🔥 GROSSE PASSE 2 (lots 30-38, SW v73) — migrations 21, 22, 23 ✅ lancées
 - **Page de connexion / Pro** : l'onglet Pro transforme la page (titre+pitch B2B, PAS d'identifiants,
   juste « Démarrer »). Logo Pro d'avant restauré.
 - **Plein écran carte** : outils (Tout voir / Autour de moi / Partager) + Fermer restent visibles
