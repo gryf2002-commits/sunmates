@@ -5507,7 +5507,7 @@
       if (people.length) html += '<div class="card" style="margin-top:.6rem"><h3 style="margin-top:0">Voyageurs</h3>' +
         people.map((p) => `<div class="sresult" data-sp="${p.id}">${avatarMarkup(p.username, p.avatar_url)}<div class="info"><div class="sname">${escapeHtml(p.username || "Voyageur")} ${p.is_verified ? "✅" : ""}</div><div class="smeta">${escapeHtml(p.city || "")}</div></div></div>`).join("") + "</div>";
       if (places.length) html += '<div class="card"><h3 style="margin-top:0">Lieux sûrs</h3>' +
-        places.map((c) => `<div class="sresult" data-splace="${c.id}"><div class="sicon">🛟</div><div class="info"><div class="sname">${escapeHtml(c.name)}</div><div class="smeta">${escapeHtml(c.city || "")}${c.is_eco ? " · 🌱" : ""}</div></div></div>`).join("") + "</div>";
+        places.map((c) => { const rt = cafeRatings[c.id]; const star = (rt && rt.cnt) ? ` · ⭐ ${rt.avg.toFixed(1)}` : ""; return `<div class="sresult" data-splace="${c.id}"><div class="sicon">🛟</div><div class="info"><div class="sname">${escapeHtml(c.name)}</div><div class="smeta">${escapeHtml(c.city || "")}${c.is_eco ? " · 🌱" : ""}${star}</div></div></div>`; }).join("") + "</div>";
       box.innerHTML = html || '<div class="card"><p class="muted">Aucun résultat pour « ' + escapeHtml(q) + ' ».</p></div>';
       box.querySelectorAll("[data-sp]").forEach((el) => el.addEventListener("click", () => { goToTab("connexions"); openTravelerProfile(travelerMap[el.dataset.sp]); }));
       box.querySelectorAll("[data-splace]").forEach((el) => el.addEventListener("click", () => { box.innerHTML = ""; $("homeSearch").value = ""; if (typeof focusCafeInList === "function") focusCafeInList(Number(el.dataset.splace)); }));
