@@ -1206,6 +1206,9 @@
     /* Accordéon du formulaire de profil */
     .pf-section { border: 1px solid rgba(255,90,77,.14); border-radius: 16px; margin-bottom: .7rem; overflow: hidden; background: #fff; }
     .pf-head { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1rem; cursor: pointer; font-weight: 700; color: var(--ink-warm); font-family: "Fraunces", serif; font-size: 1rem; }
+    /* % de complétion par catégorie (ce qui reste à remplir) */
+    .pf-pct { margin-left: auto; margin-right: .55rem; font-size: .68rem; font-weight: 800; font-family: "Manrope", sans-serif; color: var(--muted); background: var(--cream); padding: .08rem .45rem; border-radius: 999px; }
+    .pf-pct.done { color: #B5740E; background: rgba(255,177,60,.18); }
     .pf-head .chev { transition: transform .2s; color: var(--muted); }
     .pf-section.open .pf-head .chev { transform: rotate(90deg); }
     .pf-body { max-height: 0; overflow: hidden; padding: 0 1rem; transition: max-height .32s ease; }
@@ -1928,6 +1931,14 @@
                 <div class="row" style="margin-top:0">
                   <div style="flex:1"><label>Personnalité</label><select id="fPerso"><option value="">Toutes</option><option>Introverti·e</option><option>Extraverti·e</option><option>Entre les deux</option></select></div>
                   <div style="flex:1"><label>Avec photo</label><select id="fPhoto"><option value="">Indifférent</option><option value="1">Oui</option></select></div>
+                </div>
+                <div class="row" style="margin-top:0">
+                  <div style="flex:1"><label>Centre d'intérêt</label><select id="fInterest"><option value="">Tous</option><option>Randonnée</option><option>Plage</option><option>Gastronomie</option><option>Fête</option><option>Culture</option><option>Photo</option><option>Aventure</option><option>Nature</option><option>Sport</option><option>Nomade</option></select></div>
+                  <div style="flex:1"><label>Niveau d'études</label><select id="fEdu"><option value="">Tous</option><option>Lycée</option><option>Bac+2/3</option><option>Master</option><option>Doctorat</option><option>Autre</option></select></div>
+                </div>
+                <div class="row" style="margin-top:0">
+                  <div style="flex:1"><label>Enfants</label><select id="fChild"><option value="">Tous</option><option>J'en ai</option><option>Je n'en ai pas</option><option>J'en veux un jour</option><option>Je ne veux pas</option></select></div>
+                  <div style="flex:1"><label>Religion</label><select id="fRelig"><option value="">Toutes</option><option>Athée</option><option>Agnostique</option><option>Chrétien·ne</option><option>Musulman·e</option><option>Juif·ve</option><option>Hindou·e</option><option>Bouddhiste</option><option>Spirituel·le</option><option>Autre</option></select></div>
                 </div>
                 <button class="btn-ghost btn-block" id="fReset" style="margin-top:.6rem">Réinitialiser les filtres</button>
               </details>
@@ -3000,7 +3011,29 @@
       const pct = Math.min(100, Math.round((filled / total) * 100));
       $("completionFill").style.width = pct + "%";
       $("completionTxt").textContent = "Profil complété à " + pct + "%";
+      updateSectionPercents();
     }
+
+    // % de complétion AFFICHÉ à côté de chaque catégorie du profil (ce qui reste à remplir).
+    function updateSectionPercents() {
+      document.querySelectorAll('[data-psegpanel="edit"] .pf-section').forEach((sec) => {
+        const body = sec.querySelector(".pf-body"); if (!body) return;
+        let total = 0, filled = 0;
+        body.querySelectorAll("input, select, textarea").forEach((el) => {
+          if (el.type === "file") return;
+          total++; if ((el.value || "").trim()) filled++;
+        });
+        body.querySelectorAll(".chips").forEach((c) => { total++; if (c.querySelector(".chip.active")) filled++; });
+        const head = sec.querySelector(".pf-head"); if (!head) return;
+        let chip = head.querySelector(".pf-pct");
+        if (!chip) { chip = document.createElement("span"); chip.className = "pf-pct"; head.insertBefore(chip, head.querySelector(".chev")); }
+        const pct = total ? Math.round((filled / total) * 100) : 100;
+        chip.textContent = pct + "%";
+        chip.classList.toggle("done", pct === 100);
+      });
+    }
+    // % (global + par catégorie) mis à jour EN DIRECT pendant la saisie.
+    { const ep = document.querySelector('[data-psegpanel="edit"]'); if (ep) ep.addEventListener("input", () => updateCompletion()); }
 
     const setV = (id, v) => { const el = $(id); if (el) el.value = (v ?? ""); };
     // Explique le score de confiance de façon transparente (ce qui le fait grimper)
@@ -3121,9 +3154,14 @@
         id: myUserId, phone: $("pPhone").value.trim(), updated_at: new Date().toISOString(),
       });
       const err = error || errPhone;
-      msg.style.color = err ? "var(--danger)" : "var(--ok)";
-      msg.textContent = err ? "Erreur : " + err.message : "Profil enregistré ✅";
-      if (!err) { flashOk($("saveProfileBtn")); await Promise.all([loadProfile(), loadConnections()]); }
+      // Confirmation VISIBLE en haut (toast) au lieu d'un message en bas de page qu'on ne voit pas.
+      if (err) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + err.message; toast("⚠️", "Échec de l'enregistrement"); }
+      else {
+        msg.textContent = "";
+        flashOk($("saveProfileBtn"));
+        toast("✅", "Profil enregistré 🎉");
+        await Promise.all([loadProfile(), loadConnections()]);
+      }
     }));
 
     $("verifyBtn").addEventListener("click", () => once("verify", async () => {
@@ -3995,6 +4033,7 @@
         if (fSty) list = list.filter((o) => o.p.travel_style === fSty);
         const g = (id) => $(id)?.value || "";
         const fGen = g("fGender"), fOri = g("fOrient"), fRel = g("fRel"), fFit = g("fFit"), fDri = g("fDrink"), fSmo = g("fSmoke"), fDie = g("fDiet"), fZod = g("fZod"), fPer = g("fPerso"), fPho = g("fPhoto");
+        const fIntr = g("fInterest"), fEdu = g("fEdu"), fChi = g("fChild"), fReg = g("fRelig");
         if (fGen) list = list.filter((o) => o.p.gender === fGen);
         if (fOri) list = list.filter((o) => o.p.orientation === fOri);
         if (fRel) list = list.filter((o) => o.p.relationship_status === fRel);
@@ -4005,7 +4044,11 @@
         if (fZod) list = list.filter((o) => o.p.zodiac === fZod);
         if (fPer) list = list.filter((o) => o.p.personality === fPer);
         if (fPho) list = list.filter((o) => !!o.p.avatar_url);
-        advActive = !isNaN(aMin) || !isNaN(aMax) || fInt || fLng || fSty || fGen || fOri || fRel || fFit || fDri || fSmo || fDie || fZod || fPer || fPho;
+        if (fIntr) list = list.filter((o) => (o.p.interests || []).includes(fIntr));
+        if (fEdu) list = list.filter((o) => o.p.education_level === fEdu);
+        if (fChi) list = list.filter((o) => o.p.children === fChi);
+        if (fReg) list = list.filter((o) => o.p.religion === fReg);
+        advActive = !isNaN(aMin) || !isNaN(aMax) || fInt || fLng || fSty || fGen || fOri || fRel || fFit || fDri || fSmo || fDie || fZod || fPer || fPho || fIntr || fEdu || fChi || fReg;
       }
       list.sort((x, y) => travSortKey === "trust"
         ? (y.p.trust_score || 0) - (x.p.trust_score || 0)
@@ -4036,7 +4079,7 @@
       }));
     $("travSort").addEventListener("change", (e) => { travSortKey = e.target.value; renderTravelers($("travSearch").value); });
     // Filtres avancés : re-rendu à chaque changement
-    const ADV_FILTER_IDS = ["fAgeMin", "fAgeMax", "fIntent", "fLang", "fStyle", "fGender", "fOrient", "fRel", "fFit", "fDrink", "fSmoke", "fDiet", "fZod", "fPerso", "fPhoto"];
+    const ADV_FILTER_IDS = ["fAgeMin", "fAgeMax", "fIntent", "fLang", "fStyle", "fGender", "fOrient", "fRel", "fFit", "fDrink", "fSmoke", "fDiet", "fZod", "fPerso", "fPhoto", "fInterest", "fEdu", "fChild", "fRelig"];
     ADV_FILTER_IDS.forEach((id) => {
       const el = $(id); if (el) el.addEventListener("input", () => renderTravelers($("travSearch").value));
     });
@@ -5886,7 +5929,7 @@
       if (typeof updateGoldTile === "function") updateGoldTile();
       const det = $("advFilters");
       if (det) {
-        ["fAgeMin", "fAgeMax", "fIntent", "fLang", "fStyle", "fGender", "fOrient", "fRel", "fFit", "fDrink", "fSmoke", "fDiet", "fZod", "fPerso", "fPhoto", "fReset"].forEach((id) => { const el = $(id); if (el) el.disabled = locked; });
+        ["fAgeMin", "fAgeMax", "fIntent", "fLang", "fStyle", "fGender", "fOrient", "fRel", "fFit", "fDrink", "fSmoke", "fDiet", "fZod", "fPerso", "fPhoto", "fInterest", "fEdu", "fChild", "fRelig", "fReset"].forEach((id) => { const el = $(id); if (el) el.disabled = locked; });
         const sum = det.querySelector("summary");
         if (sum) sum.innerHTML = locked ? "🔒 Filtres avancés réservés à Gold 👑" : "🔎 Filtres avancés";
         det.style.opacity = locked ? ".6" : "1";
