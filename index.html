@@ -2160,6 +2160,19 @@
       <div class="tab-panel hidden" data-panel="lieux">
         <h1 data-i18n="places.title">Lieux sûrs</h1>
 
+        <details class="card spot-card" id="spotCard">
+          <summary><span data-i18n="spot.title">☀️ Mon spot du jour</span><span class="sp-right"><span class="sp-sum" id="spotSummary"></span><span class="sp-chev">▸</span></span></summary>
+          <p class="muted" style="font-size:.8rem;margin:.5rem 0" data-i18n="spot.sub">Dis où tu traînes aujourd'hui — visible 24 h, façon story.</p>
+          <div id="spotCurrent" style="display:none;margin-bottom:.5rem"></div>
+          <div class="spot-emoji-pick" id="spotEmojiPick"></div>
+          <div class="spot-compose">
+            <input id="spotInput" type="text" maxlength="60" placeholder="Ex : Café cosy à Lisbonne ☕" data-i18n-ph="spot.ph" />
+            <button class="btn-primary" id="spotSave" data-i18n="spot.save">Publier</button>
+          </div>
+          <div style="text-align:right;margin-top:.4rem"><a id="spotClear" style="cursor:pointer;display:none;color:var(--accent);font-weight:600;font-size:.82rem" data-i18n="spot.clear">Effacer</a></div>
+          <div class="msg" id="spotMsg" style="text-align:center"></div>
+        </details>
+
         <p class="muted" style="margin-top:0">Les meilleurs spots pour se retrouver ☕ Fais un check-in pour grimper au classement 🏆</p>
         <div class="search" style="margin-top:.2rem"><span class="ico">🔍</span><input id="cafeSearch" type="text" placeholder="Rechercher un lieu ou une ville…" /></div>
         <!-- Filtres + tris en tuiles colorées (dans la DA) -->
@@ -2495,18 +2508,6 @@
           <button class="btn-accent" id="shareParcoursBtn" style="padding:.4rem .8rem;font-size:.8rem;white-space:nowrap;flex-shrink:0">📤 Partager</button>
         </div>
 
-        <details class="card spot-card" id="spotCard">
-          <summary><span data-i18n="spot.title">☀️ Mon spot du jour</span><span class="sp-right"><span class="sp-sum" id="spotSummary"></span><span class="sp-chev">▸</span></span></summary>
-          <p class="muted" style="font-size:.8rem;margin:.5rem 0" data-i18n="spot.sub">Dis où tu traînes aujourd'hui — visible 24 h, façon story.</p>
-          <div id="spotCurrent" style="display:none;margin-bottom:.5rem"></div>
-          <div class="spot-emoji-pick" id="spotEmojiPick"></div>
-          <div class="spot-compose">
-            <input id="spotInput" type="text" maxlength="60" placeholder="Ex : Café cosy à Lisbonne ☕" data-i18n-ph="spot.ph" />
-            <button class="btn-primary" id="spotSave" data-i18n="spot.save">Publier</button>
-          </div>
-          <div style="text-align:right;margin-top:.4rem"><a id="spotClear" style="cursor:pointer;display:none;color:var(--accent);font-weight:600;font-size:.82rem" data-i18n="spot.clear">Effacer</a></div>
-          <div class="msg" id="spotMsg" style="text-align:center"></div>
-        </details>
 
         <div class="card" id="bffCard" style="display:none"></div>
 
@@ -2894,16 +2895,17 @@
           <div class="card" id="detailCodeBox" style="display:none">
             <label>Code du lieu partenaire 🔒</label>
             <input id="detailCode" placeholder="Demande-le sur place" />
-            <p class="muted" style="font-size:.78rem;margin-bottom:0">Cette quête se valide avec le code affiché chez le partenaire (anti-triche).</p>
+            <p class="muted" style="font-size:.78rem;margin-bottom:0">Cette quête se valide avec le code affiché chez le partenaire.</p>
           </div>
 
           <button class="btn-primary btn-block" id="detailJoinBtn">➕ Rejoindre la quête</button>
           <button class="btn-accent btn-block" id="detailCompleteBtn" style="margin-top:.5rem">✅ Marquer comme accompli</button>
           <button class="btn-primary btn-block" id="detailGroupBtn" style="margin-top:.5rem;display:none">👥 Valider avec un Mate (+ bonus XP)</button>
-          <button class="act-tile act-teal" id="detailSuggestBtn" style="margin-top:.6rem">
-            <span class="ic">🤝</span><span class="lbl">Proposer à un Mate</span><span class="arr">›</span></button>
-          <button class="act-tile act-map" id="detailMapBtn" style="margin-top:.5rem">
-            <span class="ic">📍</span><span class="lbl">Voir sur la carte</span><span class="arr">›</span></button>
+          <!-- Actions secondaires compactes (au lieu de grosses tuiles) -->
+          <div class="row" style="margin-top:.6rem">
+            <button class="btn-ghost" id="detailSuggestBtn">🤝 Proposer à un Mate</button>
+            <button class="btn-ghost" id="detailMapBtn">📍 Voir sur la carte</button>
+          </div>
           <div class="msg" id="detailMsg" style="text-align:center"></div>
         </div>
 
