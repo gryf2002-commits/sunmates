@@ -920,6 +920,7 @@
     .lb-me { border: 1.5px solid var(--accent); background: var(--accent-soft); }
     .lb-you { font-size: .62rem; font-weight: 800; background: var(--accent); color: #fff; padding: .04rem .35rem; border-radius: 999px; vertical-align: middle; }
     .lb-tip { margin-top: .6rem; text-align: center; font-size: .82rem; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 12px; padding: .6rem .8rem; }
+    .lb-optin { background: var(--cream); border: 1px solid var(--line); border-radius: 14px; padding: .9rem; margin-bottom: .8rem; text-align: center; }
     /* Avis sur les lieux */
     .rate-chip { display: inline-flex; align-items: center; gap: .15rem; font-size: .76rem; font-weight: 800; color: #B5740E; background: rgba(255,177,60,.18); padding: .05rem .4rem; border-radius: 999px; white-space: nowrap; }
     .rate-chip.empty { color: var(--muted); background: var(--cream); font-weight: 600; }
@@ -3223,7 +3224,8 @@
     async function ensureProfile(user) {
       const { data } = await db.from("profiles").select("id").eq("id", user.id).maybeSingle();
       if (!data) {
-        await db.from("profiles").insert({ id: user.id, username: user.email.split("@")[0] });
+        // Nouveau compte = profil PRIVÉ par défaut (n'apparaît pas dans le classement tant qu'il n'opte pas).
+        await db.from("profiles").insert({ id: user.id, username: user.email.split("@")[0], is_public: false });
       }
     }
 
@@ -4235,7 +4237,14 @@
       const rows = data || [];
       const unit = ({ xp: "XP", checkins: "check-ins", trust: "pts", badges: "🏅" })[lbMetric] || "";
       const inTop = rows.some((r) => r.id === myUserId);
-      box.innerHTML = rows.length ? rows.map((r, i) => {
+      // Profil privé : on n'apparaît pas. Opt-in clair (avec avertissement).
+      const isPrivate = !!(myProfile && myProfile.is_public === false);
+      const optIn = isPrivate ? `<div class="lb-optin">
+          <b>🔒 Tu es en mode privé</b>
+          <div style="font-size:.82rem;margin:.2rem 0 .5rem">Tu n'apparais pas dans le classement. En participant, ton <b>pseudo et ta ville</b> deviennent visibles et les autres pourront te <b>rechercher</b>.</div>
+          <button class="btn-primary btn-block" id="lbJoinBtn">🏆 Participer au classement</button>
+        </div>` : "";
+      box.innerHTML = optIn + (rows.length ? rows.map((r, i) => {
         const me = r.id === myUserId;
         const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
         return `<div class="lb-row${me ? " lb-me" : ""}">
@@ -4244,9 +4253,17 @@
           <div class="lb-info"><div class="lb-name">${escapeHtml(r.username || "Voyageur")}${r.is_verified ? ' <span class="badge ok" style="padding:.02rem .3rem;font-size:.62rem">✓</span>' : ""}${me ? ' <span class="lb-you">toi</span>' : ""}</div><div class="lb-city muted" style="font-size:.76rem">${escapeHtml(r.city || "")}</div></div>
           <div class="lb-val">${r.value}<span> ${unit}</span></div>
         </div>`;
-      }).join("") : '<p class="muted">Personne au classement pour l\'instant — sois le premier 🌟</p>';
+      }).join("") : '<p class="muted">Personne au classement pour l\'instant — sois le premier 🌟</p>');
+      // Bouton « participer » (sort du mode privé)
+      { const jb = $("lbJoinBtn"); if (jb) jb.addEventListener("click", async () => {
+        if (myProfile) myProfile.is_public = true;
+        const pub = $("publicToggle"); if (pub) pub.checked = true;
+        const { error } = await db.from("profiles").update({ is_public: true }).eq("id", myUserId);
+        if (error) toast("⚠️", "Erreur : " + escapeHtml(error.message));
+        else { toast("🏆", "Tu participes au classement !"); renderLeaderboard(); }
+      }); }
       // Valeur solo : si tu n'es pas (encore) dans le top affiché, on t'encourage.
-      if (rows.length && !inTop) {
+      if (!isPrivate && rows.length && !inTop) {
         const tip = ({ xp: "Accomplis des quêtes pour gagner de l'XP", checkins: "Fais des check-ins dans des lieux sûrs", trust: "Vérifie-toi et tisse des liens", badges: "Débloque des badges" })[lbMetric] || "Joue pour grimper";
         box.innerHTML += `<div class="lb-tip">🚀 Tu n'es pas encore dans le top 30. ${tip} pour grimper !</div>`;
       }
