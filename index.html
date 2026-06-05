@@ -1020,6 +1020,8 @@
     .prof-badges { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin-top: .8rem; cursor: pointer; }
     .prof-badges .pb-badge { width: 30px; height: 30px; border-radius: 9px; background: var(--accent-soft); display: grid; place-items: center; font-size: 16px; box-shadow: var(--shadow-sm); }
     .prof-badges .pb-more { font-size: .76rem; font-weight: 800; color: var(--accent); }
+    .prof-badges .pb-lbl { font-size: .78rem; font-weight: 700; color: var(--muted); }
+    .prof-badges .pb-edit { margin-left: auto; font-size: .76rem; font-weight: 700; color: var(--accent); }
     /* Mon parcours */
     .parcours-today { font-size: .88rem; margin-bottom: .7rem; }
     .parcours-stats { display: flex; gap: .5rem; margin-bottom: .7rem; }
@@ -4872,13 +4874,16 @@
           <p style="margin:.2rem 0">Plus d'XP = tu grimpes dans le <b>Classement</b> 🏆</p></div>`);
       }
 
-      // Rangée de mes badges sur la carte profil (motivant, visible hors onglet Jeux)
+      // Rangée des badges ÉPINGLÉS sur la carte profil (3 max, choisis dans l'onglet Badges)
       const pb = $("profileBadges");
       if (pb) {
         if (myBadges.length) {
+          const pins = loadPinnedBadges();
+          let shown = myBadges.filter((b) => pins.includes(b.badge_key));
+          if (!shown.length) shown = myBadges.slice(0, 3); // par défaut, les 3 premiers
           pb.style.display = "flex";
-          pb.innerHTML = myBadges.slice(0, 8).map((b) => `<span class="pb-badge" title="${escapeHtml(b.name || '')}">${b.emoji || "🏅"}</span>`).join("")
-            + (myBadges.length > 8 ? `<span class="pb-more">+${myBadges.length - 8}</span>` : "");
+          pb.innerHTML = '<span class="pb-lbl">Mes badges :</span>' + shown.slice(0, 3).map((b) => `<span class="pb-badge" title="${escapeHtml(b.name || '')}">${b.emoji || "🏅"}</span>`).join("")
+            + '<span class="pb-edit">choisir ›</span>';
           pb.onclick = () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); };
         } else { pb.style.display = "none"; }
       }
@@ -5221,6 +5226,19 @@
       const e = $(id);
       if (e) { e.style.cursor = "pointer"; e.title = "En savoir plus sur la vérification"; e.addEventListener("click", showVerifInfo); }
     });
+    // Badges épinglés sur le profil (3 max), stockés sur l'appareil.
+    function loadPinnedBadges() { try { return JSON.parse(localStorage.getItem("sm_pinned_badges") || "[]"); } catch (e) { return []; } }
+    function savePinnedBadges(a) { try { localStorage.setItem("sm_pinned_badges", JSON.stringify(a.slice(0, 3))); } catch (e) {} }
+    function togglePinBadge(key) {
+      let a = loadPinnedBadges();
+      if (a.includes(key)) a = a.filter((k) => k !== key);
+      else { if (a.length >= 3) { toast("✋", "3 badges max sur ton profil — retires-en un d'abord."); return; } a.push(key); }
+      savePinnedBadges(a);
+      if (typeof renderJeux === "function") renderJeux(); // met à jour la rangée du profil
+      toast("📌", "Badges du profil mis à jour");
+    }
+    document.addEventListener("click", (e) => { const b = e.target.closest("#pinBadgeBtn"); if (b) { togglePinBadge(b.dataset.badge); closePicker(); } });
+
     // Détail d'un badge : date d'obtention + quête liée
     function showBadgeInfo(key) {
       const def = allBadgeDefs.find((b) => b.key === key) || {};
@@ -5232,11 +5250,14 @@
         const d = earned.earned_at
           ? new Date(earned.earned_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
           : "—";
+        const pinned = loadPinnedBadges().includes(key);
         html = `<div style="text-align:center;padding:.4rem 0">
             <div style="font-size:3.2rem">${earned.emoji || def.emoji || "🏅"}</div>
             <h3 style="margin:.3rem 0">${escapeHtml(earned.name || def.name || "Badge")}</h3>
             <p class="muted" style="margin:.2rem 0">Débloqué le <b>${d}</b></p>
-            ${def.description ? `<p class="muted" style="margin:.2rem 0">${escapeHtml(def.description)}</p>` : (quest ? `<p class="muted" style="margin:.2rem 0">Via la quête « ${escapeHtml(quest.title)} »</p>` : "")}</div>`;
+            ${def.description ? `<p class="muted" style="margin:.2rem 0">${escapeHtml(def.description)}</p>` : (quest ? `<p class="muted" style="margin:.2rem 0">Via la quête « ${escapeHtml(quest.title)} »</p>` : "")}
+            <button class="btn-${pinned ? "ghost" : "accent"} btn-block" id="pinBadgeBtn" data-badge="${escapeHtml(key)}" style="margin-top:.6rem">${pinned ? "📌 Retirer de mon profil" : "📌 Afficher sur mon profil"}</button>
+            <div class="muted" style="font-size:.74rem;margin-top:.3rem">3 badges max sur ton profil</div></div>`;
       } else if (def.is_secret && !isAdmin) {
         // Badge secret : on garde le mystère (façon jeu vidéo).
         html = `<div style="text-align:center;padding:.4rem 0">
