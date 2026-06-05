@@ -883,6 +883,10 @@
       clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
       display: grid; place-items: center; font-size: 26px; color: #fff; box-shadow: var(--shadow-sm); }
     .bitem.locked .hex { background: #e9e4e4; color: #bdb6b6; box-shadow: none; }
+    /* Badge secret (non débloqué, non-admin) : look « mystère » façon jeu vidéo */
+    .bitem.secret .hex { background: linear-gradient(135deg,#3a3450,#241f33); color: #8b84a3; box-shadow: none; }
+    body.theme-dusk .bitem.secret .hex { background: linear-gradient(135deg,#2a2440,#161226); }
+    .bitem.secret .bname { color: var(--muted); font-style: italic; }
     .bname { font-size: .72rem; font-weight: 700; color: var(--ink); line-height: 1.15; }
     .bprog { font-size: .68rem; color: var(--muted); }
     .bitem.locked .bname { color: var(--muted); }
@@ -4266,6 +4270,7 @@
     let myQuestStatus = {};      // quest_key -> 'joined' | 'completed'
     let myBadgeKeys = new Set(); // badges débloqués (clés)
     let myBadges = [];           // badges débloqués (détails : nom, emoji, date)
+    let allBadgeDefs = [];       // catalogue complet (publics + secrets) depuis badges_catalog
     let _badgeKeysInit = false;  // false au tout 1er chargement (évite de fêter les badges déjà acquis)
     let myCoupons = [];          // coupons gagnés
     let mySuggestions = [];      // défis reçus (en attente)
@@ -4284,13 +4289,15 @@
       if (!myUserId) return;
       skelFirst("badgeGrid", skelCards(4));
       skelFirst("couponList", skelRows(2));
-      const [qs, uq, ub, uc, sg] = await Promise.all([
+      const [qs, uq, ub, uc, sg, bc] = await Promise.all([
         db.from("quests").select("*").order("sort_order"),
         db.from("user_quests").select("quest_key,status").eq("user_id", myUserId),
         db.from("user_badges").select("badge_key,name,emoji,earned_at").eq("user_id", myUserId),
         db.from("user_coupons").select("*").eq("user_id", myUserId).order("earned_at", { ascending: false }),
         db.from("quest_suggestions").select("*").eq("to_user", myUserId).eq("status", "pending").order("created_at", { ascending: false }),
+        db.from("badges_catalog").select("*").order("sort_order"),
       ]);
+      allBadgeDefs = (bc && bc.data) || []; // catalogue (publics + secrets) ; vide si migration pas lancée
       allQuests = qs.data || [];
       myQuestStatus = {}; (uq.data || []).forEach((r) => { myQuestStatus[r.quest_key] = r.status; });
       myBadges = ub.data || [];
@@ -4390,16 +4397,26 @@
       document.querySelectorAll("[data-qkey]").forEach((el) =>
         el.addEventListener("click", () => openDetail(questByKey(el.dataset.qkey))));
 
-      // Badges : tous les badges définis (uniques), verrouillés sauf si gagnés
-      const defs = []; const seen = new Set();
-      allQuests.forEach((q) => { if (q.badge_key && !seen.has(q.badge_key)) { seen.add(q.badge_key); defs.push({ key: q.badge_key, name: q.badge_name, emoji: q.badge_emoji }); } });
+      // Badges : catalogue (publics + secrets). Repli sur les badges des quêtes si le
+      // catalogue n'est pas encore chargé (migration session 18 pas lancée).
+      let defs = allBadgeDefs.slice();
+      if (!defs.length) {
+        const seen = new Set();
+        allQuests.forEach((q) => { if (q.badge_key && !seen.has(q.badge_key)) { seen.add(q.badge_key); defs.push({ key: q.badge_key, name: q.badge_name, emoji: q.badge_emoji, is_secret: false }); } });
+      }
+      const isAdmin = !!(myProfile && myProfile.is_admin);
       const earned = defs.filter((d) => myBadgeKeys.has(d.key)).length;
       $("badgeGrid").innerHTML = defs.map((b) => {
         const done = myBadgeKeys.has(b.key);
-        return `<div class="bitem ${done ? "" : "locked"}" data-badge="${escapeHtml(b.key)}" style="cursor:pointer">
-          <div class="hex">${b.emoji || "🏅"}</div>
-          <div class="bname">${escapeHtml(b.name || "")}</div>
-          <div class="bprog">${done ? "✅ débloqué" : "🔒 à débloquer"}</div>
+        // Badge secret non débloqué : masqué au public (mystère). L'admin voit tout.
+        const hideSecret = b.is_secret && !done && !isAdmin;
+        const emoji = hideSecret ? "❓" : (b.emoji || "🏅");
+        const name = hideSecret ? "Badge secret" : (b.name || "");
+        const prog = done ? "✅ débloqué" : (hideSecret ? "🔒 secret" : "🔒 à débloquer");
+        return `<div class="bitem ${done ? "" : "locked"}${hideSecret ? " secret" : ""}" data-badge="${escapeHtml(b.key)}" style="cursor:pointer">
+          <div class="hex">${emoji}</div>
+          <div class="bname">${escapeHtml(name)}</div>
+          <div class="bprog">${prog}</div>
         </div>`;
       }).join("");
       $("badgeGrid").querySelectorAll("[data-badge]").forEach((el) => el.addEventListener("click", () => showBadgeInfo(el.dataset.badge)));
@@ -4619,25 +4636,36 @@
     });
     // Détail d'un badge : date d'obtention + quête liée
     function showBadgeInfo(key) {
+      const def = allBadgeDefs.find((b) => b.key === key) || {};
       const quest = allQuests.find((q) => q.badge_key === key);
       const earned = myBadges.find((b) => b.badge_key === key);
+      const isAdmin = !!(myProfile && myProfile.is_admin);
       let html;
       if (earned) {
         const d = earned.earned_at
           ? new Date(earned.earned_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
           : "—";
         html = `<div style="text-align:center;padding:.4rem 0">
-            <div style="font-size:3.2rem">${earned.emoji || "🏅"}</div>
-            <h3 style="margin:.3rem 0">${escapeHtml(earned.name || "Badge")}</h3>
+            <div style="font-size:3.2rem">${earned.emoji || def.emoji || "🏅"}</div>
+            <h3 style="margin:.3rem 0">${escapeHtml(earned.name || def.name || "Badge")}</h3>
             <p class="muted" style="margin:.2rem 0">Débloqué le <b>${d}</b></p>
-            ${quest ? `<p class="muted" style="margin:.2rem 0">Via la quête « ${escapeHtml(quest.title)} »${quest.city ? " · " + escapeHtml(quest.city) : ""}</p>` : ""}
-            <p class="muted" style="margin:.2rem 0">En solo ou avec tes Mates 🤝</p></div>`;
-      } else {
+            ${def.description ? `<p class="muted" style="margin:.2rem 0">${escapeHtml(def.description)}</p>` : (quest ? `<p class="muted" style="margin:.2rem 0">Via la quête « ${escapeHtml(quest.title)} »</p>` : "")}</div>`;
+      } else if (def.is_secret && !isAdmin) {
+        // Badge secret : on garde le mystère (façon jeu vidéo).
         html = `<div style="text-align:center;padding:.4rem 0">
-            <div style="font-size:3.2rem;filter:grayscale(1);opacity:.55">${(quest && quest.badge_emoji) || "🏅"}</div>
-            <h3 style="margin:.3rem 0">${escapeHtml((quest && quest.badge_name) || "Badge")}</h3>
+            <div style="font-size:3.2rem">❓</div>
+            <h3 style="margin:.3rem 0">Badge secret</h3>
+            <p class="muted">🔒 À toi de le découvrir…</p>
+            ${def.secret_hint ? `<p class="muted" style="font-style:italic">Indice : ${escapeHtml(def.secret_hint)}</p>` : ""}</div>`;
+      } else {
+        // Badge public verrouillé — OU badge secret vu par l'ADMIN (condition révélée).
+        const cond = def.unlock_condition || (quest ? ("Accomplis « " + quest.title + " »") : "");
+        html = `<div style="text-align:center;padding:.4rem 0">
+            <div style="font-size:3.2rem;filter:grayscale(1);opacity:.55">${def.emoji || (quest && quest.badge_emoji) || "🏅"}</div>
+            <h3 style="margin:.3rem 0">${escapeHtml(def.name || (quest && quest.badge_name) || "Badge")}${def.is_secret ? ' <span class="badge no" style="font-size:.6rem">SECRET</span>' : ""}</h3>
             <p class="muted">🔒 Pas encore débloqué.</p>
-            ${quest ? `<p class="muted">Accomplis « ${escapeHtml(quest.title)} » pour l'obtenir.</p>` : ""}</div>`;
+            ${def.description ? `<p class="muted">${escapeHtml(def.description)}</p>` : ""}
+            ${isAdmin && cond ? `<p class="muted" style="margin-top:.4rem"><b>🛡️ Admin — condition :</b> ${escapeHtml(cond)}</p>` : ""}</div>`;
       }
       showInfo("Badge", html);
     }
