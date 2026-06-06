@@ -3426,6 +3426,13 @@
       }
     }
 
+    // Extrait un message lisible d'une erreur Supabase (les AuthError ont des props non énumérables → {} sinon).
+    function _authErr(e) {
+      if (!e) return "inconnue";
+      const m = e.message || e.error_description || e.msg || e.code || e.name || (e.status ? "HTTP " + e.status : "");
+      if (m) return m;
+      try { return JSON.stringify(e, Object.getOwnPropertyNames(e)); } catch (_) { return String(e); }
+    }
     async function submitAuth() {
       const email = $("authEmail").value.trim();
       const password = $("authPassword").value;
@@ -3449,8 +3456,7 @@
                 const { error: rerr } = await db.auth.resend({ type: "signup", email, options: { emailRedirectTo: location.origin + location.pathname } });
                 if (rerr) {
                   console.warn("[SunMates] resend error:", rerr);
-                  const detail = rerr.message || rerr.error_description || rerr.code || ("statut " + (rerr.status || "?"));
-                  msg.style.color = "var(--danger)"; msg.textContent = "Envoi impossible : " + detail + " (réessaie dans 1 min)";
+                  msg.style.color = "var(--danger)"; msg.textContent = "Envoi impossible : " + _authErr(rerr);
                   reset();
                 } else { msg.style.color = "var(--ok)"; msg.textContent = "📧 Mail de confirmation renvoyé ! Vérifie ta boîte (et les spams)."; }
               } catch (e) {
@@ -3459,7 +3465,7 @@
                 reset();
               }
             });
-          } else { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; }
+          } else { console.warn("[SunMates] auth error:", error); msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + _authErr(error); }
         }
         else if (authMode === "signup") {
           // Si « Confirm email » est activé côté Supabase, signUp ne crée pas de session :
