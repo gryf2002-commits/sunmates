@@ -3577,6 +3577,14 @@
       const n = st.count || 1;
       chip.textContent = "🔥 " + n + (n > 1 ? " jours" : " jour");
       show(chip, true);
+      // Palier de série franchi aujourd'hui → on fête (une seule fois par palier).
+      const MILESTONES = [3, 7, 14, 30, 60, 100];
+      if (st._celebrated !== n && MILESTONES.includes(n)) {
+        st._celebrated = n;
+        try { localStorage.setItem("sm_streak_" + (myUserId || "x"), JSON.stringify(st)); } catch (e) {}
+        if (typeof toast === "function") toast("🔥", n + " jours de série — tu es en feu ! Continue 🌟");
+        if (typeof celebrate === "function") celebrate();
+      }
     }
     { const sc = $("homeStreak"); if (sc) sc.addEventListener("click", () => {
       const key = "sm_streak_" + (myUserId || "x");
@@ -3653,10 +3661,14 @@
           <button class="btn-ghost btn-block" id="ntClear" style="margin-top:.7rem">Modifier / annuler</button>`;
         const c = $("ntClear"); if (c) c.addEventListener("click", () => { try { localStorage.removeItem("sm_next_trip"); } catch (e) {} renderNextTrip(); });
       } else {
+        const wl = (typeof loadWishlist === "function") ? loadWishlist() : [];
+        const picks = wl.length ? `<div class="wish-wrap" style="margin:.5rem 0 .2rem">${wl.slice(0, 8).map((d) => `<button type="button" class="wish-chip ntpick" data-ntpick="${escapeHtml(d)}" style="cursor:pointer">${escapeHtml(d)}</button>`).join("")}</div>` : "";
         box.innerHTML = `<div class="nt-form"><div class="muted" style="font-size:.84rem;margin-bottom:.2rem">Où pars-tu ensuite ? On compte les jours avec toi 🧳</div>
+            ${picks}
             <input id="ntDest" type="text" placeholder="Destination (ex : Lisbonne 🇵🇹)" maxlength="40" />
             <input id="ntDate" type="date" />
             <button class="btn-primary btn-block" id="ntSave" style="margin-top:.5rem">✈️ Planifier mon voyage</button></div>`;
+        box.querySelectorAll("[data-ntpick]").forEach((b) => b.addEventListener("click", () => { const i = $("ntDest"); if (i) { i.value = b.dataset.ntpick; i.focus(); } }));
         const s = $("ntSave"); if (s) s.addEventListener("click", () => {
           const dest = ($("ntDest").value || "").trim(), date = $("ntDate").value;
           if (!dest || !date) { toast("✈️", "Indique une destination et une date 🙂"); return; }
