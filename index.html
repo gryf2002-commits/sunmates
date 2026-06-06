@@ -978,6 +978,28 @@
       font-size: 18px; background: var(--accent-soft, rgba(255,170,90,.16)); }
     .feat-name { font-weight: 700; font-size: .85rem; }
     .feat-desc { font-size: .78rem; color: var(--muted); margin-top: .12rem; line-height: 1.35; }
+    /* Titre de profil (boutique XP) */
+    .profile-title { font-size: .78rem; font-weight: 700; color: #B5740E; margin-top: .12rem; }
+    body.theme-dusk .profile-title { color: #ffce8a; }
+    /* Boutique XP */
+    .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+    .shop-item { display: flex; flex-direction: column; align-items: center; gap: .3rem; text-align: center;
+      padding: .8rem .5rem; border: 1.5px solid var(--line); border-radius: 14px; background: var(--card);
+      cursor: pointer; transition: border-color .15s, transform .1s; }
+    .shop-item:active { transform: scale(.97); }
+    .shop-item.on { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,126,95,.18); }
+    .shop-item.locked { opacity: .55; }
+    .shop-ic { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 22px;
+      background: var(--accent-soft, rgba(255,170,90,.16)); }
+    .shop-name { font-size: .82rem; font-weight: 700; line-height: 1.2; }
+    .shop-meta { font-size: .72rem; color: var(--muted); }
+    .shop-item.on .shop-meta { color: var(--accent); font-weight: 700; }
+    /* Cadres d'avatar (appliqués à .avatar) */
+    .avatar.frame-gold { box-shadow: 0 0 0 3px #ffce6b, 0 0 10px rgba(255,180,60,.45); }
+    .avatar.frame-coral { box-shadow: 0 0 0 3px #ff8a6b, 0 0 10px rgba(255,120,90,.4); }
+    .avatar.frame-sunset { box-shadow: 0 0 0 3px #ffce6b, 0 0 0 6px #ff7e5f; }
+    .avatar.frame-aurora { box-shadow: 0 0 0 3px #7ee8c9, 0 0 0 6px #8a7bff; }
+    .shop-frame-prev { background: var(--accent-grad); color: #fff; }
     .bitem { text-align: center; }
     .hex { width: 62px; height: 62px; margin: 0 auto .4rem; background: var(--accent-grad);
       clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
@@ -2516,6 +2538,7 @@
             <div class="avatar" id="profileAvatar">😎</div>
             <div class="info">
               <div class="name"><span id="profileName">Voyageur</span> <span id="verifBadge" class="badge no">Non vérifié</span></div>
+              <div class="profile-title" id="profileTitle"></div>
               <div class="meta" id="profileCity"></div>
             </div>
           </div>
@@ -2882,6 +2905,7 @@
             <div class="cat-tile" data-jeuxnav="badges"><div class="cic c-gold">🏅</div><div class="clbl">Badges</div></div>
             <div class="cat-tile" data-jeuxnav="coupons"><div class="cic c-green">🎟️</div><div class="clbl">Coupons</div></div>
             <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue">🏆</div><div class="clbl">Classement</div></div>
+            <div class="cat-tile" data-jeuxnav="shop"><div class="cic c-pink">🛍️</div><div class="clbl">Boutique</div></div>
           </div>
           <div class="gold-only-note">👑 Gratuit : 1 quête + 1 activité par jour. Gold : illimité + <b>coupons exclusifs</b> bien plus avantageux.</div>
 
@@ -2988,6 +3012,20 @@
             <button data-lb="badges">🏅 Badges</button>
           </div>
           <div id="leaderboardList"><p class="muted">Chargement…</p></div>
+        </div>
+
+        <!-- Vue Boutique XP (cosmétiques débloqués par paliers d'XP, 100% local) -->
+        <div id="jeuxShop" class="jeux-view hidden">
+          <button class="backbtn" data-back>‹ Retour</button>
+          <h1>🛍️ Boutique XP</h1>
+          <p class="muted" style="margin-top:0">Ton XP débloque des <b>cosmétiques</b> pour personnaliser ton profil. Rien à payer : tu débloques en jouant. Ton XP n'est <b>jamais dépensé</b>, il sert de palier.</p>
+          <div class="xp-banner" id="shopXpBanner"></div>
+          <div class="section-head"><h3 style="margin:.6rem 0 .2rem">🏷️ Titres de profil</h3></div>
+          <p class="muted" style="font-size:.78rem;margin:.1rem 0 .5rem">Affiché sous ton pseudo. Un seul actif.</p>
+          <div id="shopTitles" class="shop-grid"></div>
+          <div class="section-head"><h3 style="margin:1rem 0 .2rem">🖼️ Cadres d'avatar</h3></div>
+          <p class="muted" style="font-size:.78rem;margin:.1rem 0 .5rem">Encadre ta photo de profil.</p>
+          <div id="shopFrames" class="shop-grid"></div>
         </div>
 
       </div>
@@ -3517,6 +3555,7 @@
       { const pc = $("profileCity"); if (pc) pc.textContent = [data.city, data.hometown].filter(Boolean)[0] ? ("📍 " + [data.city, data.hometown].filter(Boolean)[0]) : ""; }
       setAvatarEl($("profileAvatar"), data.avatar_url, uname[0] || "😎");
       setAvatarEl($("pAvatarPreview"), data.avatar_url, uname[0] || "😎");
+      if (typeof applyProfileCosmetics === "function") applyProfileCosmetics(); // titre + cadre boutique XP
       // Accueil : « Bonjour {pseudo} ». Seul le pseudo reçoit le dégradé ; « Bonjour » reste en texte normal.
       $("homeHello").innerHTML = 'Bonjour <span class="hello-name">' + escapeHtml(uname) + "</span>";
       const badge = $("verifBadge");
@@ -5224,8 +5263,88 @@
     // Affiche une seule sous-vue de l'onglet Jeux
     function showJeuxView(id) {
       { const sh = $("jeuxSheet"); if (sh) sh.classList.add("hidden"); } // ferme la feuille quêtes/jeux
-      ["jeuxHome", "jeuxDetail", "jeuxBadges", "jeuxCoupons", "jeuxRank"].forEach((v) => show($(v), v === id));
+      ["jeuxHome", "jeuxDetail", "jeuxBadges", "jeuxCoupons", "jeuxRank", "jeuxShop"].forEach((v) => show($(v), v === id));
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ====================== BOUTIQUE XP (cosmétiques par paliers, 100% local) ======================
+    // Aucune migration : l'XP n'est PAS dépensé (anti-triche préservé). Chaque item se débloque
+    // à un palier d'XP atteint. Le choix actif est mémorisé en localStorage par utilisateur.
+    const SHOP_TITLES = [
+      { id: "none", name: "Aucun titre", xp: 0, label: "" },
+      { id: "globe", name: "Globe-trotteur·euse 🌍", xp: 0, label: "🌍 Globe-trotteur·euse" },
+      { id: "explorer", name: "Explorateur·rice 🧭", xp: 50, label: "🧭 Explorateur·rice" },
+      { id: "nomad", name: "Âme nomade 🪶", xp: 120, label: "🪶 Âme nomade" },
+      { id: "adventurer", name: "Aventurier·e 🏔️", xp: 250, label: "🏔️ Aventurier·e" },
+      { id: "legend", name: "Légende du voyage 🌟", xp: 500, label: "🌟 Légende du voyage" },
+      { id: "citizen", name: "Citoyen·ne du monde 👑", xp: 1000, label: "👑 Citoyen·ne du monde" },
+    ];
+    const SHOP_FRAMES = [
+      { id: "none", name: "Classique", xp: 0, cls: "" },
+      { id: "gold", name: "Doré", xp: 100, cls: "frame-gold" },
+      { id: "coral", name: "Corail", xp: 200, cls: "frame-coral" },
+      { id: "sunset", name: "Coucher de soleil", xp: 400, cls: "frame-sunset" },
+      { id: "aurora", name: "Aurore", xp: 800, cls: "frame-aurora" },
+    ];
+    const SHOP_FRAME_CLASSES = SHOP_FRAMES.map((f) => f.cls).filter(Boolean);
+    function myXp() { return (myProfile && myProfile.xp) || 0; }
+    function shopKey() { return "sm_shop_" + (myUserId || "x"); }
+    function getShopState() {
+      let s = {};
+      try { s = JSON.parse(localStorage.getItem(shopKey()) || "{}") || {}; } catch (e) { s = {}; }
+      if (!s.title) s.title = "globe";
+      if (!s.frame) s.frame = "none";
+      return s;
+    }
+    function setShopState(patch) {
+      const s = Object.assign(getShopState(), patch);
+      try { localStorage.setItem(shopKey(), JSON.stringify(s)); } catch (e) {}
+      return s;
+    }
+    function selectShopItem(kind, id) {
+      const list = kind === "title" ? SHOP_TITLES : SHOP_FRAMES;
+      const it = list.find((x) => x.id === id); if (!it) return;
+      if (myXp() < it.xp) { toast("Encore " + (it.xp - myXp()) + " XP pour débloquer « " + it.name + " » ⭐"); return; }
+      setShopState(kind === "title" ? { title: id } : { frame: id });
+      applyProfileCosmetics();
+      renderShop();
+      toast(kind === "title" ? "Titre équipé ✨" : "Cadre équipé ✨");
+    }
+    // Applique le titre + le cadre choisis sur la carte profil (et l'aperçu).
+    function applyProfileCosmetics() {
+      const s = getShopState();
+      const t = SHOP_TITLES.find((x) => x.id === s.title);
+      const el = $("profileTitle");
+      if (el) { el.textContent = (t && t.label) || ""; show(el, !!(t && t.label)); }
+      const f = SHOP_FRAMES.find((x) => x.id === s.frame);
+      ["profileAvatar", "pAvatarPreview"].forEach((aid) => {
+        const av = $(aid); if (!av) return;
+        SHOP_FRAME_CLASSES.forEach((c) => av.classList.remove(c));
+        if (f && f.cls) av.classList.add(f.cls);
+      });
+    }
+    function renderShop() {
+      const xp = myXp();
+      const xb = $("shopXpBanner");
+      if (xb) xb.innerHTML = `<span class="xp-ic">⭐</span><b>${xp}</b><span class="xp-sub">XP disponible</span>`;
+      const state = getShopState();
+      const card = (kind, it, selected) => {
+        const locked = xp < it.xp;
+        const swatch = kind === "title"
+          ? `<div class="shop-ic">${it.id === "none" ? "🚫" : "🏷️"}</div>`
+          : `<div class="shop-ic shop-frame-prev ${it.cls}">🙂</div>`;
+        return `<button class="shop-item${selected ? " on" : ""}${locked ? " locked" : ""}" data-shopkind="${kind}" data-shopid="${escapeHtml(it.id)}"${locked ? " aria-disabled=\"true\"" : ""}>
+          ${swatch}
+          <div class="shop-name">${escapeHtml(it.name)}</div>
+          <div class="shop-meta">${locked ? "🔒 " + it.xp + " XP" : (selected ? "✓ Équipé" : (it.xp === 0 ? "Gratuit" : "Débloqué"))}</div>
+        </button>`;
+      };
+      const tBox = $("shopTitles");
+      if (tBox) tBox.innerHTML = SHOP_TITLES.map((it) => card("title", it, state.title === it.id)).join("");
+      const fBox = $("shopFrames");
+      if (fBox) fBox.innerHTML = SHOP_FRAMES.map((it) => card("frame", it, state.frame === it.id)).join("");
+      document.querySelectorAll("#jeuxShop .shop-item").forEach((b) =>
+        b.addEventListener("click", () => selectShopItem(b.dataset.shopkind, b.dataset.shopid)));
     }
 
     function openDetail(q) {
@@ -7980,6 +8099,7 @@
       if (k === "badges") { showJeuxView("jeuxBadges"); return; }
       if (k === "coupons") { showJeuxView("jeuxCoupons"); return; }
       if (k === "rank") { showJeuxView("jeuxRank"); if (typeof renderLeaderboard === "function") renderLeaderboard(); return; }
+      if (k === "shop") { showJeuxView("jeuxShop"); if (typeof renderShop === "function") renderShop(); return; }
       openJeuxSheet(k); // quests | games -> feuille overlay
     }));
 
