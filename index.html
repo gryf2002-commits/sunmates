@@ -1257,6 +1257,20 @@
       border: 1px solid rgba(201,138,30,.3); border-radius: 999px; padding: .28rem .6rem; cursor: pointer; white-space: nowrap; }
     .streak-chip:active { transform: scale(.96); }
     body.theme-dusk .streak-chip { color: #ffce8a; background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(255,138,61,.12)); border-color: rgba(255,201,60,.28); }
+    /* Bascule Voyage / Maison */
+    .mode-switch { display: flex; background: var(--cream); border: 1px solid var(--line); border-radius: 999px; padding: .22rem; gap: .2rem; margin: .7rem 0; }
+    .mode-switch button { flex: 1; border: 0; background: none; color: var(--muted); font-weight: 800; font-size: .82rem; padding: .52rem; border-radius: 999px; cursor: pointer; transition: color .18s, background .18s; }
+    .mode-switch button.active { background: var(--accent-grad); color: #fff; box-shadow: var(--shadow-sm); }
+    /* Mode Maison */
+    .hm-hero { display: flex; gap: .9rem; align-items: center; background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(122,92,255,.1)); border: 1px solid rgba(201,138,30,.18); }
+    .hm-hero-ic { font-size: 2.2rem; line-height: 1; flex-shrink: 0; }
+    .hm-hero-title { font-weight: 800; font-size: 1.05rem; }
+    .hm-host { display: flex; gap: .8rem; align-items: center; }
+    .hm-host-ic { font-size: 1.8rem; flex-shrink: 0; }
+    .nt-set { display: flex; align-items: center; gap: .7rem; }
+    .nt-ic { font-size: 1.8rem; flex-shrink: 0; }
+    .nt-count { font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1; }
+    .nt-form input { margin-top: .4rem; }
     .search input { border: 1px solid rgba(255,90,77,.10); }
     .tile .thumb { box-shadow: inset 0 -12px 26px rgba(0,0,0,.10); }
 
@@ -2186,8 +2200,14 @@
       <div class="tab-panel" data-panel="accueil">
         <h1 id="homeHello">Bonjour</h1>
         <div class="hello-row">
-          <p class="muted" style="margin:0">Regarde qui traîne dans le coin 👀</p>
+          <p class="muted" id="homeSubtitle" style="margin:0">Regarde qui traîne dans le coin 👀</p>
           <button id="homeStreak" class="streak-chip hidden" title="Ta série de jours sur SunMates"></button>
+        </div>
+
+        <!-- Bascule Voyage / Maison : l'app s'adapte à ta situation -->
+        <div class="mode-switch" id="homeModeSwitch">
+          <button data-mode="travel" class="active">✈️ En voyage</button>
+          <button data-mode="home">🏠 À la maison</button>
         </div>
 
         <div class="search">
@@ -2196,6 +2216,34 @@
         </div>
         <div id="searchResults"></div>
 
+        <!-- ============ MODE MAISON (quand on n'est pas en voyage) ============ -->
+        <div id="homeHomeMode" class="hidden">
+          <div class="card hm-hero">
+            <div class="hm-hero-ic">🏠</div>
+            <div><div class="hm-hero-title" id="hmHomeCity">De retour chez toi</div>
+              <div class="muted" style="font-size:.84rem">Reste connecté·e, prépare ta prochaine aventure et fais découvrir ta ville 🌍</div></div>
+          </div>
+
+          <!-- Planifier le prochain voyage (local) -->
+          <div class="section-head"><h3 style="margin-top:.4rem">Ton prochain voyage ✈️</h3></div>
+          <div class="card" id="nextTripCard"></div>
+
+          <!-- Voyageurs de passage dans ta ville -->
+          <div class="section-head"><h3 style="margin-top:.4rem">De passage chez toi 👋</h3></div>
+          <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Des voyageurs explorent <b id="hmCityName">ta ville</b> en ce moment.</p>
+          <div id="visitorsList"></div>
+
+          <!-- Devenir hôte / ambassadeur -->
+          <div class="card hm-host">
+            <div class="hm-host-ic">🛟</div>
+            <div style="flex:1"><div style="font-weight:800">Deviens hôte SunMates</div>
+              <div class="muted" style="font-size:.82rem">Aide les voyageurs à se sentir en sécurité dans ta ville : conseils, bons spots, café d'accueil.</div></div>
+            <button class="btn-accent" id="hostBtn" style="flex-shrink:0;align-self:center">Je veux aider</button>
+          </div>
+        </div>
+
+        <!-- ============ MODE VOYAGE : carte d'exploration (masquée en mode Maison) ============ -->
+        <div id="homeTravelMap">
         <!-- ===== Carte « tout-en-un » : lieux, Mates, activités, check-ins ===== -->
         <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3><a id="hmFull" style="cursor:pointer">⛶ Plein écran</a></div>
         <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Filtre, puis <b>touche une pastille</b> pour agir 👇</p>
@@ -2233,6 +2281,7 @@
             </div>
           </div>
         </div>
+        </div><!-- /#homeTravelMap -->
 
         <div class="section-head">
           <h3 style="margin-top:.4rem">Ton fil ✨</h3>
@@ -3393,7 +3442,7 @@
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
       if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
       window.scrollTo({ top: 0, behavior: "smooth" });
-      if (target === "accueil" && typeof renderHomeMap === "function") setTimeout(renderHomeMap, 60);
+      if (target === "accueil" && typeof renderHomeMap === "function" && (typeof getHomeMode !== "function" || getHomeMode() !== "home")) setTimeout(renderHomeMap, 60);
       __lastTab = target;
     }
 
@@ -3529,6 +3578,74 @@
         <p style="margin:.3rem 0">Tu ouvres SunMates <b>${n} jour${n > 1 ? "s" : ""} d'affilée</b> ! Reviens chaque jour pour faire grimper ta flamme 🔥</p>
         <p class="muted" style="font-size:.82rem">🏆 Ton record : <b>${best} jour${best > 1 ? "s" : ""}</b></p></div>`);
     }); }
+    // ====================== MODE VOYAGE / MAISON ======================
+    // Quand on n'est pas en vadrouille, l'accueil se transforme : prochain voyage,
+    // voyageurs de passage chez toi, devenir hôte. 100% local, aucune migration.
+    function getHomeMode() { try { return localStorage.getItem("sm_home_mode") || "travel"; } catch (e) { return "travel"; } }
+    function setHomeMode(mode, persist) {
+      mode = (mode === "home") ? "home" : "travel";
+      if (persist !== false) { try { localStorage.setItem("sm_home_mode", mode); } catch (e) {} }
+      const home = mode === "home";
+      show($("homeHomeMode"), home);
+      show($("homeTravelMap"), !home);
+      document.querySelectorAll("#homeModeSwitch button").forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
+      const sub = $("homeSubtitle"); if (sub) sub.textContent = home ? "Reste connecté·e et prépare ta prochaine aventure ✨" : "Regarde qui traîne dans le coin 👀";
+      if (home) {
+        const c = (myProfile && myProfile.city) || "";
+        const cn = $("hmCityName"); if (cn) cn.textContent = c || "ta ville";
+        const hc = $("hmHomeCity"); if (hc) hc.textContent = c ? ("De retour à " + c) : "De retour chez toi";
+        renderNextTrip(); renderVisitors();
+      } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
+    }
+    // Voyageurs de passage dans ma ville (depuis les profils déjà connus)
+    function renderVisitors() {
+      const box = $("visitorsList"); if (!box) return;
+      const myCity = ((myProfile && myProfile.city) || "").trim().toLowerCase();
+      const all = Object.values(travelerMap || {}).filter((p) => p && p.id !== myUserId);
+      let list = myCity ? all.filter((p) => (p.city || "").trim().toLowerCase() === myCity) : [];
+      if (!list.length) list = all.slice(0, 4); // repli : quelques voyageurs pour ne pas laisser vide
+      if (!list.length) { box.innerHTML = '<p class="muted" style="font-size:.85rem">Personne dans le coin pour l\'instant. Reviens bientôt 🌍</p>'; return; }
+      box.innerHTML = list.slice(0, 6).map((p) => `<div class="person hm-visitor" data-visit="${escapeHtml(p.id)}" style="cursor:pointer">
+          ${avatarMarkup(p.username, p.avatar_url)}
+          <div class="info"><div class="name">${escapeHtml(p.username || "Voyageur")}</div>
+            <div class="meta muted" style="font-size:.78rem">${escapeHtml(p.city || "En voyage")}${p.is_verified ? " · ✅" : ""}</div></div>
+          <div class="qarrow">›</div></div>`).join("");
+      box.querySelectorAll("[data-visit]").forEach((el) => el.addEventListener("click", () => {
+        const p = travelerMap[el.dataset.visit]; if (p) { goToTab("connexions"); if (typeof openTravelerProfile === "function") openTravelerProfile(p); }
+      }));
+    }
+    // Prochain voyage : planification locale + compte à rebours motivant
+    function renderNextTrip() {
+      const box = $("nextTripCard"); if (!box) return;
+      let trip = {}; try { trip = JSON.parse(localStorage.getItem("sm_next_trip") || "{}") || {}; } catch (e) {}
+      if (trip.dest && trip.date) {
+        const days = Math.ceil((new Date(trip.date + "T00:00:00").getTime() - Date.now()) / 86400000);
+        const when = days > 0 ? ("J-" + days) : (days === 0 ? "Aujourd'hui !" : "En cours");
+        box.innerHTML = `<div class="nt-set"><div class="nt-ic">🌍</div>
+            <div style="flex:1"><div style="font-weight:800">${escapeHtml(trip.dest)}</div>
+              <div class="muted" style="font-size:.8rem">${new Date(trip.date + "T00:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</div></div>
+            <div class="nt-count">${when}</div></div>
+          <button class="btn-ghost btn-block" id="ntClear" style="margin-top:.7rem">Modifier / annuler</button>`;
+        const c = $("ntClear"); if (c) c.addEventListener("click", () => { try { localStorage.removeItem("sm_next_trip"); } catch (e) {} renderNextTrip(); });
+      } else {
+        box.innerHTML = `<div class="nt-form"><div class="muted" style="font-size:.84rem;margin-bottom:.2rem">Où pars-tu ensuite ? On compte les jours avec toi 🧳</div>
+            <input id="ntDest" type="text" placeholder="Destination (ex : Lisbonne 🇵🇹)" maxlength="40" />
+            <input id="ntDate" type="date" />
+            <button class="btn-primary btn-block" id="ntSave" style="margin-top:.5rem">✈️ Planifier mon voyage</button></div>`;
+        const s = $("ntSave"); if (s) s.addEventListener("click", () => {
+          const dest = ($("ntDest").value || "").trim(), date = $("ntDate").value;
+          if (!dest || !date) { toast("✈️", "Indique une destination et une date 🙂"); return; }
+          try { localStorage.setItem("sm_next_trip", JSON.stringify({ dest, date })); } catch (e) {}
+          renderNextTrip(); if (typeof toast === "function") toast("🧳", "Voyage planifié ! Bons préparatifs ✨");
+        });
+      }
+    }
+    document.querySelectorAll("#homeModeSwitch button").forEach((b) => b.addEventListener("click", () => setHomeMode(b.dataset.mode)));
+    { const hb = $("hostBtn"); if (hb) hb.addEventListener("click", () => showInfo("🛟 Devenir hôte SunMates", `<div style="line-height:1.6;font-size:.9rem">
+        <p style="margin:.2rem 0">En tant qu'<b>hôte</b>, tu aides les voyageurs de passage à se sentir <b>en sécurité</b> dans ta ville :</p>
+        <p style="margin:.2rem 0">☕ partage tes <b>bons spots</b> validés · 🗺️ donne des <b>conseils locaux</b> · 🤝 propose un <b>café d'accueil</b>.</p>
+        <p class="muted" style="font-size:.82rem;margin-top:.5rem">Le programme hôte arrive bientôt — on te préviendra ! En attendant, ton profil complété et tes check-ins font déjà de toi un repère de confiance 🛟</p></div>`)); }
+
     function updateCompletion() {
       let filled = COMPLETION_FIELDS.filter((id) => $(id) && ($(id).value || "").trim()).length;
       if (selInterests.size) filled++;
@@ -3640,6 +3757,7 @@
       // Accueil : « Bonjour {pseudo} ». Seul le pseudo reçoit le dégradé ; « Bonjour » reste en texte normal.
       $("homeHello").innerHTML = 'Bonjour <span class="hello-name">' + escapeHtml(uname) + "</span>";
       if (typeof updateStreak === "function") updateStreak();
+      if (typeof setHomeMode === "function") setHomeMode(getHomeMode(), false); // restaure le mode Voyage/Maison
       const badge = $("verifBadge");
       badge.textContent = data.is_verified ? "✅ Vérifié" : "Non vérifié";
       badge.className = "badge " + (data.is_verified ? "ok" : "no");
@@ -4802,6 +4920,7 @@
       if (typeof updateNotifBadges === "function") updateNotifBadges();
       if (typeof buildHomeFeed === "function") buildHomeFeed();
       if (typeof renderBff === "function") renderBff();
+      if (typeof getHomeMode === "function" && getHomeMode() === "home") renderVisitors(); // voyageurs en ville à jour
     }
 
     // ---- Matchmaking : compatibilité enrichie ----
