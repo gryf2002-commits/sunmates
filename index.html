@@ -6702,11 +6702,19 @@
       "Renseigne-toi sur les arnaques courantes de ta destination avant d'arriver.",
       "Le faux appel SunMates t'aide à quitter poliment une situation inconfortable.",
     ];
+    let detectedCountryName = null; // pays courant détecté par géoloc (déclaré ici pour éviter le TDZ)
     function renderSafetyTip() {
       const el = $("safetyTipText"); if (!el) return;
       const now = new Date();
       const day = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000); // jour de l'année
-      el.textContent = SAFETY_TIPS[day % SAFETY_TIPS.length];
+      let txt = SAFETY_TIPS[day % SAFETY_TIPS.length];
+      // Adapté au pays détecté (si déjà connu via les numéros d'urgence) : on ajoute
+      // le numéro local. PAS de prompt géoloc non sollicité ici.
+      if (detectedCountryName) {
+        const e = EMERGENCY_NUMBERS.find((x) => x.c.toLowerCase() === detectedCountryName.toLowerCase());
+        if (e) txt += ` · 📍 En ${e.c}, urgences : ${e.n}.`;
+      }
+      el.textContent = txt;
     }
     function showSecuView(id) {
       ["secuHome", "secuHelp"].forEach((v) => show($(v), v === id));
@@ -6872,11 +6880,10 @@
       { c: "Turquie", f: "🇹🇷", n: "112", pop: 1 },
       { c: "Émirats (Dubaï)", f: "🇦🇪", n: "999", a: "998" },
     ];
-    let detectedCountryName = null; // pays courant détecté par géoloc (reverse-géocodage)
     function detectCountryForNumbers() {
       const use = (g) => {
         fetch("https://nominatim.openstreetmap.org/reverse?format=json&zoom=3&lat=" + g.lat + "&lon=" + g.lng, { headers: { "Accept-Language": "fr" } })
-          .then((r) => r.json()).then((d) => { const c = d && d.address && d.address.country; if (c) { detectedCountryName = c; const s = $("numbersSearch"); renderNumbers(s ? s.value : ""); } }).catch(() => {});
+          .then((r) => r.json()).then((d) => { const c = d && d.address && d.address.country; if (c) { detectedCountryName = c; const s = $("numbersSearch"); renderNumbers(s ? s.value : ""); if (typeof renderSafetyTip === "function") renderSafetyTip(); } }).catch(() => {});
       };
       if (typeof lastKnownGeo !== "undefined" && lastKnownGeo) use(lastKnownGeo);
       else if (typeof getGeo === "function") getGeo(use, () => {});
