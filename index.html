@@ -1916,6 +1916,13 @@
     .faq-secu details[open] summary { margin-bottom: .4rem; color: var(--accent); }
     .faq-secu p { margin: 0; font-size: .84rem; line-height: 1.55; color: var(--text); }
     /* Numéros d'urgence par pays */
+    /* Fluidité : fondu doux à chaque changement d'onglet / de vue + défilement à inertie */
+    @keyframes viewIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+    .tab-panel:not(.hidden), .mates-view:not(.hidden), .jeux-view:not(.hidden), .secu-view:not(.hidden), .prof-seg:not(.hidden) { animation: viewIn .26s cubic-bezier(.2,.8,.3,1); }
+    @keyframes fadeOnly { from { opacity: 0; } to { opacity: 1; } }
+    .tab-panel[data-panel="accueil"]:not(.hidden) { animation: fadeOnly .26s ease; } /* pas de transform : ne casse pas la carte Leaflet */
+    main { -webkit-overflow-scrolling: touch; }
+    @media (prefers-reduced-motion: reduce) { .tab-panel, .mates-view, .jeux-view, .secu-view, .prof-seg { animation: none !important; } }
     /* Filtres avancés : plus compacts (digestibles) sans retirer de catégories */
     #advFilters label { font-size: .68rem; font-weight: 700; color: var(--muted); margin: .35rem 0 .1rem; }
     #advFilters select, #advFilters input { padding: .38rem .45rem; font-size: .8rem; }
