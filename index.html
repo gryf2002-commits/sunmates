@@ -3164,7 +3164,7 @@
           <button class="backbtn" data-back>‹ Retour</button>
           <h1>Badges 🏅</h1>
           <div class="card">
-            <div class="person" style="border:0;padding:.2rem 0"><div class="qico">🏅</div><div class="info"><div class="name">Collection actuelle</div></div><span class="badge warn">36 / 44</span></div>
+            <div class="person" style="border:0;padding:.2rem 0"><div class="qico">🏅</div><div class="info"><div class="name">Collection actuelle</div></div><span class="badge warn" id="badgeCollCount">—</span></div>
             <div class="person" id="openCouponsFromBadges" style="border:0;padding:.4rem .2rem;cursor:pointer"><div class="qico">🎟️</div><div class="info"><div class="name">Mes coupons</div><div class="meta">Voir mes coupons ›</div></div><div class="qarrow">›</div></div>
           </div>
           <div class="card"><div class="bgrid" id="badgeGrid"></div></div>
@@ -5613,6 +5613,7 @@
       const shown = defs.filter((b) => isAdmin || !b.is_secret || myBadgeKeys.has(b.key));
       const hiddenSecrets = isAdmin ? 0 : defs.filter((b) => b.is_secret && !myBadgeKeys.has(b.key)).length;
       const earned = shown.filter((d) => myBadgeKeys.has(d.key)).length;
+      { const bc = $("badgeCollCount"); if (bc) bc.textContent = earned + " / " + shown.length; } // vrai compteur (fini le 36/44 codé en dur)
       // Formes/couleurs variées (façon collection) : déterministes par clé de badge.
       const SHAPES = ["shape-hex", "shape-circle", "shape-shield", "shape-star"];
       const GRADS = ["grad-sun", "grad-violet", "grad-gold", "grad-teal"];
