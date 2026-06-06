@@ -19,16 +19,17 @@
 -- set email_confirmed_at = null
 -- where email = 'adresse-de-test@example.com';
 
--- ---- 2) Tous les comptes existants (SAUF toi, l'admin) ----
+-- ---- 2) TOUS les comptes existants, TOI COMPRIS (choisi) ----
+-- ⚠️ Toi aussi tu devras reconfirmer ton email à ta prochaine connexion.
 update auth.users
 set email_confirmed_at = null
-where email_confirmed_at is not null
-  and email <> 'maxime.durao@delta-business.school';   -- ← garde TON accès
+where email_confirmed_at is not null;
 
--- ---- 2bis) Variante : TOUT LE MONDE, toi compris (si tu préfères) ----
+-- ---- 2bis) Variante : exclure ton compte admin (si tu changes d'avis) ----
 -- update auth.users
 -- set email_confirmed_at = null
--- where email_confirmed_at is not null;
+-- where email_confirmed_at is not null
+--   and email <> 'maxime.durao@delta-business.school';
 
 -- Vérif : combien de comptes restent "confirmés" ?
 -- select count(*) filter (where email_confirmed_at is not null) as confirmes,

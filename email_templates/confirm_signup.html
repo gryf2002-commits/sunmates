@@ -1,0 +1,65 @@
+<!--
+  SunMates — Email "Confirm signup" (à coller dans Supabase)
+  Supabase → Authentication → Email Templates → "Confirm signup"
+  Variable utilisée : {{ .ConfirmationURL }}
+  (HTML email-safe : styles en ligne + tableau, compatible Gmail/Outlook/Apple Mail)
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fff7f2;margin:0;padding:24px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(255,90,77,.12);">
+
+        <!-- En-tête dégradé coucher de soleil -->
+        <tr>
+          <td style="background:linear-gradient(135deg,#FFD15C,#FF7E5F 55%,#FF5A4D);padding:34px 24px 30px;text-align:center;">
+            <div style="font-size:46px;line-height:1;">☀️</div>
+            <div style="margin-top:10px;font-size:24px;font-weight:800;color:#ffffff;letter-spacing:.3px;">
+              <span style="color:#fff3d6;">Sun</span>Mates
+            </div>
+          </td>
+        </tr>
+
+        <!-- Corps -->
+        <tr>
+          <td style="padding:30px 28px 8px;text-align:center;">
+            <h1 style="margin:0 0 10px;font-size:21px;color:#2b2330;">Bienvenue à bord ! 🌍</h1>
+            <p style="margin:0 0 22px;font-size:15px;line-height:1.6;color:#6b6470;">
+              Plus qu'une étape : confirme ton adresse email pour activer ton compte
+              et commencer à rencontrer des voyageurs en toute sécurité.
+            </p>
+
+            <!-- Bouton (bulletproof) -->
+            <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 22px;">
+              <tr>
+                <td align="center" bgcolor="#FF5A4D" style="border-radius:999px;">
+                  <a href="{{ .ConfirmationURL }}" target="_blank"
+                     style="display:inline-block;padding:14px 30px;font-size:16px;font-weight:800;color:#ffffff;text-decoration:none;border-radius:999px;background:#FF5A4D;">
+                    ✅ Confirmer mon email
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:0 0 6px;font-size:12.5px;line-height:1.6;color:#9b94a0;">
+              Si le bouton ne marche pas, copie-colle ce lien dans ton navigateur :
+            </p>
+            <p style="margin:0 0 18px;font-size:12px;word-break:break-all;">
+              <a href="{{ .ConfirmationURL }}" style="color:#FF5A4D;text-decoration:underline;">{{ .ConfirmationURL }}</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- Pied -->
+        <tr>
+          <td style="padding:18px 28px 26px;border-top:1px solid #f1e7e1;text-align:center;">
+            <p style="margin:0;font-size:11.5px;line-height:1.6;color:#b3aab2;">
+              Tu n'as pas créé de compte SunMates ? Ignore simplement cet email.<br>
+              SunMates ☀️ — voyage solo, sécurité d'abord.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
