@@ -3443,10 +3443,21 @@
             msg.innerHTML = '📧 Tu dois confirmer ton email avant de te connecter.<br><button id="authResendBtn" class="btn-ghost" style="margin-top:.45rem;padding:.45rem .8rem;font-size:.82rem">Renvoyer le mail de confirmation</button>';
             const rb = $("authResendBtn");
             if (rb) rb.addEventListener("click", async () => {
-              rb.disabled = true; rb.textContent = "Envoi…";
-              const { error: rerr } = await db.auth.resend({ type: "signup", email });
-              if (rerr) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + rerr.message; }
-              else { msg.style.color = "var(--ok)"; msg.textContent = "📧 Mail de confirmation renvoyé ! Vérifie ta boîte (et les spams)."; }
+              const old = rb.textContent; rb.disabled = true; rb.textContent = "Envoi…";
+              const reset = () => { rb.disabled = false; rb.textContent = old; };
+              try {
+                const { error: rerr } = await db.auth.resend({ type: "signup", email, options: { emailRedirectTo: location.origin + location.pathname } });
+                if (rerr) {
+                  console.warn("[SunMates] resend error:", rerr);
+                  const detail = rerr.message || rerr.error_description || rerr.code || ("statut " + (rerr.status || "?"));
+                  msg.style.color = "var(--danger)"; msg.textContent = "Envoi impossible : " + detail + " (réessaie dans 1 min)";
+                  reset();
+                } else { msg.style.color = "var(--ok)"; msg.textContent = "📧 Mail de confirmation renvoyé ! Vérifie ta boîte (et les spams)."; }
+              } catch (e) {
+                console.warn("[SunMates] resend threw:", e);
+                msg.style.color = "var(--danger)"; msg.textContent = "Erreur réseau, réessaie dans un instant.";
+                reset();
+              }
             });
           } else { msg.style.color = "var(--danger)"; msg.textContent = "Erreur : " + error.message; }
         }
