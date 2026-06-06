@@ -989,14 +989,6 @@
     .tip-title { font-weight: 800; font-size: .82rem; color: #B5740E; }
     body.theme-dusk .tip-title { color: #ffce8a; }
     .tip-text { font-size: .84rem; color: var(--ink); line-height: 1.4; margin-top: .1rem; }
-    /* Skeletons de chargement (shimmer) — plus premium que « Chargement… » */
-    @keyframes skShimmer { 0% { background-position: -340px 0; } 100% { background-position: 340px 0; } }
-    .sk { background: linear-gradient(90deg, var(--line) 25%, rgba(255,180,120,.18) 50%, var(--line) 75%);
-      background-size: 680px 100%; animation: skShimmer 1.25s infinite linear; border-radius: 8px; }
-    .sk-card { display: flex; gap: .7rem; align-items: center; padding: .7rem; border: 1px solid var(--line); border-radius: 14px; margin-bottom: .5rem; }
-    .sk-av { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; }
-    .sk-lines { flex: 1; min-width: 0; }
-    .sk-line { height: 11px; margin-bottom: .45rem; }
     /* Titre de profil (boutique XP) */
     .profile-title { font-size: .78rem; font-weight: 700; color: #B5740E; margin-top: .12rem; }
     body.theme-dusk .profile-title { color: #ffce8a; }
@@ -2233,7 +2225,7 @@
             <a id="feedToggle" style="cursor:pointer">Masquer</a>
           </div>
         </div>
-        <div id="homeFeed"><div class="sk-card"><div class="sk sk-av"></div><div class="sk-lines"><div class="sk sk-line" style="width:60%"></div><div class="sk sk-line" style="width:40%;margin-bottom:0"></div></div></div></div>
+        <div id="homeFeed"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div></div>
 
         <div class="section-head"><h3>Accès rapide</h3></div>
         <div class="grid2">
@@ -2280,7 +2272,7 @@
         </div>
         <div id="cafesCount" class="muted" style="font-size:.8rem;margin-bottom:.5rem"></div>
         <div class="gold-only-note" style="margin-bottom:.7rem">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
-        <div id="cafesList"><div class="sk-card"><div class="sk sk-av"></div><div class="sk-lines"><div class="sk sk-line" style="width:58%"></div><div class="sk sk-line" style="width:40%;margin-bottom:0"></div></div></div></div>
+        <div id="cafesList"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div></div>
         <div class="msg" id="cafesMsg"></div>
       </div>
 
@@ -2363,7 +2355,7 @@
                   <option value="trust">Score de confiance 🛡️</option>
                 </select>
               </div>
-              <div id="travelersList"><div class="sk-card"><div class="sk sk-av"></div><div class="sk-lines"><div class="sk sk-line" style="width:55%"></div><div class="sk sk-line" style="width:38%;margin-bottom:0"></div></div></div><div class="sk-card"><div class="sk sk-av"></div><div class="sk-lines"><div class="sk sk-line" style="width:62%"></div><div class="sk sk-line" style="width:42%;margin-bottom:0"></div></div></div></div>
+              <div id="travelersList"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line l"></div><div class="skel skel-line s"></div></div></div></div>
               <div class="msg" id="connMsg"></div>
             </div>
           </div>
@@ -3884,7 +3876,7 @@
       await loadReviews(cafeId);
     }
     async function loadReviews(cafeId) {
-      const box = $("reviewsList"); box.innerHTML = skelCards(2);
+      const box = $("reviewsList"); box.innerHTML = skelRows(2);
       const { data, error } = await db.from("place_reviews").select("rating,comment,created_at,user_id").eq("cafe_id", cafeId).order("created_at", { ascending: false });
       if (error) { box.innerHTML = '<p class="muted" style="text-align:center;padding:.6rem">Avis indisponibles pour l\'instant.</p>'; $("reviewsAvg").textContent = ""; return; }
       const rows = data || [];
@@ -4497,7 +4489,7 @@
     async function renderLeaderboard(metric) {
       lbMetric = metric || lbMetric;
       const box = $("leaderboardList"); if (!box) return;
-      box.innerHTML = skelCards(5);
+      box.innerHTML = skelRows(5);
       const { data, error } = await db.rpc("leaderboard", { p_metric: lbMetric, p_limit: 30 });
       if (error) { box.innerHTML = '<p class="muted">Classement indisponible pour l\'instant.</p>'; return; }
       const rows = data || [];
@@ -5002,14 +4994,6 @@
       return String(s).replace(/[&<>"']/g, (c) =>
         ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     }
-    // Skeleton de chargement (n cartes shimmer) — remplace les « Chargement… »
-    function skelCards(n) {
-      let h = ""; for (let i = 0; i < (n || 3); i++) {
-        h += '<div class="sk-card"><div class="sk sk-av"></div><div class="sk-lines"><div class="sk sk-line" style="width:' + (55 + (i % 3) * 12) + '%"></div><div class="sk sk-line" style="width:35%;margin-bottom:0"></div></div></div>';
-      }
-      return h;
-    }
-
     // ====================== JEUX / QUÊTES / BADGES / COUPONS (réels via Supabase) ======================
     let allQuests = [];          // définitions (table quests)
     const headColors = ["", "blue", "purp", "green"];
