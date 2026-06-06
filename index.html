@@ -924,6 +924,8 @@
     .lb-you { font-size: .62rem; font-weight: 800; background: var(--accent); color: #fff; padding: .04rem .35rem; border-radius: 999px; vertical-align: middle; }
     .lb-tip { margin-top: .6rem; text-align: center; font-size: .82rem; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 12px; padding: .6rem .8rem; }
     .lb-optin { background: var(--cream); border: 1px solid var(--line); border-radius: 14px; padding: .9rem; margin-bottom: .8rem; text-align: center; }
+    .admin-mhead { display: flex; align-items: center; gap: .8rem; background: var(--accent-grad); border-radius: 14px; padding: .8rem .9rem; margin-bottom: .3rem; }
+    .admin-mhead .avatar.lg { width: 56px; height: 56px; font-size: 22px; border: 2px solid rgba(255,255,255,.6); }
     /* Avis sur les lieux */
     .rate-chip { display: inline-flex; align-items: center; gap: .15rem; font-size: .76rem; font-weight: 800; color: #B5740E; background: rgba(255,177,60,.18); padding: .05rem .4rem; border-radius: 999px; white-space: nowrap; }
     .rate-chip.empty { color: var(--muted); background: var(--cream); font-weight: 600; }
@@ -4127,12 +4129,25 @@
     // Fiche admin d'un membre : activité + manips (score, vérif, ban, admin)
     async function openAdminUser(uid) {
       const u = adminUsersCache.find((x) => x.id === uid) || {};
-      const { data: act } = await db.rpc("admin_user_activity", { p_uid: uid });
+      const [{ data: act }, { data: full }] = await Promise.all([
+        db.rpc("admin_user_activity", { p_uid: uid }),
+        db.from("profiles").select("*").eq("id", uid).maybeSingle(),
+      ]);
       const a = (act && act.ok) ? act : {};
+      const p = full || u;
       const cell = (k, v) => `<div class="pcell"><div class="k">${k}</div><div class="v">${v ?? 0}</div></div>`;
-      showInfo("Membre", `<div style="text-align:center">${avatarMarkup(u.username, u.avatar_url, "lg")}
-          <h3 style="margin:.3rem 0">${escapeHtml(u.username || "Voyageur")} ${u.is_verified ? "✅" : ""}${u.is_admin ? " 🛡️" : ""}${u.is_gold ? " 👑" : ""}${u.banned ? " 🚫" : ""}</h3>
-          <p class="muted" style="margin:.2rem 0">${escapeHtml(u.city || "")} · score de confiance <b>${u.trust_score ?? 0}</b></p></div>
+      const line = (lbl, val) => val ? `<div style="font-size:.82rem;margin:.12rem 0"><span class="muted">${lbl} :</span> ${escapeHtml(String(val))}</div>` : "";
+      const ages = p.birthdate ? (typeof ageFrom === "function" ? ageFrom(p.birthdate) : "") : "";
+      showInfo("Membre", `<div class="admin-mhead">
+          ${avatarMarkup(p.username, p.avatar_url, "lg")}
+          <div style="min-width:0"><div style="font-weight:800;font-size:1.1rem;color:#fff">${escapeHtml(p.username || "Voyageur")} ${p.is_verified ? "✅" : ""}${p.is_admin ? "🛡️" : ""}${p.is_gold ? "👑" : ""}${p.banned ? "🚫" : ""}</div>
+          <div style="color:rgba(255,255,255,.9);font-size:.82rem">${escapeHtml(p.city || p.hometown || "—")}${ages ? " · " + ages + " ans" : ""}</div>
+          <div style="color:rgba(255,255,255,.9);font-size:.82rem">🛡️ ${p.trust_score ?? 0} · ⭐ ${p.xp ?? 0} XP · ${p.is_public === false ? "🔒 privé" : "🌍 public"}</div></div>
+        </div>
+        ${p.bio ? `<p style="font-style:italic;color:var(--muted);font-size:.85rem;margin:.5rem 0">« ${escapeHtml(p.bio)} »</p>` : ""}
+        <div style="margin:.4rem 0">
+          ${line("Métier", p.job_title)}${line("Langues", (p.languages || []).join(", "))}${line("Ici pour", (p.intent || []).join(", "))}${line("Style", (p.travel_styles || (p.travel_style ? [p.travel_style] : [])).join(", "))}${line("Spot du jour", p.status_text)}
+        </div>
         <div class="pgrid" style="margin:.7rem 0">${cell("Check-ins", a.checkins)}${cell("Connexions", a.connections)}${cell("Quêtes", a.quests)}${cell("Badges", a.badges)}${cell("Messages", a.messages)}${cell("Signalé", a.reported)}</div>
         <div class="row"><button class="btn-ghost" data-ua-verify>${u.is_verified ? "Dévérifier" : "Vérifier ✅"}</button><button class="btn-ghost" data-ua-ban style="color:var(--danger)">${u.banned ? "Débannir" : "Bannir 🚫"}</button></div>
         <div class="row" style="margin-top:.4rem"><button class="btn-ghost" data-ua-score="-10">Score −10</button><button class="btn-ghost" data-ua-score="0">Score = 0</button><button class="btn-ghost" data-ua-admin>${u.is_admin ? "− admin" : "+ admin 🛡️"}</button></div>`);
