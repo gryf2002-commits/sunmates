@@ -19,15 +19,27 @@ fenêtres scrollables (croix fixe) · « qui peut me contacter » toast · mates
 profils privés** · spot du jour→Lieux · détail quête allégé · accueil remonte au login · tuiles plus
 vivantes · **style de voyage multi** (migration 25) · fiche membre admin enrichie.
 
-### ⏳ RESTE (gros morceaux, pour une prochaine session) :
-- **Carte plein écran** (à tester sur mobile — ResizeObserver + outils + safe-area déjà en place).
-- **Refonte complète de l'onglet Mates** (gros).
-- **Quêtes/Jeux en overlay** (anti-scroll, gros).
-- **~70 tuiles explicatives** dans la démo guidée (gros contenu).
-- **Onboarding bug 4→6 cartes** (à investiguer en live).
-- **Aperçu mode gratuit** (admin) à remettre à jour avec les changements.
-- **XP boutique** (titres/cosmétiques) — à designer.
-- ⚠️ Migrations à lancer : **24** (admin delete reports) et **25** (travel_styles).
+### ✅ FAIT (lots 62-65, SW v96→v100, 2026-06-06) :
+- **Quêtes/Jeux en overlay** (lot 62, feuille anti-scroll) ✅
+- **Refonte visuelle de l'onglet Mates** (lot 63) ✅
+- **Catalogue des fonctionnalités** (lot 64) : knowledge base admin exhaustive par zone
+  (`SM_FEATURES`/`renderFeatureCatalog`), sous la démo guidée → couvre le « ~70 tuiles ».
+  + fix collision CSS `fc-*` (faux appel) → `feat-*`.
+- **XP boutique** (lot 65) ✅ : nouvelle vue « Boutique » dans Jeux. Cosmétiques (titres de
+  profil + cadres d'avatar) débloqués par **paliers d'XP** — l'XP n'est jamais dépensé
+  (anti-triche préservé, **aucune migration**). Choix en localStorage, appliqué sur la carte
+  profil. Testé pur-Node (paliers 0/120/1000 XP OK).
+
+### ⏳ RESTE (nécessite un test sur le téléphone de Maxime — pas faisable côté Claude) :
+- **Carte plein écran** : code déjà robuste (ResizeObserver + redraw échelonné
+  [60,220,450,800]ms + invalidateSize + safe-area). **À confirmer sur mobile** ; si encore
+  bugué, capturer le symptôme précis (tuiles coupées ? zoom ? outils cachés ?).
+- **Onboarding** : 4 cartes cohérentes en code (`ONB_STEPS=4`, 4 `.onb-step`, 4 dots). Le
+  « bug 4→6 » n'est **pas reproductible dans le code actuel**. Décider si on veut **6 cartes**
+  (enrichissement volontaire) — à valider avec Maxime avant de toucher.
+- **Aperçu mode gratuit (admin)** : fonctionne (`goldToggleBtn` → `iAmGold` + `applyGoldGating`
+  + re-render Jeux/Lieux). À re-vérifier visuellement après les derniers ajouts.
+- ✅ Migrations **24** (admin delete reports) et **25** (travel_styles) : **lancées par Maxime**.
 
 ### ⏳ Anciens (déjà repris) :
 **Pro/Accueil** : retirer raccourci B2B dans Premium · retirer titre « Espace Pro » (ressortir 1ʳᵉ carte) ·
