@@ -1276,6 +1276,13 @@
     .wish-chip button { border: 0; background: rgba(0,0,0,.06); color: var(--muted); width: 18px; height: 18px; border-radius: 50%; font-size: .9rem; line-height: 1; cursor: pointer; padding: 0; display: grid; place-items: center; }
     .wish-add { display: flex; gap: .4rem; }
     .wish-add input { flex: 1; }
+    /* Préparatifs de voyage (checklist) */
+    .prep-item { display: flex; align-items: center; gap: .6rem; padding: .5rem .2rem; cursor: pointer; border-radius: 8px; transition: background .12s; }
+    .prep-item:active { background: var(--cream); }
+    .prep-box { font-size: 1.1rem; flex-shrink: 0; }
+    .prep-label { flex: 1; font-size: .85rem; font-weight: 600; }
+    .prep-item.done .prep-label { color: var(--muted); text-decoration: line-through; }
+    .prep-go { border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent); width: 24px; height: 24px; border-radius: 50%; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; }
     /* Retour tactile sur les nouveaux éléments cliquables (cohérence premium) */
     .wish-chip.ntpick, .hm-visitor, .wg-goal[data-wggo] { transition: transform .1s ease; }
     .wish-chip.ntpick:active, .hm-visitor:active, .wg-goal[data-wggo]:active, .mode-switch button:active, .streak-chip:active { transform: scale(.97); }
@@ -2235,6 +2242,7 @@
           <!-- Planifier le prochain voyage (local) -->
           <div class="section-head"><h3 style="margin-top:.4rem">Ton prochain voyage ✈️</h3></div>
           <div class="card" id="nextTripCard"></div>
+          <div id="tripPrepCard" class="card hidden"></div>
 
           <!-- Bucket-list de destinations de rêve -->
           <div class="section-head"><h3 style="margin-top:.4rem">Mes envies d'ailleurs 🌠</h3></div>
@@ -3614,7 +3622,7 @@
         const c = (myProfile && myProfile.city) || "";
         const cn = $("hmCityName"); if (cn) cn.textContent = c || "ta ville";
         const hc = $("hmHomeCity"); if (hc) hc.textContent = c ? ("De retour à " + c) : "De retour chez toi";
-        renderNextTrip(); renderWishlist(); renderVisitors(); renderHost();
+        renderNextTrip(); renderTripPrep(); renderWishlist(); renderVisitors(); renderHost();
       } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
     }
     // Bucket-list de destinations de rêve (locale)
@@ -3665,7 +3673,7 @@
           ${started ? '<button class="btn-primary btn-block" id="ntGo" style="margin-top:.7rem">✈️ Mon voyage commence — passer en mode Voyage</button>' : ""}
           <button class="btn-ghost btn-block" id="ntClear" style="margin-top:.5rem">Modifier / annuler</button>`;
         const g = $("ntGo"); if (g) g.addEventListener("click", () => setHomeMode("travel"));
-        const c = $("ntClear"); if (c) c.addEventListener("click", () => { try { localStorage.removeItem("sm_next_trip"); } catch (e) {} renderNextTrip(); });
+        const c = $("ntClear"); if (c) c.addEventListener("click", () => { try { localStorage.removeItem("sm_next_trip"); localStorage.removeItem("sm_trip_prep"); } catch (e) {} renderNextTrip(); if (typeof renderTripPrep === "function") renderTripPrep(); });
       } else {
         const wl = (typeof loadWishlist === "function") ? loadWishlist() : [];
         const picks = wl.length ? `<div class="wish-wrap" style="margin:.5rem 0 .2rem">${wl.slice(0, 8).map((d) => `<button type="button" class="wish-chip ntpick" data-ntpick="${escapeHtml(d)}" style="cursor:pointer">${escapeHtml(d)}</button>`).join("")}</div>` : "";
@@ -3678,10 +3686,46 @@
         const s = $("ntSave"); if (s) s.addEventListener("click", () => {
           const dest = ($("ntDest").value || "").trim(), date = $("ntDate").value;
           if (!dest || !date) { toast("✈️", "Indique une destination et une date 🙂"); return; }
-          try { localStorage.setItem("sm_next_trip", JSON.stringify({ dest, date })); } catch (e) {}
-          renderNextTrip(); if (typeof toast === "function") toast("🧳", "Voyage planifié ! Bons préparatifs ✨");
+          try { localStorage.setItem("sm_next_trip", JSON.stringify({ dest, date })); localStorage.removeItem("sm_trip_prep"); } catch (e) {}
+          renderNextTrip(); if (typeof renderTripPrep === "function") renderTripPrep(); if (typeof toast === "function") toast("🧳", "Voyage planifié ! Bons préparatifs ✨");
         });
       }
+    }
+    // Préparatifs de voyage : checklist sécurité/pratique liée au voyage planifié (locale)
+    const TRIP_PREP = [
+      { t: "Partager mon itinéraire à un proche" },
+      { t: "Ajouter mes contacts d'urgence (ICE)", go: "ice" },
+      { t: "Noter le numéro d'urgence local", go: "numbers" },
+      { t: "Copie numérique de mon passeport" },
+      { t: "Vérifier que mon profil est à jour", go: "profil" },
+      { t: "Télécharger une carte hors-ligne" },
+    ];
+    function loadPrep() { try { return JSON.parse(localStorage.getItem("sm_trip_prep") || "[]") || []; } catch (e) { return []; } }
+    function savePrep(a) { try { localStorage.setItem("sm_trip_prep", JSON.stringify(a)); } catch (e) {} }
+    function renderTripPrep() {
+      const box = $("tripPrepCard"); if (!box) return;
+      let trip = {}; try { trip = JSON.parse(localStorage.getItem("sm_next_trip") || "{}") || {}; } catch (e) {}
+      if (!trip.dest) { show(box, false); return; }
+      show(box, true);
+      const done = loadPrep();
+      const n = TRIP_PREP.filter((_, i) => done.includes(i)).length;
+      box.innerHTML = `<div class="wg-head"><span>🎒 Préparatifs · ${escapeHtml(trip.dest)}</span><span class="wg-count">${n}/${TRIP_PREP.length}</span></div>
+        ${TRIP_PREP.map((it, i) => { const ck = done.includes(i); return `<div class="prep-item${ck ? " done" : ""}" data-prep="${i}">
+          <div class="prep-box">${ck ? "✅" : "⬜"}</div>
+          <div class="prep-label">${escapeHtml(it.t)}</div>
+          ${it.go ? `<button class="prep-go" data-prepgo="${it.go}" aria-label="Y aller">›</button>` : ""}
+        </div>`; }).join("")}`;
+      box.querySelectorAll("[data-prep]").forEach((el) => el.addEventListener("click", (e) => {
+        if (e.target.closest("[data-prepgo]")) return;
+        const i = Number(el.dataset.prep); const a = loadPrep(); const idx = a.indexOf(i);
+        if (idx >= 0) a.splice(idx, 1); else a.push(i);
+        savePrep(a); renderTripPrep();
+      }));
+      box.querySelectorAll("[data-prepgo]").forEach((b) => b.addEventListener("click", (e) => {
+        e.stopPropagation(); const g = b.dataset.prepgo;
+        if (g === "ice" || g === "numbers") { goToTab("securite"); if (typeof showSecuView === "function") showSecuView("secuHelp"); if (g === "numbers" && typeof openNumbers === "function") setTimeout(openNumbers, 150); }
+        else if (g === "profil") { goToTab("profil"); if (typeof showProfileSegment === "function") showProfileSegment("edit"); }
+      }));
     }
     document.querySelectorAll("#homeModeSwitch button").forEach((b) => b.addEventListener("click", () => setHomeMode(b.dataset.mode)));
     // Statut « hôte » (local) : devenir repère de confiance dans sa ville.
