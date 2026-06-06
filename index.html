@@ -2248,6 +2248,12 @@
           <div class="section-head"><h3 style="margin-top:.4rem">Mes envies d'ailleurs 🌠</h3></div>
           <div class="card" id="wishlistCard"></div>
 
+          <!-- Carnet : voyages déjà vécus -->
+          <div id="tripsDoneSection" class="hidden">
+            <div class="section-head"><h3 style="margin-top:.4rem">Mes voyages 🧳</h3></div>
+            <div class="card" id="tripsDoneCard"></div>
+          </div>
+
           <!-- Voyageurs de passage dans ta ville -->
           <div class="section-head"><h3 style="margin-top:.4rem">De passage chez toi 👋</h3></div>
           <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Des voyageurs explorent <b id="hmCityName">ta ville</b> en ce moment.</p>
@@ -3622,7 +3628,7 @@
         const c = (myProfile && myProfile.city) || "";
         const cn = $("hmCityName"); if (cn) cn.textContent = c || "ta ville";
         const hc = $("hmHomeCity"); if (hc) hc.textContent = c ? ("De retour à " + c) : "De retour chez toi";
-        renderNextTrip(); renderTripPrep(); renderWishlist(); renderVisitors(); renderHost();
+        renderNextTrip(); renderTripPrep(); renderWishlist(); renderTripsDone(); renderVisitors(); renderHost();
       } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
     }
     // Bucket-list de destinations de rêve (locale)
@@ -3670,9 +3676,10 @@
             <div style="flex:1"><div style="font-weight:800">${escapeHtml(trip.dest)}</div>
               <div class="muted" style="font-size:.8rem">${new Date(trip.date + "T00:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</div></div>
             <div class="nt-count">${when}</div></div>
-          ${started ? '<button class="btn-primary btn-block" id="ntGo" style="margin-top:.7rem">✈️ Mon voyage commence — passer en mode Voyage</button>' : ""}
+          ${started ? '<button class="btn-primary btn-block" id="ntGo" style="margin-top:.7rem">✈️ Mon voyage commence — passer en mode Voyage</button><button class="btn-accent btn-block" id="ntDone" style="margin-top:.5rem">🏁 J\'en suis revenu·e — archiver</button>' : ""}
           <button class="btn-ghost btn-block" id="ntClear" style="margin-top:.5rem">Modifier / annuler</button>`;
         const g = $("ntGo"); if (g) g.addEventListener("click", () => setHomeMode("travel"));
+        const dn = $("ntDone"); if (dn) dn.addEventListener("click", () => { if (typeof archiveTrip === "function") archiveTrip(); });
         const c = $("ntClear"); if (c) c.addEventListener("click", () => { try { localStorage.removeItem("sm_next_trip"); localStorage.removeItem("sm_trip_prep"); } catch (e) {} renderNextTrip(); if (typeof renderTripPrep === "function") renderTripPrep(); });
       } else {
         const wl = (typeof loadWishlist === "function") ? loadWishlist() : [];
@@ -3726,6 +3733,25 @@
         if (g === "ice" || g === "numbers") { goToTab("securite"); if (typeof showSecuView === "function") showSecuView("secuHelp"); if (g === "numbers" && typeof openNumbers === "function") setTimeout(openNumbers, 150); }
         else if (g === "profil") { goToTab("profil"); if (typeof showProfileSegment === "function") showProfileSegment("edit"); }
       }));
+    }
+    // Carnet de voyages vécus (archive locale) — boucle de souvenir
+    function loadTripsDone() { try { return JSON.parse(localStorage.getItem("sm_trips_done") || "[]") || []; } catch (e) { return []; } }
+    function renderTripsDone() {
+      const sec = $("tripsDoneSection"); if (!sec) return;
+      const list = loadTripsDone();
+      if (!list.length) { show(sec, false); return; }
+      show(sec, true);
+      const box = $("tripsDoneCard"); if (!box) return;
+      box.innerHTML = `<div class="muted" style="font-size:.82rem;margin-bottom:.5rem">🌍 ${list.length} voyage${list.length > 1 ? "s" : ""} à ton actif — quelle aventure !</div>
+        <div class="wish-wrap">${list.slice().reverse().map((t) => `<span class="wish-chip" style="background:linear-gradient(135deg,rgba(255,201,60,.22),rgba(122,92,255,.14))">${escapeHtml(t.dest)}</span>`).join("")}</div>`;
+    }
+    function archiveTrip() {
+      let trip = {}; try { trip = JSON.parse(localStorage.getItem("sm_next_trip") || "{}") || {}; } catch (e) {}
+      if (trip.dest) { const a = loadTripsDone(); a.push({ dest: trip.dest, date: trip.date }); try { localStorage.setItem("sm_trips_done", JSON.stringify(a.slice(-50))); } catch (e) {} }
+      try { localStorage.removeItem("sm_next_trip"); localStorage.removeItem("sm_trip_prep"); } catch (e) {}
+      renderNextTrip(); renderTripPrep(); renderTripsDone();
+      if (typeof toast === "function") toast("🏁", "Voyage ajouté à tes souvenirs !");
+      if (typeof celebrate === "function") celebrate();
     }
     document.querySelectorAll("#homeModeSwitch button").forEach((b) => b.addEventListener("click", () => setHomeMode(b.dataset.mode)));
     // Statut « hôte » (local) : devenir repère de confiance dans sa ville.
