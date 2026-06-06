@@ -981,6 +981,22 @@
       font-size: 18px; background: var(--accent-soft, rgba(255,170,90,.16)); }
     .feat-name { font-weight: 700; font-size: .85rem; }
     .feat-desc { font-size: .78rem; color: var(--muted); margin-top: .12rem; line-height: 1.35; }
+    /* Objectifs de la semaine (Jeux) */
+    .wg-card { padding: .8rem .9rem; }
+    .wg-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: .88rem; margin-bottom: .6rem; }
+    .wg-count { font-size: .76rem; color: var(--accent); background: var(--accent-soft, rgba(255,170,90,.16)); border-radius: 999px; padding: .1rem .5rem; }
+    .wg-goal { display: flex; align-items: center; gap: .6rem; margin-bottom: .55rem; }
+    .wg-goal:last-of-type { margin-bottom: 0; }
+    .wg-ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-size: 15px; background: var(--accent-soft, rgba(255,170,90,.16)); flex-shrink: 0; }
+    .wg-body { flex: 1; min-width: 0; }
+    .wg-label { font-size: .82rem; font-weight: 600; }
+    .wg-goal.done .wg-label { color: var(--muted); text-decoration: line-through; }
+    .wg-bar { height: 6px; background: var(--line); border-radius: 999px; margin-top: .25rem; overflow: hidden; }
+    .wg-bar span { display: block; height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width .4s ease; }
+    .wg-val { font-size: .74rem; font-weight: 800; color: var(--muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+    .wg-goal.done .wg-val { color: var(--accent); }
+    .wg-alldone { margin-top: .6rem; text-align: center; font-size: .8rem; font-weight: 700; color: #B5740E; }
+    body.theme-dusk .wg-alldone { color: #ffce8a; }
     /* Conseil sécurité du jour */
     .tip-card { display: flex; gap: .8rem; align-items: flex-start;
       background: linear-gradient(135deg, rgba(255,201,60,.14), rgba(255,138,61,.10)); border: 1px solid rgba(201,138,30,.22); }
@@ -2935,6 +2951,7 @@
           <h1 data-i18n="games.title">Jeux &amp; Quêtes</h1>
           <p class="muted" style="margin-top:0">Relève des défis, gagne de l'XP et débloque des coupons.</p>
           <div class="xp-banner" id="xpBanner"></div>
+          <div id="weeklyGoals"></div>
           <!-- Navigation rapide en tuiles colorées -->
           <div class="cat-row" id="jeuxNav">
             <div class="cat-tile" data-jeuxnav="quests"><div class="cic c-sun">🎯</div><div class="clbl">Quêtes</div></div>
@@ -5031,6 +5048,35 @@
 
     // « Mon parcours » : récap (aujourd'hui + global + timeline) calculé côté client, partageable.
     function _isToday(iso) { if (!iso) return false; const d = new Date(iso), n = new Date(); return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate(); }
+    // Début de la semaine en cours (lundi 00:00) pour les objectifs hebdo.
+    function _weekStart() { const n = new Date(); const day = (n.getDay() + 6) % 7; n.setHours(0, 0, 0, 0); n.setDate(n.getDate() - day); return n.getTime(); }
+    function _isThisWeek(iso) { if (!iso) return false; const t = new Date(iso).getTime(); return t >= _weekStart(); }
+    // Objectifs de la semaine — dérivés des données réelles (aucun stockage, reset auto le lundi).
+    function renderWeeklyGoals() {
+      const box = $("weeklyGoals"); if (!box) return;
+      const ckWeek = (myCheckinsRaw || []).filter((c) => _isThisWeek(c.created_at)).length;
+      const qWeek = (myQuestRows || []).filter((r) => r.status === "completed" && _isThisWeek(r.completed_at)).length;
+      const prof = _lastCompletionPct || 0;
+      const goals = [
+        { ic: "🎯", label: "Accomplir 2 quêtes", cur: Math.min(qWeek, 2), max: 2 },
+        { ic: "📍", label: "Faire 1 check-in", cur: Math.min(ckWeek, 1), max: 1 },
+        { ic: "🪪", label: "Profil complété à 80 %", cur: Math.min(prof, 80), max: 80, unit: "%" },
+      ];
+      const doneCount = goals.filter((g) => g.cur >= g.max).length;
+      box.innerHTML = `<div class="card wg-card">
+        <div class="wg-head"><span>🗓️ Objectifs de la semaine</span><span class="wg-count">${doneCount}/${goals.length}</span></div>
+        ${goals.map((g) => {
+          const done = g.cur >= g.max, pct = Math.round((g.cur / g.max) * 100);
+          return `<div class="wg-goal${done ? " done" : ""}">
+            <div class="wg-ic">${done ? "✅" : g.ic}</div>
+            <div class="wg-body"><div class="wg-label">${escapeHtml(g.label)}</div>
+              <div class="wg-bar"><span style="width:${pct}%"></span></div></div>
+            <div class="wg-val">${g.cur}${g.unit || ""}/${g.max}${g.unit || ""}</div>
+          </div>`;
+        }).join("")}
+        ${doneCount === goals.length ? '<div class="wg-alldone">🎉 Semaine parfaite ! Reviens lundi pour de nouveaux objectifs.</div>' : ""}
+      </div>`;
+    }
     function renderParcours() {
       const el = $("parcoursToday"); if (!el) return;
       const ckToday = myCheckinsRaw.filter((c) => _isToday(c.created_at)).length;
@@ -5171,6 +5217,7 @@
           <p style="margin:.2rem 0">⚠️ L'XP est une <b>monnaie de jeu</b> : elle ne change <b>pas</b> ton score de confiance 🛡️ (qui, lui, repose sur des preuves réelles).</p>
           <p style="margin:.2rem 0">Plus d'XP = tu grimpes dans le <b>Classement</b> 🏆</p></div>`);
       }
+      if (typeof renderWeeklyGoals === "function") renderWeeklyGoals();
 
       // Rangée des badges ÉPINGLÉS sur la carte profil (3 max, choisis dans l'onglet Badges)
       const pb = $("profileBadges");
