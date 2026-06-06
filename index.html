@@ -969,6 +969,15 @@
     .fc-btn.accept span { background: #34c759; animation: fcShake 1s ease-in-out infinite; }
     .fc-btn.decline span { background: #ff3b30; }
     @keyframes fcShake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+    /* Catalogue des fonctionnalités (knowledge base admin) */
+    .feat-zone { font-weight: 800; font-size: .9rem; margin: 1rem 0 .5rem; padding-bottom: .35rem;
+      border-bottom: 1px solid var(--line); color: var(--ink); }
+    .feat-item { display: flex; gap: .7rem; align-items: flex-start; padding: .55rem .65rem; margin-bottom: .4rem;
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+    .feat-ic { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center;
+      font-size: 18px; background: var(--accent-soft, rgba(255,170,90,.16)); }
+    .feat-name { font-weight: 700; font-size: .85rem; }
+    .feat-desc { font-size: .78rem; color: var(--muted); margin-top: .12rem; line-height: 1.35; }
     .bitem { text-align: center; }
     .hex { width: 62px; height: 62px; margin: 0 auto .4rem; background: var(--accent-grad);
       clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
@@ -2745,8 +2754,11 @@
               <p class="muted" style="font-size:.76rem;margin:.6rem 0 0">Tu peux mettre en pause, avancer ou quitter à tout moment.</p>
             </div>
             <div class="section-head"><h3 style="margin:.4rem 0 .2rem">📚 Knowledge base : tout ce que l'app permet</h3></div>
-            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">La liste complète des fonctionnalités. Touche « ▶ Jouer depuis ici » pour lancer la démo à partir d'une étape précise.</p>
+            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">La liste des scènes de la démo. Touche « ▶ Jouer depuis ici » pour lancer la démo à partir d'une étape précise.</p>
             <div id="demoSteps"></div>
+            <div class="section-head"><h3 style="margin:1rem 0 .2rem">📋 Catalogue des fonctionnalités</h3></div>
+            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">Tout ce que fait SunMates, par zone. Mis à jour à chaque évolution.</p>
+            <div id="featureCatalog"></div>
           </div>
 
           <div class="aseg hidden" data-asegpanel="dash">
@@ -3961,6 +3973,93 @@
           </div>
         </div>`).join("");
       box.querySelectorAll("[data-demojump]").forEach((b) => b.addEventListener("click", () => startAutoDemo(Number(b.dataset.demojump))));
+      renderFeatureCatalog();
+    }
+    // Catalogue exhaustif des fonctionnalités (knowledge base). À enrichir quand on push.
+    const SM_FEATURES = [
+      ["🚪 Connexion & onboarding", [
+        ["🌍", "Choix de langue avant connexion", "FR/EN dès la page de login, mémorisé."],
+        ["💼", "Onglet Pro", "Transforme la page en pitch B2B (sans identifiants), bouton Démarrer."],
+        ["🎬", "Onboarding du futur", "4 slides animées + visite guidée (spotlights) des 6 onglets."],
+        ["🎯", "Fin d'onboarding = CTA", "Bannière cliquable qui emmène choisir son pseudo."],
+        ["🔒", "Profil privé par défaut", "Nouveau compte = hors classement tant qu'il n'opte pas."],
+      ]],
+      ["🗺️ Accueil & carte", [
+        ["👋", "Bonjour personnalisé", "Salutation au pseudo, en corail."],
+        ["🔎", "Recherche globale", "Lieux + voyageurs, avec note ⭐ des lieux."],
+        ["🗺️", "Carte tout-en-un", "Lieux, Mates, activités, check-ins ; chips colorés filtrants."],
+        ["⛶", "Plein écran carte", "Outils Tout voir / Autour de moi / Partager, resync Leaflet."],
+        ["➕", "Partager une activité", "Place une activité sur la carte d'un tap."],
+        ["✨", "Ton fil", "Feed d'activité récente."],
+        ["⚡", "Accès rapides", "Tuiles vers Mates, Sécurité, Lieux, Profil, Jeux."],
+      ]],
+      ["📍 Lieux sûrs", [
+        ["☕", "Catalogue de lieux", "Cartes photo : éco, check-ins, note, top noté."],
+        ["🔒", "Check-in par code", "Anti-triche : code affiché sur place (RPC serveur)."],
+        ["🧭", "Filtres & tris en tuiles", "Tous / Éco / Près de moi / Top notés / Populaires."],
+        ["⭐", "Avis sur les lieux", "Note + commentaires, 1 avis/personne, top noté ≥4.5."],
+        ["☀️", "Spot du jour", "Statut éphémère 24 h façon story."],
+      ]],
+      ["🎮 Jeux, XP & classement", [
+        ["🎯", "Quêtes du jour", "Ouvertes en feuille (anti-scroll), 3/jour + cooldown."],
+        ["👥", "Quêtes de groupe", "Confirmées par un Mate → bonus XP partagé."],
+        ["🎲", "Défis entre Mates", "Propose une quête à un Mate."],
+        ["⭐", "XP (monnaie de jeu)", "Gagnée via les quêtes, séparée du score de confiance."],
+        ["🏆", "Classement multi-onglets", "XP / Check-ins / Confiance / Badges, opt-in si privé."],
+        ["🎟️", "Coupons partenaires", "Récompenses débloquées par les quêtes."],
+      ]],
+      ["🏅 Badges", [
+        ["🏅", "Catalogue de badges", "Formes & couleurs variées (collection)."],
+        ["❓", "Badges secrets", "Cachés au public (teaser), conditions visibles par l'admin."],
+        ["⭐", "Badges-jalons auto", "Premier check-in, vérifié, 5 quêtes, polyglotte, profil 100 %…"],
+        ["📌", "Épinglage profil", "Choisis 3 badges à afficher sur ton profil."],
+      ]],
+      ["🤝 Mates & messagerie", [
+        ["🔍", "Découvrir", "Cartes riches (tags, présence, compatibilité)."],
+        ["❤️", "Compatibilité", "Score + détail « pourquoi vous matchez » (tuile cliquable)."],
+        ["💬", "Chat temps réel", "Messages, « en train d'écrire », accusés de lecture, traduction."],
+        ["📨", "Demandes", "Connexions à accepter/refuser, confettis au match."],
+        ["👍", "Recommandations (vouch)", "Des Mates se portent garants."],
+        ["🚫", "Bloquer / signaler", "Couleurs distinctes, anti-spam, auto-blocage."],
+      ]],
+      ["🛡️ Sécurité (boîte à outils solo)", [
+        ["🆘", "SOS & alerte cercle", "112 + diffusion de position au cercle de confiance (24 h)."],
+        ["📞", "Faux appel", "Écran d'appel réaliste pour s'extraire d'une situation."],
+        ["🔦", "Signal d'aide", "Écran lumineux « J'ai besoin d'aide » (tap pour fermer)."],
+        ["🌍", "Numéros par pays", "Europe 112 + destinations populaires, recherche."],
+        ["📇", "Contacts d'urgence", "Jusqu'à 3 proches en 1 tap (local, privé)."],
+        ["🩺", "FAQ premiers secours", "Gestes qui sauvent + voyager en sécurité."],
+        ["✅", "Check-in « tout va bien »", "Pastille sur l'onglet tant que pas confirmé."],
+      ]],
+      ["👤 Profil & réglages", [
+        ["🪪", "Profil complet", "Photo, bio, identité, voyage, style de vie, prompts."],
+        ["📊", "Complétion %", "Globale + par catégorie, cliquable."],
+        ["🧭", "Mon parcours", "Récap journée/quêtes + carte souvenir partageable (story)."],
+        ["✅", "Vérification (MVP)", "Badge vérifié simulé + points de confiance."],
+        ["🪪", "QR de profil", "Génère/scanne un QR pour se connecter en vrai."],
+        ["⚙️", "Réglages", "Langue, thème, vibrations, présence, profil public/privé, QR, install."],
+        ["🔎", "Filtres avancés", "Âge, intention, langues, style, etc. (Gold)."],
+      ]],
+      ["📲 PWA & B2B", [
+        ["📲", "Installation PWA", "Carte explicative + bannière persistante (snooze)."],
+        ["📡", "Hors-ligne", "Bannière réseau + coquille en cache (service worker)."],
+        ["💼", "Espace Pro / B2B", "Pitch partenaires, demande de partenariat."],
+      ]],
+      ["🛡️ Admin (back-office)", [
+        ["🎬", "Démo guidée auto", "Parcours commenté de A à Z + ce catalogue."],
+        ["📊", "Tableau de bord", "Membres, vérifiés, Gold."],
+        ["👥", "Fiches membre", "Profil complet + activité + actions (vérifier/bannir/score/admin)."],
+        ["📍", "Gestion des lieux", "Ajout/édition + codes check-in."],
+        ["🚩", "Signalements", "Profil cliquable (faux signalements), traité → supprimer."],
+        ["👁️", "Aperçu mode gratuit", "Voir l'app comme un compte non-Gold."],
+      ]],
+    ];
+    function renderFeatureCatalog() {
+      const box = $("featureCatalog"); if (!box) return;
+      box.innerHTML = SM_FEATURES.map(([zone, items]) => `
+        <div class="feat-zone">${escapeHtml(zone)}</div>
+        ${items.map(([ic, name, desc]) => `<div class="feat-item"><div class="feat-ic">${ic}</div><div><div class="feat-name">${escapeHtml(name)}</div><div class="feat-desc">${escapeHtml(desc)}</div></div></div>`).join("")}
+      `).join("");
     }
     // ====================== DÉMO GUIDÉE AUTOMATIQUE (clé en main, A à Z) ======================
     let adIdx = 0, adTimer = null, adPaused = false, adHideTimer = null, adThemeWasDusk = false;
