@@ -5530,6 +5530,15 @@
       if (xpb) {
         const xp = (myProfile && myProfile.xp) || 0;
         const lvl = Math.floor(xp / 100) + 1, inLvl = xp % 100;
+        // Célébration de passage de niveau (une fois par niveau franchi).
+        try {
+          const seen = parseInt(localStorage.getItem("sm_last_level") || "1", 10) || 1;
+          if (lvl > seen) {
+            localStorage.setItem("sm_last_level", String(lvl));
+            if (typeof toast === "function") toast("🆙", "Niveau " + lvl + " atteint — bravo !");
+            if (typeof celebrate === "function") celebrate();
+          } else if (lvl < seen) { localStorage.setItem("sm_last_level", String(lvl)); }
+        } catch (e) {}
         xpb.classList.add("xpl-card");
         xpb.innerHTML = `<div class="xpl-top"><span class="xpl-lvl">⭐ Niveau ${lvl}</span><span class="xpl-xp">${xp} XP</span><button class="xp-info" id="xpInfoBtn" title="Comment ça marche ?">ⓘ</button></div>
           <div class="xpl-bar"><span style="width:${inLvl}%"></span></div>
