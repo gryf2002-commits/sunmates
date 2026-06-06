@@ -8272,6 +8272,66 @@
        ==================================================================== */
 
     // -------------------- 1) i18n FR / EN --------------------
+    // Dictionnaire FR→EN pour la traduction auto (texte d'UI codé en dur).
+    // Clés = texte FR EXACT (trimmé) tel qu'affiché. Le contenu utilisateur n'y est pas.
+    const I18N_DICT = {
+      // — Accueil / mode Voyage & Maison —
+      "Bonjour": "Hello", "Regarde qui traîne dans le coin 👀": "See who's around 👀",
+      "✈️ En voyage": "✈️ Travelling", "🏠 À la maison": "🏠 At home",
+      "Explore autour de toi 🗺️": "Explore around you 🗺️", "⛶ Plein écran": "⛶ Fullscreen", "✕ Fermer": "✕ Close",
+      "➕ Partager": "➕ Share", "📍 Autour de moi": "📍 Around me", "🌍 Tout voir": "🌍 See all",
+      "Ton fil ✨": "Your feed ✨", "Masquer": "Hide", "Accès rapide": "Quick access",
+      "Mes Mates": "My Mates", "Rencontre & discute": "Meet & chat", "Sécurité": "Safety", "Position & alerte": "Location & alert",
+      "Lieux sûrs": "Safe places", "Check-ins": "Check-ins", "Mon profil": "My profile", "Score de confiance": "Trust score",
+      "Jeux & Quêtes": "Games & Quests", "Gagne des badges": "Earn badges", "SunMates Gold": "SunMates Gold", "Bientôt dispo · Gold 👑": "Coming soon · Gold 👑",
+      "Reste connecté·e et prépare ta prochaine aventure ✨": "Stay connected and plan your next adventure ✨",
+      "De retour chez toi": "Back home", "Reste connecté·e, prépare ta prochaine aventure et fais découvrir ta ville 🌍": "Stay connected, plan your next adventure and show off your city 🌍",
+      "Inspiration du jour": "Today's inspiration", "🌠 Ajouter à mes envies": "🌠 Add to my wishlist", "✓ Déjà dans tes envies": "✓ Already in your wishlist",
+      "Ton prochain voyage ✈️": "Your next trip ✈️", "Où pars-tu ensuite ? On compte les jours avec toi 🧳": "Where are you off to next? We'll count down with you 🧳",
+      "✈️ Planifier mon voyage": "✈️ Plan my trip", "Modifier / annuler": "Edit / cancel",
+      "Mes envies d'ailleurs 🌠": "My travel wishlist 🌠", "Ajoute les destinations qui te font rêver ✨": "Add the destinations you dream of ✨", "+ Ajouter": "+ Add",
+      "Mes voyages 🧳": "My trips 🧳", "De passage chez toi 👋": "Passing through 👋",
+      "Deviens hôte SunMates": "Become a SunMates host", "🛟 Tu es hôte SunMates": "🛟 You're a SunMates host", "Je veux aider": "I want to help", "✓ Hôte actif": "✓ Active host",
+      "🎒 Préparatifs": "🎒 Trip prep",
+      // — Lieux —
+      "Tous": "All", "Éco": "Eco", "Près de moi": "Near me", "Top notés": "Top rated", "Populaires": "Popular",
+      "Rechercher un lieu ou une ville…": "Search a place or city…", "⭐ Avis": "⭐ Reviews", "📍 Carte": "📍 Map",
+      "☀️ Mon spot du jour": "☀️ My spot of the day", "Publier": "Post", "Effacer": "Clear",
+      // — Mates —
+      "Rencontre des voyageurs, discute et pars à l'aventure ensemble 🌍": "Meet travellers, chat and go on adventures together 🌍",
+      "Rechercher par pseudo ou ville…": "Search by username or city…", "🔎 Filtres avancés": "🔎 Advanced filters", "Réinitialiser les filtres": "Reset filters",
+      "Trier par": "Sort by", "💬 Message": "💬 Message", "🤝 Se connecter": "🤝 Connect", "Connexion": "Connect", "✅ Connecté": "✅ Connected",
+      "À propos": "About", "Infos": "Info", "🏅 Badges": "🏅 Badges", "Proposer un défi": "Suggest a challenge", "Bloquer ce voyageur": "Block this traveller",
+      "📨 Demandes reçues": "📨 Requests received", "Accepter": "Accept", "Envoyer un message…": "Send a message…",
+      "Âge": "Age", "Genre": "Gender", "Orientation": "Orientation", "Recherche": "Looking for", "Métier": "Job", "Études": "Education",
+      "Langues": "Languages", "Style de voyage": "Travel style", "Personnalité": "Personality", "Signe astro": "Star sign",
+      // — Jeux —
+      "Relève des défis, gagne de l'XP et débloque des coupons.": "Take on challenges, earn XP and unlock coupons.",
+      "Quêtes": "Quests", "Jeux": "Games", "Badges": "Badges", "Coupons": "Coupons", "Classement": "Leaderboard", "Boutique": "Shop",
+      "Quêtes du jour": "Today's quests", "Jeux populaires": "Popular games", "Description": "Description", "🎁 Récompenses": "🎁 Rewards",
+      "➕ Rejoindre la quête": "➕ Join the quest", "✅ Marquer comme accompli": "✅ Mark as done", "🤝 Proposer à un Mate": "🤝 Suggest to a Mate", "📍 Voir sur la carte": "📍 See on map",
+      "🛍️ Boutique XP": "🛍️ XP Shop", "🏷️ Titres de profil": "🏷️ Profile titles", "🖼️ Cadres d'avatar": "🖼️ Avatar frames", "Gratuit": "Free", "Débloqué": "Unlocked", "✓ Équipé": "✓ Equipped",
+      "🗓️ Objectifs de la semaine": "🗓️ Weekly goals", "Accomplir 2 quêtes": "Complete 2 quests", "Faire 1 check-in": "Do 1 check-in", "Profil complété à 80 %": "Profile 80% complete",
+      // — Sécurité —
+      "En cas de besoin, un seul geste. On est là pour toi.": "If you need it, one tap. We're here for you.", "Besoin d'aide ?": "Need help?",
+      "🆘 J'ai besoin d'aide": "🆘 I need help", "✅ Je vais bien": "✅ I'm okay", "Conseil sécurité du jour": "Safety tip of the day",
+      "Accès rapides": "Quick actions", "Faux appel": "Fake call", "Sortie de secours": "Emergency exit", "Signal d'aide": "Help signal", "Se signaler": "Flag yourself",
+      "Partager ma position": "Share my location", "À mon cercle": "To my circle", "Alerte d'urgence": "Emergency alert", "Diffuser ma position": "Broadcast my location",
+      "Mon cercle": "My circle", "Positions partagées": "Shared locations", "Aide à proximité": "Help nearby", "Police · hôpital": "Police · hospital",
+      "Besoin d'aide": "Need help", "📇 Mes contacts d'urgence": "📇 My emergency contacts", "+ Ajouter un contact": "+ Add a contact", "🛟 Cercle de confiance": "🛟 Trust circle",
+      "Numéros d'urgence": "Emergency numbers", "Par pays 🌍": "By country 🌍", "📞 Numéros d'urgence": "📞 Emergency numbers", "Rechercher un pays…": "Search a country…", "Urgences": "Emergency", "Police": "Police", "Ambulance": "Ambulance",
+      "🚩 Signaler un voyageur": "🚩 Report a traveller", "Signaler un voyageur": "Report a traveller", "📋 Mes signalements": "📋 My reports", "Historique de rencontres": "Meetings history",
+      "Qui peut me contacter": "Who can contact me", "Premiers secours · gestes qui sauvent": "First aid · lifesaving moves", "Voyager en sécurité": "Travel safely",
+      // — Profil & réglages —
+      "Modifier mon profil": "Edit my profile", "🪪 Aperçu": "🪪 Preview", "Premium ✨": "Premium ✨", "Admin 🛡️": "Admin 🛡️", "Mes check-ins": "My check-ins",
+      "⚙️ Paramètres du compte": "⚙️ Account settings", "Se déconnecter": "Log out", "Déconnexion": "Log out", "Changer de thème": "Switch theme",
+      // — Auth —
+      "Pars solo, trouve ta bande 🌍": "Travel solo, find your crew 🌍", "Email": "Email", "Mot de passe": "Password",
+      "Compte créé ! Bienvenue 🌞": "Account created! Welcome 🌞",
+      // — Communs —
+      "Annuler": "Cancel", "Enregistrer": "Save", "Fermer": "Close", "Retour": "Back", "Suivant →": "Next →", "Passer": "Skip", "C'est parti ! 🚀": "Let's go! 🚀",
+      "Chargement…": "Loading…", "Aucun résultat.": "No results.", "Voir le profil ›": "See profile ›",
+    };
     const I18N = {
       fr: {
         "back": "‹ Retour",
@@ -8313,12 +8373,64 @@
     function applyI18n() {
       document.querySelectorAll("[data-i18n]").forEach((el) => { const k = el.getAttribute("data-i18n"); const v = t(k); if (v) el.textContent = v; });
       document.querySelectorAll("[data-i18n-ph]").forEach((el) => { const v = t(el.getAttribute("data-i18n-ph")); if (v) el.setAttribute("placeholder", v); });
+      if (currentLang === "en") translateTree(document.body); else restoreFr();
+    }
+    // ====================== TRADUCTION AUTO (dictionnaire FR→EN) ======================
+    // Couvre tout le texte d'UI codé en dur (statique + généré), sans toucher au contenu
+    // utilisateur (pseudos, messages, bios) qui n'est pas dans le dictionnaire.
+    const _trMap = new Map();           // textNode/élément -> {fr, kind} (pour restaurer le FR)
+    const _TR_SKIP = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "CODE", "svg", "SVG"]);
+    function _enFor(s) { const key = s.trim(); const en = I18N_DICT[key]; if (!en || en === key) return null; return s.replace(key, en); }
+    function _enForPh(s) { const en = I18N_DICT[s.trim()]; return (en && en !== s.trim()) ? en : null; }
+    function translateNodeText(n) {
+      const v = n.nodeValue; if (!v || !v.trim()) return;
+      const en = _enFor(v); if (en == null || en === v) return;
+      if (!_trMap.has(n)) _trMap.set(n, v);
+      n.nodeValue = en;
+    }
+    function translateTree(root) {
+      if (!root) return;
+      try {
+        // Placeholders + titres
+        root.querySelectorAll && root.querySelectorAll("[placeholder]").forEach((el) => { const en = _enForPh(el.getAttribute("placeholder")); if (en) { if (!_trMap.has(el)) _trMap.set(el, { ph: el.getAttribute("placeholder") }); el.setAttribute("placeholder", en); } });
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+          acceptNode: (n) => {
+            const p = n.parentNode; if (!p) return NodeFilter.FILTER_REJECT;
+            if (_TR_SKIP.has(p.nodeName)) return NodeFilter.FILTER_REJECT;
+            if (p.closest && p.closest("#homeMap, .leaflet-container, [data-no-tr]")) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          },
+        });
+        const nodes = []; let cur; while ((cur = walker.nextNode())) nodes.push(cur);
+        nodes.forEach(translateNodeText);
+      } catch (e) {}
+    }
+    function restoreFr() {
+      _trMap.forEach((val, node) => {
+        try { if (typeof val === "string") node.nodeValue = val; else if (val && val.ph != null) node.setAttribute("placeholder", val.ph); } catch (e) {}
+      });
+      _trMap.clear();
+    }
+    // Traduit aussi le contenu rendu dynamiquement (cartes, toasts…) quand on est en anglais.
+    let _trObserver = null, _trPending = null;
+    function ensureTrObserver() {
+      if (_trObserver || typeof MutationObserver === "undefined") return;
+      _trObserver = new MutationObserver((muts) => {
+        if (currentLang !== "en") return;
+        const roots = [];
+        muts.forEach((m) => m.addedNodes && m.addedNodes.forEach((n) => { if (n.nodeType === 1) roots.push(n); else if (n.nodeType === 3) translateNodeText(n); }));
+        if (!roots.length) return;
+        clearTimeout(_trPending);
+        _trPending = setTimeout(() => roots.forEach((r) => translateTree(r)), 50);
+      });
+      _trObserver.observe(document.body, { childList: true, subtree: true });
     }
     function setLang(lang, opts) {
       currentLang = (lang === "en") ? "en" : "fr";
       if (!opts || opts.persist !== false) localStorage.setItem("sm_lang", currentLang);
       document.documentElement.lang = currentLang;
       applyI18n();
+      if (currentLang === "en" && typeof ensureTrObserver === "function") ensureTrObserver();
       document.querySelectorAll("[data-lang]").forEach((b) => b.classList.toggle("active", b.dataset.lang === currentLang));
       // Re-rendu des vues dynamiques pour appliquer la langue sans recharger
       try { if (typeof renderTravelers === "function") renderTravelers($("travSearch") ? $("travSearch").value : ""); } catch (e) {}
