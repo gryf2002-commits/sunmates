@@ -7588,7 +7588,10 @@
         <button class="btn-primary btn-block" id="xpShopBtn">🛍️ Ouvrir la boutique XP</button></div>`);
         const sb = $("xpShopBtn"); if (sb) sb.addEventListener("click", () => { closePicker(); goToTab("jeux"); showJeuxView("jeuxShop"); if (typeof renderShop === "function") renderShop(); }); }
       else if (s === "mates") { goToTab("connexions"); if (typeof showMatesView === "function") showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
-      else if (s === "checkins") showProfileSegment("checkins");
+      else if (s === "checkins") { // pop-up centrée (au lieu d'un panneau qui s'ouvre en bas de page)
+        const cl = $("checkinList");
+        showInfo("📍 Mes check-ins", cl && cl.innerHTML.trim() ? `<div style="max-height:60vh;overflow-y:auto">${cl.innerHTML}</div>` : '<p class="muted" style="text-align:center;padding:1rem">Aucun check-in encore. Valide un lieu partenaire pour gagner des points 🛟</p>');
+      }
     }));
     $("trustClose").addEventListener("click", () => $("trustModal").classList.add("hidden"));
     $("trustModal").addEventListener("click", (e) => { if (e.target.id === "trustModal") $("trustModal").classList.add("hidden"); });
