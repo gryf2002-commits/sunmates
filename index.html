@@ -1271,6 +1271,11 @@
     .nt-ic { font-size: 1.8rem; flex-shrink: 0; }
     .nt-count { font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1; }
     .nt-form input { margin-top: .4rem; }
+    .wish-wrap { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .6rem; }
+    .wish-chip { display: inline-flex; align-items: center; gap: .3rem; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--ink); border-radius: 999px; padding: .3rem .35rem .3rem .65rem; font-size: .82rem; font-weight: 600; }
+    .wish-chip button { border: 0; background: rgba(0,0,0,.06); color: var(--muted); width: 18px; height: 18px; border-radius: 50%; font-size: .9rem; line-height: 1; cursor: pointer; padding: 0; display: grid; place-items: center; }
+    .wish-add { display: flex; gap: .4rem; }
+    .wish-add input { flex: 1; }
     .search input { border: 1px solid rgba(255,90,77,.10); }
     .tile .thumb { box-shadow: inset 0 -12px 26px rgba(0,0,0,.10); }
 
@@ -2227,6 +2232,10 @@
           <!-- Planifier le prochain voyage (local) -->
           <div class="section-head"><h3 style="margin-top:.4rem">Ton prochain voyage ✈️</h3></div>
           <div class="card" id="nextTripCard"></div>
+
+          <!-- Bucket-list de destinations de rêve -->
+          <div class="section-head"><h3 style="margin-top:.4rem">Mes envies d'ailleurs 🌠</h3></div>
+          <div class="card" id="wishlistCard"></div>
 
           <!-- Voyageurs de passage dans ta ville -->
           <div class="section-head"><h3 style="margin-top:.4rem">De passage chez toi 👋</h3></div>
@@ -3594,8 +3603,24 @@
         const c = (myProfile && myProfile.city) || "";
         const cn = $("hmCityName"); if (cn) cn.textContent = c || "ta ville";
         const hc = $("hmHomeCity"); if (hc) hc.textContent = c ? ("De retour à " + c) : "De retour chez toi";
-        renderNextTrip(); renderVisitors();
+        renderNextTrip(); renderWishlist(); renderVisitors();
       } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
+    }
+    // Bucket-list de destinations de rêve (locale)
+    function loadWishlist() { try { return JSON.parse(localStorage.getItem("sm_wishlist") || "[]") || []; } catch (e) { return []; } }
+    function saveWishlist(a) { try { localStorage.setItem("sm_wishlist", JSON.stringify(a.slice(0, 30))); } catch (e) {} }
+    function renderWishlist() {
+      const box = $("wishlistCard"); if (!box) return;
+      const list = loadWishlist();
+      const chips = list.length
+        ? list.map((d, i) => `<span class="wish-chip">${escapeHtml(d)} <button data-wishdel="${i}" aria-label="Retirer">×</button></span>`).join("")
+        : '<span class="muted" style="font-size:.84rem">Ajoute les destinations qui te font rêver ✨</span>';
+      box.innerHTML = `<div class="wish-wrap">${chips}</div>
+        <div class="wish-add"><input id="wishInput" type="text" placeholder="Ex : Tokyo 🇯🇵, Patagonie…" maxlength="32" /><button class="btn-accent" id="wishAdd">+ Ajouter</button></div>`;
+      box.querySelectorAll("[data-wishdel]").forEach((b) => b.addEventListener("click", () => { const a = loadWishlist(); a.splice(Number(b.dataset.wishdel), 1); saveWishlist(a); renderWishlist(); }));
+      const add = () => { const inp = $("wishInput"); const v = (inp.value || "").trim(); if (!v) return; const a = loadWishlist(); if (!a.some((x) => x.toLowerCase() === v.toLowerCase())) a.push(v); saveWishlist(a); renderWishlist(); if (typeof toast === "function") toast("🌠", "Ajouté à tes envies !"); };
+      const ab = $("wishAdd"); if (ab) ab.addEventListener("click", add);
+      const wi = $("wishInput"); if (wi) wi.addEventListener("keydown", (e) => { if (e.key === "Enter") add(); });
     }
     // Voyageurs de passage dans ma ville (depuis les profils déjà connus)
     function renderVisitors() {
