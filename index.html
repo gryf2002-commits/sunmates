@@ -2674,7 +2674,6 @@
             <div class="tile" data-help="hopital"><div class="thumb green">🏥</div><div class="t-name">Trouver un hôpital</div><div class="t-meta">À proximité</div></div>
             <div class="tile" data-help="lieux"><div class="thumb purp">🛟</div><div class="t-name">Lieux publics sûrs</div><div class="t-meta">Validés</div></div>
             <div class="tile" data-help="mate"><div class="thumb blue">🤝</div><div class="t-name">Trouver un Mate sûr·e</div><div class="t-meta">Cercle de confiance</div></div>
-            <div class="tile" data-help="support" style="opacity:.6"><div class="thumb">💬</div><div class="t-name">Support SunMates</div><div class="t-meta">Bientôt</div></div>
             <div class="tile" data-help="numeros"><div class="thumb green">📞</div><div class="t-name">Numéros d'urgence</div><div class="t-meta">Par pays 🌍</div></div>
           </div>
 
@@ -2686,15 +2685,14 @@
 
           <div class="card">
             <h3 style="margin-top:0">Sécurité &amp; confidentialité</h3>
-            <div class="qrow" data-secu="signaler"><div class="qico">🚩</div><div class="qname">Signaler un voyageur</div><div class="qarrow">›</div></div>
-            <div class="qrow" data-secu="mysignals"><div class="qico">📋</div><div class="qname">Mes signalements</div><div class="qarrow">›</div></div>
+            <div class="qrow" data-secu="reportmenu"><div class="qico">🚩</div><div class="qname">Signaler un voyageur</div><div class="qarrow">›</div></div>
             <div class="qrow" data-secu="historique"><div class="qico">🗂️</div><div class="qname">Historique de rencontres</div><div class="qarrow">›</div></div>
           </div>
 
           <div class="card">
             <h3 style="margin-top:0">Préférences</h3>
             <div class="qrow" data-secu="contact"><div class="qico">📢</div><div class="qname">Qui peut me contacter</div><div class="qarrow" id="contactPrefVal">›</div></div>
-            <div class="qrow" data-secu="support2"><div class="qico">✉️</div><div class="qname">Nous contacter</div><div class="qarrow">›</div></div>
+            <div class="qrow" style="opacity:.45;pointer-events:none"><div class="qico">✉️</div><div class="qname">Nous contacter <span class="muted" style="font-size:.72rem;font-weight:600">· bientôt</span></div></div>
           </div>
 
           <div class="msg" id="helpMsg" style="text-align:center"></div>
@@ -6594,6 +6592,17 @@
 
     async function handleSecu(action) {
       const m = $("helpMsg"); m.style.color = "var(--text)";
+      if (action === "reportmenu") {
+        // Menu combiné : signaler quelqu'un OU voir mes signalements (anti-page imposante).
+        showInfo("🚩 Signalements", `<div style="display:flex;flex-direction:column;gap:.6rem">
+          <button class="btn-primary btn-block" id="rmReport">🚩 Signaler un voyageur</button>
+          <button class="btn-ghost btn-block" id="rmMine">📋 Mes signalements</button>
+          <p class="muted" style="font-size:.78rem;text-align:center;margin:.2rem 0 0">Un seul signalement par personne. La personne signalée est auto-bloquée le temps de la modération.</p>
+        </div>`);
+        { const r = $("rmReport"); if (r) r.addEventListener("click", () => { closePicker(); handleSecu("signaler"); }); }
+        { const mi = $("rmMine"); if (mi) mi.addEventListener("click", () => { closePicker(); handleSecu("mysignals"); }); }
+        return;
+      }
       if (action === "signaler") {
         const people = Object.values(travelerMap).filter((p) => p.id !== myUserId && (p.is_demo || connectedIds.has(p.id)) && !blockedIds.has(p.id));
         if (!people.length) { m.style.color = "var(--danger)"; m.textContent = "Aucun voyageur à signaler pour l'instant."; return; }
