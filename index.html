@@ -3771,7 +3771,8 @@
         try { localStorage.setItem(key, JSON.stringify(st)); } catch (e) {}
       }
       const n = st.count || 1;
-      chip.textContent = "🔥 " + n + (n > 1 ? " jours" : " jour");
+      const enLang = (currentLang === "en");
+      chip.textContent = "🔥 " + n + " " + (enLang ? (n > 1 ? "days" : "day") : (n > 1 ? "jours" : "jour"));
       show(chip, true);
       // Palier de série franchi aujourd'hui → on fête (une seule fois par palier).
       const MILESTONES = [3, 7, 14, 30, 60, 100];
@@ -8405,6 +8406,14 @@
       // États vides & divers
       "Personne pour l'instant 🌍": "Nobody yet 🌍", "Reviens bientôt 🌍": "Come back soon 🌍", "Aucun lieu ne correspond. Essaie un autre filtre.": "No place matches. Try another filter.", "Aucun voyageur trouvé": "No traveller found", "Aucune rencontre pour l'instant. Connecte-toi avec des voyageurs !": "No meetings yet. Connect with travellers!",
       "Demander une révision": "Request a review", "Compte suspendu": "Account suspended",
+      // — Batch 4 : gaps repérés au rendu —
+      "Rechercher un lieu ou un·e voyageur·se…": "Search a place or a traveller…",
+      "Filtre, puis": "Filter, then", "touche une pastille": "tap a pin", "pour agir 👇": "to act 👇",
+      "📍 Lieux": "📍 Places", "🧑 Mates": "🧑 Mates", "🎉 Activités": "🎉 Activities", "✅ Check-ins": "✅ Check-ins",
+      "Lieux": "Places", "Activités": "Activities", "📣 Partager une activité": "📣 Share an activity", "Titre": "Title", "Détail (optionnel)": "Detail (optional)", "Publier sur la carte": "Post on the map",
+      "Explore autour de toi": "Explore around you", "Découvrir": "Discover", "Demandes": "Requests", "Messages": "Messages",
+      "Pars solo, trouve ta bande 🌍": "Travel solo, find your crew 🌍", "Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.": "Spot travellers around you, suggest a coffee or an outing, and leave with friends.",
+      "Inscription": "Sign up", "Créer mon compte": "Create my account",
     };
     const I18N = {
       fr: {
