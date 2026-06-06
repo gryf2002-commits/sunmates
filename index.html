@@ -1336,6 +1336,12 @@
     .hm-hero { display: flex; gap: .9rem; align-items: center; background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(122,92,255,.1)); border: 1px solid rgba(201,138,30,.18); }
     .hm-hero-ic { font-size: 2.2rem; line-height: 1; flex-shrink: 0; }
     .hm-hero-title { font-weight: 800; font-size: 1.05rem; }
+    .hm-inspo { background: linear-gradient(135deg, rgba(122,92,255,.12), rgba(255,138,61,.1)); border: 1px solid rgba(122,92,255,.18); }
+    .hm-inspo-top { display: flex; align-items: center; gap: .7rem; }
+    .hm-inspo-flag { font-size: 2rem; }
+    .hm-inspo-ttl { font-size: .72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+    .hm-inspo-city { font-weight: 800; font-size: 1.15rem; }
+    .hm-inspo-desc { font-size: .84rem; color: var(--muted); margin-top: .4rem; line-height: 1.4; }
     .hm-host { display: flex; gap: .8rem; align-items: center; }
     .hm-host-ic { font-size: 1.8rem; flex-shrink: 0; }
     .nt-set { display: flex; align-items: center; gap: .7rem; }
@@ -2338,6 +2344,9 @@
             <div><div class="hm-hero-title" id="hmHomeCity">De retour chez toi</div>
               <div class="muted" style="font-size:.84rem">Reste connecté·e, prépare ta prochaine aventure et fais découvrir ta ville 🌍</div></div>
           </div>
+
+          <!-- Inspiration du jour (destination rotative) -->
+          <div class="card hm-inspo" id="hmInspo"></div>
 
           <!-- Planifier le prochain voyage (local) -->
           <div class="section-head"><h3 style="margin-top:.4rem">Ton prochain voyage ✈️</h3></div>
@@ -3767,8 +3776,45 @@
         const c = (myProfile && myProfile.city) || "";
         const cn = $("hmCityName"); if (cn) cn.textContent = c || "ta ville";
         const hc = $("hmHomeCity"); if (hc) hc.textContent = c ? ("De retour à " + c) : "De retour chez toi";
-        renderNextTrip(); renderTripPrep(); renderWishlist(); renderTripsDone(); renderVisitors(); renderHost();
+        renderInspo(); renderNextTrip(); renderTripPrep(); renderWishlist(); renderTripsDone(); renderVisitors(); renderHost();
       } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
+    }
+    // Inspiration du jour : une destination rotative à ajouter à ses envies (1 tap).
+    const HM_INSPO = [
+      ["🇵🇹", "Lisbonne", "tramways jaunes, fado et couchers de soleil sur le Tage"],
+      ["🇯🇵", "Kyoto", "temples zen, ruelles de geishas et érables flamboyants"],
+      ["🇲🇦", "Marrakech", "souks colorés, riads et désert à perte de vue"],
+      ["🇮🇸", "Reykjavík", "aurores boréales, sources chaudes et volcans"],
+      ["🇲🇽", "Mexico", "street food, fresques et énergie débordante"],
+      ["🇬🇷", "Santorin", "maisons blanches, mer Égée et soleil doré"],
+      ["🇻🇳", "Hanoï", "scooters, pho fumant et baie d'Halong"],
+      ["🇵🇪", "Cusco", "Andes, ruines incas et chemin du Machu Picchu"],
+      ["🇮🇹", "Rome", "ruines antiques, pasta et dolce vita"],
+      ["🇹🇭", "Chiang Mai", "temples dorés, marchés de nuit et nature luxuriante"],
+      ["🇪🇸", "Barcelone", "Gaudí, tapas et plages urbaines"],
+      ["🇳🇴", "Tromsø", "fjords, aurores et nuits polaires"],
+      ["🇨🇴", "Carthagène", "façades colorées, salsa et Caraïbes"],
+      ["🇦🇺", "Sydney", "opéra, surf et road trips côtiers"],
+      ["🇹🇷", "Istanbul", "entre deux continents, bazars et bosphore"],
+    ];
+    function renderInspo() {
+      const box = $("hmInspo"); if (!box) return;
+      const day = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+      const [flag, city, desc] = HM_INSPO[day % HM_INSPO.length];
+      const inWish = (typeof loadWishlist === "function" ? loadWishlist() : []).some((x) => x.toLowerCase() === (flag + " " + city).toLowerCase() || x.toLowerCase() === city.toLowerCase());
+      box.innerHTML = `<div class="hm-inspo-top"><span class="hm-inspo-flag">${flag}</span>
+          <div style="flex:1;min-width:0"><div class="hm-inspo-ttl">Inspiration du jour</div><div class="hm-inspo-city">${escapeHtml(city)}</div></div></div>
+        <div class="hm-inspo-desc">${escapeHtml(desc)}</div>
+        <button class="btn-accent btn-block hm-inspo-btn" id="hmInspoAdd" style="margin-top:.6rem" ${inWish ? "disabled" : ""}>${inWish ? "✓ Déjà dans tes envies" : "🌠 Ajouter à mes envies"}</button>`;
+      const b = $("hmInspoAdd"); if (b && !inWish) b.addEventListener("click", () => {
+        const a = (typeof loadWishlist === "function") ? loadWishlist() : [];
+        const label = flag + " " + city;
+        if (!a.some((x) => x.toLowerCase() === label.toLowerCase())) a.push(label);
+        if (typeof saveWishlist === "function") saveWishlist(a);
+        if (typeof renderWishlist === "function") renderWishlist();
+        renderInspo();
+        if (typeof toast === "function") toast("🌠", city + " ajoutée à tes envies !");
+      });
     }
     // Bucket-list de destinations de rêve (locale)
     function loadWishlist() { try { return JSON.parse(localStorage.getItem("sm_wishlist") || "[]") || []; } catch (e) { return []; } }
