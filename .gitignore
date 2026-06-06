@@ -19,3 +19,9 @@ desktop.ini
 *.key
 *.pem
 secrets.*
+
+node_modules/
+package.json
+package-lock.json
+_shot.js
+_home_top.png

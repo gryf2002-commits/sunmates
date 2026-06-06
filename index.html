@@ -641,7 +641,7 @@
     .homemap-filters .chip.active { opacity: 1; }
     .homemap-filters .chip b { font-weight: 800; opacity: .85; }
     .homemap-wrap { position: relative; }
-    .homemap { height: 340px; border-radius: 14px; overflow: hidden; background: var(--cream); }
+    .homemap { height: 340px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
     /* Plein écran : TOUTE la carte (filtres + carte + légende) passe en plein écran */
     .homemap-fsclose { display: none; }
     .homemap-card.fs { position: fixed; inset: 0; z-index: var(--z-map-fs); margin: 0; border-radius: 0; padding: .55rem;
@@ -1322,7 +1322,8 @@
     #homeHello { color: var(--accent); }
     #homeHello .hello-name { color: var(--accent); }
     /* Série de jours (streak), gamification douce près du Bonjour */
-    .hello-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: .1rem; }
+    .hello-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: .1rem; flex-wrap: wrap; }
+    .hello-row #homeSubtitle { min-width: 0; flex: 1; }
     .streak-chip { flex-shrink: 0; display: inline-flex; align-items: center; gap: .25rem; font-size: .76rem; font-weight: 800;
       color: #B5740E; background: linear-gradient(135deg, rgba(255,201,60,.22), rgba(255,138,61,.18));
       border: 1px solid rgba(201,138,30,.3); border-radius: 999px; padding: .28rem .6rem; cursor: pointer; white-space: nowrap; }
