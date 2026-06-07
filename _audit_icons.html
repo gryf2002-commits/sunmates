@@ -1,0 +1,15 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+ body{margin:0;width:760px;font-family:Manrope,sans-serif;background:#fcefe6;padding:20px;display:flex;flex-wrap:wrap;gap:10px}
+ .it{width:108px;text-align:center}
+ .box{width:72px;height:72px;border-radius:18px;margin:0 auto 4px;display:grid;place-items:center;background:radial-gradient(120% 90% at 30% 22%,#fff,#ffd9b8 75%,#ffcaa3);box-shadow:0 6px 14px rgba(255,138,61,.3)}
+ .it span{font-size:.74rem;font-weight:700;color:#5c5560}
+</style></head><body>
+<div id="g"></div>
+<script src="sunmates-icons.js?v=1"></script>
+<script>
+ var names=["coffee","eco","near","rating","popular","quest","games","medal","coupon","rank","shop","search","bell","firstaid","safetravel","report","history","contact","users","shieldsafe","usersolo","crown","phone","signal","alert","aid","chat"];
+ document.body.querySelector('#g')||document.body.insertAdjacentHTML('afterbegin','');
+ document.body.innerHTML = names.map(function(n){return '<div class="it"><div class="box">'+SMIcon(n,{size:48})+'</div><span>'+n+'</span></div>';}).join('');
+</script></body></html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SunMates — Accueil (redesign)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#fcefe6;
+    --bg-glow:radial-gradient(130% 70% at 50% -8%, #ffe7cf 0%, #fdeadf 38%, #fbe9e3 100%);
+    --paper:#fffdfa;
+    --ink:#2a2230;        /* encre chaude, jamais noir pur */
+    --text:#6a6168;
+    --muted:#a99fa6;
+    --accent:#FF5A4D;
+    --accent-2:#FF8A3D;
+    --grad:linear-gradient(135deg,#FF9D3D 0%,#FF6A4D 60%,#FF5A4D 100%); /* signature, usage parcimonieux */
+    --gold:#F5B638;
+    --teal:#1FA97A;
+    --line:rgba(120,80,70,.10);
+    --sh-sm:0 4px 14px rgba(214,96,74,.10);
+    --sh:0 12px 30px rgba(214,96,74,.13);
+    --sh-pop:0 18px 44px rgba(214,96,74,.20);
+    --r:18px; --r-lg:24px; --r-pill:999px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;width:390px;font-family:"Manrope",system-ui,sans-serif;color:var(--text);
+    background:var(--bg-glow),var(--bg);min-height:844px;padding-bottom:88px;
+    -webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:"Fraunces",serif;color:var(--ink);margin:0;line-height:1.1}
+  .ic{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:block}
+
+  /* ---------- Top bar ---------- */
+  .top{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.1rem .4rem}
+  .word{display:flex;align-items:center;gap:.5rem;font-family:"Fraunces",serif;font-weight:700;font-size:1.32rem;color:var(--ink)}
+  .word .mark{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;box-shadow:var(--sh-sm)}
+  .word .mark svg{width:18px;height:18px;stroke:#fff;stroke-width:2.4;fill:none}
+  .word b{color:var(--accent);font-weight:700}
+  .top-actions{display:flex;gap:.5rem}
+  .iconbtn{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);background:var(--paper);
+    color:var(--ink);display:grid;place-items:center;box-shadow:var(--sh-sm);position:relative}
+  .iconbtn .dot{position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:2px solid var(--paper)}
+
+  /* ---------- Greeting ---------- */
+  .greet{padding:.6rem 1.1rem .2rem;display:flex;align-items:flex-end;justify-content:space-between;gap:.6rem}
+  .greet h1{font-size:1.9rem;font-weight:700}
+  .greet h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .greet .sub{font-size:.86rem;color:var(--muted);margin-top:.15rem}
+  .streak{display:inline-flex;align-items:center;gap:.32rem;background:var(--grad);color:#fff;font-weight:800;
+    font-size:.8rem;padding:.38rem .6rem;border-radius:var(--r-pill);box-shadow:var(--sh-sm);white-space:nowrap}
+  .streak svg{width:15px;height:15px;stroke:#fff;fill:rgba(255,255,255,.25);stroke-width:2}
+
+  /* ---------- Segmented ---------- */
+  .seg{display:flex;gap:.3rem;margin:.9rem 1.1rem 0;background:var(--paper);border:1px solid var(--line);
+    padding:.32rem;border-radius:var(--r-pill);box-shadow:var(--sh-sm)}
+  .seg button{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;border:none;background:none;
+    font-family:"Manrope";font-weight:700;font-size:.9rem;color:var(--muted);padding:.6rem;border-radius:var(--r-pill);cursor:pointer}
+  .seg button.on{background:var(--grad);color:#fff;box-shadow:var(--sh-sm)}
+  .seg button .ic{width:17px;height:17px;stroke-width:2.2}
+
+  /* ---------- Search ---------- */
+  .search{display:flex;align-items:center;gap:.6rem;margin:.8rem 1.1rem 0;background:var(--paper);
+    border:1px solid var(--line);border-radius:var(--r);padding:.85rem 1rem;box-shadow:var(--sh-sm);color:var(--muted)}
+  .search input{border:none;background:none;flex:1;font-family:"Manrope";font-size:.92rem;color:var(--ink);outline:none}
+  .search .ic{color:var(--accent)}
+
+  /* ---------- Section ---------- */
+  .sec{margin-top:1.4rem;padding:0 1.1rem}
+  .sec-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
+  .sec-h h2{font-size:1.18rem;font-weight:700}
+  .sec-h a{display:inline-flex;align-items:center;gap:.15rem;color:var(--accent);font-weight:700;font-size:.82rem;text-decoration:none}
+  .sec-h a svg{width:15px;height:15px;stroke-width:2.4}
+
+  /* filter chips */
+  .chips{display:flex;gap:.45rem;overflow-x:auto;padding-bottom:.2rem;margin:0 -1.1rem .9rem;padding-left:1.1rem;padding-right:1.1rem;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{display:inline-flex;align-items:center;gap:.34rem;white-space:nowrap;background:var(--paper);border:1px solid var(--line);
+    color:var(--text);font-weight:700;font-size:.82rem;padding:.5rem .8rem;border-radius:var(--r-pill);box-shadow:var(--sh-sm)}
+  .chip.on{background:#2a2230;color:#fff;border-color:#2a2230}
+  .chip .ic{width:15px;height:15px;stroke-width:2.2}
+  .chip.on .ic{color:#ffd9a0}
+
+  /* mates row */
+  .mates{display:flex;gap:.7rem;overflow-x:auto;margin:0 -1.1rem;padding:.2rem 1.1rem .4rem;scrollbar-width:none}
+  .mates::-webkit-scrollbar{display:none}
+  .mate{flex:0 0 auto;width:112px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+    padding:.7rem .6rem;text-align:center;box-shadow:var(--sh-sm)}
+  .mate .avwrap{position:relative;width:60px;height:60px;margin:0 auto .5rem}
+  .mate img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2.5px solid #fff;box-shadow:var(--sh-sm)}
+  .mate .verif{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:var(--teal);
+    border:2.5px solid var(--paper);display:grid;place-items:center}
+  .mate .verif svg{width:12px;height:12px;stroke:#fff;stroke-width:3;fill:none}
+  .mate .nm{font-weight:800;color:var(--ink);font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mate .mt{font-size:.72rem;color:var(--muted)}
+  .mate .compat{margin-top:.4rem;font-size:.7rem;font-weight:800;color:var(--accent);background:#fff1ec;border-radius:var(--r-pill);padding:.16rem 0}
+
+  /* place cards (vraies photos = utile ici) */
+  .place{display:flex;gap:.8rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+    padding:.6rem;box-shadow:var(--sh-sm);margin-bottom:.7rem;align-items:center}
+  .place .ph{width:74px;height:74px;border-radius:14px;object-fit:cover;flex:0 0 auto;background:#f3e3da}
+  .place .body{flex:1;min-width:0}
+  .place .nm{font-weight:800;color:var(--ink);font-size:.96rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .place .meta{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--muted);margin-top:.2rem}
+  .place .meta .it{display:inline-flex;align-items:center;gap:.22rem}
+  .place .meta .it svg{width:13px;height:13px;stroke-width:2.2}
+  .place .tags{display:flex;gap:.35rem;margin-top:.45rem}
+  .tag{display:inline-flex;align-items:center;gap:.25rem;font-size:.7rem;font-weight:700;padding:.2rem .5rem;border-radius:var(--r-pill)}
+  .tag.eco{background:#e7f6ef;color:var(--teal)}
+  .tag.star{background:#fff5e1;color:#b9821a}
+  .tag svg{width:12px;height:12px;stroke-width:2.4}
+  .place .go{width:34px;height:34px;border-radius:11px;border:1px solid var(--line);display:grid;place-items:center;color:var(--accent);flex:0 0 auto}
+  .place .go svg{width:17px;height:17px;stroke-width:2.4}
+
+  /* quête du jour : la SEULE grosse touche de gradient */
+  .quest{margin:1.3rem 1.1rem 0;border-radius:var(--r-lg);background:var(--grad);color:#fff;padding:1.1rem 1.15rem;
+    box-shadow:var(--sh-pop);position:relative;overflow:hidden}
+  .quest::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.13)}
+  .quest .lbl{display:inline-flex;align-items:center;gap:.3rem;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;opacity:.95}
+  .quest .lbl svg{width:14px;height:14px;stroke:#fff;fill:rgba(255,255,255,.3);stroke-width:2}
+  .quest h3{color:#fff;font-size:1.2rem;font-weight:700;margin:.35rem 0 .2rem}
+  .quest p{font-size:.84rem;opacity:.95;margin:0 0 .9rem;position:relative}
+  .quest .cta{display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:var(--accent);font-weight:800;
+    font-size:.86rem;padding:.55rem .95rem;border-radius:var(--r-pill);position:relative}
+  .quest .cta svg{width:15px;height:15px;stroke-width:2.6}
+
+  /* ---------- Bottom nav ---------- */
+  .nav{position:fixed;left:0;right:0;bottom:0;width:390px;margin:0 auto;background:rgba(255,253,250,.86);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);
+    display:flex;justify-content:space-around;padding:.5rem .3rem calc(.5rem + env(safe-area-inset-bottom))}
+  .nav button{border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:.18rem;
+    color:var(--muted);font-family:"Manrope";font-weight:700;font-size:.66rem;padding:.3rem .5rem;border-radius:13px;cursor:pointer}
+  .nav button .ic{width:23px;height:23px;stroke-width:2}
+  .nav button.on{color:var(--accent)}
+  .nav button.on .ic{stroke-width:2.4}
+
+  /* sprite caché */
+  .hidden-defs{position:absolute;width:0;height:0}
+</style>
+</head>
+<body>
+
+<!-- ===== sprite d'icônes (Lucide) ===== -->
+<svg class="hidden-defs" xmlns="http://www.w3.org/2000/svg">
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></symbol>
+ <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+ <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+ <symbol id="i-plane" viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></symbol>
+ <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+ <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+ <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+ <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.1 6.4-6.4 2.1 2.1-6.4 6.4-2.1z"/></symbol>
+ <symbol id="i-check-c" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+ <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></symbol>
+ <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+ <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></symbol>
+ <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+ <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+ <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+</svg>
+
+<!-- ===== Top bar ===== -->
+<div class="top">
+  <div class="word"><span class="mark"><svg><use href="#i-sun"/></svg></span>Sun<b>Mates</b></div>
+  <div class="top-actions">
+    <button class="iconbtn"><svg class="ic"><use href="#i-sun"/></svg></button>
+    <button class="iconbtn"><svg class="ic"><use href="#i-bell"/></svg><span class="dot"></span></button>
+  </div>
+</div>
+
+<!-- ===== Greeting ===== -->
+<div class="greet">
+  <div>
+    <h1>Bonjour <span>Chloé</span></h1>
+    <div class="sub">Regarde qui traîne dans le coin</div>
+  </div>
+  <span class="streak"><svg><use href="#i-flame"/></svg> 2 jours</span>
+</div>
+
+<!-- ===== Segmented ===== -->
+<div class="seg">
+  <button class="on"><svg class="ic"><use href="#i-plane"/></svg> En voyage</button>
+  <button><svg class="ic"><use href="#i-home"/></svg> À la maison</button>
+</div>
+
+<!-- ===== Search ===== -->
+<div class="search">
+  <svg class="ic"><use href="#i-search"/></svg>
+  <input placeholder="Rechercher un lieu ou un·e voyageur·se" />
+</div>
+
+<!-- ===== Explore : chips ===== -->
+<div class="sec">
+  <div class="sec-h">
+    <h2>Explore autour de toi</h2>
+    <a href="#">Plein écran <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-arrow"/></svg></a>
+  </div>
+  <div class="chips">
+    <span class="chip on"><svg class="ic"><use href="#i-pin"/></svg> Lieux</span>
+    <span class="chip"><svg class="ic"><use href="#i-users"/></svg> Mates</span>
+    <span class="chip"><svg class="ic"><use href="#i-compass"/></svg> Activités</span>
+    <span class="chip"><svg class="ic"><use href="#i-check-c"/></svg> Check-ins</span>
+  </div>
+</div>
+
+<!-- ===== Mates autour de toi (vraies photos = utile) ===== -->
+<div class="sec" style="margin-top:.2rem">
+  <div class="sec-h">
+    <h2>Mates autour de toi</h2>
+    <a href="#">Tout voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
+  </div>
+  <div class="mates">
+    <div class="mate">
+      <div class="avwrap"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="" /><span class="verif"><svg><use href="#i-check"/></svg></span></div>
+      <div class="nm">Lina</div><div class="mt">24 · 800 m</div><div class="compat">92% match</div>
+    </div>
+    <div class="mate">
+      <div class="avwrap"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="" /><span class="verif"><svg><use href="#i-check"/></svg></span></div>
+      <div class="nm">Marco</div><div class="mt">27 · 1,2 km</div><div class="compat">88% match</div>
+    </div>
+    <div class="mate">
+      <div class="avwrap"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="" /></div>
+      <div class="nm">Sofia</div><div class="mt">23 · 2,0 km</div><div class="compat">81% match</div>
+    </div>
+    <div class="mate">
+      <div class="avwrap"><img src="https://randomuser.me/api/portraits/men/75.jpg" alt="" /><span class="verif"><svg><use href="#i-check"/></svg></span></div>
+      <div class="nm">Tom</div><div class="mt">29 · 2,4 km</div><div class="compat">76% match</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Lieux sûrs près de toi (vraies photos = utile) ===== -->
+<div class="sec">
+  <div class="sec-h">
+    <h2>Lieux sûrs près de toi</h2>
+    <a href="#">Carte <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
+  </div>
+
+  <div class="place">
+    <img class="ph" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&h=200&fit=crop&q=70&auto=format" alt="" />
+    <div class="body">
+      <div class="nm">Le Comptoir Solaire</div>
+      <div class="meta"><span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg> 450 m</span><span class="it">Café · Lisbonne</span></div>
+      <div class="tags"><span class="tag eco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-leaf"/></svg> Éco</span><span class="tag star"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><use href="#i-star"/></svg> 9,3</span></div>
+    </div>
+    <div class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></div>
+  </div>
+
+  <div class="place">
+    <img class="ph" src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop&q=70&auto=format" alt="" />
+    <div class="body">
+      <div class="nm">Sunset Coliving</div>
+      <div class="meta"><span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg> 1,1 km</span><span class="it">Co-living · Lisbonne</span></div>
+      <div class="tags"><span class="tag eco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-leaf"/></svg> Éco</span><span class="tag star"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><use href="#i-star"/></svg> 9,6</span></div>
+    </div>
+    <div class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></div>
+  </div>
+</div>
+
+<!-- ===== Quête du jour (signature gradient) ===== -->
+<div class="quest">
+  <div class="lbl"><svg><use href="#i-sparkles"/></svg> Quête du jour</div>
+  <h3>Pause Café Secrète ☕</h3>
+  <p>Trouve le café partenaire caché et fais-y un check-in avec un Mate. +15 XP</p>
+  <span class="cta">Relever le défi <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-arrow"/></svg></span>
+</div>
+
+<!-- ===== Bottom nav ===== -->
+<div class="nav">
+  <button class="on"><svg class="ic"><use href="#i-home"/></svg>Accueil</button>
+  <button><svg class="ic"><use href="#i-pin"/></svg>Lieux</button>
+  <button><svg class="ic"><use href="#i-sparkles"/></svg>Jeux</button>
+  <button><svg class="ic"><use href="#i-users"/></svg>Mates</button>
+  <button><svg class="ic"><use href="#i-shield"/></svg>Sécurité</button>
+  <button><svg class="ic"><use href="#i-user"/></svg>Profil</button>
+</div>
+
+</body>
+</html>

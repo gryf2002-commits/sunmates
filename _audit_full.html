@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;width:1080px;font-family:Manrope,sans-serif}
+ .pane{padding:26px 28px 34px}
+ .day{background:radial-gradient(125% 85% at 50% -12%, #ffe6d2 0%, #fdeee7 40%, #fbe9e4 100%), #fbeee9;color:#1d2230}
+ .night{background:radial-gradient(125% 85% at 50% -12%, #2a1d3e 0%, #1d1430 50%, #171026 100%), #171026;color:#f3ecf6}
+ h1{font-family:Fraunces,serif;font-size:1.5rem;margin:0 0 2px}
+ .sub{opacity:.6;font-size:.85rem;margin:0 0 20px}
+ h2{font-family:Fraunces,serif;font-size:1rem;margin:22px 0 12px;opacity:.85}
+ .grid{display:grid;grid-template-columns:repeat(8,1fr);gap:14px 10px}
+ .it{text-align:center}
+ .it .nm{font-size:.66rem;font-weight:700;opacity:.6;margin-top:5px}
+ /* ---- tuile-joyau (copie fidèle index.html) ---- */
+ .cic{width:62px;height:62px;border-radius:18px;margin:0 auto;display:grid;place-items:center;position:relative;isolation:isolate;overflow:hidden;border:none;
+   background:radial-gradient(120% 90% at 28% 22%, rgba(255,255,255,.42), rgba(255,255,255,0) 42%), linear-gradient(135deg, var(--c1,#FF8A3D), var(--c2,#FF5A4D));
+   box-shadow:0 7px 15px -4px rgba(255,90,77,.5), 0 2px 4px rgba(180,60,40,.3), inset 0 1px 1px rgba(255,246,236,.85), inset 0 -2px 3px rgba(150,45,30,.32)}
+ .cic::after{content:"";position:absolute;left:8%;right:8%;top:6%;height:42%;border-radius:50% 50% 60% 60%/70% 70% 100% 100%;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.04));pointer-events:none;z-index:0}
+ .cic svg{display:block;position:relative;z-index:1}
+ [data-smicon="quest"]{--c1:#FF7A4D;--c2:#FF5238}[data-smicon="games"]{--c1:#8a5cff;--c2:#6638d6}[data-smicon="medal"]{--c1:#E8A33A;--c2:#A8500F}[data-smicon="coupon"]{--c1:#FF6FA5;--c2:#E84D86}[data-smicon="rank"]{--c1:#5E74E8;--c2:#3641B8}[data-smicon="shop"]{--c1:#FF5A8A;--c2:#C43A8A}[data-smicon="coffee"]{--c1:#E89A4E;--c2:#A85A1C}[data-smicon="eco"]{--c1:#34C98F;--c2:#0E9E6B}[data-smicon="near"]{--c1:#FF9A3D;--c2:#FF6A1F}[data-smicon="rating"]{--c1:#FFB23D;--c2:#E07E12}[data-smicon="popular"]{--c1:#FF5A4D;--c2:#E83247}[data-smicon="trip"]{--c1:#FF8A4D;--c2:#FF5A4D}
+ [data-smicon="users"]{--c1:#9b7bff;--c2:#6a4fe0}[data-smicon="shieldsafe"]{--c1:#1FB38C;--c2:#0C7E6E}[data-smicon="usersolo"]{--c1:#FF9A5C;--c2:#E8631F}[data-smicon="crown"]{--c1:#8a5cff;--c2:#5028b0}[data-smicon="phone"]{--c1:#2BC48A;--c2:#15897A}[data-smicon="signal"]{--c1:#FFC04E;--c2:#E8901F}[data-smicon="alert"]{--c1:#FF4D4D;--c2:#D81E2A}[data-smicon="aid"]{--c1:#FF7A4D;--c2:#FF9A3D}[data-smicon="chat"]{--c1:#7a8cff;--c2:#5560f0}
+ /* warm-style sur carte */
+ .card{width:62px;height:62px;border-radius:16px;margin:0 auto;display:grid;place-items:center;background:var(--cardbg);box-shadow:0 4px 10px rgba(120,80,70,.12)}
+ .day .card{--cardbg:#fff}.night .card{--cardbg:#221a33}
+</style></head><body>
+
+<div class="pane day">
+ <h1>Audit visuel — JOUR</h1>
+ <p class="sub">Toutes les icônes sur leur vraie tuile-joyau · pipeline SMIconRender réel · zéro ivoire</p>
+ <h2>Tuiles-joyaux (icône or métallique sur dégradé sunset)</h2>
+ <div class="grid" id="g-tiles-d"></div>
+ <h2>Icônes chaudes (sur carte)</h2>
+ <div class="grid" id="g-warm-d"></div>
+</div>
+
+<div class="pane night">
+ <h1>Audit visuel — NUIT</h1>
+ <p class="sub">Mêmes icônes, thème sombre · vérif contraste/lisibilité</p>
+ <h2>Tuiles-joyaux</h2>
+ <div class="grid" id="g-tiles-n"></div>
+ <h2>Icônes chaudes (sur carte)</h2>
+ <div class="grid" id="g-warm-n"></div>
+</div>
+
+<script src="sunmates-icons.js?v=1"></script>
+<script>
+ var TILES=["quest","games","medal","coupon","rank","shop","coffee","eco","near","rating","popular","trip","users","shieldsafe","usersolo","crown","phone","signal","alert","aid","chat"];
+ var WARM=["search","bell","firstaid","safetravel","report","history","contact"];
+ function tile(n){return '<div class="it"><div class="cic" data-smicon="'+n+'"></div><div class="nm">'+n+'</div></div>';}
+ function warm(n){return '<div class="it"><div class="card">'+SMIcon(n,{size:40})+'</div><div class="nm">'+n+'</div></div>';}
+ document.getElementById('g-tiles-d').innerHTML=TILES.map(tile).join('');
+ document.getElementById('g-tiles-n').innerHTML=TILES.map(tile).join('');
+ document.getElementById('g-warm-d').innerHTML=WARM.map(warm).join('');
+ document.getElementById('g-warm-n').innerHTML=WARM.map(warm).join('');
+ if(window.SMIconRender)SMIconRender();
+</script></body></html>

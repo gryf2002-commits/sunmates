@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SunMates — Badge héros (craft v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  body{margin:0;width:720px;font-family:"Manrope",sans-serif;
+    background:radial-gradient(130% 70% at 50% -8%, #ffe7cf 0%, #fdeadf 42%, #fbe9e3 100%) , #fcefe6;
+    padding:40px 30px 56px;color:#6a6168}
+  h1{font-family:"Fraunces",serif;color:#2a2230;font-size:1.7rem;margin:0 0 4px}
+  .sub{color:#a99fa6;font-size:.95rem;margin:0 0 26px}
+  .row{display:flex;gap:26px;justify-content:center;align-items:flex-start}
+  .badge{width:310px;text-align:center}
+  .badge svg{width:310px;height:340px;display:block;margin:0 auto}
+  .bd{font-size:.84rem;color:#a99fa6;margin-top:4px}
+</style>
+</head>
+<body>
+<h1>Badge héros — niveau « collection » (itération 2)</h1>
+<p class="sub">Or anisotrope · sertissage (ombre interne) · cabochon bombé (rim-light) · rivets demi-sphères · grain émaillé · halo · micro-soleil gravé (sceau).</p>
+
+<!-- ============ DÉFS PARTAGÉES (cadre réutilisable) ============ -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="gold-base" x1="0" y1="0" x2=".35" y2="1">
+    <stop offset="0" stop-color="#FFF7D8"/><stop offset=".22" stop-color="#FFDD70"/>
+    <stop offset=".48" stop-color="#E89A2C"/><stop offset=".70" stop-color="#B9701A"/><stop offset="1" stop-color="#E8B64A"/>
+  </linearGradient>
+  <radialGradient id="gold-aniso" cx="50%" cy="50%" r="50%">
+    <stop offset=".70" stop-color="#fff" stop-opacity="0"/><stop offset=".80" stop-color="#fff" stop-opacity=".5"/>
+    <stop offset=".84" stop-color="#fff" stop-opacity="0"/><stop offset=".90" stop-color="#7a4a10" stop-opacity=".4"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="rivet" cx="35%" cy="30%" r="70%">
+    <stop offset="0" stop-color="#FFFBEA"/><stop offset=".5" stop-color="#F0C24E"/><stop offset="1" stop-color="#8A5510"/>
+  </radialGradient>
+  <radialGradient id="cab-spec" cx="36%" cy="28%" r="34%">
+    <stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="cab-rim" cx="50%" cy="90%" r="58%">
+    <stop offset=".58" stop-color="#fff" stop-opacity="0"/><stop offset=".9" stop-color="#FFE6B0" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="inner-shadow" x="-25%" y="-25%" width="150%" height="150%">
+    <feOffset dx="0" dy="2" in="SourceAlpha" result="off"/>
+    <feGaussianBlur in="off" stdDeviation="4" result="blur"/>
+    <feComposite in="blur" in2="SourceAlpha" operator="out" result="inner"/>
+    <feFlood flood-color="#7a2e12" flood-opacity=".5"/>
+    <feComposite in2="inner" operator="in" result="shadow"/>
+    <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shadow"/></feMerge>
+  </filter>
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0"/></filter>
+  <filter id="drop" x="-45%" y="-45%" width="190%" height="190%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#7a2e12" flood-opacity=".42"/>
+  </filter>
+  <clipPath id="disc"><circle cx="150" cy="150" r="82"/></clipPath>
+</defs></svg>
+
+<div class="row">
+
+  <!-- ============ GLOBE-TROTTER ============ -->
+  <div class="badge">
+    <svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gt-sky" cx="50%" cy="36%" r="66%"><stop offset="0" stop-color="#FFF0C2"/><stop offset=".45" stop-color="#FFC06A"/><stop offset=".8" stop-color="#FF7E4D"/><stop offset="1" stop-color="#E85537"/></radialGradient>
+        <radialGradient id="gt-sphere" cx="38%" cy="32%" r="78%"><stop offset="0" stop-color="#EAFBF5"/><stop offset=".4" stop-color="#86E6CE"/><stop offset=".82" stop-color="#1F9E8C"/><stop offset="1" stop-color="#0E5F57"/></radialGradient>
+        <radialGradient id="gt-atmo" cx="50%" cy="50%" r="50%"><stop offset=".66" stop-color="#FFE6B0" stop-opacity="0"/><stop offset="1" stop-color="#FFE6B0" stop-opacity=".85"/></radialGradient>
+        <radialGradient id="gt-halo" cx="50%" cy="44%" r="55%"><stop offset="0" stop-color="#FFE3A0" stop-opacity=".85"/><stop offset=".6" stop-color="#FFB066" stop-opacity=".3"/><stop offset="1" stop-color="#FFB066" stop-opacity="0"/></radialGradient>
+        <linearGradient id="gt-ribbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A4D"/><stop offset="1" stop-color="#E84E3D"/></linearGradient>
+      </defs>
+
+      <!-- 1. halo -->
+      <circle cx="150" cy="150" r="150" fill="url(#gt-halo)"/>
+
+      <g filter="url(#drop)">
+        <!-- 3. ruban (queue d'aronde + plis ombrés) -->
+        <path d="M96 256 H204 L210 312 L150 290 L90 312 Z" fill="#C53A2B"/>
+        <path d="M96 256 H204 L210 312 L150 290 L90 312 Z" fill="url(#gt-ribbon)" opacity=".55"/>
+        <path d="M96 256 L112 256 L101 274 Z" fill="#9e2418" opacity=".6"/>
+        <path d="M204 256 L188 256 L199 274 Z" fill="#9e2418" opacity=".6"/>
+        <rect x="74" y="248" width="152" height="38" rx="12" fill="url(#gt-ribbon)" stroke="#b23a2e" stroke-width="1.5"/>
+        <rect x="78" y="252" width="144" height="9" rx="4.5" fill="#fff" opacity=".2"/>
+        <text x="150" y="273" text-anchor="middle" font-family="Fraunces, serif" font-weight="900" font-size="16.5" fill="#fff" letter-spacing=".5">GLOBE-TROTTER</text>
+
+        <!-- 4b. crête (gemme facettée + éclat) -->
+        <circle cx="150" cy="34" r="21" fill="url(#gold-base)"/><circle cx="150" cy="34" r="21" fill="url(#gold-aniso)"/>
+        <circle cx="150" cy="34" r="21" fill="none" stroke="#8f5410" stroke-width="1.5"/>
+        <polygon points="150,20 159,34 150,48 141,34" fill="#FF8A5C"/>
+        <polygon points="150,20 141,34 150,48" fill="#E0432F"/>
+        <circle cx="146" cy="29" r="2.4" fill="#fff" opacity=".8"/>
+
+        <!-- 4. anneau or anisotrope + arcs spéculaires + double liseré -->
+        <circle cx="150" cy="150" r="104" fill="url(#gold-base)"/>
+        <circle cx="150" cy="150" r="104" fill="url(#gold-aniso)"/>
+        <path d="M 78 86 A 104 104 0 0 1 220 70" fill="none" stroke="#FFFDF0" stroke-width="3.4" stroke-linecap="round" opacity=".95"/>
+        <path d="M 234 196 A 104 104 0 0 1 150 256" fill="none" stroke="#FFE9A8" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+        <circle cx="150" cy="150" r="104" fill="none" stroke="#FFF6D2" stroke-width="1.4" opacity=".8"/>
+        <circle cx="150" cy="150" r="86" fill="none" stroke="#6E430E" stroke-width="2.4" opacity=".55"/>
+
+        <!-- 5. rivets demi-sphères -->
+        <g>
+          <g><circle cx="150" cy="55.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="150" cy="55" r="4" fill="url(#rivet)"/><circle cx="148.6" cy="53.8" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="197.5" cy="68.2" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="197.5" cy="67.7" r="4" fill="url(#rivet)"/><circle cx="196.1" cy="66.5" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="232.3" cy="103" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="232.3" cy="102.5" r="4" fill="url(#rivet)"/><circle cx="230.9" cy="101.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="245" cy="150.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="245" cy="150" r="4" fill="url(#rivet)"/><circle cx="243.6" cy="148.8" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="232.3" cy="198" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="232.3" cy="197.5" r="4" fill="url(#rivet)"/><circle cx="230.9" cy="196.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="197.5" cy="232.8" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="197.5" cy="232.3" r="4" fill="url(#rivet)"/><circle cx="196.1" cy="231.1" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="102.5" cy="232.8" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="102.5" cy="232.3" r="4" fill="url(#rivet)"/><circle cx="101.1" cy="231.1" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="67.7" cy="198" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="67.7" cy="197.5" r="4" fill="url(#rivet)"/><circle cx="66.3" cy="196.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="55" cy="150.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="55" cy="150" r="4" fill="url(#rivet)"/><circle cx="53.6" cy="148.8" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="67.7" cy="103" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="67.7" cy="102.5" r="4" fill="url(#rivet)"/><circle cx="66.3" cy="101.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="102.5" cy="68.2" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="102.5" cy="67.7" r="4" fill="url(#rivet)"/><circle cx="101.1" cy="66.5" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="150" cy="245.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="150" cy="245" r="4" fill="url(#rivet)"/><circle cx="148.6" cy="243.8" r="1.2" fill="#fff" opacity=".9"/></g>
+        </g>
+
+        <!-- 6. disque émaillé serti (ombre interne) -->
+        <circle cx="150" cy="150" r="82" fill="url(#gt-sky)" filter="url(#inner-shadow)"/>
+
+        <!-- 7. scène (clippée au disque) -->
+        <g clip-path="url(#disc)">
+          <g fill="#FFF6D2"><circle cx="96" cy="100" r="1.8"/><circle cx="212" cy="106" r="2.4"/><circle cx="206" cy="176" r="1.6"/><circle cx="104" cy="190" r="1.5"/></g>
+          <circle cx="150" cy="152" r="58" fill="url(#gt-atmo)"/>
+          <circle cx="150" cy="152" r="48" fill="url(#gt-sphere)"/>
+          <g fill="none" stroke="#0E5F57" stroke-opacity=".32" stroke-width="1.6"><path d="M104 142c28 10 64 10 92 0M106 162c26 9 62 9 88 0"/><ellipse cx="150" cy="152" rx="18" ry="48"/></g>
+          <path d="M126 128c10-6 24-3 25 6s-13 9-9 17-12 11-19 5-9-22 3-28z" fill="#1F9E8C"/>
+          <path d="M125 127c10-6 24-3 25 6" fill="none" stroke="#BFF3E4" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          <path d="M170 164c9-2 17 3 16 10s-14 6-19 1-5-9 3-11z" fill="#16887A"/>
+          <path d="M150 104a48 48 0 0 1 0 96 34 48 0 0 0 0-96z" fill="#5a2418" opacity=".34"/>
+          <g transform="rotate(-24 150 152)">
+            <ellipse cx="150" cy="152" rx="74" ry="26" fill="none" stroke="#FFF3C4" stroke-width="2.4" opacity=".9"/>
+            <g transform="translate(224 152) rotate(95)"><path d="M0 -7l3 9-2 1 .4 5-1.4-1.6-1.4 1.6.4-5-2-1z" fill="#fff" stroke="#E79A2A" stroke-width=".6"/></g>
+          </g>
+          <path d="M198 118c2.2-2.4 6.4-1 6.4 2.2 0 2.6-3.6 4.6-6.4 7-2.8-2.4-6.4-4.4-6.4-7 0-3.2 4.2-4.6 6.4-2.2z" fill="#FF5A4D" stroke="#fff" stroke-width="1.2"/>
+          <!-- 8. grain émaillé -->
+          <circle cx="150" cy="150" r="82" fill="#fff" filter="url(#grain)"/>
+        </g>
+
+        <!-- 9. cabochon bombé -->
+        <circle cx="150" cy="150" r="82" fill="url(#cab-rim)"/>
+        <ellipse cx="126" cy="112" rx="36" ry="22" fill="url(#cab-spec)"/>
+        <ellipse cx="122" cy="106" rx="9" ry="5" fill="#fff" opacity=".9"/>
+
+        <!-- 10. micro-soleil gravé (sceau de collection) -->
+        <g>
+          <path d="M137 230a13 13 0 0 1 26 0" fill="none" stroke="#7a4a10" stroke-width="2.2"/>
+          <path d="M137 229a13 13 0 0 1 26 0" fill="none" stroke="#FFF2C0" stroke-width=".8"/>
+          <g stroke="#7a4a10" stroke-width="1.5" stroke-linecap="round"><path d="M150 210v-6"/><path d="M133 215l-3-5"/><path d="M167 215l3-5"/></g>
+        </g>
+      </g>
+    </svg>
+    <div class="bd">Check-ins dans 10 villes · Exploration</div>
+  </div>
+
+  <!-- ============ NOCTAMBULE (mode nuit) ============ -->
+  <div class="badge">
+    <svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="nt-sky" cx="50%" cy="34%" r="68%"><stop offset="0" stop-color="#5b4a86"/><stop offset=".5" stop-color="#3a2d5e"/><stop offset="1" stop-color="#1d1633"/></radialGradient>
+        <radialGradient id="nt-moon" cx="38%" cy="34%" r="74%"><stop offset="0" stop-color="#FFFDF2"/><stop offset=".6" stop-color="#FBE9B8"/><stop offset="1" stop-color="#E7C06A"/></radialGradient>
+        <radialGradient id="nt-mglow" cx="50%" cy="50%" r="50%"><stop offset=".5" stop-color="#FFE9A8" stop-opacity="0"/><stop offset="1" stop-color="#FFE9A8" stop-opacity=".5"/></radialGradient>
+        <radialGradient id="nt-halo" cx="50%" cy="44%" r="55%"><stop offset="0" stop-color="#b9a6ff" stop-opacity=".7"/><stop offset=".6" stop-color="#7a5cff" stop-opacity=".25"/><stop offset="1" stop-color="#7a5cff" stop-opacity="0"/></radialGradient>
+        <linearGradient id="nt-ribbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C5CFF"/><stop offset="1" stop-color="#5A3BE0"/></linearGradient>
+      </defs>
+
+      <circle cx="150" cy="150" r="150" fill="url(#nt-halo)"/>
+
+      <g filter="url(#drop)">
+        <path d="M96 256 H204 L210 312 L150 290 L90 312 Z" fill="#4733b0"/>
+        <path d="M96 256 L112 256 L101 274 Z" fill="#2f2080" opacity=".6"/>
+        <path d="M204 256 L188 256 L199 274 Z" fill="#2f2080" opacity=".6"/>
+        <rect x="84" y="248" width="132" height="38" rx="12" fill="url(#nt-ribbon)" stroke="#4733b0" stroke-width="1.5"/>
+        <rect x="88" y="252" width="124" height="9" rx="4.5" fill="#fff" opacity=".2"/>
+        <text x="150" y="273" text-anchor="middle" font-family="Fraunces, serif" font-weight="900" font-size="16.5" fill="#fff" letter-spacing=".5">NOCTAMBULE</text>
+
+        <circle cx="150" cy="34" r="21" fill="url(#gold-base)"/><circle cx="150" cy="34" r="21" fill="url(#gold-aniso)"/><circle cx="150" cy="34" r="21" fill="none" stroke="#8f5410" stroke-width="1.5"/>
+        <path d="M150 22a11 11 0 1 0 9 16 9 9 0 0 1-9-16z" fill="#FFF3C4"/>
+
+        <circle cx="150" cy="150" r="104" fill="url(#gold-base)"/>
+        <circle cx="150" cy="150" r="104" fill="url(#gold-aniso)"/>
+        <path d="M 78 86 A 104 104 0 0 1 220 70" fill="none" stroke="#FFFDF0" stroke-width="3.4" stroke-linecap="round" opacity=".95"/>
+        <path d="M 234 196 A 104 104 0 0 1 150 256" fill="none" stroke="#FFE9A8" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+        <circle cx="150" cy="150" r="104" fill="none" stroke="#FFF6D2" stroke-width="1.4" opacity=".8"/>
+        <circle cx="150" cy="150" r="86" fill="none" stroke="#6E430E" stroke-width="2.4" opacity=".55"/>
+
+        <g>
+          <g><circle cx="150" cy="55.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="150" cy="55" r="4" fill="url(#rivet)"/><circle cx="148.6" cy="53.8" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="197.5" cy="68.2" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="197.5" cy="67.7" r="4" fill="url(#rivet)"/><circle cx="196.1" cy="66.5" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="232.3" cy="103" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="232.3" cy="102.5" r="4" fill="url(#rivet)"/><circle cx="230.9" cy="101.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="245" cy="150.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="245" cy="150" r="4" fill="url(#rivet)"/><circle cx="243.6" cy="148.8" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="232.3" cy="198" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="232.3" cy="197.5" r="4" fill="url(#rivet)"/><circle cx="230.9" cy="196.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="197.5" cy="232.8" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="197.5" cy="232.3" r="4" fill="url(#rivet)"/><circle cx="196.1" cy="231.1" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="102.5" cy="232.8" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="102.5" cy="232.3" r="4" fill="url(#rivet)"/><circle cx="101.1" cy="231.1" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="67.7" cy="198" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="67.7" cy="197.5" r="4" fill="url(#rivet)"/><circle cx="66.3" cy="196.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="55" cy="150.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="55" cy="150" r="4" fill="url(#rivet)"/><circle cx="53.6" cy="148.8" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="67.7" cy="103" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="67.7" cy="102.5" r="4" fill="url(#rivet)"/><circle cx="66.3" cy="101.3" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="102.5" cy="68.2" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="102.5" cy="67.7" r="4" fill="url(#rivet)"/><circle cx="101.1" cy="66.5" r="1.2" fill="#fff" opacity=".9"/></g>
+          <g><circle cx="150" cy="245.5" r="4.6" fill="#5e3a0c" opacity=".5"/><circle cx="150" cy="245" r="4" fill="url(#rivet)"/><circle cx="148.6" cy="243.8" r="1.2" fill="#fff" opacity=".9"/></g>
+        </g>
+
+        <circle cx="150" cy="150" r="82" fill="url(#nt-sky)" filter="url(#inner-shadow)"/>
+
+        <g clip-path="url(#disc)">
+          <g fill="#FFFDF2"><circle cx="100" cy="110" r="2"/><circle cx="118" cy="94" r="1.3"/><circle cx="208" cy="126" r="1.6"/><circle cx="196" cy="196" r="2.2"/><circle cx="110" cy="188" r="1.5"/></g>
+          <path d="M96 130l26-14" stroke="#FFFDF2" stroke-width="2" stroke-linecap="round" opacity=".75"/>
+          <circle cx="150" cy="150" r="54" fill="url(#nt-mglow)"/>
+          <circle cx="152" cy="148" r="40" fill="url(#nt-moon)"/>
+          <g fill="#E7C06A" opacity=".45"><circle cx="140" cy="138" r="6"/><circle cx="164" cy="156" r="8"/><circle cx="148" cy="166" r="4"/></g>
+          <g fill="#1d1633"><rect x="108" y="196" width="14" height="22"/><rect x="124" y="186" width="16" height="32"/><rect x="142" y="200" width="12" height="18"/><rect x="156" y="190" width="18" height="28"/><rect x="176" y="200" width="12" height="18"/></g>
+          <g fill="#FFD15C" opacity=".85"><rect x="128" y="192" width="3" height="3"/><rect x="134" y="198" width="3" height="3"/><rect x="160" y="196" width="3" height="3"/></g>
+          <circle cx="150" cy="150" r="82" fill="#fff" filter="url(#grain)"/>
+        </g>
+
+        <circle cx="150" cy="150" r="82" fill="url(#cab-rim)"/>
+        <ellipse cx="126" cy="112" rx="36" ry="22" fill="url(#cab-spec)"/>
+        <ellipse cx="122" cy="106" rx="9" ry="5" fill="#fff" opacity=".85"/>
+
+        <g>
+          <path d="M137 230a13 13 0 0 1 26 0" fill="none" stroke="#7a4a10" stroke-width="2.2"/>
+          <path d="M137 229a13 13 0 0 1 26 0" fill="none" stroke="#FFF2C0" stroke-width=".8"/>
+          <g stroke="#7a4a10" stroke-width="1.5" stroke-linecap="round"><path d="M150 210v-6"/><path d="M133 215l-3-5"/><path d="M167 215l3-5"/></g>
+        </g>
+      </g>
+    </svg>
+    <div class="bd">5 activités en soirée · Accomplissement</div>
+  </div>
+
+</div>
+</body>
+</html>

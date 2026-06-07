@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+ :root{--accent:#FF5A4D;--accent-2:#FF8A3D;--accent-3:#FFC93C;--accent-grad:linear-gradient(135deg,#FFC93C 0%,#FF8A3D 45%,#FF5A4D 100%);--accent-soft:#fdeceb;--ink:#1d2230;--text:#454b59;--muted:#9aa0ac;--card:#fff;--line:#f0e6e4;--radius:22px;--radius-sm:14px;--radius-lg:28px;--shadow:0 14px 40px rgba(255,90,77,.12),0 4px 12px rgba(20,20,40,.05);--shadow-sm:0 6px 18px rgba(20,20,40,.06);--shadow-pop:0 18px 50px rgba(255,90,77,.22);}
+ body.theme-dusk{--ink:#f3ecf6;--text:#ded3e6;--muted:#a99fbe;--card:#221a33;--line:#34294d;--accent-soft:#2b2240;}
+ *{box-sizing:border-box} h3{font-family:Fraunces,serif;color:var(--ink);font-size:1.05rem}
+ .wrap{width:430px;padding:18px;font-family:Manrope,sans-serif}
+ .day{background:radial-gradient(125% 85% at 50% -12%,#ffe6d2,#fdeee7 40%,#fbe9e4)}
+ .night{background:radial-gradient(125% 70% at 50% -8%,#2a1d3e,#1d1430 50%,#171026)}
+ h1.hl{font-family:Fraunces,serif;color:var(--ink);font-size:1.5rem;margin:.2rem 0 .1rem}
+ .sub{color:var(--muted);font-size:.86rem;margin:0 0 .8rem}
+/* ====== HOME v2 CSS (copie fidèle) ====== */
+.player-hero{position:relative;overflow:hidden;border-radius:var(--radius-lg);padding:1.1rem 1.15rem 1.25rem;margin:.2rem 0 1rem;background:radial-gradient(120% 130% at 18% -10%,rgba(255,255,255,.30),rgba(255,255,255,0) 46%),var(--accent-grad);box-shadow:var(--shadow-pop);color:#fff;isolation:isolate}
+.player-hero .ph-glow{position:absolute;z-index:-1;inset:auto auto 0 0;width:200px;height:200px;left:-40px;bottom:-70px;background:radial-gradient(circle,rgba(255,201,60,.55),rgba(255,201,60,0) 70%);filter:blur(6px)}
+.ph-top{display:flex;align-items:center;gap:.8rem}
+.ph-avatar{position:relative;flex-shrink:0;width:60px;height:60px}
+.ph-av-emoji{display:grid;place-items:center;width:60px;height:60px;font-size:30px;border-radius:50%;background:rgba(255,255,255,.18);box-shadow:inset 0 2px 6px rgba(255,255,255,.4),inset 0 -8px 16px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.18);border:2px solid rgba(255,255,255,.55)}
+.ph-lvl-ring{position:absolute;right:-6px;bottom:-6px;min-width:26px;height:26px;padding:0 5px;display:grid;place-items:center;font-family:Fraunces,serif;font-weight:900;font-size:.86rem;line-height:1;color:#8a3b00;background:linear-gradient(135deg,#FFF2C2,#FFD15C 55%,#E8961F);border-radius:999px;border:2px solid #fff;box-shadow:0 3px 8px rgba(184,90,18,.4)}
+.ph-id{flex:1;min-width:0}
+.ph-name{font-family:Fraunces,serif;font-weight:900;font-size:1.32rem;line-height:1.05;text-shadow:0 1px 2px rgba(120,40,0,.22)}
+.ph-title{font-size:.8rem;font-weight:700;opacity:.92;margin-top:.1rem}
+.ph-streak{flex-shrink:0;align-self:flex-start;display:inline-flex;align-items:center;gap:.2rem;min-height:38px;padding:.4rem .65rem;background:rgba(255,255,255,.20);border:1.5px solid rgba(255,255,255,.4);border-radius:999px;color:#fff;font-weight:800;font-size:.9rem}
+.ph-streak-fire{font-size:1rem}
+.ph-xp{margin-top:1rem}
+.ph-xp-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem}
+.ph-xp-lbl{font-weight:800;font-size:.82rem;opacity:.95}.ph-xp-val{font-size:.82rem;opacity:.95}.ph-xp-val b{font-family:Fraunces,serif;font-weight:900;font-size:.95rem}
+.ph-xp-track{height:12px;border-radius:999px;background:rgba(120,40,10,.28);box-shadow:inset 0 1px 3px rgba(0,0,0,.28);overflow:hidden}
+.ph-xp-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#FFF2C2,#FFD15C 60%,#FFE9A8);box-shadow:0 0 10px rgba(255,209,92,.7)}
+.ph-xp-next{display:flex;align-items:center;gap:.4rem;margin-top:.55rem;font-size:.8rem;opacity:.96}.ph-next-ic{font-size:1rem}
+.quest-spotlight{position:relative;overflow:hidden;border-radius:var(--radius);padding:1.05rem 1.1rem 1.1rem;margin:0 0 1rem;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);isolation:isolate}
+.quest-spotlight::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent-grad)}
+.qs-aura{position:absolute;z-index:-1;right:-50px;top:-50px;width:170px;height:170px;background:radial-gradient(circle,rgba(255,138,61,.32),rgba(255,138,61,0) 70%)}
+.theme-dusk .qs-aura{background:radial-gradient(circle,rgba(255,154,141,.30),rgba(255,154,141,0) 70%)}
+.qs-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.7rem;padding-left:.4rem}
+.qs-pill{display:inline-flex;align-items:center;gap:.2rem;font-weight:800;font-size:.74rem;color:#fff;padding:.3rem .65rem;border-radius:999px;background:var(--accent-grad);box-shadow:0 4px 12px rgba(255,90,77,.32)}
+.qs-timer{font-size:.76rem;font-weight:700;color:var(--muted)}
+.qs-body{display:flex;align-items:flex-start;gap:.8rem;padding-left:.4rem}
+.qs-emblem{flex-shrink:0;width:58px;height:58px;display:grid;place-items:center;font-size:30px;border-radius:18px;background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),var(--accent-grad);box-shadow:0 8px 18px rgba(255,90,77,.30),inset 0 -8px 14px rgba(0,0,0,.12),inset 0 2px 3px rgba(255,255,255,.5)}
+.qs-title{margin:.1rem 0 .25rem!important;font-family:Fraunces,serif;font-weight:900;font-size:1.18rem;line-height:1.12;color:var(--ink)}
+.qs-desc{margin:0;font-size:.83rem;line-height:1.4;color:var(--text)}
+.qs-reward{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.85rem .4rem .9rem;font-size:.82rem;color:var(--text)}
+.qs-xp{font-weight:800;color:#B5740E;background:linear-gradient(135deg,rgba(255,209,92,.28),rgba(255,138,61,.18));padding:.22rem .55rem;border-radius:999px}.qs-xp b{font-family:Fraunces,serif;font-weight:900}.qs-dot{color:var(--muted)}.qs-badge-hint b{color:var(--ink);font-weight:800}
+.qs-mode{display:flex;gap:.2rem;padding:.22rem;background:var(--accent-soft);border-radius:999px;margin:0 .4rem .7rem}
+.qs-mode-btn{flex:1;min-height:40px;border:0;background:none;font-weight:800;font-size:.82rem;color:var(--accent);border-radius:999px;padding:.5rem}.qs-mode-btn i{font-style:normal;font-size:.7rem;opacity:.85}
+.qs-mode-btn.active{background:var(--accent-grad);color:#fff;box-shadow:0 6px 14px rgba(255,90,77,.3)}
+.theme-dusk .qs-mode{background:rgba(255,255,255,.06)}.theme-dusk .qs-mode-btn{color:var(--accent-2)}
+.qs-play{width:calc(100% - .8rem);margin:0 .4rem;min-height:48px;font-weight:800;font-size:1rem;color:#fff;border:0;border-radius:var(--radius-sm);background:var(--accent-grad);box-shadow:0 8px 20px rgba(255,90,77,.38)}
+.qm-strip,.badge-rail{margin:0 0 1rem}
+.qm-head{display:flex;align-items:baseline;justify-content:space-between;margin:.2rem 0 .55rem}.qm-head h3{margin:0}.qm-all{font-size:.82rem;font-weight:700;color:var(--accent)}
+.qm-rail{display:flex;gap:.6rem;overflow-x:auto;padding:.2rem .25rem .5rem;margin:0 -.25rem;scrollbar-width:none}.qm-rail::-webkit-scrollbar{display:none}
+.qm-card{flex:0 0 auto;width:118px;min-height:124px;display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;padding:.7rem .65rem;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-sm);text-align:left}
+.qm-ic{width:42px;height:42px;display:grid;place-items:center;font-size:22px;border-radius:13px;color:#fff;box-shadow:inset 0 -6px 12px rgba(0,0,0,.14),inset 0 2px 3px rgba(255,255,255,.45),0 5px 12px rgba(0,0,0,.12)}
+.qm-coral .qm-ic{background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(135deg,#FF8A3D,#FF5A4D)}
+.qm-teal .qm-ic{background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(135deg,#34c98f,#1f9e8c)}
+.qm-gold .qm-ic{background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.55),rgba(255,255,255,0) 55%),linear-gradient(135deg,#FFD15C,#E8961F)}
+.qm-violet .qm-ic{background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(135deg,#9b7bff,#7a5cff)}
+.qm-name{font-weight:800;font-size:.8rem;line-height:1.15;color:var(--ink)}
+.qm-xp{margin-top:auto;font-weight:800;font-size:.74rem;color:#B5740E;background:rgba(255,209,92,.22);padding:.12rem .45rem;border-radius:999px}
+.theme-dusk .qm-card{background:#2a2140;border-color:rgba(255,255,255,.08)}.theme-dusk .qm-xp{color:#FFD79A;background:rgba(255,209,92,.14)}
+.br-item{flex:0 0 auto;width:92px;display:flex;flex-direction:column;align-items:center;gap:.35rem}
+.br-medal{width:64px;height:64px;display:grid;place-items:center;font-size:30px;border-radius:50%;background:radial-gradient(circle at 36% 28%,#FFF2C2,#FFD15C 55%,#E8961F);box-shadow:inset 0 -8px 14px rgba(140,70,10,.3),inset 0 3px 4px rgba(255,255,255,.6),0 6px 14px rgba(184,90,18,.34);border:2px solid rgba(255,255,255,.7)}
+.br-lbl{font-size:.74rem;font-weight:800;color:var(--ink);text-align:center}.br-mini{font-size:.68rem;font-weight:700;color:var(--muted)}
+</style></head>
+<body style="margin:0;display:flex">
+<template id="tpl">
+  <h1 class="hl">Bonjour <span style="color:#FF5A4D">Chloé</span></h1>
+  <p class="sub">Paris t'attend, exploratrice 👀</p>
+  <section class="player-hero">
+    <div class="ph-glow"></div>
+    <div class="ph-top">
+      <div class="ph-avatar"><span class="ph-av-emoji">🧭</span><span class="ph-lvl-ring">7</span></div>
+      <div class="ph-id"><div class="ph-name">Chloé</div><div class="ph-title">Flâneur·se aguerri·e</div></div>
+      <button class="ph-streak"><span class="ph-streak-fire">🔥</span><b>5</b></button>
+    </div>
+    <div class="ph-xp">
+      <div class="ph-xp-head"><span class="ph-xp-lbl">Niveau 7</span><span class="ph-xp-val"><b>68</b> / 100 XP</span></div>
+      <div class="ph-xp-track"><div class="ph-xp-fill" style="width:68%"></div></div>
+      <div class="ph-xp-next"><span class="ph-next-ic">🚀</span><span>Plus que <b>32 XP</b> pour le niveau 8</span></div>
+    </div>
+  </section>
+  <section class="quest-spotlight">
+    <div class="qs-aura"></div>
+    <div class="qs-head"><span class="qs-pill">⚡ Quête du jour</span><span class="qs-timer">⏳ encore 9 h</span></div>
+    <div class="qs-body"><div class="qs-emblem">🗼</div><div class="qs-txt"><h3 class="qs-title">Photographie un monument</h3><p class="qs-desc">Tour Eiffel, Notre-Dame, Sacré-Cœur… capture-en un et partage-le.</p></div></div>
+    <div class="qs-reward"><span class="qs-xp"><b>+120</b> XP</span><span class="qs-dot">·</span><span class="qs-badge-hint">🏅 vise <b>Photographe</b></span></div>
+    <div class="qs-mode"><button class="qs-mode-btn active">🧭 Solo</button><button class="qs-mode-btn">👥 En groupe <i>+bonus</i></button></div>
+    <button class="qs-play">▶ Jouer cette quête</button>
+  </section>
+  <section class="qm-strip">
+    <div class="qm-head"><h3>Missions rapides ⚡</h3><a class="qm-all">Tout voir ›</a></div>
+    <div class="qm-rail">
+      <button class="qm-card qm-coral"><span class="qm-ic">🗣️</span><span class="qm-name">Parler à un·e inconnu·e</span><span class="qm-xp">+30 XP</span></button>
+      <button class="qm-card qm-teal"><span class="qm-ic">☕</span><span class="qm-name">Café avec un Mate</span><span class="qm-xp">+40 XP</span></button>
+      <button class="qm-card qm-gold"><span class="qm-ic">📸</span><span class="qm-name">Photo d'un monument</span><span class="qm-xp">+50 XP</span></button>
+      <button class="qm-card qm-violet"><span class="qm-ic">🧭</span><span class="qm-name">Explorer un quartier</span><span class="qm-xp">+60 XP</span></button>
+    </div>
+  </section>
+  <section class="badge-rail">
+    <div class="qm-head"><h3>À débloquer 🏅</h3><a class="qm-all">Collection ›</a></div>
+    <div class="qm-rail">
+      <div class="br-item"><div class="br-medal">📸</div><span class="br-lbl">Photographe</span></div>
+      <div class="br-item"><div class="br-medal">🥖</div><span class="br-lbl">Ami local</span></div>
+      <div class="br-item"><div class="br-medal">🗣️</div><span class="br-lbl">Polyglotte</span></div>
+    </div>
+  </section>
+</template>
+<div class="wrap day" id="d"></div>
+<div class="wrap night theme-dusk" id="n"></div>
+<script>
+ var html=document.getElementById('tpl').innerHTML;
+ document.getElementById('d').innerHTML=html;
+ document.getElementById('n').innerHTML=html;
+</script>
+</body></html>
