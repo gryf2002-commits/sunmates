@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=236"></script>
-  <script src="sunmates-icons.js?v=236"></script>
+  <script src="sunmates-badges.js?v=237"></script>
+  <script src="sunmates-icons.js?v=237"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1756,7 +1756,17 @@
     .hm-inspo-ttl { font-size: .72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
     .hm-inspo-city { font-weight: 800; font-size: 1.15rem; }
     .hm-inspo-desc { font-size: .84rem; color: var(--muted); margin-top: .4rem; line-height: 1.4; }
+    .solo-annex { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin: -.4rem 0 1rem; }
+    .sa-tile { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .6rem .3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-size: .68rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-sm); text-align: center; }
+    .sa-tile .sa-ic { font-size: 1.4rem; filter: var(--relief); }
+    .sa-tile:active { transform: scale(.95); }
     .hm-host { display: flex; gap: .8rem; align-items: center; }
+    .host-perks { display: flex; flex-direction: column; gap: .45rem; margin-top: .7rem; }
+    .host-perk { display: flex; align-items: center; gap: .6rem; font-size: .84rem; }
+    .host-perk > span { font-size: 1.3rem; flex-shrink: 0; filter: var(--relief); }
+    .host-perk div { display: flex; flex-direction: column; line-height: 1.2; }
+    .host-perk b { color: var(--ink); }
+    .host-perk div span { color: var(--muted); font-size: .78rem; }
     .hm-host-ic { font-size: 1.8rem; flex-shrink: 0; }
     .nt-set { display: flex; align-items: center; gap: .7rem; }
     .nt-ic { font-size: 1.8rem; flex-shrink: 0; }
@@ -2780,24 +2790,30 @@
           <div class="card hm-hero">
             <div class="hm-hero-ic">🏠</div>
             <div><div class="hm-hero-title" id="hmHomeCity">De retour chez toi</div>
-              <div class="muted" style="font-size:.84rem">Reste connecté·e, prépare ta prochaine aventure et fais découvrir ta ville 🌍</div></div>
+              <div class="muted" style="font-size:.84rem">Même chez toi, garde le lien 💛 papote avec tes Mates, accueille des voyageurs de passage et continue à sympathiser — pas besoin d'être parti·e pour vivre SunMates 🌍</div></div>
           </div>
 
           <!-- ============ MAISON v2 — Hub SOLO (l'app se suffit à elle-même) ============ -->
-          <section class="card solo-prog stat-click" id="soloProgress" aria-label="Ta progression solo" role="button" tabindex="0" title="Voir ma progression dans l'onglet Jeux">
+          <section class="card solo-prog stat-click" id="soloProgress" aria-label="Ta progression solo" role="button" tabindex="0" title="Toucher pour tes raccourcis">
             <div class="sp-aura" aria-hidden="true"></div>
             <div class="sp-head">
               <h3 class="sp-title">Ta progression solo</h3>
               <button class="sp-streak" id="spStreak" title="Ta série de jours d'affilée"><span class="sp-fire">🔥</span><b id="spStreakN">1</b></button>
             </div>
-            <!-- (Le NIVEAU et la barre d'XP vivent dans la vignette de l'onglet Jeux → ici, métriques SOLO uniquement, pas de doublon) -->
             <div class="sp-stats">
               <div class="sp-stat"><b id="spDone">0</b><span>Défis relevés</span></div>
               <div class="sp-stat"><b id="spRit">0/3</b><span>Rituels du jour</span></div>
               <div class="sp-stat"><b id="spXp">0</b><span>XP gagné</span></div>
             </div>
-            <p class="muted" style="margin:.2rem 0 0;font-size:.8rem">Ta ville, ton terrain de jeu 🧭 · relève des défis et grimpe au <b>Niveau</b> dans l'onglet Jeux ›</p>
+            <p class="muted" style="margin:.2rem 0 0;font-size:.8rem">Touche pour ouvrir tes raccourcis <span id="soloAnnexChev">↓</span></p>
           </section>
+          <!-- Mini-tuiles annexes (dépliées au clic sur la progression — pas de redirection brutale) -->
+          <div class="solo-annex" id="soloAnnex" style="display:none">
+            <button class="sa-tile" data-annex="badges"><span class="sa-ic">🏅</span><span>Mes badges</span></button>
+            <button class="sa-tile" data-annex="rank"><span class="sa-ic">🏆</span><span>Classement</span></button>
+            <button class="sa-tile" data-annex="parcours"><span class="sa-ic">🧭</span><span>Mon parcours</span></button>
+            <button class="sa-tile" data-annex="quests"><span class="sa-ic">🎯</span><span>Mes quêtes</span></button>
+          </div>
 
           <!-- HomeMates : tes souvenirs d'aventure + tes Mates, gardés même de retour à la maison -->
           <section class="card hm-souv" id="homeMates" style="display:none">
@@ -2841,6 +2857,7 @@
             <div class="card" id="nextTripCard"></div>
             <div id="tripPrepCard" class="card hidden"></div>
             <div class="section-head"><h3 style="margin-top:.4rem">Mes envies d'ailleurs 🌠</h3></div>
+            <p class="muted" style="margin:-.2rem 0 .5rem;font-size:.8rem">Ta liste perso de destinations rêvées — <b>privée, juste pour toi</b>, pour préparer tes prochaines aventures.</p>
             <div class="card" id="wishlistCard"></div>
             <div id="tripsDoneSection" class="hidden">
               <div class="section-head"><h3 style="margin-top:.4rem">Mes voyages 🧳</h3></div>
@@ -2853,12 +2870,19 @@
           <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Des voyageurs explorent <b id="hmCityName">ta ville</b> en ce moment.</p>
           <div id="visitorsList"></div>
 
-          <!-- Devenir hôte / ambassadeur -->
-          <div class="card hm-host">
-            <div class="hm-host-ic">🛟</div>
-            <div style="flex:1"><div style="font-weight:800" id="hostTitle">Deviens hôte SunMates</div>
-              <div class="muted" style="font-size:.82rem" id="hostDesc">Aide les voyageurs à se sentir en sécurité dans ta ville : conseils, bons spots, café d'accueil.</div></div>
-            <button class="btn-accent" id="hostBtn" style="flex-shrink:0;align-self:center">Je veux aider</button>
+          <!-- Devenir hôte / ambassadeur (développé : perks visibles) -->
+          <div class="card">
+            <div class="hm-host">
+              <div class="hm-host-ic">🛟</div>
+              <div style="flex:1"><div style="font-weight:800" id="hostTitle">Deviens hôte SunMates</div>
+                <div class="muted" style="font-size:.82rem" id="hostDesc">Aide les voyageurs à se sentir en sécurité dans ta ville.</div></div>
+            </div>
+            <div class="host-perks">
+              <div class="host-perk"><span>☕</span><div><b>Accueille</b><span>un café d'accueil aux voyageurs de passage</span></div></div>
+              <div class="host-perk"><span>🗺️</span><div><b>Conseille</b><span>tes bons spots validés &amp; astuces locales</span></div></div>
+              <div class="host-perk"><span>🛟</span><div><b>Badge Hôte</b><span>un badge de confiance visible sur ton profil</span></div></div>
+            </div>
+            <button class="btn-accent btn-block" id="hostBtn" style="margin-top:.7rem">Je veux aider</button>
           </div>
         </div>
 
@@ -9559,8 +9583,22 @@
     { const a = $("profileAvatar"); if (a) a.addEventListener("click", () => { const u = myProfile && myProfile.avatar_url; if (u) openPhotoLightbox(u); else toast("📷", "Ajoute une photo de profil dans « Modifier mon profil »"); }); }
     { const rr = $("scReroll"); if (rr) rr.addEventListener("click", () => { const s = _soloState(); s.seed = ((s.seed || 0) + 1) % 1000; _soloSave(s); renderSoloChallenges(); if (window.SMSound) SMSound.play("pop"); }); }
     { const ss = $("spStreak"); if (ss) ss.addEventListener("click", (e) => { e.stopPropagation(); const h = $("homeStreak"); if (h) h.click(); }); }
-    // La carte « progression solo » est cliquable → ouvre l'onglet Jeux (où vivent niveau & XP).
-    { const sp = $("soloProgress"); if (sp) sp.addEventListener("click", () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }); }
+    // La carte « progression solo » déplie des mini-tuiles annexes (pas de redirection brutale).
+    { const sp = $("soloProgress"); if (sp) sp.addEventListener("click", () => {
+      const a = $("soloAnnex"); if (!a) return;
+      const open = a.style.display === "none" || !a.style.display;
+      a.style.display = open ? "grid" : "none";
+      const ch = $("soloAnnexChev"); if (ch) ch.textContent = open ? "↑" : "↓";
+      if (window.SMSound) SMSound.play("tap");
+    }); }
+    document.querySelectorAll("#soloAnnex [data-annex]").forEach((b) => b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const a = b.dataset.annex;
+      if (a === "badges") { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); }
+      else if (a === "rank") { goToTab("jeux"); if (typeof showJeuxView === "function") { showJeuxView("jeuxRank"); if (typeof renderLeaderboard === "function") renderLeaderboard(); } }
+      else if (a === "parcours") { if (typeof openSouvenir === "function") openSouvenir(); }
+      else if (a === "quests") { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }
+    }));
 
     // ---- Modal de PREUVE (photo) : valide un défi solo en postant une preuve ----
     { const pc = $("proofCancel"); if (pc) pc.addEventListener("click", () => show($("proofModal"), false)); }
