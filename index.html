@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=233"></script>
-  <script src="sunmates-icons.js?v=233"></script>
+  <script src="sunmates-badges.js?v=234"></script>
+  <script src="sunmates-icons.js?v=234"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -3231,7 +3231,13 @@
           <div class="card">
             <h3 style="margin-top:0">Sécurité &amp; confidentialité</h3>
             <div class="qrow" data-secu="reportmenu"><div class="qico" data-smicon="report" data-smicon-size="27">🚩</div><div class="qname">Signaler un voyageur</div><div class="qarrow">›</div></div>
-            <div class="qrow" data-secu="historique"><div class="qico" data-smicon="history" data-smicon-size="27">🗂️</div><div class="qname">Historique de rencontres</div><div class="qarrow">›</div></div>
+            <!-- (Historique des rencontres déplacé hors de Sécurité : il vit côté Mates/Profil) -->
+          </div>
+
+          <div class="card">
+            <h3 style="margin-top:0">Aide &amp; support</h3>
+            <div class="qrow" data-secu="aide"><div class="qico" data-smicon="firstaid" data-smicon-size="27">❓</div><div class="qname">Centre d'aide · FAQ</div><div class="qarrow">›</div></div>
+            <div class="qrow" data-secu="contactus"><div class="qico" data-smicon="mail" data-smicon-size="27">✉️</div><div class="qname">Nous contacter</div><div class="qarrow">›</div></div>
           </div>
 
           <div class="card">
@@ -7744,8 +7750,15 @@
           <a href="tel:112" class="btn-danger btn-block" style="text-decoration:none;text-align:center;display:block;margin-top:.7rem">☎️ Appeler le 112</a>
           <p class="muted" style="font-size:.72rem;margin:.6rem 0 0">Ces tips ne remplacent pas une formation aux premiers secours (PSC1).</p>
         </div>`);
-      } else if (action === "support2") {
-        showInfo("Nous contacter", '<p style="text-align:center;line-height:1.6;padding:.4rem">🛠️ Le support arrive bientôt.<br><br>Merci de ta patience, SunMates est en plein développement ☀️</p>');
+      } else if (action === "aide") {
+        showInfo("Centre d'aide ❓", `<div class="faq-secu">
+          <details open><summary>🎯 Comment gagner de l'XP et des badges ?</summary><p>Accomplis des <b>quêtes</b> (onglet Jeux ou sur la carte), relève des <b>défis solo</b> et des <b>rituels</b> en mode Maison. Chaque quête demande une petite <b>justification</b> (anti-triche).</p></details>
+          <details><summary>🛟 Comment fonctionne le partage de position ?</summary><p>Ta position n'est partagée qu'avec ton <b>cercle de confiance</b> (connexions acceptées), visible 24 h. L'alerte d'urgence la diffuse aussitôt.</p></details>
+          <details><summary>🤝 Comment rencontrer des Mates en sécurité ?</summary><p>Privilégie les profils <b>vérifiés</b> (petit logo rond), retrouve-toi dans des <b>lieux validés</b>, et tu peux <b>bloquer/signaler</b> à tout moment.</p></details>
+          <details><summary>🍹 C'est quoi le parrainage ?</summary><p>Invite un ami via « Inviter tes amis » : vous recevez tous les deux un coupon <b>1er verre offert</b> 🍹</p></details>
+        </div>`);
+      } else if (action === "contactus" || action === "support2") {
+        showInfo("Nous contacter ✉️", '<p style="text-align:center;line-height:1.6;padding:.4rem">Une question, un souci, une idée ?<br><br>Écris-nous à <b>maxime.durao@delta-business.school</b> ☀️<br><br>En cas d\'<b>urgence</b>, utilise le <b>112</b>, tes <b>contacts d\'urgence</b> ou ton <b>cercle de confiance</b>.</p>');
       } else if (action === "voyage") {
         showInfo("Voyager en sécurité ✈️", `<div class="faq-secu">
           <details open><summary>📍 Avant de sortir</summary><p>Préviens un proche/ton cercle de ton plan, partage ta position, garde ton téléphone chargé (et une batterie externe).</p></details>
