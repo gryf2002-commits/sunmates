@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=256"></script>
-  <script src="sunmates-icons.js?v=256"></script>
+  <script src="sunmates-badges.js?v=257"></script>
+  <script src="sunmates-icons.js?v=257"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -285,7 +285,7 @@
     .feed-composer { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .7rem .8rem; margin-bottom: .8rem; box-shadow: var(--shadow-sm); }
     .feed-composer .fc-row { display: flex; gap: .6rem; align-items: flex-start; }
     .feed-composer .fc-av { font-size: 1.6rem; flex-shrink: 0; line-height: 1.4; }
-    .feed-composer textarea { flex: 1; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .3rem 0; min-height: 1.6rem; }
+    .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .3rem 0; min-height: 1.6rem; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
     .feed-composer textarea:focus { outline: none; }
     .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
     .feed-composer .fc-kinds { display: flex; gap: .3rem; }
@@ -655,6 +655,22 @@
     .ds-go { margin-top: .55rem; padding: .4rem .8rem; font-size: .8rem; }
 
     /* Carte « score de confiance » */
+    /* popInfo : tuile explicative qui pop au centre (DA sunset) */
+    .popinfo-ov { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 1.2rem; background: rgba(20,8,30,.55); backdrop-filter: blur(3px); animation: popinfoFade .18s ease; }
+    .popinfo-ov.hidden { display: none; }
+    .popinfo-card { position: relative; width: 100%; max-width: 340px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 1.5rem 1.3rem 1.3rem; box-shadow: 0 18px 50px rgba(0,0,0,.32); text-align: center; animation: popinfoPop .22s cubic-bezier(.2,1.2,.4,1); }
+    .popinfo-x { position: absolute; top: .6rem; right: .6rem; width: 30px; height: 30px; border: 0; border-radius: 50%; background: var(--cream); color: var(--muted); font-size: .9rem; cursor: pointer; display: grid; place-items: center; }
+    body.theme-dusk .popinfo-x { background: #2a2140; color: #ccc; }
+    .popinfo-ic { width: 58px; height: 58px; margin: 0 auto .7rem; border-radius: 18px; display: grid; place-items: center; font-size: 1.9rem; background: var(--accent-grad); box-shadow: 0 8px 20px rgba(255,138,61,.32); }
+    .popinfo-t { margin: 0 0 .5rem; font-size: 1.08rem; }
+    .popinfo-b { font-size: .9rem; color: var(--muted); line-height: 1.5; }
+    .popinfo-b b { color: var(--ink); }
+    @keyframes popinfoFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popinfoPop { from { opacity: 0; transform: translateY(10px) scale(.94); } to { opacity: 1; transform: none; } }
+    /* Tuile « bientôt dispo » (Gold) : grisée, non cliquable */
+    .tile-soon { opacity: .62; cursor: default; pointer-events: none; filter: grayscale(.35); }
+    .tile-soon .thumb.gold-soon { background: linear-gradient(135deg,#c9a24a,#8a7029); box-shadow: none; }
+    .soon-badge { display: inline-block; font-size: .58rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; background: var(--accent-grad); color: #fff; padding: .08rem .4rem; border-radius: 999px; vertical-align: middle; margin-left: .25rem; }
     .stat-click { cursor: pointer; transition: transform .15s ease; user-select: none; }
     .stat-click:hover { transform: translateY(-2px); }
     .stat-click:active { transform: scale(.97); }
@@ -1296,7 +1312,7 @@
     .hm-city-row .hc-n{ color:var(--accent); font-weight:800; }
     /* Capitale du jour */
     .capitale{ display:flex; align-items:center; gap:.7rem; width:100%; text-align:left; margin:.2rem 0 .9rem; padding:.7rem .85rem; border:0; border-radius:var(--radius); cursor:pointer;
-      background:radial-gradient(120% 130% at 15% -10%, rgba(255,255,255,.26), rgba(255,255,255,0) 46%), linear-gradient(135deg,#5E74E8,#3641B8); color:#fff; box-shadow:var(--shadow-pop); }
+      background:radial-gradient(120% 130% at 15% -10%, rgba(255,255,255,.26), rgba(255,255,255,0) 46%), linear-gradient(135deg,#6C4DE0,#C04AC9 52%,#FF7A4D); color:#fff; box-shadow:var(--shadow-pop); }
     .capitale .cap-ic{ font-size:26px; flex-shrink:0; filter:var(--relief); }
     .capitale .cap-txt{ flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2; }
     .capitale .cap-txt b{ font-weight:800; }
@@ -1470,11 +1486,13 @@
     /* Fiche Mate : photo en PORTRAIT (plus haute) + actions en rangée compacte */
     .tp-hero { height: 280px; }
     .tp-actions2 { display: flex; gap: .5rem; margin-top: .7rem; }
-    .tpa-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .7rem .3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-size: .78rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-sm); }
-    .tpa-btn .tpa-ic { font-size: 1.4rem; }
+    .tpa-btn { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .55rem .3rem; border: 0; border-radius: 14px; color: #fff; font-size: .76rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-sm); }
+    .tpa-btn .tpa-ic { font-size: 1.35rem; }
     .tpa-btn:active { transform: scale(.96); }
-    .tpa-btn.tpa-danger { color: var(--danger); }
-    body.theme-dusk .tpa-btn { background: #241b35; color: #f3e9f3; border-color: rgba(255,255,255,.08); }
+    /* Peps : chaque action a sa couleur (dans la DA) */
+    .tpa-btn.tpa-chal { background: linear-gradient(135deg,#FF9E4D,#FF6F3D); }
+    .tpa-btn.tpa-bff { background: linear-gradient(135deg,#FFCF5C,#FF9F1C); }
+    .tpa-btn.tpa-danger { background: linear-gradient(135deg,#FF7A6B,#E0463B); }
 
     /* --------------------------- CHAT ------------------------------- */
     .chat-header { display: flex; align-items: center; gap: .5rem; padding: .2rem 0 1rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; flex-shrink: 0; }
@@ -1488,7 +1506,7 @@
     .voice-rec .vr-dot { width: 10px; height: 10px; border-radius: 50%; background: #e23b3b; animation: vrPulse 1s infinite; flex-shrink: 0; }
     @keyframes vrPulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
     .bubble-audio { display: inline-flex; align-items: center; gap: .5rem; }
-    .bubble-audio button { background: rgba(255,255,255,.28); border: 0; color: inherit; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: .85rem; flex-shrink: 0; }
+    .bubble-audio button { background: rgba(255,255,255,.28); border: 0; color: inherit; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: .8rem; line-height: 1; flex-shrink: 0; display: grid; place-items: center; padding: 0 0 0 2px; }
     .bubble.them .bubble-audio button { background: var(--accent-soft); color: var(--accent); }
     .chat-header .backbtn { margin-bottom: 0; padding: .4rem .7rem; }
     /* Vue chat = vraie messagerie : occupe l'espace entre l'en-tête et la barre du bas,
@@ -2333,6 +2351,10 @@
     .thumb.green { background: linear-gradient(135deg,#22D3C5,#0E9E96) !important; }
     .thumb.blue  { background: linear-gradient(135deg,#5BC0FF,#2D8FE0) !important; }
     .thumb.purp  { background: linear-gradient(135deg,#C77DFF,#8A4FE0) !important; }
+    .thumb.coral { background: linear-gradient(135deg,#FFB37A,#FF6F3D) !important; }
+    .thumb.lime  { background: linear-gradient(135deg,#CFE86B,#86B520) !important; }
+    .thumb.indigo{ background: linear-gradient(135deg,#9FA8FF,#5B63E0) !important; }
+    .thumb.rose  { background: linear-gradient(135deg,#FF9CC2,#F0568F) !important; }
 
     /* Navigation : icônes vives */
     .bottom-nav { background: rgba(255,255,255,.9); box-shadow: 0 -8px 28px rgba(255,90,77,.10); }
@@ -3020,7 +3042,7 @@
           <div class="tile" data-goto="jeux"><div class="thumb gold">🎮</div><div class="t-name">Jeux &amp; Quêtes</div><div class="t-meta" id="qaJeux">XP &amp; badges</div></div>
           <div class="tile" data-goto="jeux" data-jeuxview="jeuxRank"><div class="thumb blue">🏆</div><div class="t-name">Classement</div><div class="t-meta">Grimpe le top</div></div>
           <div class="tile" data-goto="jeux" data-jeuxview="jeuxCoupons"><div class="thumb teal">🎟️</div><div class="t-name">Coupons</div><div class="t-meta" id="qaCoupons">Tes récompenses</div></div>
-          <div class="tile" data-goto="jeux" data-jeuxview="jeuxShop"><div class="thumb purp">🛍️</div><div class="t-name">Boutique</div><div class="t-meta">Dépense ton XP</div></div>
+          <div class="tile tile-soon" aria-disabled="true" title="Bientôt disponible"><div class="thumb gold-soon">👑</div><div class="t-name">Gold <span class="soon-badge">Bientôt</span></div><div class="t-meta">Avantages premium</div></div>
           <div class="tile" data-goto="profil"><div class="thumb gold">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Score de confiance</div></div>
         </div>
       </div>
@@ -3183,7 +3205,7 @@
           <div id="tpDemoBanner" class="demo-banner" style="display:none">🤖 Profil de <b>démonstration</b> (compte IA), pour découvrir l'app, ce n'est pas un vrai voyageur.</div>
           <div id="tpSpot" style="margin:-.2rem 0 .8rem;display:none"></div>
           <div class="dstats" style="margin-bottom:.8rem">
-            <div class="dstat"><b id="tpCompat">—</b><span>Compatibilité ❤️</span></div>
+            <div class="dstat stat-click" id="tpCompatStat" role="button" tabindex="0"><b id="tpCompat">—</b><span>Compatibilité ❤️ ⓘ</span></div>
             <div class="dstat"><b id="tpMates">0</b><span>Mates 🛡️</span></div>
             <div class="dstat"><b id="tpTrust">0</b><span>Confiance</span></div>
           </div>
@@ -3193,11 +3215,6 @@
             <button class="btn-accent" id="tpConnectBtn">🤝 Se connecter</button>
           </div>
           <div class="msg" id="tpMsg" style="text-align:center;margin:.5rem 0 1rem"></div>
-          <!-- « Pourquoi vous matchez » : pop juste sous la photo/compatibilité -->
-          <div class="card" id="tpCompatCard" style="display:none;cursor:pointer;padding:.85rem 1rem">
-            <div class="section-head" style="margin:0"><h3 style="margin:0;font-size:.95rem">❤️ Pourquoi vous matchez · <b id="tpCompatPct" style="color:var(--accent)">—%</b></h3><span class="qarrow">›</span></div>
-          </div>
-          <div id="tpCompatBreak" style="display:none"></div>
           <div class="card">
             <div class="section-head" style="margin-bottom:.4rem"><h3 style="margin:0">À propos</h3><span id="tpVerif"></span></div>
             <p class="muted" id="tpBio" style="line-height:1.5">—</p>
@@ -3206,10 +3223,10 @@
           <div class="card vouch-card" id="tpVouchCard" style="display:none">
             <div class="vouch-head">
               <div style="min-width:0">
-                <div class="vouch-title"><span data-i18n="vouch.title">🟢 Recommandé par des Mates</span> <b id="tpVouchCount">0</b></div>
+                <div class="vouch-title"><span data-i18n="vouch.title">⭐ Recommandé par des Mates</span> <b id="tpVouchCount">0</b></div>
                 <div class="vouch-row" id="tpVouchRow"></div>
               </div>
-              <button class="btn-accent vouch-btn" id="tpVouchBtn" data-i18n="vouch.cta">🟢 Recommander</button>
+              <button class="btn-accent vouch-btn" id="tpVouchBtn" data-i18n="vouch.cta">⭐ Recommander</button>
             </div>
             <div class="msg" id="tpVouchMsg" style="text-align:center;margin-top:.4rem"></div>
           </div>
@@ -3224,8 +3241,8 @@
           </div>
           <!-- Actions secondaires : rangée compacte (au lieu d'un listing vertical) -->
           <div class="tp-actions2">
-            <button class="tpa-btn" id="tpChallengeBtn"><span class="tpa-ic">🎯</span><span>Défi</span></button>
-            <button class="tpa-btn" id="tpBffBtn" style="display:none"><span class="tpa-ic">⭐</span><span>BFF</span></button>
+            <button class="tpa-btn tpa-chal" id="tpChallengeBtn"><span class="tpa-ic">🎯</span><span>Défi</span></button>
+            <button class="tpa-btn tpa-bff" id="tpBffBtn" style="display:none"><span class="tpa-ic">⭐</span><span>BFF</span></button>
             <button class="tpa-btn tpa-danger" id="tpBlockBtn"><span class="tpa-ic">🚫</span><span>Bloquer</span></button>
           </div>
         </div>
@@ -3303,8 +3320,8 @@
             <div class="tile" data-secuquick="signal"><div class="thumb gold" data-smicon="signal" data-smicon-size="30">🔦</div><div class="t-name">Signal d'aide</div><div class="t-meta">Se signaler</div></div>
             <div class="tile" data-secuquick="position"><div class="thumb blue" data-smicon="near" data-smicon-size="30">📍</div><div class="t-name">Partager ma position</div><div class="t-meta">À mon cercle</div></div>
             <div class="tile" data-secuquick="emergency"><div class="thumb red" data-smicon="alert" data-smicon-size="30">🚨</div><div class="t-name">Alerte d'urgence</div><div class="t-meta">Diffuser ma position</div></div>
-            <div class="tile" data-secuquick="circle"><div class="thumb green" data-smicon="users" data-smicon-size="30">🛟</div><div class="t-name">Mon cercle</div><div class="t-meta">Positions partagées</div></div>
-            <div class="tile" data-secuquick="lieux"><div class="thumb teal" data-smicon="aid" data-smicon-size="30">🏛️</div><div class="t-name">Aide à proximité</div><div class="t-meta">Police · hôpital</div></div>
+            <div class="tile" data-secuquick="circle"><div class="thumb teal" data-smicon="users" data-smicon-size="30">🛟</div><div class="t-name">Mon cercle</div><div class="t-meta">Positions partagées</div></div>
+            <div class="tile" data-secuquick="lieux"><div class="thumb coral" data-smicon="aid" data-smicon-size="30">🏛️</div><div class="t-name">Aide à proximité</div><div class="t-meta">Police · hôpital</div></div>
           </div>
           <button class="btn-ghost btn-block" id="fakeCallBtn" style="display:none"></button>
           <button class="btn-ghost btn-block" id="signalBtn" style="display:none"></button>
@@ -3349,11 +3366,11 @@
 
           <div class="section-head" id="helpAround"><h3 style="margin-top:.4rem">Trouver de l'aide autour de moi</h3></div>
           <div class="grid2">
-            <div class="tile" data-help="police"><div class="thumb blue" data-smicon="shieldsafe" data-smicon-size="30">🚓</div><div class="t-name">Trouver un commissariat</div><div class="t-meta">À proximité</div></div>
-            <div class="tile" data-help="hopital"><div class="thumb red" data-smicon="aid" data-smicon-size="30">🏥</div><div class="t-name">Trouver un hôpital</div><div class="t-meta">À proximité</div></div>
-            <div class="tile" data-help="lieux"><div class="thumb green" data-smicon="near" data-smicon-size="30">🛟</div><div class="t-name">Lieux publics sûrs</div><div class="t-meta">Validés</div></div>
+            <div class="tile" data-help="police"><div class="thumb indigo" data-smicon="shieldsafe" data-smicon-size="30">🚓</div><div class="t-name">Trouver un commissariat</div><div class="t-meta">À proximité</div></div>
+            <div class="tile" data-help="hopital"><div class="thumb rose" data-smicon="aid" data-smicon-size="30">🏥</div><div class="t-name">Trouver un hôpital</div><div class="t-meta">À proximité</div></div>
+            <div class="tile" data-help="lieux"><div class="thumb lime" data-smicon="near" data-smicon-size="30">🛟</div><div class="t-name">Lieux publics sûrs</div><div class="t-meta">Validés</div></div>
             <div class="tile" data-help="mate"><div class="thumb purp" data-smicon="users" data-smicon-size="30">🤝</div><div class="t-name">Trouver un Mate sûr·e</div><div class="t-meta">Cercle de confiance</div></div>
-            <div class="tile" data-help="numeros"><div class="thumb teal" data-smicon="phone" data-smicon-size="30">📞</div><div class="t-name">Numéros d'urgence</div><div class="t-meta">Par pays 🌍</div></div>
+            <div class="tile" data-help="numeros"><div class="thumb gold" data-smicon="phone" data-smicon-size="30">📞</div><div class="t-name">Numéros d'urgence</div><div class="t-meta">Par pays 🌍</div></div>
           </div>
 
           <div class="card" style="margin-top:1.4rem">
@@ -3366,12 +3383,6 @@
             <h3 style="margin-top:0">Sécurité &amp; confidentialité</h3>
             <div class="qrow" data-secu="reportmenu"><div class="qico" data-smicon="report" data-smicon-size="27">🚩</div><div class="qname">Signaler un voyageur</div><div class="qarrow">›</div></div>
             <!-- (Historique des rencontres déplacé hors de Sécurité : il vit côté Mates/Profil) -->
-          </div>
-
-          <div class="card">
-            <h3 style="margin-top:0">Aide &amp; support</h3>
-            <div class="qrow" data-secu="aide"><div class="qico" data-smicon="firstaid" data-smicon-size="27">❓</div><div class="qname">Centre d'aide · FAQ</div><div class="qarrow">›</div></div>
-            <div class="qrow" data-secu="contactus"><div class="qico" data-smicon="mail" data-smicon-size="27">✉️</div><div class="qname">Nous contacter</div><div class="qarrow">›</div></div>
           </div>
 
           <div class="card">
@@ -3778,6 +3789,11 @@
             <button class="btn-accent" id="showQrBtn" data-i18n="set.myQr">🪪 Mon QR</button>
             <button class="btn-ghost" id="scanQrBtn" data-i18n="set.scanQr">📷 Scanner</button>
           </div>
+
+          <!-- Aide & support (déplacé depuis Sécurité : la FAQ n'avait rien à y faire) -->
+          <div class="set-grouptitle">Aide &amp; support</div>
+          <button class="btn-ghost btn-block" data-secu="aide">❓ Centre d'aide · FAQ</button>
+          <button class="btn-ghost btn-block" data-secu="contactus" style="margin-top:.5rem">✉️ Nous contacter</button>
 
           <!-- Application -->
           <div class="set-grouptitle">Application</div>
@@ -7794,16 +7810,17 @@
       const tpc = $("tpCompat");
       tpc.textContent = isSelf ? "—" : pct + "%"; // pas d'auto-match à 100 % sur son propre aperçu
       tpc.style.color = isSelf ? "var(--muted)" : (pct >= 70 ? "var(--accent)" : (pct >= 40 ? "var(--accent)" : "var(--muted)")); // DA sunset, plus de vert
-      // Transparence : détail de ce qui compose le score (sauf sur son propre profil)
-      const compatCard = $("tpCompatCard");
+      // Transparence : « pourquoi vous matchez » INTÉGRÉ au % (clic sur la tuile Compatibilité → pop)
       const bd = (p.id === myUserId) ? [] : compatBreakdown(myMatchProfile, p);
-      if (compatCard) {
-        if (!bd.length) compatCard.style.display = "none";
+      const compatStat = $("tpCompatStat");
+      if (compatStat) {
+        if (!bd.length || isSelf) { compatStat.classList.remove("stat-click"); compatStat.onclick = null; }
         else {
-          $("tpCompatPct").textContent = pct + "%";
-          $("tpCompatBreak").innerHTML = bd.map((i) =>
+          compatStat.classList.add("stat-click");
+          const breakHtml = bd.map((i) =>
             `<div class="cbrk"><span class="cbrk-l">${i.emoji} ${escapeHtml(i.label)}</span><span class="cbrk-bar"><i style="width:${Math.round(i.frac * 100)}%"></i></span><span class="cbrk-p">+${i.pts}%</span></div>`).join("");
-          compatCard.style.display = "";
+          compatStat.onclick = () => popInfo("❤️", "Pourquoi vous matchez · " + pct + "%",
+            "<div style='text-align:left'>" + breakHtml + "</div><p style='margin:.7rem 0 0;font-size:.82rem'>Plus vous avez de points communs, plus le score grimpe. 🎯</p>");
         }
       }
       $("tpTrust").textContent = p.trust_score ?? 0;
@@ -7875,8 +7892,7 @@
     }
     $("tpMsgBtn").addEventListener("click", () => { if (currentTravelerId) openChat(currentTravelerId); });
     $("tpBlockBtn").addEventListener("click", () => blockUser(currentTravelerId));
-    // « Pourquoi vous matchez » → ouvre le détail dans une fenêtre (tuile cliquable)
-    { const cc = $("tpCompatCard"); if (cc) cc.addEventListener("click", () => { const b = $("tpCompatBreak"); showInfo("Pourquoi vous matchez ❤️", (b && b.innerHTML) || "<p class='muted'>—</p>"); }); }
+    // « Pourquoi vous matchez » → désormais intégré à la tuile % Compatibilité (voir openTravelerProfile)
     // Score de confiance d'un voyageur → cliquable (explication)
     { const td = $("tpTrust"); const box = td && td.closest(".dstat"); if (box) { box.style.cursor = "pointer"; box.addEventListener("click", () => showInfo("🛡️ Score de confiance", "<p style='line-height:1.6'>Le score de confiance reflète des <b>preuves réelles</b> de fiabilité : profil vérifié ✅, check-ins dans des lieux sûrs 📍, recommandations de Mates 👍. Plus il est élevé, plus la personne est fiable pour se rencontrer en sécurité 🛡️</p>")); } }
     $("tpBffBtn").addEventListener("click", () => { if (currentTravelerId) setBff(currentTravelerId); });
@@ -8035,10 +8051,14 @@
         const next = cur === "everyone" ? "connections" : "everyone";
         const { error } = await db.from("profiles").update({ allow_contact: next }).eq("id", myUserId);
         if (!error && myProfile) myProfile.allow_contact = next;
+        // Pas de bandeau toast : on confirme INLINE, directement sur la ligne (valeur + sous-texte)
         const cp = $("contactPrefVal"); if (cp) cp.textContent = (next === "connections" ? "Connexions ›" : "Tout le monde ›");
         m.textContent = "";
-        if (error) toast("⚠️", "Erreur : " + escapeHtml(error.message));
-        else toast("📢", next === "connections" ? "Seules tes connexions peuvent te contacter" : "Tout le monde peut te contacter");
+        if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); }
+        else {
+          const row = document.querySelector('[data-secu="contact"]'); const nm = row && row.querySelector(".qname");
+          if (nm) { const base = "Qui peut me contacter"; nm.innerHTML = base + ' <span style="color:var(--accent);font-weight:700;font-size:.8rem">· ' + (next === "connections" ? "connexions seulement ✓" : "tout le monde ✓") + "</span>"; setTimeout(() => { nm.textContent = base; }, 2600); }
+        }
       } else if (action === "secours") {
         showInfo("Premiers secours · l'essentiel 🩺", `<div class="faq-secu">
           <p class="muted" style="font-size:.8rem;margin:0 0 .7rem">En cas de doute, appelle d'abord le <b>112</b>. Voici les gestes clés en attendant les secours.</p>
@@ -8066,10 +8086,15 @@
         showInfo("Nous contacter ✉️", '<p style="text-align:center;line-height:1.6;padding:.4rem">Une question, un souci, une idée ?<br><br>Écris-nous à <b>maxime.durao@delta-business.school</b> ☀️<br><br>En cas d\'<b>urgence</b>, utilise le <b>112</b>, tes <b>contacts d\'urgence</b> ou ton <b>cercle de confiance</b>.</p>');
       } else if (action === "voyage") {
         showInfo("Voyager en sécurité ✈️", `<div class="faq-secu">
-          <details open><summary>📍 Avant de sortir</summary><p>Préviens un proche/ton cercle de ton plan, partage ta position, garde ton téléphone chargé (et une batterie externe).</p></details>
-          <details><summary>🍸 En soirée</summary><p>Ne laisse jamais ton verre sans surveillance, garde de quoi rentrer, retrouve-toi dans des <b>lieux validés</b>. Au moindre malaise, déclenche une alerte ou rejoins un Mate de confiance.</p></details>
-          <details><summary>🤝 Rencontres</summary><p>Privilégie les profils <b>vérifiés</b> et les lieux publics. Fie-toi à ton intuition : tu peux bloquer ou signaler à tout moment.</p></details>
-          <details><summary>🧳 Tes affaires</summary><p>Copie numérique de tes papiers, répartis cash/cartes, méfie-toi des lieux bondés (pickpockets).</p></details>
+          <p class="muted" style="font-size:.8rem;margin:0 0 .7rem">Le guide essentiel du voyage solo serein. Touche chaque thème pour le déplier 👇</p>
+          <details open><summary>📍 Avant de partir</summary><p>• Laisse ton <b>itinéraire</b> à un proche et garde-le au courant.<br>• <b>Scanne tes papiers</b> (passeport, carte, billets) et envoie-les-toi par mail.<br>• Note les <b>numéros d'urgence locaux</b> et l'adresse de ton <b>ambassade</b>.<br>• Vérifie si une <b>assurance voyage</b> couvre santé + rapatriement.<br>• Renseigne tes <b>contacts d'urgence</b> dans SunMates (onglet Sécurité).</p></details>
+          <details><summary>🛬 À l'arrivée &amp; transports</summary><p>• Privilégie les <b>taxis officiels / VTC</b> (vérifie plaque + nom).<br>• Évite d'afficher cash et matériel de valeur.<br>• En transport de nuit, reste près du conducteur / dans les wagons fréquentés.<br>• Repère le trajet <b>avant</b> de marcher, l'air sûr de toi.</p></details>
+          <details><summary>🏨 Logement</summary><p>• Choisis des hébergements <b>bien notés</b> et centraux.<br>• Vérifie que porte/fenêtres ferment correctement ; un <b>cale-porte</b> dépanne.<br>• Ne donne jamais ton numéro de chambre à un inconnu.<br>• Repère les <b>issues de secours</b> dès l'arrivée.</p></details>
+          <details><summary>🍸 En soirée</summary><p>• Ne laisse <b>jamais ton verre sans surveillance</b>.<br>• Fixe-toi une limite et garde <b>de quoi rentrer</b> (cash + appli VTC).<br>• Retrouve-toi dans des <b>lieux validés</b> SunMates.<br>• Au moindre malaise : <b>faux appel</b>, alerte, ou rejoins un Mate de confiance.</p></details>
+          <details><summary>🤝 Rencontres</summary><p>• Privilégie les profils <b>vérifiés</b> (logo rond) et les <b>lieux publics</b> en journée pour un premier rendez-vous.<br>• Dis à quelqu'un <b>où</b> et <b>avec qui</b> tu vas.<br>• Fie-toi à ton <b>intuition</b> : tu peux <b>bloquer / signaler</b> à tout instant.</p></details>
+          <details><summary>💳 Argent &amp; papiers</summary><p>• <b>Répartis</b> cash et cartes (pas tout au même endroit).<br>• Garde une <b>carte de secours</b> + un peu de cash cachés.<br>• Méfie-toi des <b>pickpockets</b> dans les lieux bondés et des faux agents.<br>• Préfère les <b>DAB</b> dans des banques/lieux éclairés.</p></details>
+          <details><summary>👩 Conseils voyage solo</summary><p>• Aie toujours un <b>plan B</b> pour rentrer.<br>• Habille-toi en accord avec les <b>coutumes locales</b> pour te fondre.<br>• Un <b>faux appel</b> ou prétendre attendre quelqu'un décourage les importuns.<br>• Ta sécurité passe avant la politesse : <b>tu peux dire non</b> et partir.</p></details>
+          <details><summary>🆘 En cas de pépin</summary><p>• Compose le <b>112</b> (UE) ou le numéro local (onglet « Numéros d'urgence »).<br>• Déclenche l'<b>alerte d'urgence</b> SunMates → ta position part à ton cercle.<br>• Rejoins un <b>lieu public sûr</b> (commerce, hôtel, pharmacie).<br>• Contacte ton <b>ambassade</b> en cas de vol de papiers.</p></details>
         </div>`);
       }
     }
@@ -8351,6 +8376,15 @@
       _questTodoOnly = !_questTodoOnly; tt.classList.toggle("active", _questTodoOnly);
       if (typeof renderHomeMap === "function") renderHomeMap();
       if (window.SMSound) SMSound.play("tap");
+      // On explique ce que fait le filtre (sinon une quête « disparaît » sans raison)
+      try {
+        if (_questTodoOnly && !localStorage.getItem("sm_todo_seen")) {
+          localStorage.setItem("sm_todo_seen", "1");
+          popInfo("🎯", "Filtre « À faire »", "On <b>masque les quêtes que tu as déjà accomplies</b> pour ne garder que celles qu'il te reste à faire sur la carte. Re-touche le bouton pour <b>tout réafficher</b>.");
+        } else if (typeof toast === "function") {
+          toast("🎯", _questTodoOnly ? "Quêtes déjà faites masquées — re-touche pour tout revoir." : "Toutes les quêtes réaffichées.");
+        }
+      } catch (e) {}
     }); }
 
     async function renderHomeMap() {
@@ -9365,6 +9399,26 @@
       setTimeout(() => { el.style.transition = "opacity .3s"; el.style.opacity = "0"; setTimeout(() => el.remove(), 320); }, 5200);
     }
 
+    // ---- popInfo : une vraie TUILE qui pop au centre (remplace les bandeaux toast pour les explications) ----
+    // Réutilisable partout : popInfo(emoji, titre, html). Fermeture par ✕, clic dehors ou Échap.
+    function popInfo(emoji, title, html) {
+      let ov = document.getElementById("popInfoOv");
+      if (!ov) {
+        ov = document.createElement("div"); ov.id = "popInfoOv"; ov.className = "popinfo-ov hidden";
+        ov.innerHTML = '<div class="popinfo-card" role="dialog" aria-modal="true"><button class="popinfo-x" aria-label="Fermer">✕</button><div class="popinfo-ic"></div><h3 class="popinfo-t"></h3><div class="popinfo-b"></div></div>';
+        document.body.appendChild(ov);
+        const close = () => ov.classList.add("hidden");
+        ov.addEventListener("click", (e) => { if (e.target === ov || e.target.closest(".popinfo-x")) close(); });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+      }
+      ov.querySelector(".popinfo-ic").textContent = emoji || "💡";
+      ov.querySelector(".popinfo-t").textContent = title || "";
+      ov.querySelector(".popinfo-b").innerHTML = html || "";
+      ov.classList.remove("hidden");
+      if (window.SMSound) SMSound.play("tap");
+    }
+    window.popInfo = popInfo;
+
     // ---- Confettis (déblocage de badge, moment de fête 🎉) ----
     function celebrate() {
       if (window.SMSound) SMSound.play("unlock"); // petit jingle de déblocage
@@ -9534,7 +9588,22 @@
         try { if (typeof track === "function") track("feed_post", { kind: _feedKind }); } catch (e) {}
         buildHomeFeed();
       }); }
-    document.querySelectorAll(".fc-kind").forEach((b) => b.addEventListener("click", () => { _feedKind = b.dataset.fkind; document.querySelectorAll(".fc-kind").forEach((x) => x.classList.toggle("active", x === b)); }));
+    document.querySelectorAll(".fc-kind").forEach((b) => b.addEventListener("click", () => {
+      _feedKind = b.dataset.fkind;
+      document.querySelectorAll(".fc-kind").forEach((x) => x.classList.toggle("active", x === b));
+      // Le toggle AGIT visiblement : on adapte le placeholder + l'avatar de saisie selon le type de post
+      const ta = $("feedInput"); if (ta) {
+        const city = (myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : "";
+        ta.placeholder = _feedKind === "spot"
+          ? ("Où es-tu posé·e ? Ex : café cosy" + (city ? " à " + city : "") + " ☕")
+          : "Quoi de neuf ? Partage ton humeur ✨";
+        ta.focus();
+      }
+      const av = $("feedComposerAv"); // petit repère visuel du mode choisi
+      if (av && !(myProfile && myProfile.avatar_url)) av.textContent = _feedKind === "spot" ? "📍" : "🙂";
+    }));
+    // Auto-grandissement du champ (évite tout débordement / barre qui dépasse)
+    { const ta = $("feedInput"); if (ta) ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 112) + "px"; }); }
     $("feedRefresh").addEventListener("click", () => { buildHomeFeed(); });
 
     /* ================= HOME v2 — Hub de jeu « Paris » ================= */
@@ -9650,10 +9719,19 @@
       el.style.display = "flex";
       const n = $("capName"); if (n) n.textContent = cf.replace(/, France$/, "");
       el.onclick = () => {
-        _questCity = cf; const sel = $("questCitySelect"); if (sel) sel.value = cf;
-        goToTab("accueil"); if (typeof setHomeMode === "function") setHomeMode("travel");
-        setTimeout(() => { if (typeof renderHomeMap === "function") renderHomeMap(); }, 140);
-        if (window.SMSound) SMSound.play("tap");
+        // Pas de redirection sèche : on TEASE d'abord la ville (mini-fiche qui pop), puis bouton pour explorer.
+        const cityName = cf.replace(/, France$/, "");
+        const qn = (typeof allQuests !== "undefined" ? allQuests : []).filter((q) => q.kind === "quest" && q.city === cf).length;
+        popInfo("🏙️", cityName + " à l'honneur",
+          "Aujourd'hui on met <b>" + escapeHtml(cityName) + "</b> en avant : <b>" + qn + " quête" + (qn > 1 ? "s" : "") + "</b> à y débusquer. " +
+          "Que tu y sois ou que tu prépares ton prochain voyage, repère-les dès maintenant. ✨" +
+          "<button class='btn-primary btn-block' id='capExplore' style='margin-top:1rem'>Explorer les quêtes ›</button>");
+        setTimeout(() => { const b = $("capExplore"); if (b) b.onclick = () => {
+          const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden");
+          _questCity = cf; const sel = $("questCitySelect"); if (sel) sel.value = cf;
+          goToTab("accueil"); if (typeof setHomeMode === "function") setHomeMode("travel");
+          setTimeout(() => { if (typeof renderHomeMap === "function") renderHomeMap(); }, 140);
+        }; }, 40);
       };
     }
 
@@ -9915,9 +9993,12 @@
     // Les chiffres de la progression solo sont cliquables → petite explication (SANS redirection).
     document.querySelectorAll("#soloProgress [data-spstat]").forEach((el) => el.addEventListener("click", () => {
       const k = el.dataset.spstat;
-      const txt = { done: "🧭 Le nombre de défis solo de ta ville que tu as relevés.", rit: "☀️ Tes petits rituels du jour (3 max) : sortir, capturer, rêver une destination.", xp: "⭐ L'XP gagnée en solo. Chaque 100 XP = un niveau (visible dans l'onglet Jeux)." }[k];
-      if (txt && typeof toast === "function") toast("💡", txt);
-      if (window.SMSound) SMSound.play("tap");
+      const info = {
+        done: ["🧭", "Défis relevés", "Le nombre de <b>défis solo de ta ville</b> que tu as accomplis. Redécouvre ton coin comme en voyage — chaque défi relevé te rapporte de l'XP. 🎲 « Mélanger » t'en propose d'autres."],
+        rit: ["☀️", "Rituels du jour", "Tes petits <b>rituels quotidiens</b> (sortir, capturer un instant, rêver une destination…). Coche-les chaque jour pour garder ta série 🔥. Tu peux aussi <b>créer le tien</b> !"],
+        xp: ["⭐", "XP gagné", "L'<b>expérience</b> que tu gagnes en solo. Chaque palier d'XP te fait monter de niveau et débloque titres &amp; cadres dans la <b>Boutique</b> (onglet Jeux)."],
+      }[k];
+      if (info) popInfo(info[0], info[1], info[2]);
     }));
 
     // ---- Modal de PREUVE (photo) : valide un défi solo en postant une preuve ----
@@ -11113,7 +11194,7 @@
         "set.presence": "Afficher ma présence", "set.presenceSub": "« En ligne » sur ton avatar", "set.myQr": "🪪 Mon QR", "set.scanQr": "📷 Scanner", "set.newEmail": "Nouvel email",
         "presence.active": "En ligne",
         "chat.translate": "Traduire", "chat.seeProfile": "Voir le profil ›", "tr.loading": "Traduction…", "tr.error": "Traduction indisponible", "tr.from": "Traduit",
-        "vouch.title": "👍 Recommandé par des Mates", "vouch.sub": "Des voyageurs de confiance se portent garants de cette personne.", "vouch.subEmpty": "Sois le premier à recommander ce Mate de confiance.", "vouch.cta": "Recommander", "vouch.done": "✅ Recommandé", "vouch.needConnect": "Connecte-toi d'abord pour recommander", "vouch.none": "Aucune recommandation pour l'instant", "vouch.added": "Recommandation ajoutée 🟢", "vouch.removed": "Recommandation retirée",
+        "vouch.title": "⭐ Recommandé par des Mates", "vouch.sub": "Des voyageurs de confiance se portent garants de cette personne.", "vouch.subEmpty": "Sois le premier à recommander ce Mate de confiance.", "vouch.cta": "⭐ Recommander", "vouch.done": "⭐ Recommandé", "vouch.needConnect": "Connecte-toi d'abord pour recommander", "vouch.none": "Aucune recommandation pour l'instant", "vouch.added": "Recommandation ajoutée ⭐", "vouch.removed": "Recommandation retirée",
         "match.title": "C'est un match !", "match.sub": "Toi et {name} êtes connectés 🎉", "match.message": "💬 Envoyer un message", "match.later": "Plus tard",
         "spot.title": "☀️ Mon spot du jour", "spot.clear": "Effacer", "spot.sub": "Dis où tu traînes aujourd'hui, visible 24 h, façon story.", "spot.ph": "Ex : Café cosy à Lisbonne ☕", "spot.save": "Publier", "spot.saved": "Spot du jour publié ☀️", "spot.cleared": "Spot du jour effacé", "spot.need": "Écris d'abord ton spot du jour.", "spot.live": "En ligne 24 h", "spot.add": "Ajouter le tien ›",
         "qr.title": "🪪 Mon QR SunMates", "qr.sub": "Fais-le scanner à un voyageur rencontré en vrai pour vous connecter en un instant.", "qr.scanTitle": "📷 Scanner un QR", "qr.scanSub": "Vise le QR SunMates d'un autre voyageur.", "qr.self": "C'est ton propre QR 🙂", "qr.notfound": "Profil introuvable.", "qr.found": "Profil de {name} ouvert 🪪", "qr.noCam": "Scanner indisponible sur cet appareil.", "qr.camErr": "Accès caméra refusé.",
@@ -11131,7 +11212,7 @@
         "set.presence": "Show my presence", "set.presenceSub": "“Online” on your avatar", "set.myQr": "🪪 My QR", "set.scanQr": "📷 Scan", "set.newEmail": "New email",
         "presence.active": "Online",
         "chat.translate": "Translate", "chat.seeProfile": "See profile ›", "tr.loading": "Translating…", "tr.error": "Translation unavailable", "tr.from": "Translated",
-        "vouch.title": "👍 Vouched by Mates", "vouch.sub": "Trusted travellers vouch for this person.", "vouch.subEmpty": "Be the first to vouch for this trusted Mate.", "vouch.cta": "Vouch", "vouch.done": "✅ Vouched", "vouch.needConnect": "Connect first to vouch", "vouch.none": "No recommendations yet", "vouch.added": "Vouch added 🟢", "vouch.removed": "Vouch removed",
+        "vouch.title": "⭐ Vouched by Mates", "vouch.sub": "Trusted travellers vouch for this person.", "vouch.subEmpty": "Be the first to vouch for this trusted Mate.", "vouch.cta": "⭐ Vouch", "vouch.done": "⭐ Vouched", "vouch.needConnect": "Connect first to vouch", "vouch.none": "No recommendations yet", "vouch.added": "Vouch added ⭐", "vouch.removed": "Vouch removed",
         "match.title": "It's a match!", "match.sub": "You and {name} are connected 🎉", "match.message": "💬 Send a message", "match.later": "Later",
         "spot.title": "☀️ My spot of the day", "spot.clear": "Clear", "spot.sub": "Share where you're hanging out today, visible for 24h, like a story.", "spot.ph": "e.g. Cosy café in Lisbon ☕", "spot.save": "Post", "spot.saved": "Spot of the day posted ☀️", "spot.cleared": "Spot of the day cleared", "spot.need": "Write your spot of the day first.", "spot.live": "Live for 24h", "spot.add": "Add yours ›",
         "qr.title": "🪪 My SunMates QR", "qr.sub": "Let a traveller you meet in person scan it to connect instantly.", "qr.scanTitle": "📷 Scan a QR", "qr.scanSub": "Point at another traveller's SunMates QR.", "qr.self": "That's your own QR 🙂", "qr.notfound": "Profile not found.", "qr.found": "Opened {name}'s profile 🪪", "qr.noCam": "Scanner not available on this device.", "qr.camErr": "Camera access denied.",
