@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=207"></script>
-  <script src="sunmates-icons.js?v=207"></script>
+  <script src="sunmates-badges.js?v=208"></script>
+  <script src="sunmates-icons.js?v=208"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1413,9 +1413,9 @@
     :root { --relief: drop-shadow(0 8px 14px rgba(120,40,0,.34)) drop-shadow(0 2px 3px rgba(0,0,0,.18));
       --relief-strong: drop-shadow(0 12px 22px rgba(0,0,0,.42)) drop-shadow(0 3px 5px rgba(120,40,0,.30)); }
     @keyframes floatySoft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    /* Icônes maison : elles décollent de leur tuile (relief onb-emoji, fini le plat) */
-    .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .qm-ic svg, .smgem svg {
-      filter: drop-shadow(0 3px 4px rgba(90,25,10,.40)) drop-shadow(0 1px 1px rgba(0,0,0,.25)) !important; }
+    /* Emojis natifs des tuiles : relief/profondeur (DA onb-emoji) — ils décollent de leur tuile */
+    .cic, .jo-ic, .qm-ic, .smgem, .thumb, .qico, .sv-ico, .cico {
+      filter: drop-shadow(0 3px 4px rgba(90,25,10,.38)) drop-shadow(0 1px 1px rgba(0,0,0,.22)); }
     /* Emojis-héros natifs : même signature de relief (DA cohérente partout) */
     .qs-emblem, .ph-av-emoji, .sp-next-bdg, .qm-ic, .hm-hero-ic, .hm-host-ic, .rit-ic, .empty-ill, .fe-emoji,
     .dh-emoji, .tip-ic, .onb-emoji, .sos-logo, .coupon .cico, .su-e, .su-ic { filter: var(--relief); }
@@ -1429,6 +1429,8 @@
     /* ============ V2.2 — SOBRIÉTÉ (déclutter) + soleil signature ============ */
     /* Plus d'air entre les sections de l'accueil */
     .tab-panel[data-panel="accueil"] > section, .tab-panel[data-panel="accueil"] > .section-head { margin-top: 1.3rem; }
+    /* Sobriété accueil : on masque le rail de badges (le jeu vit dans l'onglet Jeux) */
+    #badgeRailSection { display: none !important; }
     /* (Soleil filigrane des titres retiré : le vrai clin d'œil soleil reste celui du logo en topbar) */
     /* Lever de soleil en haut-gauche du héros joueur */
     .player-hero .ph-glow { left: -52px; top: -64px; bottom: auto; background: radial-gradient(circle at 30% 30%, rgba(255,201,60,.6), rgba(255,138,61,0) 70%); }
@@ -4236,8 +4238,15 @@
       // Repositionne le jeu solo selon le mode :
       //  • Maison → juste sous le héros (l'app se suffit à elle-même en SOLO)
       //  • Voyage → sous la carte (on garde la rencontre/carte amicale en avant)
-      { const hub = $("soloHub"), hero = $("playerHero"), tmap = $("homeTravelMap");
-        if (hub) { if (home) { if (hero) hero.insertAdjacentElement("afterend", hub); } else if (tmap) { tmap.appendChild(hub); } }
+      { const hub = $("soloHub"), hero = $("playerHero"), tmap = $("homeTravelMap"), sr = $("searchResults");
+        // Voyage : la CARTE passe en PREMIER PLAN → le héros + le jeu solo descendent SOUS la carte.
+        // Maison : héros + jeu solo en haut (l'app solo se suffit à elle-même).
+        if (home) {
+          if (sr && hero) sr.insertAdjacentElement("afterend", hero);
+          if (hero && hub) hero.insertAdjacentElement("afterend", hub);
+        } else if (tmap) {
+          tmap.appendChild(hero); tmap.appendChild(hub);
+        }
         // Maison (ou pas prêt à rencontrer) = SOLO uniquement ; le groupe est réservé au Voyage
         const grp = $("qsModeGroup"), grpCard = $("qmGroupCard");
         if (grp) grp.style.display = home ? "none" : "";

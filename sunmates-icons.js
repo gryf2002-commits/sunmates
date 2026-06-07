@@ -70,26 +70,12 @@
     var inner = ic.style === 'tile' ? '<g filter="url(#sm-ico-drop)">' + ic.svg + '</g>' : ic.svg;
     return '<svg class="smicon smicon-' + name + '" viewBox="0 0 32 32" width="' + size + '" height="' + size + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block">' + inner + '</svg>';
   };
-  window.SMIcon.has = function (name) { return !!ICONS[name]; };
-
-  function render(root) {
-    injectDefs();
-    var r = root || document;
-    r.querySelectorAll('[data-smicon]').forEach(function (el) {
-      var n = el.getAttribute('data-smicon'); if (!ICONS[n] || el.getAttribute('data-smdone')) return;
-      var s = parseInt(el.getAttribute('data-smicon-size'), 10) || (ICONS[n].style === 'warm' ? 20 : 26);
-      el.innerHTML = window.SMIcon(n, { size: s });
-      el.setAttribute('data-smdone', '1');
-    });
-    // toutes les barres de recherche (loupe) d'un coup
-    r.querySelectorAll('.search > .ico').forEach(function (el) {
-      if (el.getAttribute('data-smdone')) return;
-      el.innerHTML = window.SMIcon('search', { size: 18 });
-      el.setAttribute('data-smdone', '1');
-    });
-  }
+  // DA v2.2 : on REVIENT aux EMOJIS NATIFS partout (choix Maxime : plus chaud, plus
+  // personnel, profondeur/relief via CSS). On neutralise donc le remplacement d'icônes :
+  // has()→false fait retomber tous les appels directs sur leur emoji, et render() ne
+  // touche plus aux [data-smicon] (l'emoji de repli reste affiché). Le moteur reste
+  // chargé si on veut le réactiver plus tard.
+  window.SMIcon.has = function () { return false; };
+  function render() { /* désactivé : emojis natifs conservés */ }
   window.SMIconRender = render;
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { render(); });
-  else render();
 })();
