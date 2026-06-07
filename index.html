@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=173"></script>
-  <script src="sunmates-icons.js?v=173"></script>
+  <script src="sunmates-badges.js?v=174"></script>
+  <script src="sunmates-icons.js?v=174"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1128,14 +1128,14 @@
     @media (prefers-reduced-motion: reduce) { .smbadge-wrap .smbadge-svg { transition: none; } }
     /* Icônes maison sur tuile : fond crème (l'icône porte la couleur, DA chaude) */
     /* Tuile-joyau : dégradé sunset bombé + gloss + rim-light + ombre chaude (zéro crème) */
-    .cic[data-smicon] { position: relative; isolation: isolate; overflow: hidden; border: none;
+    .cic[data-smicon], .jo-ic[data-smicon] { position: relative; isolation: isolate; overflow: hidden; border: none;
       background: radial-gradient(120% 90% at 28% 22%, rgba(255,255,255,.42), rgba(255,255,255,0) 42%), linear-gradient(135deg, var(--c1,#FF8A3D), var(--c2,#FF5A4D));
       box-shadow: 0 7px 15px -4px rgba(255,90,77,.5), 0 2px 4px rgba(180,60,40,.3), inset 0 1px 1px rgba(255,246,236,.85), inset 0 -2px 3px rgba(150,45,30,.32); }
-    .cic[data-smicon]::after { content:""; position:absolute; left:8%; right:8%; top:6%; height:42%; border-radius:50% 50% 60% 60%/70% 70% 100% 100%; background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.04)); pointer-events:none; z-index:0; }
-    .cic[data-smicon] svg { display:block; position:relative; z-index:1; }
+    .cic[data-smicon]::after, .jo-ic[data-smicon]::after { content:""; position:absolute; left:8%; right:8%; top:6%; height:42%; border-radius:50% 50% 60% 60%/70% 70% 100% 100%; background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.04)); pointer-events:none; z-index:0; }
+    .cic[data-smicon] svg, .jo-ic[data-smicon] svg { display:block; position:relative; z-index:1; }
     .cat-tile.active .cic[data-smicon] { box-shadow: 0 10px 22px -4px rgba(255,90,77,.6), 0 2px 4px rgba(180,60,40,.32), inset 0 1px 1px rgba(255,246,236,.9), inset 0 -2px 3px rgba(150,45,30,.32); }
-    .cic[data-smicon="quest"]{--c1:#FF8A3D;--c2:#FF5A4D} .cic[data-smicon="games"]{--c1:#FF7A59;--c2:#7a5cff} .cic[data-smicon="medal"]{--c1:#FFCD4E;--c2:#FF9D3D} .cic[data-smicon="coupon"]{--c1:#ffb274;--c2:#FF7A3D} .cic[data-smicon="rank"]{--c1:#FFCD4E;--c2:#FF8A3D} .cic[data-smicon="shop"]{--c1:#FF5A4D;--c2:#ff8a6b}
-    .cic[data-smicon="coffee"]{--c1:#ff9a5c;--c2:#d96a3d} .cic[data-smicon="eco"]{--c1:#34c98f;--c2:#1f9e8c} .cic[data-smicon="near"]{--c1:#FF6A4D;--c2:#ff9a3d} .cic[data-smicon="rating"]{--c1:#FFCD4E;--c2:#FF8A3D} .cic[data-smicon="popular"]{--c1:#FF5A4D;--c2:#ffb274}
+    [data-smicon="quest"]{--c1:#FF8A3D;--c2:#FF5A4D} [data-smicon="games"]{--c1:#FF7A59;--c2:#7a5cff} [data-smicon="medal"]{--c1:#FFCD4E;--c2:#FF9D3D} [data-smicon="coupon"]{--c1:#ffb274;--c2:#FF7A3D} [data-smicon="rank"]{--c1:#FFCD4E;--c2:#FF8A3D} [data-smicon="shop"]{--c1:#FF5A4D;--c2:#ff8a6b}
+    [data-smicon="coffee"]{--c1:#ff9a5c;--c2:#d96a3d} [data-smicon="eco"]{--c1:#34c98f;--c2:#1f9e8c} [data-smicon="near"]{--c1:#FF6A4D;--c2:#ff9a3d} [data-smicon="rating"]{--c1:#FFCD4E;--c2:#FF8A3D} [data-smicon="popular"]{--c1:#FF5A4D;--c2:#ffb274}
 
     /* Coupons */
     .coupon { display: flex; align-items: center; gap: .85rem; padding: .85rem .9rem; border: 1.5px dashed var(--accent);
@@ -3218,12 +3218,12 @@
 
           <!-- Aperçu : on ouvre les listes en feuille (overlay) pour éviter de scroller -->
           <div class="jeux-open" data-jeuxopen="quests">
-            <div class="jo-ic c-sun">🎯</div>
+            <div class="jo-ic c-sun" data-smicon="quest" data-smicon-size="24">🎯</div>
             <div class="jo-txt"><div class="jo-name">Quêtes du jour</div><div class="jo-meta quest-counter" id="questCounter">—</div></div>
             <div class="jo-arr">›</div>
           </div>
           <div class="jeux-open" data-jeuxopen="games">
-            <div class="jo-ic c-purp">🎮</div>
+            <div class="jo-ic c-purp" data-smicon="games" data-smicon-size="24">🎮</div>
             <div class="jo-txt"><div class="jo-name">Jeux populaires</div><div class="jo-meta" id="gamesCount">—</div></div>
             <div class="jo-arr">›</div>
           </div>
