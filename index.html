@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=232"></script>
-  <script src="sunmates-icons.js?v=232"></script>
+  <script src="sunmates-badges.js?v=233"></script>
+  <script src="sunmates-icons.js?v=233"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -5850,6 +5850,24 @@
 
     // ---- Faux appel : sortie de secours discrète (voyageur solo). 100 % local, aucune donnée. ----
     let fcRingTick = null, fcCallTimer = null, fcSeconds = 0, fcStartTimeout = null;
+    // Sonnerie synthétisée (WebAudio) : motif mélodique + pulse « dembow », ~20 s puis stop.
+    let _fcAudio = null, _fcRingStop = null;
+    function _playFakeRing() {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+        const ctx = new AC(); _fcAudio = ctx;
+        const master = ctx.createGain(); master.connect(ctx.destination);
+        master.gain.setValueAtTime(0, ctx.currentTime); master.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 0.1);
+        const start = ctx.currentTime, beat = 0.26, total = 20;
+        const notes = [523, 659, 784, 659, 587, 784, 880, 784];
+        const note = (f, t, dur) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "triangle"; o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.4, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + dur); o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05); };
+        const kick = (t) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "sine"; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(50, t + 0.12); g.gain.setValueAtTime(0.7, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.18); o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.2); };
+        const n = Math.floor(total / beat);
+        for (let k = 0; k < n; k++) { const t = start + k * beat; note(notes[k % notes.length], t, beat * 0.9); if (k % 2 === 0) kick(t); if (k % 4 === 2) kick(t + beat * 0.5); }
+        _fcRingStop = setTimeout(() => { try { master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3); setTimeout(() => { try { ctx.close(); } catch (e) {} }, 400); } catch (e) {} }, total * 1000);
+      } catch (e) {}
+    }
+    function _stopFakeRing() { try { if (_fcRingStop) { clearTimeout(_fcRingStop); _fcRingStop = null; } if (_fcAudio) { _fcAudio.close(); _fcAudio = null; } } catch (e) {} }
     function startFakeCall(name) {
       name = name || "Maman";
       $("fcName").textContent = name;
@@ -5857,15 +5875,16 @@
       $("fcStatus").textContent = "Appel entrant…";
       show($("fcRinging"), true); show($("fcInCall"), false);
       $("fakeCall").classList.remove("hidden");
+      _playFakeRing();
       if (navigator.vibrate) { try { navigator.vibrate([500, 250, 500]); } catch (e) {} fcRingTick = setInterval(() => { try { navigator.vibrate([500, 250, 500]); } catch (e) {} }, 1600); }
     }
     function fcStop() {
-      clearInterval(fcRingTick); clearInterval(fcCallTimer); clearTimeout(fcStartTimeout);
+      clearInterval(fcRingTick); clearInterval(fcCallTimer); clearTimeout(fcStartTimeout); _stopFakeRing();
       if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
       $("fakeCall").classList.add("hidden");
     }
     { const a = $("fcAccept"); if (a) a.addEventListener("click", () => {
-      clearInterval(fcRingTick); if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
+      clearInterval(fcRingTick); _stopFakeRing(); if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
       show($("fcRinging"), false); show($("fcInCall"), true);
       fcSeconds = 0; $("fcStatus").textContent = "00:00";
       fcCallTimer = setInterval(() => { fcSeconds++; const m = String(Math.floor(fcSeconds / 60)).padStart(2, "0"); const s = String(fcSeconds % 60).padStart(2, "0"); $("fcStatus").textContent = m + ":" + s; }, 1000);
