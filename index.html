@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=212"></script>
-  <script src="sunmates-icons.js?v=212"></script>
+  <script src="sunmates-badges.js?v=213"></script>
+  <script src="sunmates-icons.js?v=213"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -895,9 +895,12 @@
       align-items: center; gap: .15rem; color: var(--muted); font-size: .62rem; font-weight: 600; flex: 1;
     }
     /* Barre du bas SOBRE : icônes calmes/monochromes au repos, onglet actif discret (pas de halo) */
-    .bottom-nav button .ni { font-size: 21px; line-height: 1; filter: grayscale(1) opacity(.42); transition: filter .2s, transform .2s ease; }
+    /* Barre du bas : icônes TRAIT (line-art) qui suivent la couleur (gris au repos → accent actif) */
+    .bottom-nav button .ni { display: grid; place-items: center; line-height: 1; transition: transform .2s ease; }
+    .bottom-nav button .ni svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
     .bottom-nav button.active { color: var(--accent); }
-    .bottom-nav button.active .ni { filter: drop-shadow(0 1px 2px rgba(0,0,0,.10)); transform: translateY(-1px) scale(1.05); }
+    .bottom-nav button.active .ni { transform: translateY(-1px); }
+    .bottom-nav button.active .ni svg { opacity: 1; stroke-width: 2.2; }
     .bottom-nav button.active::before { display: none; }
     .bottom-nav button { position: relative; }
 
@@ -1417,9 +1420,9 @@
     .qs-emblem, .ph-av-emoji, .sp-next-bdg, .qm-ic, .hm-hero-ic, .hm-host-ic, .rit-ic, .empty-ill, .fe-emoji,
     .dh-emoji, .tip-ic, .onb-emoji, .sos-logo, .coupon .cico, .su-e, .su-ic { filter: var(--relief); }
     .sm-emoji3d { filter: var(--relief); } .sm-emoji3d.sm-float { animation: floatySoft 3.2s ease-in-out infinite; }
-    /* Badges : version TRÈS CHILL/SOBRE — désaturés, ombre minimale, AUCUN halo (plus du tout « médaille de jeu ») */
+    /* Badges RONDS à emoji : peps ÉCLATANT — couleurs pleines + relief dimensionnel */
     .br-medal, .smbadge-wrap, .sm-badge {
-      filter: drop-shadow(0 2px 4px rgba(80,40,10,.14)) saturate(.6) brightness(1.005);
+      filter: drop-shadow(0 5px 11px rgba(120,40,0,.26)) drop-shadow(0 1px 2px rgba(0,0,0,.14)) saturate(1.06);
       position: relative; isolation: isolate; }
     .br-medal::before, .smbadge-wrap::before { content: none; }
     @media (prefers-reduced-motion: reduce) { .sm-float { animation: none !important; } }
@@ -1445,12 +1448,10 @@
     .ph-xp-fill { box-shadow: none; } /* on coupe le néon doré */
     .ph-xp-fill::after { display: none; } /* on coupe le reflet brillant qui balaie la barre */
     .ph-xp-next { display: none; } /* on retire le détail "plus que X XP" pour alléger */
-    /* Tuiles d'accès rapide SOBRES : on calme le festival de couleurs + les ombres colorées */
+    /* Tuiles d'accès rapide ÉCLATANTES : couleurs pleines + relief dimensionnel (le peps demandé) */
     .tab-panel[data-panel="accueil"] .tile .thumb {
-      filter: drop-shadow(0 2px 3px rgba(90,25,10,.26)) saturate(.7) brightness(1.01);
-      box-shadow: 0 3px 10px rgba(120,40,0,.12) !important;
+      filter: drop-shadow(0 4px 6px rgba(90,25,10,.34)) saturate(1.12) brightness(1.03);
     }
-    .tab-panel[data-panel="accueil"] .tile { box-shadow: 0 3px 12px rgba(120,40,0,.07); }
     /* Quête du jour : aura calmée sur l'accueil (moins « jeu ») */
     .tab-panel[data-panel="accueil"] .qs-aura { opacity: .45; }
     /* Accessibilité : croix de fermeture des panneaux → vraie cible tactile 44px */
@@ -2658,19 +2659,7 @@
 
         <!-- ============ HOME v2 — Hub de jeu (visible en Voyage ET en Maison) ============ -->
         <!-- Héros joueur : l'identité, toujours en haut dans les deux modes -->
-        <section class="player-hero" id="playerHero" aria-label="Ta progression">
-          <div class="ph-glow" aria-hidden="true"></div>
-          <div class="ph-top">
-            <div class="ph-avatar"><span class="ph-av-emoji" id="phAvatar">🧭</span><span class="ph-lvl-ring" id="phLvl">1</span></div>
-            <div class="ph-id"><div class="ph-name" id="phName">Voyageur·se</div><div class="ph-title" id="phTitle">Explorateur·rice de Paris</div></div>
-            <button class="ph-streak" id="phStreak" title="Ta série de jours d'affilée"><span class="ph-streak-fire">🔥</span><b id="phStreakN">1</b></button>
-          </div>
-          <div class="ph-xp">
-            <div class="ph-xp-head"><span class="ph-xp-lbl" id="phXpLbl">Niveau 1</span><span class="ph-xp-val"><b id="phXpCur">0</b> / <span id="phXpMax">100</span> XP</span></div>
-            <div class="ph-xp-track"><div class="ph-xp-fill" id="phXpFill" style="width:0%"></div></div>
-            <div class="ph-xp-next"><span class="ph-next-ic">🚀</span><span class="ph-next-txt" id="phXpNext">Accomplis une quête pour gagner ton premier niveau</span></div>
-          </div>
-        </section>
+        <!-- (Vignette de niveau "player-hero" déplacée dans l'onglet Jeux — mieux intégrée là-bas) -->
 
         <!-- Jeu solo (quête du jour + missions) : repositionné par setHomeMode
              (en Maison = en haut, self-sufficient solo ; en Voyage = sous la carte) -->
@@ -3568,6 +3557,20 @@
         <div id="jeuxHome" class="jeux-view">
           <h1 data-i18n="games.title">Jeux &amp; Quêtes</h1>
           <p class="muted" style="margin-top:0">Relève des défis, gagne de l'XP et débloque des coupons.</p>
+          <!-- Vignette de niveau (déplacée de l'accueil : sa place est ici, dans le hub de jeu) -->
+          <section class="player-hero" id="playerHero" aria-label="Ta progression">
+            <div class="ph-glow" aria-hidden="true"></div>
+            <div class="ph-top">
+              <div class="ph-avatar"><span class="ph-av-emoji" id="phAvatar">🧭</span><span class="ph-lvl-ring" id="phLvl">1</span></div>
+              <div class="ph-id"><div class="ph-name" id="phName">Voyageur·se</div><div class="ph-title" id="phTitle">Explorateur·rice de Paris</div></div>
+              <button class="ph-streak" id="phStreak" title="Ta série de jours d'affilée"><span class="ph-streak-fire">🔥</span><b id="phStreakN">1</b></button>
+            </div>
+            <div class="ph-xp">
+              <div class="ph-xp-head"><span class="ph-xp-lbl" id="phXpLbl">Niveau 1</span><span class="ph-xp-val"><b id="phXpCur">0</b> / <span id="phXpMax">100</span> XP</span></div>
+              <div class="ph-xp-track"><div class="ph-xp-fill" id="phXpFill" style="width:0%"></div></div>
+              <div class="ph-xp-next"><span class="ph-next-ic">🚀</span><span class="ph-next-txt" id="phXpNext">Accomplis une quête pour gagner ton premier niveau</span></div>
+            </div>
+          </section>
           <div class="xp-banner" id="xpBanner"></div>
           <div id="weeklyGoals"></div>
           <!-- Navigation rapide en tuiles colorées -->
@@ -3705,12 +3708,12 @@
 
     <!-- ---------------- Barre de navigation (bas) ---------------- -->
     <nav class="bottom-nav">
-      <button data-tab="accueil" class="active"><span class="ni">🏠</span><span class="nav-lbl" data-i18n="nav.home">Accueil</span></button>
-      <button data-tab="lieux"><span class="ni">📍</span><span class="nav-lbl" data-i18n="nav.places">Lieux</span></button>
-      <button data-tab="jeux"><span class="ni">🎮</span><span class="nav-lbl" data-i18n="nav.games">Jeux</span><span class="navbadge hidden" id="navJeux"></span></button>
-      <button data-tab="connexions"><span class="ni">🤝</span><span class="nav-lbl" data-i18n="nav.mates">Mates</span><span class="navbadge hidden" id="navMates"></span></button>
-      <button data-tab="securite"><span class="ni">🛡️</span><span class="nav-lbl" data-i18n="nav.safety">Sécurité</span><span class="navbadge hidden" id="navSecu">●</span></button>
-      <button data-tab="profil"><span class="ni">👤</span><span class="nav-lbl" data-i18n="nav.profile">Profil</span></button>
+      <button data-tab="accueil" class="active"><span class="ni"><svg viewBox="0 0 24 24"><path d="M3 11.4 12 4l9 7.4"/><path d="M5.5 10v9.5h13V10"/></svg></span><span class="nav-lbl" data-i18n="nav.home">Accueil</span></button>
+      <button data-tab="lieux"><span class="ni"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.8-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.2 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.4"/></svg></span><span class="nav-lbl" data-i18n="nav.places">Lieux</span></button>
+      <button data-tab="jeux"><span class="ni"><svg viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="11" rx="4"/><path d="M6.5 11h4M8.5 9v4"/><circle cx="16" cy="10.7" r="1.1"/><circle cx="18.3" cy="13.3" r="1.1"/></svg></span><span class="nav-lbl" data-i18n="nav.games">Jeux</span><span class="navbadge hidden" id="navJeux"></span></button>
+      <button data-tab="connexions"><span class="ni"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.3a3 3 0 0 1 0 5.6"/><path d="M17.6 13.7A5.5 5.5 0 0 1 20.5 19"/></svg></span><span class="nav-lbl" data-i18n="nav.mates">Mates</span><span class="navbadge hidden" id="navMates"></span></button>
+      <button data-tab="securite"><span class="ni"><svg viewBox="0 0 24 24"><path d="M12 3 5.5 5.7v6.1c0 4 2.8 7 6.5 8.4 3.7-1.4 6.5-4.4 6.5-8.4V5.7L12 3z"/><path d="M9.3 12.2l1.9 1.9 3.6-3.8"/></svg></span><span class="nav-lbl" data-i18n="nav.safety">Sécurité</span><span class="navbadge hidden" id="navSecu">●</span></button>
+      <button data-tab="profil"><span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><span class="nav-lbl" data-i18n="nav.profile">Profil</span></button>
     </nav>
   </section>
 
@@ -4258,14 +4261,14 @@
       // Repositionne le jeu solo selon le mode :
       //  • Maison → juste sous le héros (l'app se suffit à elle-même en SOLO)
       //  • Voyage → sous la carte (on garde la rencontre/carte amicale en avant)
-      { const hub = $("soloHub"), hero = $("playerHero"), tmap = $("homeTravelMap"), sr = $("searchResults");
-        // Voyage : la CARTE passe en PREMIER PLAN → le héros + le jeu solo descendent SOUS la carte.
-        // Maison : héros + jeu solo en haut (l'app solo se suffit à elle-même).
+      { const hub = $("soloHub"), tmap = $("homeTravelMap"), sr = $("searchResults");
+        // (La vignette de niveau a été déplacée dans l'onglet Jeux ; ici on ne repositionne que le jeu solo.)
+        // Voyage : la CARTE en PREMIER PLAN → le jeu solo descend SOUS la carte.
+        // Maison : le jeu solo remonte en haut (l'app solo se suffit à elle-même).
         if (home) {
-          if (sr && hero) sr.insertAdjacentElement("afterend", hero);
-          if (hero && hub) hero.insertAdjacentElement("afterend", hub);
-        } else if (tmap) {
-          tmap.appendChild(hero); tmap.appendChild(hub);
+          if (sr && hub) sr.insertAdjacentElement("afterend", hub);
+        } else if (tmap && hub) {
+          tmap.appendChild(hub);
         }
         // Maison (ou pas prêt à rencontrer) = SOLO uniquement ; le groupe est réservé au Voyage
         const grp = $("qsModeGroup"), grpCard = $("qmGroupCard");

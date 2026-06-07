@@ -190,7 +190,8 @@
     return '<svg class="smbadge-svg" viewBox="0 0 128 128" width="' + size + '" height="' + size + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>';
   };
 
-  window.SMBadge.hasEmblem = function (badgeKey) { return !!EM[String(badgeKey || '').replace(/^badge_/, '')]; };
+  // Choix DA (Maxime) : badges RONDS à EMOJI partout → on désactive les emblèmes SVG sertis.
+  window.SMBadge.hasEmblem = function (badgeKey) { return false; };
   window.SMBadge.isSecret = function (badgeKey) { return !!SECRETS[String(badgeKey || '').replace(/^badge_/, '')]; };
   // Synchronise le registre depuis le catalogue Supabase (is_secret)
   window.SMBadge.setSecrets = function (keys) {
