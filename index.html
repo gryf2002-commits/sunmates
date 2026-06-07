@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=253"></script>
-  <script src="sunmates-icons.js?v=253"></script>
+  <script src="sunmates-badges.js?v=254"></script>
+  <script src="sunmates-icons.js?v=254"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -3636,18 +3636,12 @@
               <p class="muted" style="font-size:.76rem;margin:.6rem 0 0">Tu peux mettre en pause, avancer ou quitter à tout moment.</p>
             </div>
 
-            <!-- Visites guidées INTERACTIVES : l'utilisateur avance à son rythme, chaque fonction est surlignée -->
+            <!-- Tuto guidé pas-à-pas (spotlight) — l'utilisateur avance à son rythme. Les tutos PAR ZONE
+                 sont accessibles via « ▶ Tuto guidé » dans le catalogue ci-dessous. -->
             <div class="card">
-              <h3 style="margin-top:0">🧭 Visites guidées interactives</h3>
-              <p class="muted" style="font-size:.8rem;margin:.1rem 0 .7rem">Pas-à-pas surligné sur l'app (Précédent / Suivant), idéal pour accompagner quelqu'un de A à Z. L'utilisateur avance à son rythme.</p>
-              <button class="btn-primary btn-block" data-tuto="full" style="margin-bottom:.5rem">▶ Visite complète (A → Z)</button>
-              <div class="grid2">
-                <button class="btn-ghost" data-tuto="accueil">🏠 Accueil & fil</button>
-                <button class="btn-ghost" data-tuto="jeux">🎮 Jeux</button>
-                <button class="btn-ghost" data-tuto="connexions">🤝 Mates</button>
-                <button class="btn-ghost" data-tuto="securite">🛡️ Sécurité</button>
-                <button class="btn-ghost" data-tuto="profil">👤 Profil</button>
-              </div>
+              <h3 style="margin-top:0">🧭 Tuto guidé pas-à-pas</h3>
+              <p class="muted" style="font-size:.8rem;margin:.1rem 0 .7rem">Visite surlignée de toute l'app (Précédent / Suivant), parfaite pour accompagner quelqu'un de A à Z. Pour un onglet précis, utilise « ▶ Tuto guidé » dans le catalogue plus bas.</p>
+              <button class="btn-primary btn-block" data-tuto="full">▶ Visite guidée complète (A → Z)</button>
             </div>
 
             <div class="section-head"><h3 style="margin:.4rem 0 .2rem">📚 Knowledge base : tout ce que l'app permet</h3></div>
@@ -5454,6 +5448,9 @@
         ["❤️", "Compatibilité", "Score + détail « pourquoi vous matchez » (tuile cliquable)."],
         ["💬", "Chat temps réel", "Messages, « en train d'écrire », accusés de lecture, traduction."],
         ["🧊", "Brise-glace", "Suggestions de 1er message (intérêts/ville du Mate) quand la conversation est vide."],
+        ["🎤", "Notes vocales", "Enregistre une note vocale (30 s) dans le chat, lecture en 1 tap."],
+        ["🔥", "Flammes (poc)", "Envoie un « poc » chaque jour pour entretenir une flamme avec ton Mate."],
+        ["⚙️", "Menu conversation", "3 points en haut : profil, flammes, notifs, bloquer, supprimer."],
         ["📨", "Demandes", "Connexions à accepter/refuser, confettis au match."],
         ["👍", "Recommandations (vouch)", "Des Mates se portent garants."],
         ["🚫", "Bloquer / signaler", "Couleurs distinctes, anti-spam, auto-blocage."],
@@ -5514,12 +5511,17 @@
         if (!matched.length) return "";
         any = true;
         const tab = zoneTab(zone);
-        const goBtn = tab ? `<button class="feat-go" data-feattab="${tab}">▶ Voir</button>` : "";
+        const hasTour = tab && typeof GUIDED_TOURS !== "undefined" && GUIDED_TOURS.full.some((s) => s.tab === tab);
+        const goBtn = tab ? `<button class="feat-go" data-feattab="${tab}" data-feattour="${hasTour ? 1 : 0}">${hasTour ? "▶ Tuto guidé" : "▶ Voir"}</button>` : "";
         return `<div class="feat-zone">${escapeHtml(zone)}${goBtn}</div>
           ${matched.map(([ic, name, desc]) => `<div class="feat-item"><div class="feat-ic">${ic}</div><div><div class="feat-name">${escapeHtml(name)}</div><div class="feat-desc">${escapeHtml(desc)}</div></div></div>`).join("")}`;
       }).join("") || "";
       if (!any) box.innerHTML = '<p class="muted" style="text-align:center;padding:1rem">Aucune fonctionnalité ne correspond à « ' + escapeHtml(q) + ' ».</p>';
-      box.querySelectorAll("[data-feattab]").forEach((b) => b.addEventListener("click", () => { goToTab(b.dataset.feattab); }));
+      // « Voir » = TUTO GUIDÉ (visite spotlight de la zone), sinon simple redirection.
+      box.querySelectorAll("[data-feattab]").forEach((b) => b.addEventListener("click", () => {
+        if (b.dataset.feattour === "1" && typeof startGuidedTour === "function") startGuidedTour(b.dataset.feattab);
+        else goToTab(b.dataset.feattab);
+      }));
     }
     { const fs2 = $("featSearch"); if (fs2) fs2.addEventListener("input", (e) => renderFeatureCatalog(e.target.value)); }
     // ====================== DÉMO GUIDÉE AUTOMATIQUE (clé en main, A à Z) ======================
@@ -8953,6 +8955,7 @@
         { tab: "accueil", sel: ".homemap-card", emoji: "🗺️", title: "La carte vivante", text: "Les pastilles = lieux, Mates, activités, quêtes. Choisis ta ville en haut, touche une pastille pour agir." },
         { tab: "accueil", sel: "#feedComposer", emoji: "📰", title: "Le fil", text: "Publie une humeur ou un spot, et like les posts de la communauté." },
         { tab: "accueil", sel: ".grid2", emoji: "⚡", title: "Accès rapides", text: "Tes raccourcis vers Mates, Sécurité, Lieux, Jeux, Classement, Coupons, Boutique et Profil." },
+        { tab: "lieux", sel: "#lieuxCats", emoji: "📍", title: "Lieux sûrs", text: "Cafés et spots validés : filtre (éco, près de toi, top notés), fais un check-in pour gagner des points, et publie ton « spot du jour »." },
         { tab: "jeux", view: "jeuxHome", sel: "#playerHero", emoji: "⭐", title: "Ton niveau", text: "Gagne de l'XP en accomplissant des quêtes. Touche la carte pour voir tes récompenses et le classement." },
         { tab: "jeux", sel: "#jeuxNav", emoji: "🎯", title: "Quêtes & jeux", text: "Quêtes, jeux, badges, coupons, classement, boutique : tout est ici." },
         { tab: "connexions", sel: "#inviteFriendsBtn", emoji: "✨", title: "Inviter des amis", text: "Fais venir tes amis : un coupon « 1er verre offert » pour vous deux 🍹" },
@@ -8984,13 +8987,17 @@
       const el = document.querySelector(st.sel), spot = $("tourSpot"), pop = $("tourPop");
       if (!spot || !pop) return;
       if (!el) { spot.style.opacity = "0"; pop.style.top = "auto"; pop.style.bottom = "42%"; return; }
-      const r = el.getBoundingClientRect(), pad = 8;
-      spot.style.opacity = "1";
-      spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
-      spot.style.width = (r.width + pad * 2) + "px"; spot.style.height = (r.height + pad * 2) + "px";
-      // Place la bulle au-dessus ou en dessous selon la place disponible
-      if (window.innerHeight - r.bottom > 220) { pop.style.top = (r.bottom + 14) + "px"; pop.style.bottom = "auto"; }
-      else { pop.style.bottom = (window.innerHeight - r.top + 14) + "px"; pop.style.top = "auto"; }
+      // FIX bug : on amène d'abord l'élément dans la vue, puis on cale le spotlight dessus.
+      try { el.scrollIntoView({ block: "center", behavior: "auto" }); } catch (e) {}
+      setTimeout(() => {
+        const r = el.getBoundingClientRect(), pad = 8;
+        spot.style.opacity = "1";
+        spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
+        spot.style.width = (r.width + pad * 2) + "px"; spot.style.height = (r.height + pad * 2) + "px";
+        if (window.innerHeight - r.bottom > 240) { pop.style.top = (r.bottom + 14) + "px"; pop.style.bottom = "auto"; }
+        else if (r.top > 240) { pop.style.bottom = (window.innerHeight - r.top + 14) + "px"; pop.style.top = "auto"; }
+        else { pop.style.top = "auto"; pop.style.bottom = "16px"; } // élément plein écran → bulle en bas
+      }, 130);
     }
     function endTour() {
       const t = $("tour"); if (t) t.classList.add("hidden");
