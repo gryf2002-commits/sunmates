@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=210"></script>
-  <script src="sunmates-icons.js?v=210"></script>
+  <script src="sunmates-badges.js?v=211"></script>
+  <script src="sunmates-icons.js?v=211"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -108,7 +108,7 @@
       --ink:       #1d2230;   /* titres */
       --text:      #454b59;   /* texte */
       --muted:     #9aa0ac;   /* texte secondaire */
-      --ok:        #22c55e;
+      --ok:        #1E7A5A;   /* vert sobre raccord DA (plus de vert criard) */
       --danger:    #ef4444;
       --line:      #f0e6e4;   /* séparateurs */
       /* Formes */
@@ -1445,6 +1445,16 @@
     .ph-xp-fill { box-shadow: none; } /* on coupe le néon doré */
     .ph-xp-fill::after { display: none; } /* on coupe le reflet brillant qui balaie la barre */
     .ph-xp-next { display: none; } /* on retire le détail "plus que X XP" pour alléger */
+    /* Tuiles d'accès rapide SOBRES : on calme le festival de couleurs + les ombres colorées */
+    .tab-panel[data-panel="accueil"] .tile .thumb {
+      filter: drop-shadow(0 2px 3px rgba(90,25,10,.26)) saturate(.7) brightness(1.01);
+      box-shadow: 0 3px 10px rgba(120,40,0,.12) !important;
+    }
+    .tab-panel[data-panel="accueil"] .tile { box-shadow: 0 3px 12px rgba(120,40,0,.07); }
+    /* Quête du jour : aura calmée sur l'accueil (moins « jeu ») */
+    .tab-panel[data-panel="accueil"] .qs-aura { opacity: .45; }
+    /* Accessibilité : croix de fermeture des panneaux → vraie cible tactile 44px */
+    .picker-head > button.btn-ghost { min-width: 44px; min-height: 44px; padding: 0 !important; display: inline-grid; place-items: center; font-size: 1.05rem; line-height: 1; }
     /* Mode Maison : préparation voyage repliée (sobriété) */
     .hm-plan { margin: .4rem 0 1rem; }
     .hm-plan > summary { list-style: none; cursor: pointer; padding: .85rem 1rem; border-radius: var(--radius); background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); font-family: "Fraunces", serif; font-weight: 800; color: var(--ink); display: flex; align-items: center; justify-content: space-between; }
@@ -2268,7 +2278,7 @@
     /* Contacts d'urgence (ICE) */
     .ice-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .4rem; }
     .ice-call { flex: 1; display: flex; align-items: center; gap: .6rem; text-decoration: none; background: var(--cream); border: 1px solid var(--line); border-radius: 12px; padding: .55rem .7rem; }
-    .ice-ic { width: 36px; height: 36px; border-radius: 10px; background: rgba(34,197,94,.14); display: grid; place-items: center; font-size: 17px; }
+    .ice-ic { width: 36px; height: 36px; border-radius: 10px; background: rgba(23,169,155,.14); display: grid; place-items: center; font-size: 17px; }
     .ice-info { min-width: 0; }
     .ice-name { font-weight: 700; color: var(--ink); }
     .ice-num { font-size: .8rem; }
