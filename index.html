@@ -64,6 +64,8 @@
   <!-- QR du profil : génération 100% locale (qrcodejs) + scan caméra (jsQR). Aucune donnée n'est envoyée. -->
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
+  <script src="sunmates-badges.js?v=166"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1117,6 +1119,12 @@
     .bname { font-size: .72rem; font-weight: 700; color: var(--ink); line-height: 1.15; }
     .bprog { font-size: .68rem; color: var(--muted); }
     .bitem.locked .bname { color: var(--muted); }
+    /* Badges sur-mesure (SVG joaillerie) — remplace .hex emoji */
+    .smbadge-wrap { width: 72px; height: 72px; margin: 0 auto .4rem; display: grid; place-items: center; }
+    .smbadge-wrap .smbadge-svg { width: 72px; height: 72px; transition: transform .2s ease; }
+    .bitem:hover .smbadge-wrap .smbadge-svg { transform: translateY(-3px) rotate(-3deg); }
+    .bitem.locked .smbadge-svg { filter: grayscale(.92) opacity(.5); }
+    @media (prefers-reduced-motion: reduce) { .smbadge-wrap .smbadge-svg { transition: none; } }
 
     /* Coupons */
     .coupon { display: flex; align-items: center; gap: .85rem; padding: .85rem .9rem; border: 1.5px dashed var(--accent);
@@ -5875,13 +5883,16 @@
       const badgeStyle = (k) => { let h = 0; for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0; return SHAPES[h % SHAPES.length] + " " + GRADS[(h >> 3) % GRADS.length]; };
       $("badgeGrid").innerHTML = shown.map((b) => {
         const done = myBadgeKeys.has(b.key);
+        const bvis = (window.SMBadge && SMBadge.hasEmblem(b.key))
+          ? `<div class="smbadge-wrap">${SMBadge(b.key, { secret: !!b.is_secret, size: 72 })}</div>`
+          : `<div class="hex ${badgeStyle(b.key)}">${b.emoji || "🏅"}</div>`;
         return `<div class="bitem ${done ? "" : "locked"}" data-badge="${escapeHtml(b.key)}" style="cursor:pointer">
-          <div class="hex ${badgeStyle(b.key)}">${b.emoji || "🏅"}</div>
+          ${bvis}
           <div class="bname">${escapeHtml(b.name || "")}${b.is_secret && isAdmin ? ' <span style="font-size:.55rem;color:var(--accent)">🔒</span>' : ""}</div>
           <div class="bprog">${done ? "✅ débloqué" : "🔒 à débloquer"}</div>
         </div>`;
       }).join("")
-        + (hiddenSecrets ? `<div class="bitem secret" id="secretTeaser" style="cursor:pointer"><div class="hex">❓</div><div class="bname">Badges secrets</div><div class="bprog">${hiddenSecrets} à découvrir 👀</div></div>` : "");
+        + (hiddenSecrets ? `<div class="bitem secret" id="secretTeaser" style="cursor:pointer">${window.SMBadge ? `<div class="smbadge-wrap">${SMBadge("legend", { secret: true, locked: true, size: 72 })}</div>` : '<div class="hex">❓</div>'}<div class="bname">Badges secrets</div><div class="bprog">${hiddenSecrets} à découvrir 👀</div></div>` : "");
       $("badgeGrid").querySelectorAll("[data-badge]").forEach((el) => el.addEventListener("click", () => showBadgeInfo(el.dataset.badge)));
       { const tz = $("secretTeaser"); if (tz) tz.addEventListener("click", () => showInfo("Badges secrets 🔒", `<p style="text-align:center;line-height:1.6">Il existe <b>${hiddenSecrets} badge(s) secret(s)</b> à débloquer en explorant SunMates… 👀<br><br>À toi de les découvrir, ils apparaîtront ici une fois obtenus !</p>`)); }
       // Compteurs remis à la réalité (0 si rien d'accompli)
