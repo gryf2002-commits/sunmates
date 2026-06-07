@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=247"></script>
-  <script src="sunmates-icons.js?v=247"></script>
+  <script src="sunmates-badges.js?v=248"></script>
+  <script src="sunmates-icons.js?v=248"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -709,6 +709,16 @@
     .homemap-filters .chip b { font-weight: 800; opacity: .85; }
     .homemap-wrap { position: relative; isolation: isolate; } /* contient les outils carte (z-index) -> ne débordent plus sur la nav du bas */
     .homemap { height: 240px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
+    /* Mode paysage (téléphone tourné, peu de hauteur) : on raccourcit les gros visuels pour rester lisible */
+    @media (orientation: landscape) and (max-height: 560px) {
+      .auth-hero { padding: .8rem 1rem !important; min-height: 0; }
+      .auth-hero::after, .auth-hero::before { display: none !important; }
+      .detail-hero { height: 130px; }
+      .homemap { height: 200px; }
+      .player-hero { padding: .55rem .8rem; }
+      .souvenir-card { padding: 1rem 1.1rem; }
+      #photoLightboxImg { max-height: 84vh; }
+    }
     /* Plein écran : TOUTE la carte (filtres + carte + légende) passe en plein écran */
     .homemap-fsclose { display: none; }
     .homemap-card.fs { position: fixed; inset: 0; z-index: var(--z-map-fs); margin: 0; border-radius: 0; padding: .55rem;
@@ -3869,6 +3879,7 @@
         <div id="jeuxSheet" class="act-overlay hidden">
           <div class="act-card" style="max-width:440px;max-height:88vh;display:flex;flex-direction:column">
             <div class="picker-head"><h3 id="jeuxSheetTitle" style="margin:0">Quêtes</h3><button id="jeuxSheetClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
+            <p class="muted" id="jeuxSheetHint" style="font-size:.82rem;margin:.3rem 0 .2rem">Touche une quête, accomplis-la dans la vraie vie, puis valide-la pour gagner <b>XP + badge</b> (3 par jour max).</p>
             <div style="overflow-y:auto;flex:1;margin-top:.4rem">
               <div id="jeuxSheetQuests"><div class="card" id="questsList" style="margin:0"></div></div>
               <div id="jeuxSheetGames" class="hidden"><div class="grid2" id="gamesGrid"></div></div>
@@ -11651,6 +11662,7 @@
     function openJeuxSheet(kind) {
       const isGames = kind === "games";
       $("jeuxSheetTitle").textContent = isGames ? "🎮 Jeux populaires" : "🎯 Quêtes du jour";
+      { const h = $("jeuxSheetHint"); if (h) h.textContent = isGames ? "Touche un jeu pour le découvrir et y jouer." : "Touche une quête, accomplis-la dans la vraie vie, puis valide-la pour gagner XP + badge (3 par jour max)."; }
       show($("jeuxSheetQuests"), !isGames);
       show($("jeuxSheetGames"), isGames);
       $("jeuxSheet").classList.remove("hidden");
