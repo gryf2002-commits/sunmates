@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=237"></script>
-  <script src="sunmates-icons.js?v=237"></script>
+  <script src="sunmates-badges.js?v=238"></script>
+  <script src="sunmates-icons.js?v=238"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -489,6 +489,11 @@
     .spot-emoji-pick::-webkit-scrollbar { display: none; }
     .spot-emoji-pick button { flex: 0 0 auto; background: var(--accent-soft); border: 1.5px solid transparent; border-radius: 10px; padding: .25rem .45rem; font-size: 1.05rem; cursor: pointer; }
     .spot-emoji-pick button.active { border-color: var(--accent); background: #fff; }
+    /* Spot du jour : suggestions rapides */
+    .spot-quick { display: flex; flex-wrap: wrap; gap: .35rem; margin: .1rem 0 .6rem; }
+    .spot-quick button { font-size: .76rem; font-weight: 700; padding: .35rem .6rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--text); cursor: pointer; }
+    .spot-quick button:active { transform: scale(.96); }
+    body.theme-dusk .spot-quick button { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
     /* Carte « spot du jour » repliable pour ne pas encombrer le profil */
     .spot-card { padding: .8rem 1rem; }
     .spot-card > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-weight: 800; color: var(--ink); }
@@ -2983,6 +2988,15 @@
           <p class="muted" style="font-size:.8rem;margin:.5rem 0" data-i18n="spot.sub">Dis où tu traînes aujourd'hui, visible 24 h, façon story.</p>
           <div id="spotCurrent" style="display:none;margin-bottom:.5rem"></div>
           <div class="spot-emoji-pick" id="spotEmojiPick"></div>
+          <!-- Suggestions en 1 tap (plus pratique) -->
+          <div class="spot-quick" id="spotQuick">
+            <button type="button" data-spotq="Café cosy ☕">☕ Café</button>
+            <button type="button" data-spotq="En terrasse 🍹">🍹 Terrasse</button>
+            <button type="button" data-spotq="Balade en ville 🚶">🚶 Balade</button>
+            <button type="button" data-spotq="Au parc, au calme 🌳">🌳 Parc</button>
+            <button type="button" data-spotq="Spot coucher de soleil 🌇">🌇 Sunset</button>
+            <button type="button" data-spotq="Musée / expo 🖼️">🖼️ Culture</button>
+          </div>
           <div class="spot-compose">
             <input id="spotInput" type="text" maxlength="60" placeholder="Ex : Café cosy à Lisbonne ☕" data-i18n-ph="spot.ph" />
             <button class="btn-primary" id="spotSave" data-i18n="spot.save">Publier</button>
@@ -9461,7 +9475,17 @@
     function _soloKey() { return "sm_solo_" + (myUserId || "x") + "_" + new Date().toISOString().slice(0, 10); }
     function _soloState() { try { return JSON.parse(localStorage.getItem(_soloKey()) || "{}") || {}; } catch (e) { return {}; } }
     function _soloSave(s) { try { localStorage.setItem(_soloKey(), JSON.stringify(s)); } catch (e) {} }
-    function _soloPick(seed) { return SOLO_CHALLENGES.map((c, i) => ({ c: c, k: (i * 97 + seed * 31) % 1000 })).sort((a, b) => a.k - b.k).slice(0, 4).map((x) => x.c); }
+    // Ordre stable mais qui VARIE chaque jour (sinon toujours les mêmes en haut).
+    function _soloOrder() {
+      const day = (typeof _dayIdx === "function") ? _dayIdx() : 0;
+      return SOLO_CHALLENGES.map((c, i) => ({ c: c, k: (i * 131 + day * 977) % 1000 })).sort((a, b) => a.k - b.k).map((x) => x.c);
+    }
+    // « Mélanger » = fenêtre de 4 qui AVANCE de 4 → on parcourt vraiment les 10 défis (peu de répétition).
+    function _soloPick(seed) {
+      const ord = _soloOrder(), n = ord.length, off = ((seed || 0) * 4) % n, out = [];
+      for (let j = 0; j < 4; j++) out.push(ord[(off + j) % n]);
+      return out;
+    }
     // Crédit d'XP solo : SERVEUR D'ABORD (RPC anti-triche grant_solo_xp, cap 3+3/j,
     // cross-device). Repli sur crédit direct uniquement si la migration s27 n'est pas
     // encore lancée (le RPC n'existe pas) — après s27, le trigger bloque tout crédit direct.
@@ -10917,6 +10941,8 @@
       const pick = $("spotEmojiPick"); if (!pick) return;
       pick.innerHTML = SPOT_EMOJIS.map((e) => `<button type="button" data-spotemoji="${e}" class="${e === selectedSpotEmoji ? "active" : ""}">${e}</button>`).join("");
       pick.querySelectorAll("[data-spotemoji]").forEach((b) => b.addEventListener("click", () => { selectedSpotEmoji = b.dataset.spotemoji; pick.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b)); }));
+      // Suggestions rapides : remplissent le champ en 1 tap (plus pratique)
+      { const q = $("spotQuick"); if (q && !q.dataset.wired) { q.dataset.wired = "1"; q.querySelectorAll("[data-spotq]").forEach((b) => b.addEventListener("click", () => { const i = $("spotInput"); if (i) { i.value = b.dataset.spotq; i.focus(); } if (window.SMSound) SMSound.play("tap"); })); } }
       const cur = $("spotCurrent"), clr = $("spotClear"), sum = $("spotSummary");
       if (myProfile && isSpotActive(myProfile)) {
         selectedSpotEmoji = myProfile.status_emoji || selectedSpotEmoji;
