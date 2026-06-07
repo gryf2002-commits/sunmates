@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=221"></script>
-  <script src="sunmates-icons.js?v=221"></script>
+  <script src="sunmates-badges.js?v=222"></script>
+  <script src="sunmates-icons.js?v=222"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -2702,7 +2702,7 @@
           </div>
 
           <!-- ============ MAISON v2 — Hub SOLO (l'app se suffit à elle-même) ============ -->
-          <section class="card solo-prog" id="soloProgress" aria-label="Ta progression solo">
+          <section class="card solo-prog stat-click" id="soloProgress" aria-label="Ta progression solo" role="button" tabindex="0" title="Voir ma progression dans l'onglet Jeux">
             <div class="sp-aura" aria-hidden="true"></div>
             <div class="sp-head">
               <h3 class="sp-title">Ta progression solo</h3>
@@ -2714,12 +2714,12 @@
               <div class="sp-stat"><b id="spRit">0/3</b><span>Rituels du jour</span></div>
               <div class="sp-stat"><b id="spXp">0</b><span>XP gagné</span></div>
             </div>
-            <p class="muted" style="margin:.2rem 0 0;font-size:.8rem">Ta ville, comme une voyageuse 🧭 — relève des défis et grimpe au <b>Niveau</b> dans l'onglet Jeux.</p>
+            <p class="muted" style="margin:.2rem 0 0;font-size:.8rem">Ta ville, ton terrain de jeu 🧭 · relève des défis et grimpe au <b>Niveau</b> dans l'onglet Jeux ›</p>
           </section>
 
           <section class="solo-ch" id="soloChallenges" aria-label="Défis solo de ta ville">
             <div class="qm-head"><h3>Défis solo de <span id="scCity">ta ville</span> 🧭</h3><a class="qm-all" id="scReroll" role="button" tabindex="0">🎲 Mélanger</a></div>
-            <p class="muted sc-sub">Redécouvre ton coin comme une voyageuse. Aucune rencontre, juste toi et ta ville.</p>
+            <p class="muted sc-sub">Redécouvre ton coin comme en voyage. Aucune rencontre, juste toi et ta ville.</p>
             <div class="sc-grid" id="scGrid"></div>
           </section>
 
@@ -6207,16 +6207,33 @@
     { const ss = $("souvenirShare"); if (ss) ss.addEventListener("click", shareParcours); }
     { const sm = $("souvenirModal"); if (sm) sm.addEventListener("click", (e) => { if (e.target.id === "souvenirModal") sm.classList.add("hidden"); }); }
 
-    // ===== Croissance : inviter des amis (partage natif du lien de l'app) =====
+    // ===== Croissance : inviter des amis (partage natif + lien de PARRAINAGE) =====
+    // Le lien porte ?ref=<mon id> → on saura plus tard qui a fait venir qui (1re brique referral).
     function shareInvite() {
-      const url = location.href.split("#")[0].split("?")[0];
-      const text = "🌍 Rejoins-moi sur SunMates — l'app pour voyager solo en sécurité et se faire des potes ! ☀️\n" + url;
+      const base = location.href.split("#")[0].split("?")[0];
+      const url = myUserId ? (base + "?ref=" + encodeURIComponent(myUserId)) : base;
+      const text = "🌍 Rejoins-moi sur SunMates — l'app pour voyager solo en sécurité et se faire des potes ! ☀️ On se boit un verre ? 🍹\n" + url;
       try { if (typeof track === "function") track("invite_shared", {}); } catch (e) {}
+      // Compteur local d'invitations partagées (sert au badge « Early Bird » de la campagne de lancement)
+      try { const k = "sm_invites_shared"; localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || "0", 10) || 0) + 1)); } catch (e) {}
       if (navigator.share) { navigator.share({ title: "SunMates", text, url }).catch(() => {}); }
       else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast("📋", "Lien d'invitation copié, partage-le !"), () => toast("✨", text)); }
       else toast("✨", text);
     }
     { const ib = $("inviteFriendsBtn"); if (ib) ib.addEventListener("click", shareInvite); }
+    // Capte le parrain à l'arrivée (?ref=…) : on le mémorise pour l'attribution future (referral).
+    (function captureReferral() {
+      try {
+        const m = /[?&]ref=([^&]+)/.exec(location.search || "");
+        if (m && m[1]) {
+          const ref = decodeURIComponent(m[1]);
+          if (!localStorage.getItem("sm_ref") && ref !== myUserId) {
+            localStorage.setItem("sm_ref", ref);
+            localStorage.setItem("sm_ref_at", new Date().toISOString().slice(0, 10));
+          }
+        }
+      } catch (e) {}
+    })();
 
     let _badgeKeysInit = false;  // false au tout 1er chargement (évite de fêter les badges déjà acquis)
     let myCoupons = [];          // coupons gagnés
@@ -9145,7 +9162,9 @@
       try { renderSoloProgress(); renderSoloChallenges(); renderRituals(); } catch (e) {}
     }
     { const rr = $("scReroll"); if (rr) rr.addEventListener("click", () => { const s = _soloState(); s.seed = ((s.seed || 0) + 1) % 1000; _soloSave(s); renderSoloChallenges(); if (window.SMSound) SMSound.play("pop"); }); }
-    { const ss = $("spStreak"); if (ss) ss.addEventListener("click", () => { const h = $("homeStreak"); if (h) h.click(); }); }
+    { const ss = $("spStreak"); if (ss) ss.addEventListener("click", (e) => { e.stopPropagation(); const h = $("homeStreak"); if (h) h.click(); }); }
+    // La carte « progression solo » est cliquable → ouvre l'onglet Jeux (où vivent niveau & XP).
+    { const sp = $("soloProgress"); if (sp) sp.addEventListener("click", () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }); }
 
     // ---- Modal de PREUVE (photo) : valide un défi solo en postant une preuve ----
     { const pc = $("proofCancel"); if (pc) pc.addEventListener("click", () => show($("proofModal"), false)); }
