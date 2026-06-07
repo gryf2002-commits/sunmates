@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=258"></script>
-  <script src="sunmates-icons.js?v=258"></script>
+  <script src="sunmates-badges.js?v=259"></script>
+  <script src="sunmates-icons.js?v=259"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -665,6 +665,8 @@
     .popinfo-t { margin: 0 0 .5rem; font-size: 1.08rem; }
     .popinfo-b { font-size: .9rem; color: var(--muted); line-height: 1.5; }
     .popinfo-b b { color: var(--ink); }
+    .inspo-chip { font-size: .74rem; font-weight: 700; background: var(--cream); border: 1px solid var(--line); border-radius: 999px; padding: .2rem .55rem; color: var(--ink); }
+    body.theme-dusk .inspo-chip { background: #2a2140; }
     @keyframes popinfoFade { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popinfoPop { from { opacity: 0; transform: translateY(10px) scale(.94); } to { opacity: 1; transform: none; } }
     /* Tuile « bientôt dispo » (Gold) : grisée, non cliquable */
@@ -1449,6 +1451,8 @@
     .rit-box{ flex-shrink:0; width:26px; height:26px; border-radius:8px; border:2px solid rgba(201,138,30,.45); display:grid; place-items:center; font-size:.85rem; font-weight:900; color:transparent; transition:all .18s ease; }
     .rit-row.is-done .rit-box{ color:#fff; border-color:transparent; background:linear-gradient(135deg,#34c98f,#1f9e8c); }
     .rit-row.is-done .rit-name{ text-decoration:line-through; opacity:.6; } .rit-row.is-done .rit-ic{ background:rgba(52,201,143,.18); }
+    .rit-row.rit-add{ border-style:dashed; background:transparent; box-shadow:none; } .rit-row.rit-add .rit-ic{ background:var(--accent-soft); }
+    .rit-row.rit-custom .rit-ic{ background:rgba(255,138,61,.18); }
     body.theme-dusk .rit-row{ background:#2a2140; border-color:rgba(255,255,255,.08); } body.theme-dusk .rit-ic{ background:rgba(255,201,60,.12); }
     body.theme-dusk .rit-cnt{ color:#FFD79A; background:rgba(255,209,92,.16); } body.theme-dusk .rit-box{ border-color:rgba(255,201,60,.4); }
     @media (prefers-reduced-motion: reduce){ .sp-bar span, .sc-card, .rit-row, .rit-box{ transition:none; } }
@@ -1867,9 +1871,23 @@
     .wish-add { display: flex; gap: .4rem; }
     .wish-add input { flex: 1; }
     /* Préparatifs de voyage (checklist) */
-    .prep-item { display: flex; align-items: center; gap: .6rem; padding: .5rem .2rem; cursor: pointer; border-radius: 8px; transition: background .12s; }
-    .prep-item:active { background: var(--cream); }
+    .prep-item { display: flex; align-items: center; gap: .6rem; padding: .55rem .6rem; cursor: pointer; border-radius: 12px; border: 1px solid var(--line); background: var(--card); margin: .3rem 0; transition: background .12s, transform .12s; }
+    .prep-item:active { transform: scale(.99); }
+    .prep-item.done { background: var(--cream); border-color: transparent; }
+    body.theme-dusk .prep-item { background: #241b35; } body.theme-dusk .prep-item.done { background: #2a2140; }
     .prep-box { font-size: 1.1rem; flex-shrink: 0; }
+    /* Barre de progression des préparatifs */
+    .prep-bar { height: 7px; border-radius: 999px; background: var(--cream); overflow: hidden; margin: -.1rem 0 .6rem; }
+    .prep-bar span { display: block; height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width .45s ease; }
+    body.theme-dusk .prep-bar { background: #2a2140; }
+    /* Bouton fiche pays (must-know) */
+    .prep-country { display: flex; align-items: center; gap: .7rem; width: 100%; text-align: left; padding: .7rem .8rem; margin: 0 0 .7rem; border: 0; border-radius: 14px; cursor: pointer; color: #fff;
+      background: radial-gradient(120% 130% at 12% -10%, rgba(255,255,255,.22), rgba(255,255,255,0) 46%), linear-gradient(135deg,#6C4DE0,#FF7A4D); box-shadow: var(--shadow-pop); }
+    .prep-country .pc-flag { font-size: 1.8rem; flex-shrink: 0; }
+    .prep-country .pc-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+    .prep-country .pc-txt span { font-size: .76rem; opacity: .95; }
+    .prep-country .pc-go { font-weight: 900; font-size: 1.1rem; }
+    .prep-country:active { transform: scale(.99); }
     .prep-label { flex: 1; font-size: .85rem; font-weight: 600; }
     .prep-item.done .prep-label { color: var(--muted); text-decoration: line-through; }
     .prep-go { border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent); width: 24px; height: 24px; border-radius: 50%; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; }
@@ -3653,6 +3671,7 @@
             <button data-aseg="reports">🚩 Signal.</button>
             <button data-aseg="quotes">💼 Devis</button>
             <button data-aseg="sounds">🔊 Sons</button>
+            <button data-aseg="data">🗄️ Données</button>
             <button data-aseg="system">🧰 Système</button>
           </div>
 
@@ -3741,6 +3760,13 @@
                 <label class="switch"><input type="checkbox" id="adminSoundToggle"><span class="sl"></span></label>
               </div>
               <div id="adminSounds" class="grid2"></div>
+            </div>
+          </div>
+
+          <div class="aseg hidden" data-asegpanel="data">
+            <div class="card"><h3 style="margin-top:0">🗄️ Données derrière l'app</h3>
+              <p class="muted" style="font-size:.82rem;margin:.2rem 0 .7rem">Vue d'ensemble de la base Supabase + du contenu de jeu chargé (lecture seule).</p>
+              <div id="adminData"><p class="muted">Chargement…</p></div>
             </div>
           </div>
 
@@ -4570,41 +4596,51 @@
     }
     // Inspiration du jour : une destination rotative à ajouter à ses envies (1 tap).
     const HM_INSPO = [
-      ["🇵🇹", "Lisbonne", "tramways jaunes, fado et couchers de soleil sur le Tage", "🗓️ Mars–oct · 💶 abordable · 🛟 très sûre en solo"],
-      ["🇯🇵", "Kyoto", "temples zen, ruelles de geishas et érables flamboyants", "🗓️ Avril (sakura) & nov · 💶 moyen · 🛟 ultra sûre"],
-      ["🇲🇦", "Marrakech", "souks colorés, riads et désert à perte de vue", "🗓️ Oct–avril · 💶 économique · 🛟 ok, reste en médina"],
-      ["🇮🇸", "Reykjavík", "aurores boréales, sources chaudes et volcans", "🗓️ Sept–mars (aurores) · 💶 cher · 🛟 très sûre"],
-      ["🇲🇽", "Mexico", "street food, fresques et énergie débordante", "🗓️ Nov–avril · 💶 abordable · 🛟 prudence le soir"],
-      ["🇬🇷", "Santorin", "maisons blanches, mer Égée et soleil doré", "🗓️ Mai–sept · 💶 moyen+ · 🛟 très sûre"],
-      ["🇻🇳", "Hanoï", "scooters, pho fumant et baie d'Halong", "🗓️ Oct–avril · 💶 très éco · 🛟 sûre, gare au trafic"],
-      ["🇵🇪", "Cusco", "Andes, ruines incas et chemin du Machu Picchu", "🗓️ Mai–sept · 💶 éco · 🛟 ok, attention altitude"],
-      ["🇮🇹", "Rome", "ruines antiques, pasta et dolce vita", "🗓️ Avril–juin & sept–oct · 💶 moyen · 🛟 sûre"],
-      ["🇹🇭", "Chiang Mai", "temples dorés, marchés de nuit et nature luxuriante", "🗓️ Nov–févr · 💶 très éco · 🛟 top pour le solo"],
-      ["🇪🇸", "Barcelone", "Gaudí, tapas et plages urbaines", "🗓️ Mai–juin & sept · 💶 moyen · 🛟 sûre, gare aux pickpockets"],
-      ["🇳🇴", "Tromsø", "fjords, aurores et nuits polaires", "🗓️ Sept–mars (aurores) · 💶 cher · 🛟 très sûre"],
-      ["🇨🇴", "Carthagène", "façades colorées, salsa et Caraïbes", "🗓️ Déc–avril · 💶 abordable · 🛟 reste dans la vieille ville"],
-      ["🇦🇺", "Sydney", "opéra, surf et road trips côtiers", "🗓️ Oct–avril · 💶 cher · 🛟 très sûre"],
-      ["🇹🇷", "Istanbul", "entre deux continents, bazars et bosphore", "🗓️ Avril–juin & sept–oct · 💶 abordable · 🛟 sûre, marchande"],
+      { f: "🇵🇹", c: "Lisbonne", d: "tramways jaunes, fado et couchers de soleil sur le Tage", when: "Mars–oct", budget: "Abordable", safe: "Très sûre en solo", why: "La capitale la plus douce d'Europe : collines, lumière dorée et terrasses où le temps ralentit.", must: ["Tram 28 à travers l'Alfama", "Coucher de soleil au Miradouro da Senhora do Monte", "Pastéis de Belém tièdes", "Excursion à Sintra"] },
+      { f: "🇯🇵", c: "Kyoto", d: "temples zen, ruelles de geishas et érables flamboyants", when: "Avril (sakura) & nov", budget: "Moyen", safe: "Ultra sûre", why: "Le Japon traditionnel dans toute sa grâce : 1 600 temples, jardins de mousse et cérémonies du thé.", must: ["Fushimi Inari et ses milliers de torii", "Bambouseraie d'Arashiyama", "Quartier de Gion au crépuscule", "Kinkaku-ji, le pavillon d'or"] },
+      { f: "🇲🇦", c: "Marrakech", d: "souks colorés, riads et désert à perte de vue", when: "Oct–avril", budget: "Économique", safe: "Ok, reste en médina", why: "Une explosion de couleurs, d'odeurs et de sons aux portes du Sahara.", must: ["Place Jemaa el-Fna à la nuit tombée", "Jardin Majorelle", "Nuit sous les étoiles dans le désert d'Agafay", "Hammam traditionnel"] },
+      { f: "🇮🇸", c: "Reykjavík", d: "aurores boréales, sources chaudes et volcans", when: "Sept–mars (aurores)", budget: "Cher", safe: "Très sûre", why: "La nature à l'état brut : geysers, cascades et ciels qui dansent en vert.", must: ["Cercle d'or (Geysir, Gullfoss)", "Bain au Blue Lagoon", "Chasse aux aurores boréales", "Côte sud et ses plages noires"] },
+      { f: "🇲🇽", c: "Mexico", d: "street food, fresques et énergie débordante", when: "Nov–avril", budget: "Abordable", safe: "Prudence le soir", why: "Une mégapole d'art, d'histoire aztèque et de tacos à tous les coins de rue.", must: ["Teotihuacan et ses pyramides", "Musée Frida Kahlo", "Xochimilco en trajinera", "Tacos al pastor de nuit"] },
+      { f: "🇬🇷", c: "Santorin", d: "maisons blanches, mer Égée et soleil doré", when: "Mai–sept", budget: "Moyen+", safe: "Très sûre", why: "La carte postale grecque : dômes bleus suspendus au-dessus d'une caldeira volcanique.", must: ["Coucher de soleil à Oia", "Plage rouge d'Akrotiri", "Dégustation de vins volcaniques", "Bain dans les sources chaudes"] },
+      { f: "🇻🇳", c: "Hanoï", d: "scooters, pho fumant et baie d'Halong", when: "Oct–avril", budget: "Très éco", safe: "Sûre, gare au trafic", why: "Le chaos joyeux du Vietnam, entre lacs paisibles et street food légendaire.", must: ["Vieille ville et ses 36 corporations", "Croisière dans la baie d'Halong", "Egg coffee dans un café caché", "Train Street"] },
+      { f: "🇵🇪", c: "Cusco", d: "Andes, ruines incas et chemin du Machu Picchu", when: "Mai–sept", budget: "Éco", safe: "Ok, attention altitude", why: "L'ancienne capitale inca, tremplin vers l'une des sept merveilles du monde.", must: ["Machu Picchu au lever du jour", "Vallée sacrée", "Montagne aux 7 couleurs", "San Pedro, le marché local"] },
+      { f: "🇮🇹", c: "Rome", d: "ruines antiques, pasta et dolce vita", when: "Avril–juin & sept–oct", budget: "Moyen", safe: "Sûre", why: "Un musée à ciel ouvert où chaque ruelle raconte 2 000 ans d'histoire.", must: ["Colisée et Forum romain", "Fontaine de Trevi à l'aube", "Vatican et chapelle Sixtine", "Cacio e pepe au Trastevere"] },
+      { f: "🇹🇭", c: "Chiang Mai", d: "temples dorés, marchés de nuit et nature luxuriante", when: "Nov–févr", budget: "Très éco", safe: "Top pour le solo", why: "La perle du nord thaï : spiritualité, jungle et cuisine à tomber, pour trois fois rien.", must: ["Doi Suthep au coucher du soleil", "Sanctuaire éthique d'éléphants", "Marché de nuit du dimanche", "Cours de cuisine thaïe"] },
+      { f: "🇪🇸", c: "Barcelone", d: "Gaudí, tapas et plages urbaines", when: "Mai–juin & sept", budget: "Moyen", safe: "Sûre, gare aux pickpockets", why: "Le mariage parfait entre mer, architecture folle et fête jusqu'au bout de la nuit.", must: ["Sagrada Família", "Parc Güell", "Tapas au marché de la Boqueria", "Coucher de soleil aux Bunkers del Carmel"] },
+      { f: "🇳🇴", c: "Tromsø", d: "fjords, aurores et nuits polaires", when: "Sept–mars (aurores)", budget: "Cher", safe: "Très sûre", why: "La porte de l'Arctique, sous l'un des meilleurs ciels d'aurores au monde.", must: ["Safari aurores boréales", "Téléphérique Fjellheisen", "Rencontre avec des huskies", "Cathédrale arctique"] },
+      { f: "🇨🇴", c: "Carthagène", d: "façades colorées, salsa et Caraïbes", when: "Déc–avril", budget: "Abordable", safe: "Reste dans la vieille ville", why: "Une cité coloniale flamboyante au bord d'une mer turquoise.", must: ["Ville fortifiée au crépuscule", "Îles du Rosaire", "Cours de salsa", "Coucher de soleil au Café del Mar"] },
+      { f: "🇦🇺", c: "Sydney", d: "opéra, surf et road trips côtiers", when: "Oct–avril", budget: "Cher", safe: "Très sûre", why: "La plus solaire des grandes villes : plages mythiques et nature à un saut.", must: ["Opéra et Harbour Bridge", "Marche côtière Bondi–Coogee", "Blue Mountains", "Ferry pour Manly"] },
+      { f: "🇹🇷", c: "Istanbul", d: "entre deux continents, bazars et bosphore", when: "Avril–juin & sept–oct", budget: "Abordable", safe: "Sûre, marchande", why: "À cheval sur l'Europe et l'Asie, un carrefour de civilisations enivrant.", must: ["Sainte-Sophie et Mosquée Bleue", "Grand Bazar", "Croisière sur le Bosphore", "Hammam ottoman"] },
     ];
+    function _inspoFiche(o) {
+      const inWish = (typeof loadWishlist === "function" ? loadWishlist() : []).some((x) => x.toLowerCase().includes(o.c.toLowerCase()));
+      popInfo(o.f, o.c,
+        "<div style='text-align:left'>" +
+        "<p style='margin:0 0 .7rem;font-style:italic'>" + escapeHtml(o.why) + "</p>" +
+        "<div style='display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem'>" +
+          "<span class='inspo-chip'>🗓️ " + escapeHtml(o.when) + "</span><span class='inspo-chip'>💶 " + escapeHtml(o.budget) + "</span><span class='inspo-chip'>🛟 " + escapeHtml(o.safe) + "</span></div>" +
+        "<div style='font-weight:800;margin:.2rem 0 .3rem'>📍 Incontournables</div>" +
+        "<ul style='margin:0 0 .3rem;padding-left:1.1rem;line-height:1.6'>" + o.must.map((m) => "<li>" + escapeHtml(m) + "</li>").join("") + "</ul>" +
+        "<button class='btn-accent btn-block' id='ficheWish' style='margin-top:.9rem'" + (inWish ? " disabled" : "") + ">" + (inWish ? "✓ Déjà dans tes envies" : "🌠 Ajouter à mes envies") + "</button></div>");
+      setTimeout(() => { const b = $("ficheWish"); if (b && !inWish) b.onclick = () => {
+        const a = (typeof loadWishlist === "function") ? loadWishlist() : []; const label = o.f + " " + o.c;
+        if (!a.some((x) => x.toLowerCase() === label.toLowerCase())) a.push(label);
+        if (typeof saveWishlist === "function") saveWishlist(a); if (typeof renderWishlist === "function") renderWishlist();
+        b.disabled = true; b.textContent = "✓ Ajouté à tes envies"; renderInspo();
+      }; }, 40);
+    }
     function renderInspo() {
       const box = $("hmInspo"); if (!box) return;
       const day = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-      const [flag, city, desc, tip] = HM_INSPO[day % HM_INSPO.length];
-      const inWish = (typeof loadWishlist === "function" ? loadWishlist() : []).some((x) => x.toLowerCase() === (flag + " " + city).toLowerCase() || x.toLowerCase() === city.toLowerCase());
-      box.innerHTML = `<div class="hm-inspo-top"><span class="hm-inspo-flag">${flag}</span>
-          <div style="flex:1;min-width:0"><div class="hm-inspo-ttl">Inspiration du jour</div><div class="hm-inspo-city">${escapeHtml(city)}</div></div></div>
-        <div class="hm-inspo-desc">${escapeHtml(desc)}</div>
-        ${tip ? `<div class="hm-inspo-tip">${escapeHtml(tip)}</div>` : ""}
-        <button class="btn-accent btn-block hm-inspo-btn" id="hmInspoAdd" style="margin-top:.6rem" ${inWish ? "disabled" : ""}>${inWish ? "✓ Déjà dans tes envies" : "🌠 Ajouter à mes envies"}</button>`;
-      const b = $("hmInspoAdd"); if (b && !inWish) b.addEventListener("click", () => {
-        const a = (typeof loadWishlist === "function") ? loadWishlist() : [];
-        const label = flag + " " + city;
-        if (!a.some((x) => x.toLowerCase() === label.toLowerCase())) a.push(label);
-        if (typeof saveWishlist === "function") saveWishlist(a);
-        if (typeof renderWishlist === "function") renderWishlist();
-        renderInspo();
-        if (typeof toast === "function") toast("🌠", city + " ajoutée à tes envies !");
-      });
+      const o = HM_INSPO[day % HM_INSPO.length];
+      const inWish = (typeof loadWishlist === "function" ? loadWishlist() : []).some((x) => x.toLowerCase().includes(o.c.toLowerCase()));
+      box.innerHTML = `<div class="hm-inspo-top"><span class="hm-inspo-flag">${o.f}</span>
+          <div style="flex:1;min-width:0"><div class="hm-inspo-ttl">Inspiration du jour</div><div class="hm-inspo-city">${escapeHtml(o.c)}</div></div></div>
+        <div class="hm-inspo-desc">${escapeHtml(o.d)}</div>
+        <div class="hm-inspo-tip">🗓️ ${escapeHtml(o.when)} · 💶 ${escapeHtml(o.budget)} · 🛟 ${escapeHtml(o.safe)}</div>
+        <button class="btn-accent btn-block hm-inspo-btn" id="hmInspoMore" style="margin-top:.6rem">✨ Découvrir ${escapeHtml(o.c)} ›</button>
+        ${inWish ? '<div class="muted" style="text-align:center;font-size:.78rem;margin-top:.4rem">✓ Déjà dans tes envies</div>' : ""}`;
+      const b = $("hmInspoMore"); if (b) b.addEventListener("click", () => _inspoFiche(o));
     }
     // Bucket-list de destinations de rêve (locale)
     function loadWishlist() { try { return JSON.parse(localStorage.getItem("sm_wishlist") || "[]") || []; } catch (e) { return []; } }
@@ -4673,6 +4709,38 @@
         });
       }
     }
+    // ---- Infos PAYS réelles (must-know voyageur) : par destination, pas du générique ----
+    // m = mots-clés de détection (villes/pays/drapeau) ; le reste = infos pratiques concrètes.
+    const COUNTRY_TIPS = [
+      { name: "Portugal", flag: "🇵🇹", m: ["portugal", "lisbonne", "lisboa", "porto", "🇵🇹"], visa: "UE : carte d'identité suffit, séjour libre.", money: "Euro (€). CB partout, un peu de cash pour les petits cafés.", lang: "Portugais ; anglais courant dans les villes.", transport: "Métro/tram à Lisbonne (carte Viva), trains Comboios CP entre villes. Méfie-toi du tram 28 bondé (pickpockets).", water: "Eau du robinet potable.", plug: "Prise type C/F (comme en France), 230V.", tip: "Pourboire ~5-10% si content, non obligatoire.", health: "Carte Européenne d'Assurance Maladie (CEAM) valable.", custom: "On dîne tard (20h30+). Le 'bom dia' poli ouvre les portes.", safe: "Très sûr, même en solo la nuit dans les zones animées." },
+      { name: "Japon", flag: "🇯🇵", m: ["japon", "japan", "tokyo", "kyoto", "osaka", "🇯🇵"], visa: "Exemption 90 j pour les Français (passeport valide).", money: "Yen (¥). Société encore très cash — retire aux ATM 7-Eleven. IC Card (Suica/Pasmo) pour les transports.", lang: "Japonais ; peu d'anglais — Google Traduction photo très utile.", transport: "Trains ultra ponctuels. Le JR Pass peut valoir le coup si tu bouges beaucoup (à acheter avant idéalement).", water: "Eau du robinet potable.", plug: "Prise type A (US), 100V — adaptateur nécessaire.", tip: "PAS de pourboire (c'est mal vu).", health: "Excellents soins mais chers → assurance voyage indispensable.", custom: "Déchausse-toi à l'entrée, ne mange pas en marchant, silence dans les trains.", safe: "L'un des pays les plus sûrs au monde." },
+      { name: "Maroc", flag: "🇲🇦", m: ["maroc", "morocco", "marrakech", "fès", "fes", "casablanca", "🇲🇦"], visa: "Pas de visa pour les Français (séjour ≤ 90 j).", money: "Dirham (MAD), non exportable — change sur place. Cash roi dans les souks.", lang: "Arabe & berbère ; français très répandu.", transport: "Trains ONCF confortables (Casa-Marrakech). Petits taxis : exige le compteur ou négocie avant.", water: "Eau en bouteille uniquement.", plug: "Prise type C/E (comme France), 220V.", tip: "Pourboire (bakchich) attendu pour petits services.", health: "Évite glaçons et crudités lavées à l'eau du robinet.", custom: "Tenue couvrante (épaules/genoux), surtout pour les femmes. Marchander fait partie du jeu, avec le sourire.", safe: "Globalement sûr ; en solo femme, ignore les rabatteurs, reste dans les zones passantes." },
+      { name: "Islande", flag: "🇮🇸", m: ["islande", "iceland", "reykjavik", "reykjavík", "🇮🇸"], visa: "Espace Schengen : carte d'identité suffit.", money: "Couronne islandaise (ISK). Tout se paie en CB, même un café — quasi zéro cash.", lang: "Islandais ; anglais parlé par tous.", transport: "Pas de train — loue une voiture (4x4 hors été). Vérifie la météo/routes sur road.is et safetravel.is.", water: "Eau du robinet parmi les meilleures du monde.", plug: "Prise type C/F (comme France), 230V.", tip: "Pas de pourboire attendu.", health: "Soins excellents ; assurance recommandée (activités nature).", custom: "Douche nue obligatoire avant les piscines géothermales.", safe: "Ultra sûr ; le vrai danger, c'est la météo et la nature (respecte les barrières)." },
+      { name: "Mexique", flag: "🇲🇽", m: ["mexique", "mexico", "mexico city", "cancun", "oaxaca", "🇲🇽"], visa: "Pas de visa (≤ 180 j), formulaire FMM à l'arrivée.", money: "Peso (MXN). Cash pour la street food, CB ailleurs.", lang: "Espagnol ; anglais limité hors zones touristiques.", transport: "Bus longue distance excellents (ADO). En ville, privilégie Uber/Didi (plus sûr que taxi de rue).", water: "Eau en bouteille uniquement (même pour les dents).", plug: "Prise type A (US), 127V.", tip: "Pourboire 10-15% au resto.", health: "Attention à la 'turista' — mange chaud et fréquenté.", custom: "Les Mexicains sont chaleureux ; un peu d'espagnol fait des merveilles.", safe: "Varie fortement selon la région — évite les déplacements de nuit, ne montre pas de signes de richesse, vérifie les zones." },
+      { name: "Grèce", flag: "🇬🇷", m: ["grèce", "grece", "greece", "athènes", "athenes", "santorin", "🇬🇷"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). Cash utile sur les petites îles.", lang: "Grec ; anglais courant côté tourisme.", transport: "Ferries entre îles (réserve en haute saison). Loue un scooter avec prudence.", water: "Potable sur le continent ; bouteille conseillée sur certaines îles.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10%.", health: "CEAM valable.", custom: "Repas tardifs et conviviaux ; rythme tranquille (siga siga).", safe: "Très sûr en solo." },
+      { name: "Vietnam", flag: "🇻🇳", m: ["vietnam", "hanoi", "hanoï", "saigon", "ho chi minh", "🇻🇳"], visa: "E-visa en ligne nécessaire (90 j) — fais-le avant.", money: "Dong (VND). Cash roi ; retire de grosses coupures.", lang: "Vietnamien ; anglais basique côté tourisme.", transport: "Grab (VTC/moto) partout, pas cher. Trains de nuit sympas. Traverser la rue = avance lentement et régulièrement.", water: "Eau en bouteille uniquement.", plug: "Prise type A/C, 220V.", tip: "Pourboire pas obligatoire mais apprécié.", health: "Mange chaud et fréquenté ; vaccins à vérifier (hépatite A, typhoïde).", custom: "Marchander avec le sourire ; enlève tes chaussures chez l'habitant.", safe: "Sûr ; surveille tes affaires (vols à l'arraché à moto)." },
+      { name: "Pérou", flag: "🇵🇪", m: ["pérou", "perou", "peru", "cusco", "lima", "machu", "🇵🇪"], visa: "Pas de visa (≤ 183 j).", money: "Sol (PEN). Cash pour marchés et taxis.", lang: "Espagnol (et quechua) ; anglais limité.", transport: "Vols internes pour les longues distances ; bus Cruz del Sur fiables. Train pour le Machu Picchu (réserve tôt).", water: "Eau en bouteille uniquement.", plug: "Prise type A/C, 220V.", tip: "Pourboire ~10%.", health: "Mal d'altitude à Cusco (3 400 m) : monte progressivement, hydrate-toi, maté de coca.", custom: "Respect des traditions andines ; négocie poliment.", safe: "Cusco/Lima : attention aux pickpockets et faux taxis (commande via appli)." },
+      { name: "Italie", flag: "🇮🇹", m: ["italie", "italy", "rome", "roma", "milan", "florence", "venise", "🇮🇹"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). CB partout.", lang: "Italien ; anglais correct côté tourisme.", transport: "Trains Trenitalia/Italo rapides entre villes (compose ton billet régional). Évite la voiture en centre-ville (ZTL = amendes).", water: "Potable (fontaines 'nasoni' à Rome).", plug: "Prise type C/F/L, 230V.", tip: "'Coperto' souvent inclus ; petit pourboire si content.", health: "CEAM valable.", custom: "Cappuccino le matin seulement ; on dîne après 20h.", safe: "Sûr ; pickpockets dans les transports et sites touristiques." },
+      { name: "Thaïlande", flag: "🇹🇭", m: ["thaïlande", "thailande", "thailand", "bangkok", "chiang mai", "phuket", "🇹🇭"], visa: "Exemption ~60 j pour les Français (vérifie la durée à jour).", money: "Baht (THB). Cash pour marchés ; CB dans les malls.", lang: "Thaï ; anglais basique côté tourisme.", transport: "Grab en ville, trains et bus pas chers, vols internes AirAsia. Loue un scooter avec un vrai permis (et casque).", water: "Eau en bouteille uniquement.", plug: "Prise type A/C, 220V.", tip: "Pourboire apprécié, pas obligatoire.", health: "Vaccins à vérifier ; attention arnaques 'temple fermé'.", custom: "Ne touche pas la tête, déchausse-toi aux temples (épaules/genoux couverts), respect du roi.", safe: "Très sûr pour le solo ; gare aux arnaques touristiques." },
+      { name: "Espagne", flag: "🇪🇸", m: ["espagne", "spain", "barcelone", "barcelona", "madrid", "séville", "seville", "🇪🇸"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). CB partout.", lang: "Espagnol (catalan à Barcelone) ; anglais correct.", transport: "Trains AVE rapides, métro efficace. Très bons réseaux urbains.", water: "Potable.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire facultatif (arrondir).", health: "CEAM valable.", custom: "Repas très tardifs (déj 14h, dîner 21h+), sieste l'aprem dans le sud.", safe: "Sûr ; Barcelone = capitale du pickpocket, vigilance Ramblas/métro." },
+      { name: "Norvège", flag: "🇳🇴", m: ["norvège", "norvege", "norway", "oslo", "tromsø", "tromso", "bergen", "🇳🇴"], visa: "Schengen : carte d'identité suffit.", money: "Couronne norvégienne (NOK). Tout en CB/sans contact, quasi zéro cash.", lang: "Norvégien ; anglais parlé par tous.", transport: "Trains panoramiques, ferries pour les fjords, bus fiables.", water: "Eau du robinet excellente.", plug: "Prise type C/F (comme France), 230V.", tip: "Pas de pourboire attendu.", health: "Soins excellents ; assurance conseillée.", custom: "Pays cher → cuisine un peu toi-même. 'Friluftsliv' : la vie dehors.", safe: "Ultra sûr ; le froid et la nature sont les seuls vrais risques." },
+      { name: "Colombie", flag: "🇨🇴", m: ["colombie", "colombia", "carthagène", "cartagena", "bogota", "medellin", "medellín", "🇨🇴"], visa: "Pas de visa (≤ 90 j).", money: "Peso colombien (COP). Cash pour le quotidien.", lang: "Espagnol ; peu d'anglais.", transport: "Vols internes pas chers (grandes distances), Uber/taxi via appli.", water: "Bouteille hors grandes villes.", plug: "Prise type A/B (US), 110V.", tip: "Pourboire ~10% (souvent 'propina' suggérée).", health: "Vaccin fièvre jaune pour l'Amazonie/zones tropicales.", custom: "Gens très accueillants ; 'no dar papaya' = ne tente pas les voleurs.", safe: "Reste dans les quartiers sûrs, commande tes taxis, discrétion avec téléphone/cash." },
+      { name: "Australie", flag: "🇦🇺", m: ["australie", "australia", "sydney", "melbourne", "🇦🇺"], visa: "eVisitor/ETA obligatoire (en ligne, avant départ).", money: "Dollar australien (AUD). CB/sans contact partout.", lang: "Anglais.", transport: "Grandes distances → vols internes. Conduite à gauche ; faune sur les routes la nuit.", water: "Potable.", plug: "Prise type I, 230V — adaptateur spécifique.", tip: "Pas de pourboire attendu.", health: "Soleil très fort (indice UV extrême) : crème + chapeau. Méfie-toi des courants en mer (baigne-toi entre les drapeaux).", custom: "Décontracté et amical.", safe: "Très sûr." },
+      { name: "Turquie", flag: "🇹🇷", m: ["turquie", "turkey", "istanbul", "cappadoce", "🇹🇷"], visa: "Pas de visa pour les Français (séjour ≤ 90 j).", money: "Livre turque (TRY), forte inflation — change peu à la fois. Cash pour bazars.", lang: "Turc ; anglais côté tourisme.", transport: "Tram/métro à Istanbul (Istanbulkart), vols internes pas chers, bus longue distance confortables.", water: "Eau en bouteille conseillée.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10%.", health: "RAS hors précautions alimentaires de base.", custom: "Marchander au bazar ; tenue correcte dans les mosquées (foulard pour les femmes).", safe: "Istanbul sûre en zones touristiques ; ignore les rabatteurs trop insistants." },
+    ];
+    function _countryFor(dest) {
+      const d = (dest || "").toLowerCase();
+      return COUNTRY_TIPS.find((c) => c.m.some((k) => d.includes(k))) || null;
+    }
+    function _countryFiche(c) {
+      const row = (e, l, v) => "<div style='margin:.35rem 0'><b>" + e + " " + l + " :</b> " + escapeHtml(v) + "</div>";
+      popInfo(c.flag, "À savoir · " + c.name,
+        "<div style='text-align:left;font-size:.86rem'>" +
+        row("🛂", "Formalités", c.visa) + row("💶", "Argent", c.money) + row("🗣️", "Langue", c.lang) +
+        row("🚉", "Transport", c.transport) + row("💧", "Eau", c.water) + row("🔌", "Prise", c.plug) +
+        row("🪙", "Pourboire", c.tip) + row("💊", "Santé", c.health) + row("🤝", "Coutumes", c.custom) +
+        row("🛟", "Sécurité", c.safe) + "</div>");
+    }
     // Préparatifs de voyage : checklist sécurité/pratique liée au voyage planifié (locale)
     const TRIP_PREP = [
       { cat: "🛟 Sécurité", t: "Partager mon itinéraire à un proche" },
@@ -4700,8 +4768,12 @@
       show(box, true);
       const done = loadPrep();
       const n = TRIP_PREP.filter((_, i) => done.includes(i)).length;
+      const pct = Math.round((n / TRIP_PREP.length) * 100);
+      const country = _countryFor(trip.dest);
       let lastCat = "";
       box.innerHTML = `<div class="wg-head"><span>🎒 Préparatifs · ${escapeHtml(trip.dest)}</span><span class="wg-count">${n}/${TRIP_PREP.length}</span></div>
+        <div class="prep-bar"><span style="width:${pct}%"></span></div>
+        ${country ? `<button class="prep-country" id="prepCountryBtn"><span class="pc-flag">${country.flag}</span><span class="pc-txt"><b>À savoir sur ${escapeHtml(country.name)}</b><span>Formalités · argent · transport · coutumes · sécurité</span></span><span class="pc-go">›</span></button>` : ""}
         ${TRIP_PREP.map((it, i) => {
           const ck = done.includes(i);
           const head = (it.cat && it.cat !== lastCat) ? `<div class="prep-cat">${escapeHtml(it.cat)}</div>` : "";
@@ -4711,6 +4783,7 @@
           <div class="prep-label">${escapeHtml(it.t)}</div>
           ${it.go ? `<button class="prep-go" data-prepgo="${it.go}" aria-label="Y aller">›</button>` : ""}
         </div>`; }).join("")}`;
+      { const cb = $("prepCountryBtn"); if (cb && country) cb.addEventListener("click", () => _countryFiche(country)); }
       box.querySelectorAll("[data-prep]").forEach((el) => el.addEventListener("click", (e) => {
         if (e.target.closest("[data-prepgo]")) return;
         const i = Number(el.dataset.prep); const a = loadPrep(); const idx = a.indexOf(i);
@@ -5356,6 +5429,7 @@
       else if (seg === "reports") loadReports();
       else if (seg === "quotes") loadAdminQuotes();
       else if (seg === "sounds") loadAdminSounds();
+      else if (seg === "data") loadAdminData();
       else if (seg === "system") loadAdminSystem();
     }
     document.querySelectorAll("[data-aseg]").forEach((b) => b.addEventListener("click", () => showAdminSegment(b.dataset.aseg)));
@@ -5732,6 +5806,56 @@
         + cell("Défis", data.suggestions) + cell("Badges", data.badges) + cell("Coupons", data.coupons)
         + cell("Parrainages 🍹", data.referrals) + cell("Lieux", data.places, "places") + cell("Signalements", data.reports_pending, "reports") + cell("Devis B2B", data.quotes, "quotes");
       el.querySelectorAll("[data-dashjump]").forEach((c) => c.addEventListener("click", () => showAdminSegment(c.dataset.dashjump)));
+    }
+
+    // ---- Segment ADMIN « Données » : vue d'ensemble de la base + du contenu de jeu ----
+    async function loadAdminData() {
+      const el = $("adminData"); if (!el) return;
+      const esc = (s) => (typeof escapeHtml === "function" ? escapeHtml(String(s)) : String(s));
+      let stats = null; try { const { data } = await db.rpc("admin_stats"); if (data && data.ok) stats = data; } catch (e) {}
+      // Contenu de jeu chargé côté client
+      const quests = (typeof allQuests !== "undefined" ? allQuests : []).filter((q) => q.kind === "quest");
+      const games = (typeof allQuests !== "undefined" ? allQuests : []).filter((q) => q.kind && q.kind !== "quest");
+      const byCity = {}; quests.forEach((q) => { const c = (q.city || "—").replace(/, France$/, ""); byCity[c] = (byCity[c] || 0) + 1; });
+      const cities = Object.keys(byCity).sort();
+      const badges = (typeof allBadgeDefs !== "undefined" && allBadgeDefs.length) ? allBadgeDefs.length : 0;
+      const nChal = (typeof SOLO_CHALLENGES !== "undefined") ? SOLO_CHALLENGES.length : 0;
+      const nRit = (typeof SOLO_RITUALS !== "undefined") ? SOLO_RITUALS.length : 0;
+      const nNums = (typeof EMERGENCY_NUMBERS !== "undefined") ? EMERGENCY_NUMBERS.length : 0;
+
+      const sblock = stats ? `
+        <div class="set-grouptitle">📊 Tables Supabase (live)</div>
+        <div class="pgrid">
+          ${[["profiles", stats.users + " actifs"], ["dont vérifiés", stats.verified], ["dont Gold 👑", stats.gold], ["dont bannis 🚫", stats.banned],
+             ["matches_connections", stats.connections], ["checkpoints", stats.checkins], ["messages", stats.messages],
+             ["user_quests (finies)", stats.quests_done], ["suggestions (défis)", stats.suggestions], ["badges attribués", stats.badges],
+             ["coupons", stats.coupons], ["referrals", stats.referrals], ["partner_cafes", stats.places], ["reports (en attente)", stats.reports_pending], ["b2b_quotes", stats.quotes]]
+            .map(([k, v]) => `<div class="pcell"><div class="k">${esc(k)}</div><div class="v">${v ?? 0}</div></div>`).join("")}
+        </div>` : '<p class="muted">Stats indisponibles (accès admin requis).</p>';
+
+      const citiesBlock = `
+        <div class="set-grouptitle">🗺️ Contenu de jeu — quêtes par ville (${quests.length} quêtes · ${cities.length} villes)</div>
+        ${cities.length ? cities.map((c) => `<div class="qrow" style="padding:.4rem .2rem"><div class="qname">${esc(c)}</div><b style="color:var(--accent)">${byCity[c]}</b></div>`).join("") : '<p class="muted">Aucune quête chargée.</p>'}`;
+
+      const catalog = `
+        <div class="set-grouptitle">🎒 Catalogues</div>
+        <div class="pgrid">
+          <div class="pcell"><div class="k">Jeux populaires</div><div class="v">${games.length}</div></div>
+          <div class="pcell"><div class="k">Badges (défs)</div><div class="v">${badges}</div></div>
+          <div class="pcell"><div class="k">Défis solo</div><div class="v">${nChal}</div></div>
+          <div class="pcell"><div class="k">Rituels</div><div class="v">${nRit}</div></div>
+          <div class="pcell"><div class="k">Pays (urgence)</div><div class="v">${nNums}</div></div>
+        </div>`;
+
+      const schema = `
+        <div class="set-grouptitle">🏗️ Schéma &amp; sécurité</div>
+        <p class="muted" style="font-size:.82rem;line-height:1.6">
+        Backend = <b>Supabase Postgres</b> (pas de serveur Node). <b>RLS activé sur chaque table</b> : chacun ne lit/écrit que ses données
+        (profil, positions, check-ins), lecture publique des lieux sûrs et profils non bannis (matching).
+        Stockage : bucket <b>avatars</b> (public) + <b>voicenotes</b> (privé, URL signée). Clé <b>anon</b> publique par design (sécurité = RLS).
+        Migrations : <b>s30→s36</b> (villes, modération, parrainage, classement par ville, badges, feed, vocaux).</p>`;
+
+      el.innerHTML = sblock + citiesBlock + catalog + schema;
     }
 
     let adminUsersCache = [];
@@ -9905,7 +10029,7 @@
       // Métriques SOLO uniquement (le niveau/barre d'XP sont portés par la vignette de Jeux → anti-doublon)
       const ritDone = Object.keys((_soloState().rit) || {}).length;
       const sd = $("spDone"); if (sd) sd.textContent = total;
-      const sr = $("spRit"); if (sr) sr.textContent = ritDone + "/" + SOLO_RITUALS.length;
+      const sr = $("spRit"); if (sr) sr.textContent = ritDone + "/" + (typeof _allRituals === "function" ? _allRituals().length : SOLO_RITUALS.length);
       const sx = $("spXp"); if (sx) sx.textContent = xp;
       try { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("spStreakN").textContent = st.count || 1; } catch (e) {}
     }
@@ -9930,15 +10054,53 @@
       show($("proofModal"), true);
       if (window.SMSound) SMSound.play("pop");
     }
+    // Rituel PERSO (la routine de l'utilisateur) : stocké en local, en plus des 3 par défaut.
+    function _customRit() { try { return JSON.parse(localStorage.getItem("sm_custom_rit_" + (myUserId || "x")) || "null"); } catch (e) { return null; } }
+    function _allRituals() { const c = _customRit(); return (c && c.title) ? SOLO_RITUALS.concat([{ key: "rit_custom", emoji: c.emoji || "⭐", title: c.title, xp: 10, custom: true }]) : SOLO_RITUALS; }
+    function editCustomRitual() {
+      const cur = _customRit() || {};
+      const emos = ["⭐", "💧", "🧘", "📓", "🏃", "🥗", "📵", "🌙", "📞", "🙏"];
+      popInfo("✍️", "Mon rituel à moi",
+        "<p style='font-size:.84rem;margin:0 0 .6rem'>Crée <b>ta</b> routine quotidienne — ce qui compte pour toi.</p>" +
+        "<input id='custRitTitle' type='text' maxlength='40' placeholder='Ex : Boire 1,5 L d'eau' value=\"" + (cur.title ? escapeHtml(cur.title).replace(/"/g, "&quot;") : "") + "\" style='width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin-bottom:.6rem'>" +
+        "<div id='custRitEmos' style='display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center'>" + emos.map((e) => "<button type='button' class='cre-emo' data-e='" + e + "' style='font-size:1.3rem;padding:.25rem .4rem;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer'>" + e + "</button>").join("") + "</div>" +
+        "<button class='btn-primary btn-block' id='custRitSave' style='margin-top:.9rem'>Enregistrer mon rituel</button>" +
+        (cur.title ? "<button class='btn-ghost btn-block' id='custRitDel' style='margin-top:.4rem'>Supprimer</button>" : ""));
+      setTimeout(() => {
+        let chosen = cur.emoji || "⭐";
+        const mark = () => document.querySelectorAll(".cre-emo").forEach((b) => b.style.borderColor = (b.dataset.e === chosen) ? "var(--accent)" : "var(--line)");
+        mark();
+        document.querySelectorAll(".cre-emo").forEach((b) => b.onclick = () => { chosen = b.dataset.e; mark(); });
+        const sv = $("custRitSave"); if (sv) sv.onclick = () => {
+          const t = (($("custRitTitle") && $("custRitTitle").value) || "").trim();
+          if (!t) { return; }
+          try { localStorage.setItem("sm_custom_rit_" + (myUserId || "x"), JSON.stringify({ title: t, emoji: chosen })); } catch (e) {}
+          const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden");
+          renderRituals(); renderSoloProgress(); if (typeof toast === "function") toast(chosen, "Ton rituel est ajouté !");
+        };
+        const dl = $("custRitDel"); if (dl) dl.onclick = () => {
+          try { localStorage.removeItem("sm_custom_rit_" + (myUserId || "x")); } catch (e) {}
+          const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden");
+          renderRituals(); renderSoloProgress();
+        };
+      }, 50);
+    }
     function renderRituals() {
       const list = $("ritList"); if (!list) return;
       const s = _soloState(), done = s.rit || {};
-      list.innerHTML = SOLO_RITUALS.map((r) => '<button class="rit-row' + (done[r.key] ? " is-done" : "") + '" data-rit="' + r.key + '"><span class="rit-ic">' + r.emoji + '</span><span class="rit-name">' + escapeHtml(r.title) + '</span><span class="rit-box">✓</span></button>').join("");
-      const cnt = $("ritCnt"); if (cnt) cnt.textContent = Object.keys(done).length + "/" + SOLO_RITUALS.length;
-      list.querySelectorAll("[data-rit]").forEach((b) => b.addEventListener("click", () => toggleRitual(b.dataset.rit)));
+      const rits = _allRituals();
+      const hasCustom = rits.some((r) => r.custom);
+      list.innerHTML = rits.map((r) => '<button class="rit-row' + (done[r.key] ? " is-done" : "") + (r.custom ? " rit-custom" : "") + '" data-rit="' + r.key + '"><span class="rit-ic">' + r.emoji + '</span><span class="rit-name">' + escapeHtml(r.title) + (r.custom ? ' <span style="font-size:.66rem;color:var(--accent);font-weight:800">· ma routine ✎</span>' : "") + '</span><span class="rit-box">✓</span></button>').join("")
+        + '<button class="rit-row rit-add" id="ritAddBtn"><span class="rit-ic">➕</span><span class="rit-name">' + (hasCustom ? "Modifier mon rituel" : "Créer mon rituel") + '</span></button>';
+      const cnt = $("ritCnt"); if (cnt) cnt.textContent = Object.keys(done).length + "/" + rits.length;
+      list.querySelectorAll("[data-rit]").forEach((b) => b.addEventListener("click", (e) => {
+        if (b.classList.contains("rit-custom") && e.target.closest(".rit-name")) { editCustomRitual(); return; }
+        toggleRitual(b.dataset.rit);
+      }));
+      const add = $("ritAddBtn"); if (add) add.addEventListener("click", editCustomRitual);
     }
     async function toggleRitual(key) {
-      const r = SOLO_RITUALS.find((x) => x.key === key); if (!r) return;
+      const r = _allRituals().find((x) => x.key === key); if (!r) return;
       const s = _soloState(); s.rit = s.rit || {};
       if (s.rit[key]) return;
       const res = await grantSoloXp(key, r.xp);
