@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=183"></script>
-  <script src="sunmates-icons.js?v=183"></script>
+  <script src="sunmates-badges.js?v=184"></script>
+  <script src="sunmates-icons.js?v=184"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1148,6 +1148,11 @@
     .cat-tile.active .cic[data-smicon] { box-shadow: 0 10px 22px -4px rgba(255,90,77,.6), 0 2px 4px rgba(180,60,40,.32), inset 0 1px 1px rgba(255,246,236,.9), inset 0 -2px 3px rgba(150,45,30,.32); }
     [data-smicon="quest"]{--c1:#FF8A3D;--c2:#FF5A4D} [data-smicon="games"]{--c1:#FF7A59;--c2:#7a5cff} [data-smicon="medal"]{--c1:#FFCD4E;--c2:#FF9D3D} [data-smicon="coupon"]{--c1:#ffb274;--c2:#FF7A3D} [data-smicon="rank"]{--c1:#FFCD4E;--c2:#FF8A3D} [data-smicon="shop"]{--c1:#FF5A4D;--c2:#ff8a6b}
     [data-smicon="coffee"]{--c1:#ff9a5c;--c2:#d96a3d} [data-smicon="eco"]{--c1:#34c98f;--c2:#1f9e8c} [data-smicon="near"]{--c1:#FF6A4D;--c2:#ff9a3d} [data-smicon="rating"]{--c1:#FFCD4E;--c2:#FF8A3D} [data-smicon="popular"]{--c1:#FF5A4D;--c2:#ffb274}
+    [data-smicon="medal"]{--c1:#FFCD4E;--c2:#FF9D3D} [data-smicon="trip"]{--c1:#FF8A4D;--c2:#FF5A4D}
+    /* Pastille-joyau réutilisable (icône ivoire sur dégradé) pour harmoniser les emojis hors tuiles */
+    .smgem { background: linear-gradient(135deg, var(--c1,#FF8A3D), var(--c2,#FF5A4D)) !important; box-shadow: 0 4px 10px rgba(255,90,77,.28), inset 0 1px 1px rgba(255,246,236,.6) !important; color: #fff !important; }
+    .smgem svg { filter: drop-shadow(0 1px 1px rgba(122,36,21,.25)); }
+    .sv-stat .sv-ico { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; vertical-align: -5px; margin-right: 4px; }
 
     /* Coupons */
     .coupon { display: flex; align-items: center; gap: .85rem; padding: .85rem .9rem; border: 1.5px dashed var(--accent);
@@ -3294,8 +3299,8 @@
           <button class="backbtn" data-back>‹ Retour</button>
           <h1>Badges 🏅</h1>
           <div class="card">
-            <div class="person" style="border:0;padding:.2rem 0"><div class="qico">🏅</div><div class="info"><div class="name">Collection actuelle</div></div><span class="badge warn" id="badgeCollCount">—</span></div>
-            <div class="person" id="openCouponsFromBadges" style="border:0;padding:.4rem .2rem;cursor:pointer"><div class="qico">🎟️</div><div class="info"><div class="name">Mes coupons</div><div class="meta">Voir mes coupons ›</div></div><div class="qarrow">›</div></div>
+            <div class="person" style="border:0;padding:.2rem 0"><div class="qico smgem" data-smicon="medal" data-smicon-size="24">🏅</div><div class="info"><div class="name">Collection actuelle</div></div><span class="badge warn" id="badgeCollCount">—</span></div>
+            <div class="person" id="openCouponsFromBadges" style="border:0;padding:.4rem .2rem;cursor:pointer"><div class="qico smgem" data-smicon="coupon" data-smicon-size="24">🎟️</div><div class="info"><div class="name">Mes coupons</div><div class="meta">Voir mes coupons ›</div></div><div class="qarrow">›</div></div>
           </div>
           <div class="card"><div class="bgrid" id="badgeGrid"></div></div>
         </div>
@@ -5698,9 +5703,9 @@
       if (myProfile && myProfile.avatar_url) { av.style.backgroundImage = `url('${myProfile.avatar_url}')`; av.textContent = ""; av.classList.add("has-img"); }
       else { av.style.backgroundImage = ""; av.textContent = (uname[0] || "😎").toUpperCase(); av.classList.remove("has-img"); }
       $("svName").textContent = uname;
-      const svRows = [["📍", s.ck, "check-ins"], ["🎯", s.q, "quêtes"], ["🏅", s.b, "badges"], ["⭐", s.xp, "XP"]];
-      if (s.trips > 0) svRows.push(["🧳", s.trips, s.trips > 1 ? "voyages" : "voyage"]);
-      $("svStats").innerHTML = svRows.map(([e, n, l]) => `<div class="sv-stat"><div class="sv-n">${e} ${n}</div><div class="sv-l">${l}</div></div>`).join("");
+      const svRows = [["📍", "near", s.ck, "check-ins"], ["🎯", "quest", s.q, "quêtes"], ["🏅", "medal", s.b, "badges"], ["⭐", "rating", s.xp, "XP"]];
+      if (s.trips > 0) svRows.push(["🧳", "trip", s.trips, s.trips > 1 ? "voyages" : "voyage"]);
+      $("svStats").innerHTML = svRows.map(([e, name, n, l]) => { const ic = (window.SMIcon && SMIcon.has(name)) ? `<span class="sv-ico smgem">${SMIcon(name, { size: 14 })}</span>` : (e + " "); return `<div class="sv-stat"><div class="sv-n">${ic}${n}</div><div class="sv-l">${l}</div></div>`; }).join("");
       $("svBadges").innerHTML = myBadges.slice(0, 10).map((b) => window.SMBadge && SMBadge.hasEmblem(b.badge_key) ? `<span class="smb" title="${escapeHtml(b.name || "")}">${SMBadge(b.badge_key, { size: 34 })}</span>` : `<span>${b.emoji || "🏅"}</span>`).join("");
       m.classList.remove("hidden");
     }
@@ -5934,7 +5939,7 @@
 
       // Coupons réels
       $("couponList").innerHTML = myCoupons.length
-        ? myCoupons.map((c) => `<div class="coupon" style="${c.used ? "opacity:.55" : ""}"><div class="cico">🎟️</div>
+        ? myCoupons.map((c) => `<div class="coupon" style="${c.used ? "opacity:.55" : ""}"><div class="cico smgem" data-smicon="coupon">${window.SMIcon ? SMIcon("coupon", { size: 22 }) : "🎟️"}</div>
             <div style="flex:1"><div class="cname">${escapeHtml(c.title || "Coupon")}</div><div class="cdesc">${escapeHtml(c.descr || "")}</div></div>
             ${c.used ? '<span class="badge no">Utilisé</span>' : `<button class="btn-accent" data-usecoupon="${c.id}" style="padding:.4rem .7rem;font-size:.8rem">Utiliser</button>`}</div>`).join("")
         : emptyState("🎟️", "Pas encore de coupon", "Accomplis une quête qui offre une récompense pour gagner ton premier coupon.", "Voir les quêtes", "jeux");
