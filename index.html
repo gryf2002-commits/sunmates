@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=200"></script>
-  <script src="sunmates-icons.js?v=200"></script>
+  <script src="sunmates-badges.js?v=201"></script>
+  <script src="sunmates-icons.js?v=201"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1437,6 +1437,16 @@
       opacity: .13; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; filter: var(--relief); }
     /* Lever de soleil en haut-gauche du héros joueur */
     .player-hero .ph-glow { left: -52px; top: -64px; bottom: auto; background: radial-gradient(circle at 30% 30%, rgba(255,201,60,.6), rgba(255,138,61,0) 70%); }
+    /* Mode Maison : préparation voyage repliée (sobriété) */
+    .hm-plan { margin: .4rem 0 1rem; }
+    .hm-plan > summary { list-style: none; cursor: pointer; padding: .85rem 1rem; border-radius: var(--radius); background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); font-family: "Fraunces", serif; font-weight: 800; color: var(--ink); display: flex; align-items: center; justify-content: space-between; }
+    .hm-plan > summary::-webkit-details-marker { display: none; }
+    .hm-plan > summary::after { content: "▾"; color: var(--muted); transition: transform .2s; }
+    .hm-plan[open] > summary::after { transform: rotate(180deg); }
+    .hm-plan[open] > summary { margin-bottom: .5rem; }
+    .hm-plan > summary:active { transform: scale(.99); }
+    /* Toasts : emojis dimensionnels (même relief que l'onboarding) */
+    #toastWrap .tico, .toast .tico { filter: var(--relief); }
     .prof-badges .pb-more { font-size: .76rem; font-weight: 800; color: var(--accent); }
     .prof-badges .pb-lbl { font-size: .78rem; font-weight: 700; color: var(--muted); }
     .prof-badges .pb-edit { margin-left: auto; font-size: .76rem; font-weight: 700; color: var(--accent); }
@@ -2729,20 +2739,19 @@
           <!-- Inspiration du jour (destination rotative) -->
           <div class="card hm-inspo" id="hmInspo"></div>
 
-          <!-- Planifier le prochain voyage (local) -->
-          <div class="section-head"><h3 style="margin-top:.4rem">Ton prochain voyage ✈️</h3></div>
-          <div class="card" id="nextTripCard"></div>
-          <div id="tripPrepCard" class="card hidden"></div>
-
-          <!-- Bucket-list de destinations de rêve -->
-          <div class="section-head"><h3 style="margin-top:.4rem">Mes envies d'ailleurs 🌠</h3></div>
-          <div class="card" id="wishlistCard"></div>
-
-          <!-- Carnet : voyages déjà vécus -->
-          <div id="tripsDoneSection" class="hidden">
-            <div class="section-head"><h3 style="margin-top:.4rem">Mes voyages 🧳</h3></div>
-            <div class="card" id="tripsDoneCard"></div>
-          </div>
+          <!-- Préparer le voyage : replié par défaut (sobriété) -->
+          <details class="hm-plan">
+            <summary>🧳 Préparer mon prochain voyage</summary>
+            <div class="section-head"><h3 style="margin-top:.4rem">Ton prochain voyage ✈️</h3></div>
+            <div class="card" id="nextTripCard"></div>
+            <div id="tripPrepCard" class="card hidden"></div>
+            <div class="section-head"><h3 style="margin-top:.4rem">Mes envies d'ailleurs 🌠</h3></div>
+            <div class="card" id="wishlistCard"></div>
+            <div id="tripsDoneSection" class="hidden">
+              <div class="section-head"><h3 style="margin-top:.4rem">Mes voyages 🧳</h3></div>
+              <div class="card" id="tripsDoneCard"></div>
+            </div>
+          </details>
 
           <!-- Voyageurs de passage dans ta ville -->
           <div class="section-head"><h3 style="margin-top:.4rem">De passage chez toi 👋</h3></div>
@@ -8256,7 +8265,7 @@
         <p class="muted" style="font-size:.8rem;margin-bottom:.6rem">Ton XP débloque des <b>titres</b> et des <b>cadres d'avatar</b> dans la boutique 🎨</p>
         <button class="btn-primary btn-block" id="xpShopBtn">🛍️ Ouvrir la boutique XP</button></div>`);
         const sb = $("xpShopBtn"); if (sb) sb.addEventListener("click", () => { closePicker(); goToTab("jeux"); showJeuxView("jeuxShop"); if (typeof renderShop === "function") renderShop(); }); }
-      else if (s === "mates") { goToTab("connexions"); if (typeof showMatesView === "function") showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
+      else if (s === "mates") { goToTab("connexions"); if (typeof showMatesView === "function") showMatesView("matesHome"); setTimeout(() => { const m = $("matesListModal"); if (m) m.classList.remove("hidden"); }, 400); }
       else if (s === "checkins") { // pop-up centrée (au lieu d'un panneau qui s'ouvre en bas de page)
         const cl = $("checkinList");
         showInfo("📍 Mes check-ins", cl && cl.innerHTML.trim() ? `<div style="max-height:60vh;overflow-y:auto">${cl.innerHTML}</div>` : '<p class="muted" style="text-align:center;padding:1rem">Aucun check-in encore. Valide un lieu partenaire pour gagner des points 🛟</p>');
