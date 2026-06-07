@@ -44,7 +44,11 @@
     users: { style:'tile', svg:'<circle cx="11.5" cy="12" r="4.4" fill="url(#sm-ico-iv)"/><path d="M4 25c0-4.2 3.3-6.8 7.5-6.8s7.5 2.6 7.5 6.8z" fill="url(#sm-ico-iv)"/><circle cx="22" cy="12.5" r="3.7" fill="#ffd15c"/><path d="M16.5 25c0-3.6 2.7-6 5.5-6s5.5 2.4 5.5 6z" fill="#ffd15c"/>' },
     shieldsafe: { style:'tile', svg:'<path d="M16 4l11 3.5v6.5c0 7.5-5.5 12-11 14C10.5 26 5 21.5 5 14V7.5z" fill="url(#sm-ico-iv)"/><path d="M11 16l3.5 3.5L21 12" stroke="#FF5A4D" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
     usersolo: { style:'tile', svg:'<circle cx="16" cy="11" r="5.2" fill="url(#sm-ico-iv)"/><path d="M5 27c0-6 5-10 11-10s11 4 11 10z" fill="url(#sm-ico-iv)"/>' },
-    crown: { style:'tile', svg:'<path d="M5 12l5.5 6 5.5-9 5.5 9 5.5-6-3 14H8z" fill="url(#sm-ico-iv)"/><path d="M8 26h16v3H8z" fill="url(#sm-ico-iv)"/><circle cx="16" cy="9.5" r="2" fill="#ffd15c"/><circle cx="6" cy="12" r="1.6" fill="#ffd15c"/><circle cx="26" cy="12" r="1.6" fill="#ffd15c"/>' }
+    crown: { style:'tile', svg:'<path d="M5 12l5.5 6 5.5-9 5.5 9 5.5-6-3 14H8z" fill="url(#sm-ico-iv)"/><path d="M8 26h16v3H8z" fill="url(#sm-ico-iv)"/><circle cx="16" cy="9.5" r="2" fill="#ffd15c"/><circle cx="6" cy="12" r="1.6" fill="#ffd15c"/><circle cx="26" cy="12" r="1.6" fill="#ffd15c"/>' },
+    phone: { style:'tile', svg:'<path d="M9 5c1.5 0 2.7 1 3.1 2.5l1 3.6c.3 1.1-.1 2.3-1 3l-1.7 1.3c1.3 2.7 3.5 4.9 6.2 6.2l1.3-1.7c.7-.9 1.9-1.3 3-1l3.6 1c1.5.4 2.5 1.6 2.5 3.1v3c0 1.8-1.5 3.1-3.2 2.9C16.5 26.9 6.1 16.5 5.1 8.2 4.9 6.5 6.2 5 8 5z" fill="url(#sm-ico-iv)"/>' },
+    signal: { style:'tile', svg:'<rect x="8" y="5" width="2.6" height="22" rx="1.3" fill="url(#sm-ico-iv)"/><path d="M11 6h13l-3.2 4.2L24 14.5H11z" fill="url(#sm-ico-iv)"/><circle cx="17" cy="10.2" r="1.5" fill="#FF5A4D"/>' },
+    alert: { style:'tile', svg:'<path d="M16 5.5l12.5 21.5a1.5 1.5 0 0 1-1.3 2.2H4.8a1.5 1.5 0 0 1-1.3-2.2z" fill="url(#sm-ico-iv)"/><path d="M16 13v6.5" stroke="#FF5A4D" stroke-width="2.8" stroke-linecap="round"/><circle cx="16" cy="24" r="1.7" fill="#FF5A4D"/>' },
+    aid: { style:'tile', svg:'<rect x="6" y="6" width="20" height="20" rx="6" fill="url(#sm-ico-iv)"/><path d="M16 11v10M11 16h10" stroke="#FF5A4D" stroke-width="3.2" stroke-linecap="round"/>' }
   };
 
   window.SMIcon = function (name, opts) {

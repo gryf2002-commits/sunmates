@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=178"></script>
-  <script src="sunmates-icons.js?v=178"></script>
+  <script src="sunmates-badges.js?v=179"></script>
+  <script src="sunmates-icons.js?v=179"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -2735,12 +2735,12 @@
 
           <div class="section-head"><h3>Accès rapides</h3></div>
           <div class="grid2">
-            <div class="tile" data-secuquick="fakecall"><div class="thumb purp">📞</div><div class="t-name">Faux appel</div><div class="t-meta">Sortie de secours</div></div>
-            <div class="tile" data-secuquick="signal"><div class="thumb gold">🔦</div><div class="t-name">Signal d'aide</div><div class="t-meta">Se signaler</div></div>
-            <div class="tile" data-secuquick="position"><div class="thumb blue">📍</div><div class="t-name">Partager ma position</div><div class="t-meta">À mon cercle</div></div>
-            <div class="tile" data-secuquick="emergency"><div class="thumb red">🚨</div><div class="t-name">Alerte d'urgence</div><div class="t-meta">Diffuser ma position</div></div>
-            <div class="tile" data-secuquick="circle"><div class="thumb green">🛟</div><div class="t-name">Mon cercle</div><div class="t-meta">Positions partagées</div></div>
-            <div class="tile" data-secuquick="lieux"><div class="thumb teal">🏛️</div><div class="t-name">Aide à proximité</div><div class="t-meta">Police · hôpital</div></div>
+            <div class="tile" data-secuquick="fakecall"><div class="thumb purp" data-smicon="phone" data-smicon-size="26">📞</div><div class="t-name">Faux appel</div><div class="t-meta">Sortie de secours</div></div>
+            <div class="tile" data-secuquick="signal"><div class="thumb gold" data-smicon="signal" data-smicon-size="26">🔦</div><div class="t-name">Signal d'aide</div><div class="t-meta">Se signaler</div></div>
+            <div class="tile" data-secuquick="position"><div class="thumb blue" data-smicon="near" data-smicon-size="26">📍</div><div class="t-name">Partager ma position</div><div class="t-meta">À mon cercle</div></div>
+            <div class="tile" data-secuquick="emergency"><div class="thumb red" data-smicon="alert" data-smicon-size="26">🚨</div><div class="t-name">Alerte d'urgence</div><div class="t-meta">Diffuser ma position</div></div>
+            <div class="tile" data-secuquick="circle"><div class="thumb green" data-smicon="users" data-smicon-size="26">🛟</div><div class="t-name">Mon cercle</div><div class="t-meta">Positions partagées</div></div>
+            <div class="tile" data-secuquick="lieux"><div class="thumb teal" data-smicon="aid" data-smicon-size="26">🏛️</div><div class="t-name">Aide à proximité</div><div class="t-meta">Police · hôpital</div></div>
           </div>
           <button class="btn-ghost btn-block" id="fakeCallBtn" style="display:none"></button>
           <button class="btn-ghost btn-block" id="signalBtn" style="display:none"></button>
