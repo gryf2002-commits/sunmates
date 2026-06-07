@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=190"></script>
-  <script src="sunmates-icons.js?v=190"></script>
+  <script src="sunmates-badges.js?v=191"></script>
+  <script src="sunmates-icons.js?v=191"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -7476,8 +7476,14 @@
           node.querySelectorAll("[data-hmdelact]").forEach((b) => b.addEventListener("click", () => deleteMapActivity(b.dataset.hmdelact)));
           // Ouvrir une quête depuis la carte
           node.querySelectorAll("[data-hmquest]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("jeux"); const q = (typeof questByKey === "function") && questByKey(b.dataset.hmquest); if (q && typeof openDetail === "function") setTimeout(() => openDetail(q), 80); }));
-          // Jouer une quête-lieu de Paris (point de jeu sur la carte)
-          node.querySelectorAll("[data-hmqplay]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }));
+          // Jouer une quête-lieu de Paris : ouvre la VRAIE quête (si la migration est
+          // lancée) pour gagner XP + badge ; sinon repli propre sur l'accueil des Jeux.
+          node.querySelectorAll("[data-hmqplay]").forEach((b) => b.addEventListener("click", () => {
+            homeLeaf.closePopup(); goToTab("jeux");
+            const q = (typeof questByKey === "function") && questByKey(b.dataset.hmqplay);
+            if (q && typeof openDetail === "function") setTimeout(() => openDetail(q), 90);
+            else if (typeof showJeuxView === "function") showJeuxView("jeuxHome");
+          }));
           // Jouer une quête à plusieurs → choisir un Mate à inviter (bonus XP de groupe)
           node.querySelectorAll("[data-hmqgroup]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("connexions"); if (typeof toast === "function") toast("👥", "Invite un Mate à cette quête : vous gagnez tous les deux un bonus XP ✨"); }));
         });
@@ -7642,7 +7648,7 @@
       // curaté), indépendant du back : chaque point = une quête à jouer sur la ville.
       (typeof PARIS_QUEST_POINTS !== "undefined" ? PARIS_QUEST_POINTS : []).forEach((q) => {
         const mk = L.marker([q.lat, q.lng], { icon: epinIcon(q.emoji, "#E8961F", "quest") })
-          .bindPopup(`<div class="mappop-mini mappop-quest"><span class="mq-tag">⚡ Quête</span><br><b>${escapeHtml(q.title)}</b><br><span class="muted" style="font-size:.74rem">${escapeHtml(q.desc)}</span><div class="mq-rew">+${q.xp} XP · 🏅 ${escapeHtml(q.badge)}</div><button class="mappop-btn" data-hmqplay="1">🧭 Jouer en solo</button><button class="mappop-btn alt" data-hmqgroup="1">👥 À plusieurs <span style="opacity:.8">+bonus</span></button></div>`);
+          .bindPopup(`<div class="mappop-mini mappop-quest"><span class="mq-tag">⚡ Quête</span><br><b>${escapeHtml(q.title)}</b><br><span class="muted" style="font-size:.74rem">${escapeHtml(q.desc)}</span><div class="mq-rew">+${q.xp} XP · 🏅 ${escapeHtml(q.badge)}</div><button class="mappop-btn" data-hmqplay="${q.key}">🧭 Jouer en solo</button><button class="mappop-btn alt" data-hmqgroup="1">👥 À plusieurs <span style="opacity:.8">+bonus</span></button></div>`);
         mk.smType = "quests"; homeMarkersByType.quests.push(mk); allMarkers.push(mk);
       });
 
@@ -8487,33 +8493,26 @@
     $("feedRefresh").addEventListener("click", () => { buildHomeFeed(); });
 
     /* ================= HOME v2 — Hub de jeu « Paris » ================= */
-    // Quêtes du jour (contenu Paris, rotation quotidienne). Le backend de quêtes
-    // reste dans l'onglet Jeux ; ici on met en scène la quête vedette du jour.
-    const PARIS_QUESTS = [
-      { emoji: "🗼", title: "Photographie un monument", desc: "Tour Eiffel, Notre-Dame, Sacré-Cœur… capture-en un et partage-le.", xp: 120, badge: "Photographe" },
-      { emoji: "🗣️", title: "Engage la conversation", desc: "Parle à un·e inconnu·e et demande son meilleur spot parisien.", xp: 100, badge: "Polyglotte" },
-      { emoji: "🥐", title: "Petit-déj à la française", desc: "Commande un croissant dans une vraie boulangerie de quartier.", xp: 80, badge: "Foodie" },
-      { emoji: "🎨", title: "Quartier des artistes", desc: "Explore Montmartre et déniche une œuvre de street-art.", xp: 90, badge: "Culture" },
-      { emoji: "⛵", title: "Au fil de la Seine", desc: "Balade le long des quais et trouve un pont mythique.", xp: 90, badge: "Explorateur" },
-      { emoji: "☕", title: "Café avec un Mate", desc: "Donne rendez-vous à un Mate dans un café sûr de la ville.", xp: 110, badge: "Ami local" },
-      { emoji: "📚", title: "Trésor littéraire", desc: "Pousse la porte d'une librairie indépendante et repars avec une pépite.", xp: 70, badge: "Aventurier" },
-    ];
-    // Points de quêtes géolocalisés sur Paris (le « plateau de jeu » sur la carte d'accueil).
+    // Points de quêtes géolocalisés sur Paris (le « plateau de jeu » sur la carte
+    // d'accueil ET la « quête du jour » du héros). Les `key` correspondent aux quêtes
+    // réelles de la table `quests` (migration session26) : « Jouer » ouvre la vraie
+    // quête (XP + badge) si la migration est lancée, sinon repli sur l'accueil Jeux.
     const PARIS_QUEST_POINTS = [
-      { emoji: "🗼", lat: 48.8584, lng: 2.2945, title: "Photographie la Tour Eiffel", desc: "Capture la Dame de Fer et partage ton plus beau cliché.", xp: 120, badge: "Photographe" },
-      { emoji: "🎨", lat: 48.8867, lng: 2.3431, title: "Montmartre, quartier des artistes", desc: "Monte au Sacré-Cœur et déniche une œuvre de street-art.", xp: 90, badge: "Culture" },
-      { emoji: "⛪", lat: 48.8530, lng: 2.3499, title: "Notre-Dame de Paris", desc: "Photographie la cathédrale et flâne sur l'île de la Cité.", xp: 100, badge: "Photographe" },
-      { emoji: "🖼️", lat: 48.8606, lng: 2.3376, title: "Pyramide du Louvre", desc: "Trouve la pyramide de verre et prends la pose.", xp: 90, badge: "Culture" },
-      { emoji: "⛵", lat: 48.8585, lng: 2.3373, title: "Au fil de la Seine", desc: "Traverse le Pont des Arts et admire la vue sur les quais.", xp: 90, badge: "Explorateur" },
-      { emoji: "☕", lat: 48.8590, lng: 2.3580, title: "Café dans le Marais", desc: "Donne rendez-vous à un Mate dans un café du Marais.", xp: 110, badge: "Ami local" },
-      { emoji: "📚", lat: 48.8525, lng: 2.3470, title: "Trésor du Quartier latin", desc: "Pousse la porte de la librairie Shakespeare & Company.", xp: 70, badge: "Aventurier" },
-      { emoji: "🗣️", lat: 48.8709, lng: 2.3674, title: "Rencontre au Canal Saint-Martin", desc: "Engage la conversation avec un·e inconnu·e au bord de l'eau.", xp: 100, badge: "Polyglotte" },
-      { emoji: "🌳", lat: 48.8462, lng: 2.3372, title: "Pause au Luxembourg", desc: "Détends-toi au jardin et observe la vie parisienne.", xp: 80, badge: "Explorateur" },
-      { emoji: "🏛️", lat: 48.8738, lng: 2.2950, title: "Cap sur l'Arc de Triomphe", desc: "Remonte les Champs-Élysées jusqu'à l'Arc.", xp: 60, badge: "Aventurier" },
+      { key: "quest_paris_eiffel", emoji: "🗼", lat: 48.8584, lng: 2.2945, title: "Photographie la Tour Eiffel", desc: "Capture la Dame de Fer et partage ton plus beau cliché.", xp: 120, badge: "Photographe" },
+      { key: "quest_paris_montmartre", emoji: "🎨", lat: 48.8867, lng: 2.3431, title: "Montmartre, quartier des artistes", desc: "Monte au Sacré-Cœur et déniche une œuvre de street-art.", xp: 90, badge: "Culture" },
+      { key: "quest_paris_notredame", emoji: "⛪", lat: 48.8530, lng: 2.3499, title: "Notre-Dame de Paris", desc: "Photographie la cathédrale et flâne sur l'île de la Cité.", xp: 100, badge: "Photographe" },
+      { key: "quest_paris_louvre", emoji: "🖼️", lat: 48.8606, lng: 2.3376, title: "Pyramide du Louvre", desc: "Trouve la pyramide de verre et prends la pose.", xp: 90, badge: "Culture" },
+      { key: "quest_paris_seine", emoji: "⛵", lat: 48.8585, lng: 2.3373, title: "Au fil de la Seine", desc: "Traverse le Pont des Arts et admire la vue sur les quais.", xp: 90, badge: "Explorateur" },
+      { key: "quest_paris_marais", emoji: "☕", lat: 48.8590, lng: 2.3580, title: "Café dans le Marais", desc: "Donne rendez-vous à un Mate dans un café du Marais.", xp: 110, badge: "Ami local" },
+      { key: "quest_paris_latin", emoji: "📚", lat: 48.8525, lng: 2.3470, title: "Trésor du Quartier latin", desc: "Pousse la porte de la librairie Shakespeare & Company.", xp: 70, badge: "Aventurier" },
+      { key: "quest_paris_canal", emoji: "🗣️", lat: 48.8709, lng: 2.3674, title: "Rencontre au Canal Saint-Martin", desc: "Engage la conversation avec un·e inconnu·e au bord de l'eau.", xp: 100, badge: "Polyglotte" },
+      { key: "quest_paris_luxembourg", emoji: "🌳", lat: 48.8462, lng: 2.3372, title: "Pause au Luxembourg", desc: "Détends-toi au jardin et observe la vie parisienne.", xp: 80, badge: "Explorateur" },
+      { key: "quest_paris_arc", emoji: "🏛️", lat: 48.8738, lng: 2.2950, title: "Cap sur l'Arc de Triomphe", desc: "Remonte les Champs-Élysées jusqu'à l'Arc.", xp: 60, badge: "Aventurier" },
     ];
     function _dayIdx() { const d = new Date(); return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000); }
     function _hubTitle(lvl) { return lvl >= 8 ? "Légende parisienne" : lvl >= 5 ? "Flâneur·se aguerri·e" : lvl >= 3 ? "Explorateur·rice de Paris" : "Touriste curieux·se"; }
     let _qsMode = "solo";
+    let _qsCurrentKey = null;
 
     function renderPlayerHero() {
       if (!$("playerHero")) return;
@@ -8536,7 +8535,8 @@
 
     function renderQuestSpotlight() {
       if (!$("questSpotlight")) return;
-      const q = PARIS_QUESTS[_dayIdx() % PARIS_QUESTS.length];
+      const q = PARIS_QUEST_POINTS[_dayIdx() % PARIS_QUEST_POINTS.length];
+      _qsCurrentKey = q.key;
       $("qsEmblem").textContent = q.emoji;
       $("qsTitle").textContent = q.title;
       $("qsDesc").textContent = q.desc;
@@ -8570,7 +8570,13 @@
       document.querySelectorAll("#questSpotlight .qs-mode-btn").forEach((x) => x.classList.toggle("active", x === b));
       renderQuestSpotlight();
     }));
-    { const pb = $("qsPlayBtn"); if (pb) pb.addEventListener("click", () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }); }
+    { const pb = $("qsPlayBtn"); if (pb) pb.addEventListener("click", () => {
+      if (_qsMode === "group") { goToTab("connexions"); if (typeof toast === "function") toast("👥", "Invite un Mate à cette quête : vous gagnez tous les deux un bonus XP ✨"); return; }
+      goToTab("jeux");
+      const q = (typeof questByKey === "function") && questByKey(_qsCurrentKey);
+      if (q && typeof openDetail === "function") setTimeout(() => openDetail(q), 90);
+      else if (typeof showJeuxView === "function") showJeuxView("jeuxHome");
+    }); }
     { const ps = $("phStreak"); if (ps) ps.addEventListener("click", () => { const h = $("homeStreak"); if (h) h.click(); }); }
     document.querySelectorAll("#qmRail .qm-card").forEach((c) => c.addEventListener("click", () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }));
 
