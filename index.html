@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=215"></script>
-  <script src="sunmates-icons.js?v=215"></script>
+  <script src="sunmates-badges.js?v=216"></script>
+  <script src="sunmates-icons.js?v=216"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -8648,6 +8648,8 @@
       if (myProfile) set("qaProfil", "Confiance : " + (myProfile.trust_score ?? 0) + (myProfile.is_verified ? " ✅" : ""));
       const nb = (myBadges || []).length;
       set("qaJeux", nb ? nb + " badge" + (nb > 1 ? "s" : "") + " 🏅" : "Gagne des badges");
+      const nc = (typeof myCoupons !== "undefined" ? myCoupons : []).filter((c) => c && !c.used).length;
+      set("qaCoupons", nc ? nc + " dispo 🎟️" : "Tes récompenses");
       const ckEl = $("checkinCount");
       if (ckEl && ckEl.textContent) { const n = parseInt(ckEl.textContent, 10) || 0; set("qaLieux", n ? n + " check-in" + (n > 1 ? "s" : "") + " 🛟" : "Fais ton 1er check-in"); }
     }
