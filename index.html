@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=188"></script>
-  <script src="sunmates-icons.js?v=188"></script>
+  <script src="sunmates-badges.js?v=189"></script>
+  <script src="sunmates-icons.js?v=189"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -780,6 +780,7 @@
     .homemap-filters .chip.cl-mates.active     { background: #7a5cff; color: #fff; box-shadow: 0 4px 12px rgba(122,92,255,.32); }
     .homemap-filters .chip.cl-acts.active      { background: #ff9f1c; color: #fff; box-shadow: 0 4px 12px rgba(255,159,28,.32); }
     .homemap-filters .chip.cl-checkins.active  { background: #19b36b; color: #fff; box-shadow: 0 4px 12px rgba(25,179,107,.32); }
+    .homemap-filters .chip.cl-quests.active    { background: #E8961F; color: #fff; box-shadow: 0 4px 12px rgba(232,150,31,.34); }
     /* Marqueurs personnalisés (pastilles emoji colorées) */
     .epin { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
       display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,.4); border: 2.5px solid #fff; transition: transform .15s ease; }
@@ -788,8 +789,14 @@
     .epin-cluster { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; border: 2.5px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
     .epin.me { animation: pinPulse 2s ease-out infinite; }
     @keyframes pinPulse { 0% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(255,90,77,.5); } 70% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 12px rgba(255,90,77,0); } 100% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(255,90,77,0); } }
+    /* Marqueur de quête : pulsation dorée pour signaler l'objectif de jeu */
+    .epin.quest { animation: questPulse 2.4s ease-out infinite; }
+    @keyframes questPulse { 0% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(232,150,31,.55); } 70% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 13px rgba(232,150,31,0); } 100% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(232,150,31,0); } }
+    @media (prefers-reduced-motion: reduce){ .epin.quest, .epin.me { animation: none; } }
     .mappop-mini { text-align: center; }
     .mappop-mini b { font-size: .9rem; }
+    .mappop-quest .mq-tag { display:inline-block; font-weight:800; font-size:.68rem; color:#fff; background:linear-gradient(135deg,#FFC93C,#FF8A3D); padding:.12rem .5rem; border-radius:999px; margin-bottom:.25rem; }
+    .mappop-quest .mq-rew { margin:.35rem 0 .1rem; font-weight:800; font-size:.78rem; color:#B5740E; }
     .mappop-btn { display: block; width: 100%; margin-top: 6px; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: .4rem .6rem; cursor: pointer; font-weight: 700; font-size: .8rem; }
     .mappop-btn.alt { background: #7a5cff; }
     .mappop-btn.ghost { background: transparent; color: var(--accent); border: 1px solid rgba(255,90,77,.4); }
@@ -2605,6 +2612,7 @@
             <button class="chip active cl-mates" data-layer="mates">🧑 Mates <b data-cnt></b></button>
             <button class="chip active cl-acts" data-layer="activities">🎉 Activités <b data-cnt></b></button>
             <button class="chip active cl-checkins" data-layer="checkins">✅ Check-ins <b data-cnt></b></button>
+            <button class="chip active cl-quests" data-layer="quests">🎯 Quêtes <b data-cnt></b></button>
           </div>
           <div class="homemap-wrap">
             <div id="homeMap" class="homemap"></div>
@@ -7297,8 +7305,8 @@
     // est une couche que l'on peut afficher/masquer via les filtres.
     let homeLeaf = null;
     let homeCluster = null;                                  // UN SEUL groupe de cluster → les marqueurs au même endroit fusionnent (rosace au clic)
-    let homeMarkersByType = { places: [], mates: [], activities: [], checkins: [] }; // marqueurs par type (pour les filtres)
-    const homeLayerOn = { places: true, mates: true, activities: true, checkins: true };
+    let homeMarkersByType = { places: [], mates: [], activities: [], checkins: [], quests: [] }; // marqueurs par type (pour les filtres)
+    const homeLayerOn = { places: true, mates: true, activities: true, checkins: true, quests: true };
     let homeMeMarker = null;
 
     // Pastille emoji colorée comme marqueur (au lieu du marqueur bleu par défaut).
@@ -7420,7 +7428,7 @@
           });
           ro.observe(el);
         }
-        const LAYER_COLORS = { places: "#FF5A4D", mates: "#7a5cff", activities: "#ff9f1c", checkins: "#19b36b" };
+        const LAYER_COLORS = { places: "#FF5A4D", mates: "#7a5cff", activities: "#ff9f1c", checkins: "#19b36b", quests: "#E8961F" };
         homeCluster = (typeof L.markerClusterGroup === "function")
           ? L.markerClusterGroup({
               maxClusterRadius: 38, showCoverageOnHover: false, spiderfyDistanceMultiplier: 2.2,
@@ -7472,6 +7480,8 @@
           node.querySelectorAll("[data-hmdelact]").forEach((b) => b.addEventListener("click", () => deleteMapActivity(b.dataset.hmdelact)));
           // Ouvrir une quête depuis la carte
           node.querySelectorAll("[data-hmquest]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("jeux"); const q = (typeof questByKey === "function") && questByKey(b.dataset.hmquest); if (q && typeof openDetail === "function") setTimeout(() => openDetail(q), 80); }));
+          // Jouer une quête-lieu de Paris (point de jeu sur la carte)
+          node.querySelectorAll("[data-hmqplay]").forEach((b) => b.addEventListener("click", () => { homeLeaf.closePopup(); goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }));
         });
         // Clic sur la carte en mode « placement » → créer une activité ici
         homeLeaf.on("click", (e) => { if (homeAddMode) { setHomeAddMode(false); openActCreate(e.latlng); } });
@@ -7485,7 +7495,7 @@
 
       // À partir d'ici tout est synchrone : on vide puis on reconstruit d'un bloc.
       if (homeCluster) homeCluster.clearLayers();
-      homeMarkersByType = { places: [], mates: [], activities: [], checkins: [] };
+      homeMarkersByType = { places: [], mates: [], activities: [], checkins: [], quests: [] };
       if (homeMeMarker) { homeLeaf.removeLayer(homeMeMarker); homeMeMarker = null; }
       const allMarkers = [];
 
@@ -7630,11 +7640,20 @@
         allMarkers.push(homeMeMarker);
       }
 
+      // 🎯 Points de quêtes Paris — le « plateau de jeu ». Front-end (contenu de jeu
+      // curaté), indépendant du back : chaque point = une quête à jouer sur la ville.
+      (typeof PARIS_QUEST_POINTS !== "undefined" ? PARIS_QUEST_POINTS : []).forEach((q) => {
+        const mk = L.marker([q.lat, q.lng], { icon: epinIcon(q.emoji, "#E8961F", "quest") })
+          .bindPopup(`<div class="mappop-mini mappop-quest"><span class="mq-tag">⚡ Quête</span><br><b>${escapeHtml(q.title)}</b><br><span class="muted" style="font-size:.74rem">${escapeHtml(q.desc)}</span><div class="mq-rew">+${q.xp} XP · 🏅 ${escapeHtml(q.badge)}</div><button class="mappop-btn" data-hmqplay="1">▶ Jouer cette quête</button></div>`);
+        mk.smType = "quests"; homeMarkersByType.quests.push(mk); allMarkers.push(mk);
+      });
+
       // Compteurs sur les filtres = nombre réel de pastilles affichées
       setHomeChipCount("places", homeMarkersByType.places.length);
       setHomeChipCount("mates", homeMarkersByType.mates.length);
       setHomeChipCount("activities", homeMarkersByType.activities.length);
       setHomeChipCount("checkins", homeMarkersByType.checkins.length);
+      setHomeChipCount("quests", homeMarkersByType.quests.length);
 
       homeAllMarkers = allMarkers;
       applyHomeLayers();
@@ -8480,6 +8499,19 @@
       { emoji: "⛵", title: "Au fil de la Seine", desc: "Balade le long des quais et trouve un pont mythique.", xp: 90, badge: "Explorateur" },
       { emoji: "☕", title: "Café avec un Mate", desc: "Donne rendez-vous à un Mate dans un café sûr de la ville.", xp: 110, badge: "Ami local" },
       { emoji: "📚", title: "Trésor littéraire", desc: "Pousse la porte d'une librairie indépendante et repars avec une pépite.", xp: 70, badge: "Aventurier" },
+    ];
+    // Points de quêtes géolocalisés sur Paris (le « plateau de jeu » sur la carte d'accueil).
+    const PARIS_QUEST_POINTS = [
+      { emoji: "🗼", lat: 48.8584, lng: 2.2945, title: "Photographie la Tour Eiffel", desc: "Capture la Dame de Fer et partage ton plus beau cliché.", xp: 120, badge: "Photographe" },
+      { emoji: "🎨", lat: 48.8867, lng: 2.3431, title: "Montmartre, quartier des artistes", desc: "Monte au Sacré-Cœur et déniche une œuvre de street-art.", xp: 90, badge: "Culture" },
+      { emoji: "⛪", lat: 48.8530, lng: 2.3499, title: "Notre-Dame de Paris", desc: "Photographie la cathédrale et flâne sur l'île de la Cité.", xp: 100, badge: "Photographe" },
+      { emoji: "🖼️", lat: 48.8606, lng: 2.3376, title: "Pyramide du Louvre", desc: "Trouve la pyramide de verre et prends la pose.", xp: 90, badge: "Culture" },
+      { emoji: "⛵", lat: 48.8585, lng: 2.3373, title: "Au fil de la Seine", desc: "Traverse le Pont des Arts et admire la vue sur les quais.", xp: 90, badge: "Explorateur" },
+      { emoji: "☕", lat: 48.8590, lng: 2.3580, title: "Café dans le Marais", desc: "Donne rendez-vous à un Mate dans un café du Marais.", xp: 110, badge: "Ami local" },
+      { emoji: "📚", lat: 48.8525, lng: 2.3470, title: "Trésor du Quartier latin", desc: "Pousse la porte de la librairie Shakespeare & Company.", xp: 70, badge: "Aventurier" },
+      { emoji: "🗣️", lat: 48.8709, lng: 2.3674, title: "Rencontre au Canal Saint-Martin", desc: "Engage la conversation avec un·e inconnu·e au bord de l'eau.", xp: 100, badge: "Polyglotte" },
+      { emoji: "🌳", lat: 48.8462, lng: 2.3372, title: "Pause au Luxembourg", desc: "Détends-toi au jardin et observe la vie parisienne.", xp: 80, badge: "Explorateur" },
+      { emoji: "🏛️", lat: 48.8738, lng: 2.2950, title: "Cap sur l'Arc de Triomphe", desc: "Remonte les Champs-Élysées jusqu'à l'Arc.", xp: 60, badge: "Aventurier" },
     ];
     function _dayIdx() { const d = new Date(); return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000); }
     function _hubTitle(lvl) { return lvl >= 8 ? "Légende parisienne" : lvl >= 5 ? "Flâneur·se aguerri·e" : lvl >= 3 ? "Explorateur·rice de Paris" : "Touriste curieux·se"; }
