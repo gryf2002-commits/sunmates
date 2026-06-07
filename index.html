@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=243"></script>
-  <script src="sunmates-icons.js?v=243"></script>
+  <script src="sunmates-badges.js?v=244"></script>
+  <script src="sunmates-icons.js?v=244"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1455,7 +1455,13 @@
     .chat-menu button { text-align: left; background: none; border: 0; padding: .6rem .7rem; border-radius: 10px; font-size: .85rem; color: var(--ink); cursor: pointer; }
     .chat-menu button:active { background: var(--accent-soft); }
     body.theme-dusk .chat-menu { background: #241b35; } body.theme-dusk .chat-menu button { color: #f3e9f3; }
-    .chat-poc { font-size: 1.2rem; flex-shrink: 0; }
+    .chat-poc, .chat-mic { font-size: 1.2rem; flex-shrink: 0; }
+    .voice-rec { display: flex; align-items: center; gap: .5rem; background: var(--accent-soft); border-radius: 12px; padding: .5rem .7rem; margin-bottom: .4rem; font-size: .82rem; font-weight: 600; color: var(--ink); }
+    .voice-rec .vr-dot { width: 10px; height: 10px; border-radius: 50%; background: #e23b3b; animation: vrPulse 1s infinite; flex-shrink: 0; }
+    @keyframes vrPulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+    .bubble-audio { display: inline-flex; align-items: center; gap: .5rem; }
+    .bubble-audio button { background: rgba(255,255,255,.28); border: 0; color: inherit; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: .85rem; flex-shrink: 0; }
+    .bubble.them .bubble-audio button { background: var(--accent-soft); color: var(--accent); }
     .chat-header .backbtn { margin-bottom: 0; padding: .4rem .7rem; }
     /* Vue chat = vraie messagerie : occupe l'espace entre l'en-tête et la barre du bas,
        le corps défile tout seul et la zone de saisie reste collée en bas. */
@@ -3225,8 +3231,14 @@
             </div>
           </div>
           <div class="chat-body" id="chatBody"></div>
+          <div class="voice-rec hidden" id="voiceRec">
+            <span class="vr-dot"></span><span>Enregistrement… <b id="voiceTimer">0</b>s / 30s</span>
+            <button class="btn-ghost" id="voiceCancel" style="margin-left:auto;padding:.3rem .6rem">Annuler</button>
+            <button class="btn-primary" id="voiceStop" style="padding:.3rem .7rem">Envoyer ➤</button>
+          </div>
           <div class="chat-input">
             <button class="iconbtn chat-poc" id="chatPoc" title="Envoyer un poc 🔥">🔥</button>
+            <button class="iconbtn chat-mic" id="chatMic" title="Note vocale (30 s max)">🎤</button>
             <input id="chatInput" type="text" placeholder="Envoyer un message…" />
             <button class="btn-primary" id="chatSend">➤</button>
           </div>
@@ -7305,6 +7317,10 @@
     function bubbleHtml(m) {
       const mine = m.sender_id === myUserId;
       const act = mine ? `<div class="bubble-act"><button class="msg-del" data-mid="${m.id}">🗑️</button></div>` : "";
+      // Note vocale : lecteur (lecture via URL signée au clic)
+      if (m.audio_path) {
+        return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}"><span class="bubble-audio"><button data-vplay="${escapeHtml(m.audio_path)}">▶</button><span>${escapeHtml(m.content || "🎤 Note vocale")}</span></span><span class="bubble-time">${msgTime(m.created_at)}</span>${act}</div>`;
+      }
       // Si le message propose une quête/activité → petit bouton pour la visualiser
       let questBtn = "";
       if ((m.content || "").startsWith(QUEST_MSG_PREFIX) && typeof allQuests !== "undefined") {
@@ -7338,6 +7354,8 @@
     }
     // Éditer / supprimer ses propres messages (délégation sur le conteneur)
     $("chatBody").addEventListener("click", async (e) => {
+      const vp = e.target.closest("[data-vplay]");
+      if (vp) { playVoiceNote(vp); return; }
       const tr = e.target.closest(".bubble-translate");
       if (tr) { if (typeof translateBubble === "function") translateBubble(tr.closest(".bubble"), tr); return; }
       const qv = e.target.closest(".msg-quest");
@@ -7522,6 +7540,59 @@
       if (typeof toast === "function") toast("🔥", "Poc ! Flamme x" + count);
     }
     { const pc = $("chatPoc"); if (pc) pc.addEventListener("click", sendPoc); }
+
+    // ===== Notes vocales (30 s max, Opus léger pour rester dans le free tier Supabase) =====
+    let _mediaRec = null, _voiceChunks = [], _voiceTimer = null, _voiceSecs = 0, _voiceStream = null;
+    function _cleanupVoice() { try { if (_voiceStream) _voiceStream.getTracks().forEach((t) => t.stop()); } catch (e) {} _voiceStream = null; if (_voiceTimer) clearInterval(_voiceTimer); _voiceTimer = null; }
+    async function startVoiceRec() {
+      if (!currentChatUserId) return;
+      if ((travelerMap[currentChatUserId] || {}).is_demo) { toast("🎤", "Les vocaux marchent avec un vrai Mate 🙂"); return; }
+      if (_mediaRec && _mediaRec.state === "recording") return;
+      if (!navigator.mediaDevices || !window.MediaRecorder) { toast("🎤", "Micro indisponible sur cet appareil"); return; }
+      if (!confirm("SunMates va utiliser ton micro pour une note vocale (30 s max). Aucun enregistrement n'est gardé tant que tu n'envoies pas. Continuer ?")) return;
+      try { _voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { toast("🎤", "Accès micro refusé"); return; }
+      _voiceChunks = []; _voiceSecs = 0;
+      let mime = "audio/webm;codecs=opus"; if (!MediaRecorder.isTypeSupported(mime)) mime = "audio/webm"; if (!MediaRecorder.isTypeSupported(mime)) mime = "";
+      try { _mediaRec = new MediaRecorder(_voiceStream, mime ? { mimeType: mime, audioBitsPerSecond: 24000 } : undefined); } catch (e) { _mediaRec = new MediaRecorder(_voiceStream); }
+      _mediaRec.ondataavailable = (e) => { if (e.data && e.data.size) _voiceChunks.push(e.data); };
+      _mediaRec.start();
+      show($("voiceRec"), true); $("voiceTimer").textContent = "0";
+      _voiceTimer = setInterval(() => { _voiceSecs++; $("voiceTimer").textContent = _voiceSecs; if (_voiceSecs >= 30) stopVoiceRec(true); }, 1000);
+      if (window.SMSound) SMSound.play("pop");
+    }
+    function cancelVoiceRec() { show($("voiceRec"), false); try { if (_mediaRec && _mediaRec.state !== "inactive") _mediaRec.stop(); } catch (e) {} _voiceChunks = []; _cleanupVoice(); }
+    async function stopVoiceRec(send) {
+      show($("voiceRec"), false);
+      const secs = _voiceSecs;
+      if (!_mediaRec) return;
+      await new Promise((res) => { _mediaRec.onstop = res; try { _mediaRec.stop(); } catch (e) { res(); } });
+      _cleanupVoice();
+      if (!send || !_voiceChunks.length || secs < 1) { _voiceChunks = []; return; }
+      const blob = new Blob(_voiceChunks, { type: _voiceChunks[0].type || "audio/webm" }); _voiceChunks = [];
+      const recipient = currentChatUserId; if (!recipient || !myUserId) return;
+      const path = myUserId + "/" + Date.now() + ".webm";
+      toast("🎤", "Envoi…");
+      const up = await db.storage.from("voicenotes").upload(path, blob, { contentType: blob.type || "audio/webm" });
+      if (up.error) { toast("⚠️", "Échec envoi vocal (lance la migration s36 ?)"); return; }
+      const { error } = await db.from("messages").insert({ sender_id: myUserId, recipient_id: recipient, content: "🎤 Note vocale (" + secs + "s)", audio_path: path });
+      if (error) { toast("⚠️", "Erreur : " + error.message); return; }
+      if (window.SMSound) SMSound.play("success");
+      openChat(recipient);
+    }
+    async function playVoiceNote(btn) {
+      const path = btn.dataset.vplay; if (!path) return;
+      const prev = btn.textContent; btn.textContent = "⏳";
+      try {
+        const { data, error } = await db.storage.from("voicenotes").createSignedUrl(path, 3600);
+        if (error || !data || !data.signedUrl) { btn.textContent = prev; toast("⚠️", "Lecture impossible"); return; }
+        const a = new Audio(data.signedUrl); btn.textContent = "⏸";
+        a.onended = () => { btn.textContent = "▶"; }; a.onerror = () => { btn.textContent = "▶"; };
+        a.play();
+      } catch (e) { btn.textContent = prev; }
+    }
+    { const mb = $("chatMic"); if (mb) mb.addEventListener("click", startVoiceRec); }
+    { const vs = $("voiceStop"); if (vs) vs.addEventListener("click", () => stopVoiceRec(true)); }
+    { const vc = $("voiceCancel"); if (vc) vc.addEventListener("click", cancelVoiceRec); }
 
     async function sendChatMessage() {
       const input = $("chatInput");
