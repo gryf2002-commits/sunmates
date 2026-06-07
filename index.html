@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=220"></script>
-  <script src="sunmates-icons.js?v=220"></script>
+  <script src="sunmates-badges.js?v=221"></script>
+  <script src="sunmates-icons.js?v=221"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1215,6 +1215,20 @@
     .nq-title{ font-weight:800; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .nq-meta{ font-size:.8rem; }
     .nq-go{ flex-shrink:0; padding:.45rem .7rem; font-size:.82rem; white-space:nowrap; }
+    /* Bannière « inviter des amis » (croissance) */
+    .invite-banner{ display:flex; align-items:center; gap:.7rem; width:100%; text-align:left; margin:.6rem 0 .2rem; padding:.7rem .85rem; border:0; border-radius:var(--radius); cursor:pointer;
+      background:radial-gradient(120% 130% at 15% -10%, rgba(255,255,255,.28), rgba(255,255,255,0) 46%), var(--accent-grad); color:#fff; box-shadow:var(--shadow-pop); }
+    .invite-banner .inv-ic{ font-size:26px; flex-shrink:0; filter:var(--relief); }
+    .invite-banner .inv-txt{ flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2; }
+    .invite-banner .inv-txt b{ font-weight:800; }
+    .invite-banner .inv-txt span{ font-size:.78rem; opacity:.95; }
+    .invite-banner .inv-go{ flex-shrink:0; font-weight:800; font-size:.82rem; background:rgba(255,255,255,.22); padding:.35rem .6rem; border-radius:999px; }
+    .invite-banner:active{ transform:scale(.99); }
+    .qcoll{ margin:.2rem 0 .9rem; }
+    .qcoll-head{ display:flex; justify-content:space-between; font-size:.82rem; font-weight:800; color:var(--ink); margin-bottom:.3rem; }
+    .qcoll-bar{ height:9px; border-radius:999px; background:rgba(120,40,10,.14); overflow:hidden; }
+    .qcoll-bar > span{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#FFC93C,#FF8A3D); transition:width .4s ease; }
+    body.theme-dusk .qcoll-bar{ background:rgba(255,255,255,.12); }
 
     /* --- 2. Quête du jour --- */
     .quest-spotlight{ position:relative; overflow:hidden; border-radius:var(--radius); padding:1.05rem 1.1rem 1.1rem; margin:0 0 1rem;
@@ -2875,6 +2889,13 @@
           <p class="muted" style="margin-top:-.2rem">Rencontre des voyageurs, discute et pars à l'aventure ensemble 🌍</p>
           <div class="mates-stat stat-click" id="matesStatBtn" title="Voir mes connexions">🤝 <b id="matesCount">0</b><span id="matesStatLbl">Mates de confiance ›</span></div>
 
+          <!-- Croissance : inviter des amis (partage natif) -->
+          <button class="invite-banner" id="inviteFriendsBtn">
+            <span class="inv-ic">✨</span>
+            <span class="inv-txt"><b>Invite tes amis sur SunMates</b><span>Plus on est, plus c'est sûr &amp; fun 🌍</span></span>
+            <span class="inv-go">Partager ›</span>
+          </button>
+
           <div class="mseg">
             <button data-mseg="messages" class="active"><span data-smicon="chat" data-smicon-size="15" style="vertical-align:-2px"></span> <span data-i18n="mates.messages">Messages</span><span class="segb hidden" id="segMsg"></span></button>
             <button data-mseg="discover"><span data-smicon="search" data-smicon-size="15" style="vertical-align:-2px"></span> <span data-i18n="mates.discover">Découvrir</span></button>
@@ -3582,6 +3603,11 @@
               <div class="nq-meta muted" id="nqMeta"></div>
             </div>
             <button class="btn-accent nq-go" id="nqGo">📍 Carte</button>
+          </div>
+          <!-- Collection de quêtes : progression visuelle (objectif clair) -->
+          <div class="qcoll" id="questCollection" style="display:none">
+            <div class="qcoll-head"><span>🗺️ Collection de quêtes</span><b id="qcollCount">0/0</b></div>
+            <div class="qcoll-bar"><span id="qcollFill" style="width:0%"></span></div>
           </div>
           <div class="xp-banner" id="xpBanner"></div>
           <div id="weeklyGoals"></div>
@@ -5108,6 +5134,8 @@
         ["⚡", "Quête du jour", "Quête vedette en rotation (solo ou groupe +bonus)."],
         ["🗼", "Quêtes géolocalisées Paris", "Points de quête réels dans Paris (Tour Eiffel, Marais, canal…)."],
         ["🎯", "Radar quête la plus proche", "Géoloc → quête la plus proche + distance, bouton « Carte » qui t'y emmène."],
+        ["🗺️", "Collection de quêtes", "Barre de progression X/N + célébration à 100%."],
+        ["🔒", "Anti-triche quêtes", "Justification OBLIGATOIRE (code de lieu ou note honneur) avant toute validation."],
         ["🎯", "Quêtes du jour", "Ouvertes en feuille (anti-scroll), 3/jour + cooldown."],
         ["👥", "Quêtes de groupe", "Confirmées par un Mate → bonus XP partagé."],
         ["🎲", "Défis entre Mates", "Propose une quête à un Mate."],
@@ -5132,6 +5160,7 @@
         ["📌", "Épinglage profil", "Choisis 3 badges à afficher sur ton profil."],
       ]],
       ["🤝 Mates & messagerie", [
+        ["✨", "Inviter des amis", "Partage natif d'un lien d'invitation (croissance)."],
         ["🔍", "Découvrir", "Cartes riches (tags, présence, compatibilité)."],
         ["❤️", "Compatibilité", "Score + détail « pourquoi vous matchez » (tuile cliquable)."],
         ["💬", "Chat temps réel", "Messages, « en train d'écrire », accusés de lecture, traduction."],
@@ -6178,6 +6207,17 @@
     { const ss = $("souvenirShare"); if (ss) ss.addEventListener("click", shareParcours); }
     { const sm = $("souvenirModal"); if (sm) sm.addEventListener("click", (e) => { if (e.target.id === "souvenirModal") sm.classList.add("hidden"); }); }
 
+    // ===== Croissance : inviter des amis (partage natif du lien de l'app) =====
+    function shareInvite() {
+      const url = location.href.split("#")[0].split("?")[0];
+      const text = "🌍 Rejoins-moi sur SunMates — l'app pour voyager solo en sécurité et se faire des potes ! ☀️\n" + url;
+      try { if (typeof track === "function") track("invite_shared", {}); } catch (e) {}
+      if (navigator.share) { navigator.share({ title: "SunMates", text, url }).catch(() => {}); }
+      else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast("📋", "Lien d'invitation copié, partage-le !"), () => toast("✨", text)); }
+      else toast("✨", text);
+    }
+    { const ib = $("inviteFriendsBtn"); if (ib) ib.addEventListener("click", shareInvite); }
+
     let _badgeKeysInit = false;  // false au tout 1er chargement (évite de fêter les badges déjà acquis)
     let myCoupons = [];          // coupons gagnés
     let mySuggestions = [];      // défis reçus (en attente)
@@ -6614,23 +6654,46 @@
       });
     });
 
-    // Marquer comme accompli → valide le code si requis, attribue badge + coupon + points
-    $("detailCompleteBtn").addEventListener("click", async () => {
+    // Valide RÉELLEMENT une quête (appel RPC). Anti-triche : on n'arrive ici qu'après une
+    // JUSTIFICATION (code du lieu OU note « sur l'honneur ») — plus de simple clic = XP.
+    async function _completeQuestNow(qkey, code, m) {
+      await once("complete:" + qkey, async () => {
+        if (m) { m.style.color = "var(--muted)"; m.textContent = "Validation…"; }
+        const { data, error } = await db.rpc("complete_quest", { p_quest_key: qkey, p_code: code });
+        if (error) { if (m) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; } return; }
+        const res = data || {};
+        if (m) { m.style.color = res.ok ? "var(--ok)" : "var(--danger)"; m.textContent = res.message || (res.ok ? "Accompli ✅" : "Échec."); }
+        if (res.ok) {
+          track("quest_completed", { key: qkey });
+          await Promise.all([loadGameData(), loadProfile()]);
+          const q = questByKey(qkey); if (q) openDetail(q);
+          if (typeof celebrate === "function") celebrate();
+          if (typeof renderGameHub === "function") renderGameHub();
+        }
+      });
+    }
+    // Marquer comme accompli → JUSTIFICATION obligatoire (code de lieu OU note honneur)
+    $("detailCompleteBtn").addEventListener("click", () => {
       if (!currentQuest || !myUserId) return;
       const m = $("detailMsg");
-      const qkey = currentQuest.key;
-      const code = currentQuest.requires_code ? ($("detailCode").value || "").trim() : null;
-      if (currentQuest.requires_code && !code) { m.style.color = "var(--danger)"; m.textContent = "Entre le code du lieu pour valider."; return; }
-      await once("complete:" + qkey, async () => {
-        m.style.color = "var(--muted)"; m.textContent = "Validation…";
-        const { data, error } = await db.rpc("complete_quest", { p_quest_key: qkey, p_code: code });
-        if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
-        const res = data || {};
-        m.style.color = res.ok ? "var(--ok)" : "var(--danger)";
-        m.textContent = res.message || (res.ok ? "Accompli ✅" : "Échec.");
-        if (res.ok) { track("quest_completed", { key: qkey }); await Promise.all([loadGameData(), loadProfile()]); const q = questByKey(qkey); if (q) openDetail(q); }
-      });
+      if (currentQuest.requires_code) {
+        const code = ($("detailCode").value || "").trim();
+        if (!code) { m.style.color = "var(--danger)"; m.textContent = "Entre le code du lieu pour valider."; return; }
+        _completeQuestNow(currentQuest.key, code, m); // le code EST la justification
+      } else {
+        openQuestProof(currentQuest); // pas de code → on EXIGE une note de justification
+      }
     });
+    // Ouvre la modale de justification pour une QUÊTE (anti-triche : note obligatoire)
+    function openQuestProof(q) {
+      _proof = { mode: "quest", key: q.key, title: q.title || "Quête", xp: q.points || 0 };
+      $("proofTitle").textContent = q.title || "Quête";
+      $("proofDesc").textContent = (q.description || "Confirme que tu as bien accompli cette quête") + " — explique en quelques mots comment (sur l'honneur ✨). Obligatoire.";
+      const n = $("proofNote"); if (n) { n.value = ""; n.setAttribute("placeholder", "Comment l'as-tu accomplie ? (obligatoire) ✨"); }
+      $("proofSubmit").disabled = false; $("proofMsg").textContent = "";
+      show($("proofModal"), true);
+      if (window.SMSound) SMSound.play("pop");
+    }
 
     // Proposer la quête à un Mate (section dédiée + message dans le chat)
     $("detailMapBtn").addEventListener("click", () => {
@@ -7981,8 +8044,10 @@
       const grpBtn = (_hmMode !== "home") ? '<button class="mappop-btn alt" data-hmqgroup="1">👥 À plusieurs <span style="opacity:.8">+bonus</span></button>' : '';
       const soloLabel = (_hmMode !== "home") ? "🧭 Jouer en solo" : "🧭 Jouer";
       questPts.forEach((q) => {
+        // Distance depuis ta position (si connue) — cohérent avec le radar « quête la plus proche ».
+        const distTxt = (lastKnownGeo && typeof haversineKm === "function") ? ` · 📍 à ${_fmtDist(haversineKm(lastKnownGeo, { lat: q.lat, lng: q.lng }))}` : "";
         const mk = L.marker([q.lat, q.lng], { icon: epinIcon(q.emoji, "#E8961F", "quest") })
-          .bindPopup(`<div class="mappop-mini mappop-quest"><span class="mq-tag">⚡ Quête</span><br><b>${escapeHtml(q.title)}</b><br><span class="muted" style="font-size:.74rem">${escapeHtml(q.desc)}</span><div class="mq-rew">+${q.xp} XP · 🏅 ${escapeHtml(q.badge)}</div><button class="mappop-btn" data-hmqplay="${escapeHtml(q.key)}">${soloLabel}</button>${grpBtn}</div>`);
+          .bindPopup(`<div class="mappop-mini mappop-quest"><span class="mq-tag">⚡ Quête${distTxt}</span><br><b>${escapeHtml(q.title)}</b><br><span class="muted" style="font-size:.74rem">${escapeHtml(q.desc)}</span><div class="mq-rew">+${q.xp} XP · 🏅 ${escapeHtml(q.badge)}</div><button class="mappop-btn" data-hmqplay="${escapeHtml(q.key)}">${soloLabel}</button>${grpBtn}</div>`);
         mk.smType = "quests"; homeMarkersByType.quests.push(mk); allMarkers.push(mk);
       });
 
@@ -8847,13 +8912,25 @@
       { key: "quest_paris_arc", emoji: "🏛️", lat: 48.8738, lng: 2.2950, title: "Cap sur l'Arc de Triomphe", desc: "Remonte les Champs-Élysées jusqu'à l'Arc.", xp: 60, badge: "Aventurier" },
     ];
     function _dayIdx() { const d = new Date(); return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000); }
-    function _hubTitle(lvl) { return lvl >= 8 ? "Légende parisienne" : lvl >= 5 ? "Flâneur·se aguerri·e" : lvl >= 3 ? "Explorateur·rice de Paris" : "Touriste curieux·se"; }
+    // Mot accordé au GENRE choisi par la personne (repli inclusif si non renseigné / non-binaire / autre).
+    function _gw(fem, masc, incl) {
+      const g = (myProfile && myProfile.gender) || "";
+      if (g === "Femme") return fem;
+      if (g === "Homme") return masc;
+      return incl;
+    }
+    function _hubTitle(lvl) {
+      if (lvl >= 8) return "Légende parisienne";
+      if (lvl >= 5) return _gw("Flâneuse aguerrie", "Flâneur aguerri", "Flâneur·se aguerri·e");
+      if (lvl >= 3) return _gw("Exploratrice de Paris", "Explorateur de Paris", "Explorateur·rice de Paris");
+      return _gw("Touriste curieuse", "Touriste curieux", "Touriste curieux·se");
+    }
     let _qsMode = "solo";
     let _qsCurrentKey = null;
 
     function renderPlayerHero() {
       if (!$("playerHero")) return;
-      const name = (myProfile && myProfile.username) || "Voyageur·se";
+      const name = (myProfile && myProfile.username) || _gw("Voyageuse", "Voyageur", "Voyageur·se");
       const xp = (myProfile && myProfile.xp) || 0;
       const lvl = Math.floor(xp / 100) + 1, inLvl = xp % 100;
       $("phName").textContent = name;
@@ -8900,7 +8977,24 @@
       sec.style.display = "";
     }
 
-    function renderGameHub() { try { renderPlayerHero(); renderQuestSpotlight(); renderBadgeRail(); renderNearestQuest(); } catch (e) {} }
+    function renderGameHub() { try { renderPlayerHero(); renderQuestSpotlight(); renderBadgeRail(); renderNearestQuest(); renderQuestCollection(); } catch (e) {} }
+
+    // Collection de quêtes géolocalisées : barre de progression (objectif clair) + micro-délice à 100%.
+    let _lastCollDone = -1;
+    function renderQuestCollection() {
+      const box = $("questCollection"); if (!box) return;
+      const pts = _questGeoList(); const total = pts.length;
+      if (!total) { box.style.display = "none"; return; }
+      const done = pts.filter((q) => typeof myQuestStatus !== "undefined" && myQuestStatus[q.key] === "completed").length;
+      box.style.display = "";
+      const c = $("qcollCount"); if (c) c.textContent = done + "/" + total;
+      const f = $("qcollFill"); if (f) f.style.width = Math.round((done / total) * 100) + "%";
+      if (done === total && done > 0 && _lastCollDone !== -1 && done > _lastCollDone) {
+        if (typeof celebrate === "function") celebrate();
+        if (typeof toast === "function") toast("🏆", "Collection de quêtes complète, bravo !");
+      }
+      _lastCollDone = done;
+    }
 
     // ===== Radar « quête la plus proche » (onglet Jeux) : géoloc → quête Paris la + proche =====
     function _questGeoList() {
@@ -9008,11 +9102,11 @@
       grid.querySelectorAll("[data-solo]").forEach((b) => b.addEventListener("click", () => completeSolo(b.dataset.solo)));
     }
     // Un défi ne se valide plus en 1 clic : on doit POSTER une photo preuve (anti-triche).
-    let _proof = { key: null, xp: 0, title: "", file: null };
+    let _proof = { mode: "solo", key: null, xp: 0, title: "", file: null };
     function completeSolo(key) {
       const c = SOLO_CHALLENGES.find((x) => x.key === key); if (!c) return;
       const s = _soloState(); if ((s.ch || {})[key]) return;
-      _proof = { key: c.key, xp: c.xp, title: c.title };
+      _proof = { mode: "solo", key: c.key, xp: c.xp, title: c.title };
       const city = (myProfile && myProfile.city) || "ta ville";
       $("proofTitle").textContent = c.title;
       $("proofDesc").textContent = c.desc.replace("{ville}", city) + " — confirme quand c'est fait (sur l'honneur ✨).";
@@ -9057,6 +9151,15 @@
     { const pc = $("proofCancel"); if (pc) pc.addEventListener("click", () => show($("proofModal"), false)); }
     { const ps = $("proofSubmit"); if (ps) ps.addEventListener("click", async () => {
         if (!_proof.key) return;
+        // Mode QUÊTE : note de justification OBLIGATOIRE, puis validation serveur de la quête.
+        if (_proof.mode === "quest") {
+          const note = (($("proofNote") && $("proofNote").value) || "").trim();
+          if (note.length < 3) { $("proofMsg").style.color = "var(--danger)"; $("proofMsg").textContent = "Décris en quelques mots comment tu l'as accomplie (anti-triche)."; return; }
+          ps.disabled = true; $("proofMsg").style.color = "var(--muted)"; $("proofMsg").textContent = "Validation…";
+          show($("proofModal"), false); ps.disabled = false;
+          await _completeQuestNow(_proof.key, null, $("detailMsg"));
+          return;
+        }
         ps.disabled = true; $("proofMsg").style.color = "var(--muted)"; $("proofMsg").textContent = "Validation…";
         const note = (($("proofNote") && $("proofNote").value) || "").trim();
         const r = await grantSoloXp(_proof.key, _proof.xp, note || null);  // léger : note courte, AUCUNE photo
