@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=194"></script>
-  <script src="sunmates-icons.js?v=194"></script>
+  <script src="sunmates-badges.js?v=195"></script>
+  <script src="sunmates-icons.js?v=195"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1261,6 +1261,62 @@
     .br-lbl{ font-size:.74rem; font-weight:800; color:var(--ink); text-align:center; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:92px; }
     .br-mini{ font-size:.68rem; font-weight:700; color:var(--muted); }
     @media (prefers-reduced-motion: reduce){ .ph-glow, .ph-xp-fill::after{ animation:none; } .ph-xp-fill{ transition:none; } .qm-card, .qs-mode-btn, .qs-play{ transition:none; } }
+
+    /* ===================== MAISON v2 — Hub solo ===================== */
+    .solo-prog{ position:relative; overflow:hidden; padding:1.05rem 1.1rem 1.15rem; margin:.2rem 0 1rem;
+      background:linear-gradient(135deg, rgba(255,201,60,.16), rgba(122,92,255,.10)); border:1px solid rgba(201,138,30,.20); }
+    .solo-prog .sp-aura{ position:absolute; z-index:0; width:170px; height:170px; right:-50px; top:-60px; pointer-events:none;
+      background:radial-gradient(circle at 36% 28%, rgba(255,209,92,.55), rgba(255,138,61,.20) 45%, transparent 70%); filter:blur(4px); }
+    .solo-prog > *{ position:relative; z-index:1; }
+    .sp-head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+    .sp-title{ font-family:"Fraunces",serif; font-weight:800; font-size:1.12rem; margin:0; color:var(--ink); }
+    .sp-streak{ display:inline-flex; align-items:center; gap:.25rem; min-height:34px; padding:.25rem .6rem; border:0; cursor:pointer;
+      font-weight:800; font-size:.84rem; color:#B5740E; border-radius:999px; background:linear-gradient(135deg, rgba(255,201,60,.30), rgba(255,138,61,.20)); }
+    .sp-streak:active{ transform:scale(.96); } .sp-fire{ font-size:.95rem; }
+    .sp-stats{ display:flex; gap:.5rem; margin:.85rem 0 .9rem; }
+    .sp-stat{ flex:1; text-align:center; padding:.55rem .3rem; border-radius:var(--radius-sm); background:rgba(255,255,255,.55); border:1px solid rgba(201,138,30,.14); }
+    .sp-stat b{ display:block; font-family:"Fraunces",serif; font-weight:800; font-size:1.35rem; color:var(--accent); line-height:1; }
+    .sp-stat span{ display:block; margin-top:.2rem; font-size:.7rem; font-weight:700; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .sp-next{ display:flex; align-items:center; gap:.7rem; padding:.6rem .65rem; border-radius:var(--radius-sm); background:rgba(122,92,255,.10); border:1px solid rgba(122,92,255,.18); }
+    .sp-next-bdg{ font-size:1.7rem; line-height:1; flex-shrink:0; filter:drop-shadow(0 3px 6px rgba(255,90,77,.25)); }
+    .sp-next-txt{ flex:1; min-width:0; } .sp-next-lbl{ font-size:.68rem; font-weight:800; letter-spacing:.02em; text-transform:uppercase; color:#7a5cff; }
+    .sp-next-name{ font-weight:800; font-size:.92rem; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .sp-bar{ height:9px; margin-top:.4rem; border-radius:999px; background:rgba(120,40,10,.18); overflow:hidden; }
+    .sp-bar span{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#FFF2C2,#FFD15C 60%,#FFE9A8); box-shadow:0 0 8px rgba(255,209,92,.6); transition:width .6s cubic-bezier(.22,1,.36,1); }
+    body.theme-dusk .solo-prog{ background:linear-gradient(135deg, rgba(255,201,60,.12), rgba(122,92,255,.16)); border-color:rgba(255,255,255,.08); box-shadow:0 16px 40px rgba(0,0,0,.45); }
+    body.theme-dusk .sp-stat{ background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.08); }
+    body.theme-dusk .sp-streak{ color:#ffce8a; background:linear-gradient(135deg, rgba(255,201,60,.18), rgba(255,138,61,.14)); }
+    body.theme-dusk .sp-next{ background:rgba(122,92,255,.18); border-color:rgba(155,123,255,.30); } body.theme-dusk .sp-next-lbl{ color:#b8a3ff; }
+    .solo-ch{ margin:.2rem 0 1.1rem; } .sc-sub{ margin:-.15rem 0 .65rem; font-size:.82rem; }
+    .sc-grid{ display:grid; grid-template-columns:1fr; gap:.6rem; }
+    .sc-card{ position:relative; display:flex; align-items:center; gap:.7rem; text-align:left; width:100%; min-height:64px; padding:.7rem .85rem; cursor:pointer;
+      border-radius:var(--radius); background:var(--card); border:1px solid rgba(201,138,30,.14); box-shadow:var(--shadow-sm); transition:transform .16s ease, box-shadow .16s ease; }
+    .sc-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow); } .sc-card:active{ transform:scale(.97); }
+    .sc-ic{ flex-shrink:0; width:46px; height:46px; display:grid; place-items:center; font-size:1.5rem; border-radius:14px; background:var(--accent-grad); box-shadow:0 6px 14px rgba(255,90,77,.28), inset 0 1px 0 rgba(255,255,255,.5); }
+    .sc-card.sc-teal .sc-ic{ background:linear-gradient(135deg,#34c98f,#1f9e8c); box-shadow:0 6px 14px rgba(31,158,140,.30), inset 0 1px 0 rgba(255,255,255,.4); }
+    .sc-card.sc-gold .sc-ic{ background:linear-gradient(135deg,#FFD15C,#E8961F); box-shadow:0 6px 14px rgba(232,150,31,.32), inset 0 1px 0 rgba(255,255,255,.5); }
+    .sc-card.sc-violet .sc-ic{ background:linear-gradient(135deg,#9b7bff,#7a5cff); box-shadow:0 6px 14px rgba(122,92,255,.30), inset 0 1px 0 rgba(255,255,255,.4); }
+    .sc-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:.12rem; }
+    .sc-name{ font-weight:800; font-size:.95rem; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .sc-desc{ font-size:.8rem; color:var(--text); line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .sc-xp{ flex-shrink:0; align-self:flex-start; font-weight:800; font-size:.82rem; color:#B5740E; padding:.18rem .5rem; border-radius:999px; background:rgba(255,209,92,.22); }
+    .sc-card .sc-xp::after{ content:" XP"; font-size:.64rem; opacity:.8; }
+    .sc-check{ position:absolute; top:.5rem; right:.6rem; width:24px; height:24px; display:none; place-items:center; font-size:.85rem; font-weight:900; color:#fff; border-radius:999px; background:linear-gradient(135deg,#34c98f,#1f9e8c); box-shadow:0 3px 8px rgba(31,158,140,.4); }
+    .sc-card.is-done{ opacity:.62; } .sc-card.is-done .sc-check{ display:grid; } .sc-card.is-done .sc-xp{ display:none; } #scReroll{ cursor:pointer; user-select:none; }
+    body.theme-dusk .sc-card{ background:#2a2140; border-color:rgba(255,255,255,.08); } body.theme-dusk .sc-xp{ color:#FFD79A; background:rgba(255,209,92,.16); }
+    .solo-rit{ margin:.2rem 0 1.1rem; }
+    .rit-cnt{ flex-shrink:0; font-weight:800; font-size:.82rem; color:#B5740E; padding:.18rem .55rem; border-radius:999px; background:rgba(255,209,92,.22); }
+    .rit-list{ display:flex; flex-direction:column; gap:.5rem; }
+    .rit-row{ display:flex; align-items:center; gap:.7rem; width:100%; min-height:52px; padding:.55rem .8rem; cursor:pointer; text-align:left; border-radius:var(--radius); background:var(--card); border:1px solid rgba(201,138,30,.14); box-shadow:var(--shadow-sm); transition:transform .16s ease; }
+    .rit-row:active{ transform:scale(.98); }
+    .rit-ic{ flex-shrink:0; font-size:1.3rem; width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:rgba(255,201,60,.18); }
+    .rit-name{ flex:1; min-width:0; font-weight:700; font-size:.9rem; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .rit-box{ flex-shrink:0; width:26px; height:26px; border-radius:8px; border:2px solid rgba(201,138,30,.45); display:grid; place-items:center; font-size:.85rem; font-weight:900; color:transparent; transition:all .18s ease; }
+    .rit-row.is-done .rit-box{ color:#fff; border-color:transparent; background:linear-gradient(135deg,#34c98f,#1f9e8c); }
+    .rit-row.is-done .rit-name{ text-decoration:line-through; opacity:.6; } .rit-row.is-done .rit-ic{ background:rgba(52,201,143,.18); }
+    body.theme-dusk .rit-row{ background:#2a2140; border-color:rgba(255,255,255,.08); } body.theme-dusk .rit-ic{ background:rgba(255,201,60,.12); }
+    body.theme-dusk .rit-cnt{ color:#FFD79A; background:rgba(255,209,92,.16); } body.theme-dusk .rit-box{ border-color:rgba(255,201,60,.4); }
+    @media (prefers-reduced-motion: reduce){ .sp-bar span, .sc-card, .rit-row, .rit-box{ transition:none; } }
 
     /* Coupons */
     .coupon { display: flex; align-items: center; gap: .85rem; padding: .85rem .9rem; border: 1.5px dashed var(--accent);
@@ -2571,6 +2627,39 @@
             <div><div class="hm-hero-title" id="hmHomeCity">De retour chez toi</div>
               <div class="muted" style="font-size:.84rem">Reste connecté·e, prépare ta prochaine aventure et fais découvrir ta ville 🌍</div></div>
           </div>
+
+          <!-- ============ MAISON v2 — Hub SOLO (l'app se suffit à elle-même) ============ -->
+          <section class="card solo-prog" id="soloProgress" aria-label="Ta progression solo">
+            <div class="sp-aura" aria-hidden="true"></div>
+            <div class="sp-head">
+              <h3 class="sp-title">Ta progression solo</h3>
+              <button class="sp-streak" id="spStreak" title="Ta série de jours d'affilée"><span class="sp-fire">🔥</span><b id="spStreakN">1</b></button>
+            </div>
+            <div class="sp-stats">
+              <div class="sp-stat"><b id="spLevel">1</b><span>Niveau</span></div>
+              <div class="sp-stat"><b id="spXp">0</b><span>XP</span></div>
+              <div class="sp-stat"><b id="spDone">0</b><span>Défis relevés</span></div>
+            </div>
+            <div class="sp-next">
+              <div class="sp-next-bdg" id="spNextBdg" aria-hidden="true">🏅</div>
+              <div class="sp-next-txt">
+                <div class="sp-next-lbl">Prochain niveau</div>
+                <div class="sp-next-name" id="spNextName">Continue tes défis solo</div>
+                <div class="sp-bar"><span id="spBarFill" style="width:0%"></span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="solo-ch" id="soloChallenges" aria-label="Défis solo de ta ville">
+            <div class="qm-head"><h3>Défis solo de <span id="scCity">ta ville</span> 🧭</h3><a class="qm-all" id="scReroll" role="button" tabindex="0">🎲 Mélanger</a></div>
+            <p class="muted sc-sub">Redécouvre ton coin comme une voyageuse. Aucune rencontre, juste toi et ta ville.</p>
+            <div class="sc-grid" id="scGrid"></div>
+          </section>
+
+          <section class="solo-rit" id="soloRituals" aria-label="Rituels du jour">
+            <div class="qm-head"><h3>Rituels du jour ☀️</h3><span class="rit-cnt" id="ritCnt">0/3</span></div>
+            <div class="rit-list" id="ritList"></div>
+          </section>
 
           <!-- Inspiration du jour (destination rotative) -->
           <div class="card hm-inspo" id="hmInspo"></div>
@@ -4065,6 +4154,7 @@
         const c = (myProfile && myProfile.city) || "";
         const cn = $("hmCityName"); if (cn) cn.textContent = c || "ta ville";
         const hc = $("hmHomeCity"); if (hc) hc.textContent = c ? ("De retour à " + c) : "De retour chez toi";
+        if (typeof renderSoloHome === "function") renderSoloHome();
         renderInspo(); renderNextTrip(); renderTripPrep(); renderWishlist(); renderTripsDone(); renderVisitors(); renderHost();
       } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
       // Repositionne le jeu solo selon le mode :
@@ -8616,6 +8706,81 @@
     }
 
     function renderGameHub() { try { renderPlayerHero(); renderQuestSpotlight(); renderBadgeRail(); } catch (e) {} }
+
+    /* ============ MAISON v2 — défis solo & rituels (l'app utile en SOLO) ============ */
+    const SOLO_CHALLENGES = [
+      { key: "explore_quartier", emoji: "🧭", tone: "coral", xp: 60, title: "Explore un quartier inconnu", desc: "Marche 20 min dans un coin de {ville} où tu ne vas jamais." },
+      { key: "photo_detail", emoji: "📸", tone: "gold", xp: 40, title: "La photo du détail", desc: "Prends en photo un détail beau et caché : porte, fresque, enseigne." },
+      { key: "cafe_solo", emoji: "☕", tone: "teal", xp: 30, title: "Café en solo, sans téléphone", desc: "Bois un café dans un lieu inédit, juste à observer les gens." },
+      { key: "sunset_spot", emoji: "🌇", tone: "coral", xp: 50, title: "Chasse au coucher de soleil", desc: "Trouve le meilleur point de vue de {ville} pour le couchant." },
+      { key: "new_dish", emoji: "🍜", tone: "gold", xp: 45, title: "Goûte un plat jamais essayé", desc: "Commande quelque chose que tu n'as jamais mangé près de chez toi." },
+      { key: "green_break", emoji: "🌳", tone: "teal", xp: 35, title: "Bol de vert", desc: "Passe 15 min dans un parc ou jardin de {ville}, sans écran." },
+      { key: "talk_stranger", emoji: "🗣️", tone: "violet", xp: 55, title: "Sors de ta zone de confort", desc: "Demande une reco (café, livre…) à un·e commerçant·e. Juste ça." },
+      { key: "culture_dose", emoji: "🖼️", tone: "gold", xp: 50, title: "Dose de culture", desc: "Visite un musée, une galerie ou un monument de {ville}." },
+      { key: "walk_5k", emoji: "🚶", tone: "teal", xp: 40, title: "Balade de 5 000 pas", desc: "Choisis une direction au hasard et marche jusqu'à 5 000 pas." },
+      { key: "market_morning", emoji: "🧺", tone: "coral", xp: 45, title: "Matinée au marché", desc: "Flâne sur un marché local et ramène un produit du coin." },
+    ];
+    const SOLO_RITUALS = [
+      { key: "rit_outside", emoji: "🌤️", xp: 10, title: "Mettre le nez dehors aujourd'hui" },
+      { key: "rit_photo", emoji: "📷", xp: 10, title: "Capturer un joli moment du jour" },
+      { key: "rit_wishlist", emoji: "🌠", xp: 10, title: "Ajouter / rêver une destination" },
+    ];
+    function _soloKey() { return "sm_solo_" + (myUserId || "x") + "_" + new Date().toISOString().slice(0, 10); }
+    function _soloState() { try { return JSON.parse(localStorage.getItem(_soloKey()) || "{}") || {}; } catch (e) { return {}; } }
+    function _soloSave(s) { try { localStorage.setItem(_soloKey(), JSON.stringify(s)); } catch (e) {} }
+    function _soloPick(seed) { return SOLO_CHALLENGES.map((c, i) => ({ c: c, k: (i * 97 + seed * 31) % 1000 })).sort((a, b) => a.k - b.k).slice(0, 4).map((x) => x.c); }
+    async function grantSoloXp(n, label) {
+      try { if (myUserId && myProfile) { const nx = (myProfile.xp || 0) + n; const { error } = await db.from("profiles").update({ xp: nx }).eq("id", myUserId); if (!error) myProfile.xp = nx; } } catch (e) {}
+      if (typeof toast === "function") toast("⭐", "+" + n + " XP · " + label);
+      if (typeof renderGameHub === "function") renderGameHub();
+      renderSoloProgress();
+    }
+    function renderSoloProgress() {
+      if (!$("soloProgress")) return;
+      const xp = (myProfile && myProfile.xp) || 0, lvl = Math.floor(xp / 100) + 1, inLvl = xp % 100;
+      let total = 0; try { total = parseInt(localStorage.getItem("sm_solo_total_" + (myUserId || "x")) || "0", 10) || 0; } catch (e) {}
+      $("spLevel").textContent = lvl; $("spXp").textContent = xp; $("spDone").textContent = total;
+      $("spBarFill").style.width = inLvl + "%";
+      $("spNextName").textContent = xp === 0 ? "Relève ton premier défi solo !" : ("Plus que " + (100 - inLvl) + " XP pour le niveau " + (lvl + 1));
+      try { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("spStreakN").textContent = st.count || 1; } catch (e) {}
+    }
+    function renderSoloChallenges() {
+      const grid = $("scGrid"); if (!grid) return;
+      const city = (myProfile && myProfile.city) || "ta ville"; const sc = $("scCity"); if (sc) sc.textContent = city;
+      const s = _soloState(), done = s.ch || {};
+      grid.innerHTML = _soloPick(s.seed || 0).map((c) => '<button class="sc-card sc-' + c.tone + (done[c.key] ? " is-done" : "") + '" data-solo="' + c.key + '"><span class="sc-ic">' + c.emoji + '</span><span class="sc-body"><span class="sc-name">' + escapeHtml(c.title) + '</span><span class="sc-desc">' + escapeHtml(c.desc.replace("{ville}", city)) + '</span></span><span class="sc-xp">+' + c.xp + '</span><span class="sc-check">✓</span></button>').join("");
+      grid.querySelectorAll("[data-solo]").forEach((b) => b.addEventListener("click", () => completeSolo(b.dataset.solo)));
+    }
+    function completeSolo(key) {
+      const c = SOLO_CHALLENGES.find((x) => x.key === key); if (!c) return;
+      const s = _soloState(); s.ch = s.ch || {};
+      if (s.ch[key]) return;
+      if (Object.keys(s.ch).length >= 3) { if (typeof toast === "function") toast("🌙", "3 défis solo par jour max — reviens demain ✨"); return; }
+      s.ch[key] = true; _soloSave(s);
+      try { const tk = "sm_solo_total_" + (myUserId || "x"); localStorage.setItem(tk, String((parseInt(localStorage.getItem(tk) || "0", 10) || 0) + 1)); } catch (e) {}
+      grantSoloXp(c.xp, c.title);
+      if (typeof celebrate === "function") celebrate();
+      renderSoloChallenges();
+    }
+    function renderRituals() {
+      const list = $("ritList"); if (!list) return;
+      const s = _soloState(), done = s.rit || {};
+      list.innerHTML = SOLO_RITUALS.map((r) => '<button class="rit-row' + (done[r.key] ? " is-done" : "") + '" data-rit="' + r.key + '"><span class="rit-ic">' + r.emoji + '</span><span class="rit-name">' + escapeHtml(r.title) + '</span><span class="rit-box">✓</span></button>').join("");
+      const cnt = $("ritCnt"); if (cnt) cnt.textContent = Object.keys(done).length + "/" + SOLO_RITUALS.length;
+      list.querySelectorAll("[data-rit]").forEach((b) => b.addEventListener("click", () => toggleRitual(b.dataset.rit)));
+    }
+    function toggleRitual(key) {
+      const r = SOLO_RITUALS.find((x) => x.key === key); if (!r) return;
+      const s = _soloState(); s.rit = s.rit || {};
+      if (s.rit[key]) return;
+      s.rit[key] = true; _soloSave(s);
+      grantSoloXp(r.xp, r.title);
+      if (window.SMSound) SMSound.play("success");
+      renderRituals();
+    }
+    function renderSoloHome() { try { renderSoloProgress(); renderSoloChallenges(); renderRituals(); } catch (e) {} }
+    { const rr = $("scReroll"); if (rr) rr.addEventListener("click", () => { const s = _soloState(); s.seed = ((s.seed || 0) + 1) % 1000; _soloSave(s); renderSoloChallenges(); if (window.SMSound) SMSound.play("pop"); }); }
+    { const ss = $("spStreak"); if (ss) ss.addEventListener("click", () => { const h = $("homeStreak"); if (h) h.click(); }); }
 
     // Câblage (une fois) : toggle solo/groupe, bouton Jouer, streak, missions rapides
     document.querySelectorAll("#questSpotlight .qs-mode-btn").forEach((b) => b.addEventListener("click", () => {
