@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=179"></script>
-  <script src="sunmates-icons.js?v=179"></script>
+  <script src="sunmates-badges.js?v=180"></script>
+  <script src="sunmates-icons.js?v=180"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -364,8 +364,14 @@
     .iconbtn.ring { animation: bellRing 1.1s ease; }
 
     /* ---- États vides plus chaleureux ---- */
-    .empty { text-align: center; padding: 1.6rem 1rem; color: var(--muted); }
+    .empty { text-align: center; padding: 1.8rem 1rem; color: var(--muted); }
     .empty .emoji { font-size: 2.2rem; display: block; margin-bottom: .5rem; opacity: .9; }
+    .empty .empty-ill { width: 78px; height: 78px; border-radius: 50%; margin: 0 auto .8rem; display: grid; place-items: center;
+      background: radial-gradient(120% 90% at 30% 24%, #ffe8d0, #ffba90 78%, #ff9e74);
+      box-shadow: 0 10px 22px -4px rgba(255,138,61,.4), inset 0 1px 1px rgba(255,255,255,.75), inset 0 -2px 4px rgba(180,80,45,.25); }
+    .empty .empty-ill svg { filter: drop-shadow(0 1px 1px rgba(122,36,21,.32)); }
+    .empty .empty-ill .ie { font-size: 2.1rem; line-height: 1; filter: drop-shadow(0 2px 3px rgba(122,36,21,.25)); }
+    body.theme-dusk .empty .empty-ill { box-shadow: 0 10px 22px -6px rgba(255,138,61,.35), inset 0 1px 1px rgba(255,255,255,.3); }
     .empty .etitle { font-weight: 700; color: var(--ink); margin-bottom: .2rem; }
     .empty .esub { font-size: .86rem; margin-bottom: .9rem; }
     .empty .btn-primary, .empty .btn-accent { display: inline-flex; width: auto; padding: .55rem 1.1rem; }
@@ -3451,9 +3457,12 @@
 
     // --- État vide chaleureux (emoji + titre + sous-titre + bouton d'action optionnel) ---
     // actId/actLabel : si fournis, ajoute un bouton ; le câblage du clic se fait via [data-empty-act].
+    const EMPTY_ICON = { "📍": "near", "🛡️": "shieldsafe", "💬": "chat", "🔍": "near", "🎟️": "coupon", "📭": "chat", "🗺️": "near", "🏅": "medal", "🎯": "quest", "🎮": "games", "🤝": "users", "🌅": "near" };
     function emptyState(emoji, title, sub, actLabel, actId) {
       const btn = actLabel ? `<button class="btn-primary" data-empty-act="${actId || ''}">${escapeHtml(actLabel)}</button>` : "";
-      return `<div class="empty"><span class="emoji">${emoji}</span><div class="etitle">${escapeHtml(title)}</div><div class="esub">${escapeHtml(sub)}</div>${btn}</div>`;
+      const name = EMPTY_ICON[emoji];
+      const ill = (window.SMIcon && name && SMIcon.has(name)) ? SMIcon(name, { size: 42 }) : `<span class="ie">${emoji}</span>`;
+      return `<div class="empty"><div class="empty-ill">${ill}</div><div class="etitle">${escapeHtml(title)}</div><div class="esub">${escapeHtml(sub)}</div>${btn}</div>`;
     }
     let myUserId = null; // id de l'utilisateur connecté (défini à la connexion)
     let myEmail = null;  // email de l'utilisateur connecté (pour la ré-authentification admin)

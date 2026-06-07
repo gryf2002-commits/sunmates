@@ -48,7 +48,8 @@
     phone: { style:'tile', svg:'<path d="M9 5c1.5 0 2.7 1 3.1 2.5l1 3.6c.3 1.1-.1 2.3-1 3l-1.7 1.3c1.3 2.7 3.5 4.9 6.2 6.2l1.3-1.7c.7-.9 1.9-1.3 3-1l3.6 1c1.5.4 2.5 1.6 2.5 3.1v3c0 1.8-1.5 3.1-3.2 2.9C16.5 26.9 6.1 16.5 5.1 8.2 4.9 6.5 6.2 5 8 5z" fill="url(#sm-ico-iv)"/>' },
     signal: { style:'tile', svg:'<rect x="8" y="5" width="2.6" height="22" rx="1.3" fill="url(#sm-ico-iv)"/><path d="M11 6h13l-3.2 4.2L24 14.5H11z" fill="url(#sm-ico-iv)"/><circle cx="17" cy="10.2" r="1.5" fill="#FF5A4D"/>' },
     alert: { style:'tile', svg:'<path d="M16 5.5l12.5 21.5a1.5 1.5 0 0 1-1.3 2.2H4.8a1.5 1.5 0 0 1-1.3-2.2z" fill="url(#sm-ico-iv)"/><path d="M16 13v6.5" stroke="#FF5A4D" stroke-width="2.8" stroke-linecap="round"/><circle cx="16" cy="24" r="1.7" fill="#FF5A4D"/>' },
-    aid: { style:'tile', svg:'<rect x="6" y="6" width="20" height="20" rx="6" fill="url(#sm-ico-iv)"/><path d="M16 11v10M11 16h10" stroke="#FF5A4D" stroke-width="3.2" stroke-linecap="round"/>' }
+    aid: { style:'tile', svg:'<rect x="6" y="6" width="20" height="20" rx="6" fill="url(#sm-ico-iv)"/><path d="M16 11v10M11 16h10" stroke="#FF5A4D" stroke-width="3.2" stroke-linecap="round"/>' },
+    chat: { style:'tile', svg:'<path d="M6 9.5a4.5 4.5 0 0 1 4.5-4.5h11a4.5 4.5 0 0 1 4.5 4.5v6a4.5 4.5 0 0 1-4.5 4.5H14l-6 5v-5a4.5 4.5 0 0 1-2-3.7z" fill="url(#sm-ico-iv)"/><circle cx="12" cy="12.5" r="1.7" fill="#FF8A3D"/><circle cx="16" cy="12.5" r="1.7" fill="#FF8A3D"/><circle cx="20" cy="12.5" r="1.7" fill="#FF8A3D"/>' }
   };
 
   window.SMIcon = function (name, opts) {
