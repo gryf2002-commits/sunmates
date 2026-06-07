@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=192"></script>
-  <script src="sunmates-icons.js?v=192"></script>
+  <script src="sunmates-badges.js?v=193"></script>
+  <script src="sunmates-icons.js?v=193"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -3330,6 +3330,10 @@
           <div class="set-toggle">
             <div><div class="st-lbl" data-i18n="set.haptics">Vibrations (haptique)</div><div class="st-sub" data-i18n="set.hapticsSub">Petit retour vibrant sur les actions clés</div></div>
             <label class="switch"><input type="checkbox" id="hapticsToggle"><span class="sl"></span></label>
+          </div>
+          <div class="set-toggle">
+            <div><div class="st-lbl" data-i18n="set.sound">🔊 Sons de l'interface</div><div class="st-sub" data-i18n="set.soundSub">Petits sons sur les clics, succès et déblocages</div></div>
+            <label class="switch"><input type="checkbox" id="soundToggle"><span class="sl"></span></label>
           </div>
           <div class="set-toggle">
             <div><div class="st-lbl" data-i18n="set.presence">Afficher ma présence</div><div class="st-sub" data-i18n="set.presenceSub">« En ligne » sur ton avatar</div></div>
@@ -7386,9 +7390,19 @@
       if (lastKnownGeo) { focusNear(lastKnownGeo.lat, lastKnownGeo.lng, 13); return; }
       const mine = (circleLocs || []).find((l) => l.user_id === myUserId && l.lat != null);
       if (mine) { focusNear(mine.lat, mine.lng, 13); return; }
-      // 🎯 Lancement Paris : par défaut on pose la carte sur PARIS (là où sont les quêtes),
-      // pour que le plateau de jeu soit visible d'emblée. Une vraie position GPS/partagée
-      // (ci-dessus) reste prioritaire si l'utilisateur en a une.
+      // La VRAIE ville de l'utilisateur reste prioritaire (on ne pénalise pas les
+      // non-Parisiens) : on centre sur sa ville si renseignée.
+      const city = myProfile && myProfile.city;
+      if (city) {
+        if (homeCityCenter) { focusNear(homeCityCenter[0], homeCityCenter[1], 12); return; }
+        try {
+          const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(city));
+          const j = await r.json();
+          if (j && j[0]) { homeCityCenter = [parseFloat(j[0].lat), parseFloat(j[0].lon)]; focusNear(homeCityCenter[0], homeCityCenter[1], 12); return; }
+        } catch (e) {}
+      }
+      // 🎯 Défaut LANCEMENT : aucune position ni ville connue → on pose la carte sur PARIS
+      // (là où sont les quêtes) pour que le plateau de jeu soit visible d'emblée.
       const qMarks = (markers || []).filter((m) => m.smType === "quests");
       if (qMarks.length) { try { homeLeaf.fitBounds(L.featureGroup(qMarks).getBounds().pad(0.18)); return; } catch (e) {} }
       homeLeaf.setView([48.8606, 2.3376], 12.5, { animate: false }); // centre de Paris
@@ -8353,6 +8367,7 @@
 
     // ---- Confettis (déblocage de badge, moment de fête 🎉) ----
     function celebrate() {
+      if (window.SMSound) SMSound.play("unlock"); // petit jingle de déblocage
       // Confettis "maison" : soleils, cœurs et étoiles dans la DA coucher de soleil (clin d'œil).
       if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const shapes = [
@@ -8594,6 +8609,46 @@
     }); }
     { const ps = $("phStreak"); if (ps) ps.addEventListener("click", () => { const h = $("homeStreak"); if (h) h.click(); }); }
     document.querySelectorAll("#qmRail .qm-card").forEach((c) => c.addEventListener("click", () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); }));
+
+    /* ================= SON DE L'INTERFACE (WebAudio, 100% libre de droit) =================
+       Tous les sons sont SYNTHÉTISÉS à la volée (aucun fichier audio externe) → aucun
+       droit d'auteur. Activable/désactivable dans Paramètres (clé sm_sound). */
+    const SMSound = (function () {
+      let ctx = null;
+      let on = false; try { on = localStorage.getItem("sm_sound") === "1"; } catch (e) {}
+      function ac() { if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } return ctx; }
+      function tone(freq, dur, type, vol, when) {
+        const c = ac(); if (!c) return; const t = when || c.currentTime;
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = type || "sine"; o.frequency.setValueAtTime(freq, t);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.1, t + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.03);
+      }
+      function play(name) {
+        if (!on) return; const c = ac(); if (!c) return;
+        if (c.state === "suspended") { try { c.resume(); } catch (e) {} }
+        const n = c.currentTime;
+        switch (name) {
+          case "tap": tone(430, 0.06, "triangle", 0.05, n); break;
+          case "nav": tone(540, 0.07, "sine", 0.06, n); tone(810, 0.08, "sine", 0.04, n + 0.04); break;
+          case "success": [523, 659, 784].forEach((f, i) => tone(f, 0.16, "sine", 0.08, n + i * 0.075)); break;
+          case "unlock": [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.2, "triangle", 0.085, n + i * 0.085)); break;
+          case "toggle": tone(360, 0.05, "square", 0.04, n); break;
+        }
+      }
+      function set(v) { on = !!v; try { localStorage.setItem("sm_sound", on ? "1" : "0"); } catch (e) {} if (on) { try { ac() && ctx.resume(); } catch (e) {} play("toggle"); } }
+      return { play, set, isOn: function () { return on; } };
+    })();
+    window.SMSound = SMSound;
+
+    // Toggle Paramètres
+    { const st = $("soundToggle"); if (st) { st.checked = SMSound.isOn(); st.addEventListener("change", () => SMSound.set(st.checked)); } }
+
+    // Son « tap » discret sur tous les éléments interactifs de l'interface
+    document.addEventListener("click", (e) => {
+      if (e.target.closest('button, .tile, .chip, .cat-tile, .jeux-open, .qm-card, .mappop-btn, .cic, a[data-goto], [data-jeuxnav], [data-jeuxopen]')) SMSound.play("tap");
+    }, true);
 
     // ---- Accordéon du formulaire de profil ----
     // Accordéon du profil : ouverture/fermeture FLUIDE (on anime la hauteur réelle,
@@ -9628,7 +9683,7 @@
         "places.title": "Lieux sûrs", "profile.title": "Mon profil", "safety.title": "Sécurité", "games.title": "Jeux & Quêtes",
         "prof.seg.edit": "Mon profil", "profile.replay": "🚀 Revoir la présentation",
         "filter.verified": "Vérifiés", "filter.active": "● En ligne", "filter.city": "Même ville", "filter.affinity": "Affinité 50%+",
-        "set.title": "⚙️ Paramètres du compte", "set.lang": "🌍 Langue / Language", "set.haptics": "Vibrations (haptique)", "set.hapticsSub": "Petit retour vibrant sur les actions clés",
+        "set.title": "⚙️ Paramètres du compte", "set.lang": "🌍 Langue / Language", "set.haptics": "Vibrations (haptique)", "set.hapticsSub": "Petit retour vibrant sur les actions clés", "set.sound": "🔊 Sons de l'interface", "set.soundSub": "Petits sons sur les clics, succès et déblocages",
         "set.presence": "Afficher ma présence", "set.presenceSub": "« En ligne » sur ton avatar", "set.myQr": "🪪 Mon QR", "set.scanQr": "📷 Scanner", "set.newEmail": "Nouvel email",
         "presence.active": "En ligne",
         "chat.translate": "Traduire", "chat.seeProfile": "Voir le profil ›", "tr.loading": "Traduction…", "tr.error": "Traduction indisponible", "tr.from": "Traduit",
@@ -9646,7 +9701,7 @@
         "places.title": "Safe places", "profile.title": "My profile", "safety.title": "Safety", "games.title": "Games & Quests",
         "prof.seg.edit": "My profile", "profile.replay": "🚀 Replay the intro",
         "filter.verified": "Verified", "filter.active": "● Online", "filter.city": "Same city", "filter.affinity": "Affinity 50%+",
-        "set.title": "⚙️ Account settings", "set.lang": "🌍 Language / Langue", "set.haptics": "Vibrations (haptics)", "set.hapticsSub": "A little buzz on key actions",
+        "set.title": "⚙️ Account settings", "set.lang": "🌍 Language / Langue", "set.haptics": "Vibrations (haptics)", "set.hapticsSub": "A little buzz on key actions", "set.sound": "🔊 Interface sounds", "set.soundSub": "Little sounds on taps, wins and unlocks",
         "set.presence": "Show my presence", "set.presenceSub": "“Online” on your avatar", "set.myQr": "🪪 My QR", "set.scanQr": "📷 Scan", "set.newEmail": "New email",
         "presence.active": "Online",
         "chat.translate": "Translate", "chat.seeProfile": "See profile ›", "tr.loading": "Translating…", "tr.error": "Translation unavailable", "tr.from": "Translated",
