@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=180"></script>
-  <script src="sunmates-icons.js?v=180"></script>
+  <script src="sunmates-badges.js?v=181"></script>
+  <script src="sunmates-icons.js?v=181"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -385,7 +385,8 @@
 
     /* ---- Confettis (déblocage de badge) ---- */
     .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: var(--z-confetti); overflow: hidden; }
-    .confetti-wrap i { position: absolute; top: -20px; border-radius: 2px; opacity: .95; animation: confettiFall linear forwards; }
+    .confetti-wrap i { position: absolute; top: -24px; border-radius: 2px; opacity: .95; animation: confettiFall linear forwards; filter: drop-shadow(0 2px 2px rgba(214,96,74,.25)); }
+    .confetti-wrap i svg { width: 100%; height: 100%; display: block; }
     @keyframes confettiFall { to { transform: translateY(108vh) rotate(600deg); opacity: .85; } }
 
     /* ====================================================================
@@ -8153,19 +8154,27 @@
 
     // ---- Confettis (déblocage de badge, moment de fête 🎉) ----
     function celebrate() {
-      const colors = ["#FF5A4D", "#FFC93C", "#7a5cff", "#19b36b", "#ffd15c", "#FF8A3D"];
+      // Confettis "maison" : soleils, cœurs et étoiles dans la DA coucher de soleil (clin d'œil).
+      if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const shapes = [
+        '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#ffd15c"/><g stroke="#FF8A3D" stroke-width="2" stroke-linecap="round"><path d="M12 1v3M12 20v3M1 12h3M20 12h3M4 4l2 2M18 18l2 2M20 4l-2 2M6 18l-2 2"/></g></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M12 21C5 16 3 12 3 8.5 3 5.4 5.4 3 8.5 3c1.7 0 3.2.8 3.5 2 .3-1.2 1.8-2 3.5-2C18.6 3 21 5.4 21 8.5c0 3.5-2 7.5-9 12.5z" fill="#FF5A4D"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .7-5.2 4.7 1.5 6.9L12 17.8 5.7 20.8l1.5-6.9L2 9.2l7-.7z" fill="#FF8A3D"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .7-5.2 4.7 1.5 6.9L12 17.8 5.7 20.8l1.5-6.9L2 9.2l7-.7z" fill="#7a5cff"/></svg>'
+      ];
       const wrap = document.createElement("div");
       wrap.className = "confetti-wrap";
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < 70; i++) {
         const c = document.createElement("i");
-        const size = 6 + Math.random() * 9;
-        c.style.cssText = "left:" + (Math.random() * 100) + "%;width:" + size + "px;height:" + (size * 0.6) +
-          "px;background:" + colors[i % colors.length] + ";animation-duration:" + (1.6 + Math.random() * 1.5) +
-          "s;animation-delay:" + (Math.random() * 0.3) + "s;transform:rotate(" + (Math.random() * 360) + "deg)";
+        const size = 12 + Math.random() * 12;
+        c.style.cssText = "left:" + (Math.random() * 100) + "%;width:" + size + "px;height:" + size +
+          "px;background:none;border-radius:0;animation-duration:" + (1.9 + Math.random() * 1.6) +
+          "s;animation-delay:" + (Math.random() * 0.4) + "s";
+        c.innerHTML = shapes[i % shapes.length];
         wrap.appendChild(c);
       }
       document.body.appendChild(wrap);
-      setTimeout(() => wrap.remove(), 3600);
+      setTimeout(() => wrap.remove(), 4400);
     }
 
     // ---- Flash de succès (halo chaud, DA SunMates) sur l'élément qui vient de réussir ----
