@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=235"></script>
-  <script src="sunmates-icons.js?v=235"></script>
+  <script src="sunmates-badges.js?v=236"></script>
+  <script src="sunmates-icons.js?v=236"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -281,7 +281,26 @@
     .coloc-btn { margin-top: .6rem; width: 100%; background: var(--accent-grad); color: #fff; border: 0; border-radius: 10px; padding: .5rem; font-weight: 800; font-size: .82rem; cursor: pointer; }
 
     /* ---- Fil d'actualité (posts) : cartes à bandeau coloré ---- */
-    .fpost { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .7rem; box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease; cursor: pointer; }
+    /* Composer du fil communautaire */
+    .feed-composer { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .7rem .8rem; margin-bottom: .8rem; box-shadow: var(--shadow-sm); }
+    .feed-composer .fc-row { display: flex; gap: .6rem; align-items: flex-start; }
+    .feed-composer .fc-av { font-size: 1.6rem; flex-shrink: 0; line-height: 1.4; }
+    .feed-composer textarea { flex: 1; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .3rem 0; min-height: 1.6rem; }
+    .feed-composer textarea:focus { outline: none; }
+    .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
+    .feed-composer .fc-kinds { display: flex; gap: .3rem; }
+    .fc-kind { font-size: .74rem; font-weight: 700; padding: .3rem .6rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--text); cursor: pointer; }
+    .fc-kind.active { background: var(--accent-grad); color: #fff; border-color: transparent; }
+    .fc-send { padding: .45rem 1rem; font-size: .85rem; }
+    body.theme-dusk .fc-kind { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
+    /* Post : barre d'actions (like / supprimer) */
+    .fpost-body { margin-top: .55rem; font-size: .92rem; color: var(--ink); line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
+    .fpost-actions { display: flex; align-items: center; gap: 1rem; margin-top: .55rem; }
+    .fpost-like { display: inline-flex; align-items: center; gap: .3rem; background: none; border: 0; cursor: pointer; font-weight: 700; font-size: .82rem; color: var(--muted); }
+    .fpost-like.liked { color: var(--accent); }
+    .fpost-del { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--muted); font-size: .9rem; }
+    .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: .4rem; }
+    .fpost { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .7rem; box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease; }
     .fpost:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
     .fpost-top { display: flex; align-items: center; gap: .6rem; }
     .fpost-who { flex: 1; display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
@@ -2895,11 +2914,26 @@
         </section>
 
         <div class="section-head">
-          <h3 style="margin-top:.4rem">Ton fil ✨</h3>
+          <h3 style="margin-top:.4rem">Le fil ✨</h3>
           <div style="display:flex;gap:1rem;align-items:center">
             <a id="feedRefresh" style="cursor:pointer">↻</a>
             <a id="feedToggle" style="cursor:pointer">Masquer</a>
           </div>
+        </div>
+        <!-- Composer : publier sur le fil communautaire -->
+        <div class="feed-composer" id="feedComposer">
+          <div class="fc-row">
+            <span class="fc-av" id="feedComposerAv">🙂</span>
+            <textarea id="feedInput" rows="1" maxlength="280" placeholder="Quoi de neuf ? Partage un spot, une aventure…"></textarea>
+          </div>
+          <div class="fc-bottom">
+            <div class="fc-kinds">
+              <button class="fc-kind active" data-fkind="post" type="button">✨ Humeur</button>
+              <button class="fc-kind" data-fkind="spot" type="button">📍 Spot</button>
+            </div>
+            <button class="btn-primary fc-send" id="feedPostBtn" type="button">Publier</button>
+          </div>
+          <div class="msg" id="feedComposerMsg" style="text-align:center"></div>
         </div>
         <div id="homeFeed"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div></div>
 
@@ -5224,7 +5258,7 @@
         ["🗺️", "Carte tout-en-un", "Lieux, Mates, activités, check-ins ; chips colorés filtrants."],
         ["⛶", "Plein écran carte", "Outils Tout voir / Autour de moi / Partager, resync Leaflet."],
         ["➕", "Partager une activité", "Place une activité sur la carte d'un tap."],
-        ["✨", "Ton fil", "Feed d'activité récente."],
+        ["✨", "Le fil (feed communautaire)", "Vrai feed type Insta : publie (humeur/spot), like les posts, quêtes accomplies postées auto. Comptes bannis exclus."],
         ["⚡", "Accès rapides (8 tuiles)", "Tuiles éclatantes : Mates, Sécurité, Lieux, Jeux & Quêtes, Classement, Coupons, Boutique, Profil."],
         ["🏠", "Bascule Voyage / Maison", "L'accueil s'adapte : carte de rencontre en Voyage, hub solo à la Maison."],
         ["🎯", "Filtre quêtes « à faire »", "Sur la carte : n'affiche que les quêtes pas encore accomplies."],
@@ -6882,6 +6916,8 @@
         if (m) { m.style.color = res.ok ? "var(--ok)" : "var(--danger)"; m.textContent = res.message || (res.ok ? "Accompli ✅" : "Échec."); }
         if (res.ok) {
           track("quest_completed", { key: qkey });
+          // Auto-post sur le fil communautaire (partage l'accomplissement)
+          try { const q0 = questByKey(qkey); if (q0 && myUserId) db.from("feed_posts").insert({ user_id: myUserId, kind: "quest", body: "J'ai accompli la quête « " + (q0.title || "") + " » 🎯", city: (q0.city || "").split(",")[0].trim() || null }); } catch (e) {}
           await Promise.all([loadGameData(), loadProfile()]);
           const q = questByKey(qkey); if (q) openDetail(q);
           if (typeof celebrate === "function") celebrate();
@@ -9133,47 +9169,60 @@
     $("notifPanel").addEventListener("click", (e) => { if (e.target.id === "notifPanel") closeNotif(); });
 
     // ---- Fil d'actualité : vrais "posts" (quêtes accomplies récemment) ----
+    let _feedKind = "post";
     async function buildHomeFeed() {
       const feed = $("homeFeed"); if (!feed) return;
+      // Avatar du composer
+      { const av = $("feedComposerAv"); if (av) { if (myProfile && myProfile.avatar_url) { av.textContent = ""; av.style.cssText = "width:36px;height:36px;border-radius:50%;background-size:cover;background-position:center;display:inline-block;flex-shrink:0;background-image:url('" + myProfile.avatar_url + "')"; } else { av.textContent = (myProfile && myProfile.username) ? myProfile.username[0].toUpperCase() : "🙂"; } } }
       skelFirst("homeFeed", skelRows(3));
-      const { data: badges } = await db.from("user_badges")
-        .select("user_id,badge_key,name,emoji,earned_at").order("earned_at", { ascending: false }).limit(40);
-      // On ne garde que les temps forts des 3 derniers jours
-      const cutoff = Date.now() - 3 * 24 * 3600 * 1000;
-      const posts = (badges || [])
-        .filter((b) => b.earned_at && new Date(b.earned_at).getTime() >= cutoff)
-        .slice(0, 8)
-        .map((b) => {
-          const p = travelerMap[b.user_id] || {};
-          const isMe = b.user_id === myUserId;
-          return {
-            uid: b.user_id, isMe, avatar: p.avatar_url, key: b.badge_key,
-            name: isMe ? "Toi" : (p.username || "Un voyageur"),
-            emoji: b.emoji || "🏅",
-            title: isMe ? "as débloqué un badge" : "a débloqué un badge",
-            badgeName: b.name || "Nouveau badge",
-            time: timeAgo(b.earned_at),
-          };
-        });
-      if (!posts.length) {
-        feed.innerHTML = '<div class="fpost-empty"><span class="fe-emoji">🌅</span><div class="fe-title">Rien de neuf ces 3 derniers jours</div><div class="fe-sub">Accomplis une quête dans l\'onglet Jeux pour animer le fil 🎉</div></div>';
+      let rows = [];
+      try { const { data } = await db.rpc("feed_list", { p_limit: 40 }); rows = data || []; } catch (e) {}
+      if (!rows.length) {
+        feed.innerHTML = '<div class="fpost-empty"><span class="fe-emoji">🌅</span><div class="fe-title">Le fil est calme…</div><div class="fe-sub">Sois le premier à publier quelque chose ✨</div></div>';
         return;
       }
-      feed.innerHTML = posts.map((po, i) => `<div class="fpost" data-pf="${i}">
-          <div class="fpost-top">${avatarMarkup(po.name, po.avatar)}
-            <div class="fpost-who"><b>${escapeHtml(po.name)}</b><span>${escapeHtml(po.title)}</span></div>
-            <span class="fpost-time">${po.time}</span></div>
-          <div class="fpost-badge grad-${i % 4}">
-            <span class="fpost-emoji">${renderBadge(po.key, "feed", { emoji: po.emoji })}</span>
-            <div class="fpost-txt"><b>Badge débloqué</b><span>${escapeHtml(po.badgeName)}</span></div>
-            <span class="fpost-spark">✨</span></div>
-        </div>`).join("");
-      feed.querySelectorAll("[data-pf]").forEach((el) => el.addEventListener("click", () => {
-        const po = posts[Number(el.dataset.pf)];
-        if (!po.isMe && travelerMap[po.uid]) { goToTab("connexions"); openTravelerProfile(travelerMap[po.uid]); }
-        else { goToTab("jeux"); showJeuxView("jeuxBadges"); }
+      const kindTag = { spot: "📍 Spot", quest: "🎯 Quête", post: "" };
+      feed.innerHTML = rows.map((r) => {
+        const isMe = r.user_id === myUserId;
+        const name = isMe ? "Toi" : (r.username || "Voyageur");
+        return `<div class="fpost" data-fp="${r.id}" data-fuid="${r.user_id}">
+          <div class="fpost-top">${avatarMarkup(r.username, r.avatar_url)}
+            <div class="fpost-who"><b>${escapeHtml(name)}${r.is_verified ? ' <span class="vchip" title="Vérifié">✓</span>' : ""}</b><span>${escapeHtml(r.city || "")}${kindTag[r.kind] ? '<span class="fpost-kindtag">' + kindTag[r.kind] + "</span>" : ""}</span></div>
+            <span class="fpost-time">${timeAgo(r.created_at)}</span></div>
+          <div class="fpost-body">${escapeHtml(r.body || "")}</div>
+          <div class="fpost-actions">
+            <button class="fpost-like${r.liked ? " liked" : ""}" data-like="${r.id}">${r.liked ? "❤️" : "🤍"} <span>${r.likes || 0}</span></button>
+            ${isMe ? '<button class="fpost-del" data-del="' + r.id + '" title="Supprimer">🗑️</button>' : ""}
+          </div></div>`;
+      }).join("");
+      feed.querySelectorAll("[data-like]").forEach((el) => el.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        try { const { data } = await db.rpc("toggle_feed_like", { p_post: Number(el.dataset.like) }); if (data && data.ok) { el.classList.toggle("liked", data.liked); el.innerHTML = (data.liked ? "❤️" : "🤍") + " <span>" + data.likes + "</span>"; if (window.SMSound) SMSound.play("tap"); } } catch (er) {}
+      }));
+      feed.querySelectorAll("[data-del]").forEach((el) => el.addEventListener("click", async (e) => {
+        e.stopPropagation(); if (!confirm("Supprimer ce post ?")) return;
+        try { await db.from("feed_posts").delete().eq("id", Number(el.dataset.del)); buildHomeFeed(); } catch (er) {}
+      }));
+      feed.querySelectorAll(".fpost").forEach((el) => el.addEventListener("click", (e) => {
+        if (e.target.closest("button")) return;
+        const uid = el.dataset.fuid; if (uid && uid !== myUserId && travelerMap[uid]) { goToTab("connexions"); openTravelerProfile(travelerMap[uid]); }
       }));
     }
+    // Composer : publier sur le fil
+    { const pb = $("feedPostBtn"); if (pb) pb.addEventListener("click", async () => {
+        const ta = $("feedInput"); const body = ((ta && ta.value) || "").trim(); const msg = $("feedComposerMsg");
+        if (!body) { if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "Écris quelque chose ✏️"; } return; }
+        if (!myUserId) return;
+        pb.disabled = true;
+        const city = (myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : null;
+        const { error } = await db.from("feed_posts").insert({ user_id: myUserId, kind: _feedKind, body: body.slice(0, 280), city });
+        pb.disabled = false;
+        if (error) { if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "Erreur, réessaie."; } return; }
+        ta.value = ""; if (msg) msg.textContent = ""; if (window.SMSound) SMSound.play("success");
+        try { if (typeof track === "function") track("feed_post", { kind: _feedKind }); } catch (e) {}
+        buildHomeFeed();
+      }); }
+    document.querySelectorAll(".fc-kind").forEach((b) => b.addEventListener("click", () => { _feedKind = b.dataset.fkind; document.querySelectorAll(".fc-kind").forEach((x) => x.classList.toggle("active", x === b)); }));
     $("feedRefresh").addEventListener("click", () => { buildHomeFeed(); });
 
     /* ================= HOME v2 — Hub de jeu « Paris » ================= */
