@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=242"></script>
-  <script src="sunmates-icons.js?v=242"></script>
+  <script src="sunmates-badges.js?v=243"></script>
+  <script src="sunmates-icons.js?v=243"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1776,6 +1776,10 @@
     .hm-inspo-ttl { font-size: .72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
     .hm-inspo-city { font-weight: 800; font-size: 1.15rem; }
     .hm-inspo-desc { font-size: .84rem; color: var(--muted); margin-top: .4rem; line-height: 1.4; }
+    .hm-inspo-tip { font-size: .78rem; color: var(--ink); margin-top: .45rem; padding: .4rem .6rem; border-radius: 10px; background: rgba(255,201,60,.14); font-weight: 600; }
+    body.theme-dusk .hm-inspo-tip { background: rgba(255,201,60,.12); color: #f3e9f3; }
+    .prep-cat { font-size: .72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; margin: .7rem 0 .3rem; }
+    .prep-cat:first-of-type { margin-top: .3rem; }
     .solo-annex { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin: -.4rem 0 1rem; }
     .sa-tile { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .6rem .3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-size: .68rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-sm); text-align: center; }
     .sa-tile .sa-ic { font-size: 1.4rem; filter: var(--relief); }
@@ -4491,30 +4495,31 @@
     }
     // Inspiration du jour : une destination rotative à ajouter à ses envies (1 tap).
     const HM_INSPO = [
-      ["🇵🇹", "Lisbonne", "tramways jaunes, fado et couchers de soleil sur le Tage"],
-      ["🇯🇵", "Kyoto", "temples zen, ruelles de geishas et érables flamboyants"],
-      ["🇲🇦", "Marrakech", "souks colorés, riads et désert à perte de vue"],
-      ["🇮🇸", "Reykjavík", "aurores boréales, sources chaudes et volcans"],
-      ["🇲🇽", "Mexico", "street food, fresques et énergie débordante"],
-      ["🇬🇷", "Santorin", "maisons blanches, mer Égée et soleil doré"],
-      ["🇻🇳", "Hanoï", "scooters, pho fumant et baie d'Halong"],
-      ["🇵🇪", "Cusco", "Andes, ruines incas et chemin du Machu Picchu"],
-      ["🇮🇹", "Rome", "ruines antiques, pasta et dolce vita"],
-      ["🇹🇭", "Chiang Mai", "temples dorés, marchés de nuit et nature luxuriante"],
-      ["🇪🇸", "Barcelone", "Gaudí, tapas et plages urbaines"],
-      ["🇳🇴", "Tromsø", "fjords, aurores et nuits polaires"],
-      ["🇨🇴", "Carthagène", "façades colorées, salsa et Caraïbes"],
-      ["🇦🇺", "Sydney", "opéra, surf et road trips côtiers"],
-      ["🇹🇷", "Istanbul", "entre deux continents, bazars et bosphore"],
+      ["🇵🇹", "Lisbonne", "tramways jaunes, fado et couchers de soleil sur le Tage", "🗓️ Mars–oct · 💶 abordable · 🛟 très sûre en solo"],
+      ["🇯🇵", "Kyoto", "temples zen, ruelles de geishas et érables flamboyants", "🗓️ Avril (sakura) & nov · 💶 moyen · 🛟 ultra sûre"],
+      ["🇲🇦", "Marrakech", "souks colorés, riads et désert à perte de vue", "🗓️ Oct–avril · 💶 économique · 🛟 ok, reste en médina"],
+      ["🇮🇸", "Reykjavík", "aurores boréales, sources chaudes et volcans", "🗓️ Sept–mars (aurores) · 💶 cher · 🛟 très sûre"],
+      ["🇲🇽", "Mexico", "street food, fresques et énergie débordante", "🗓️ Nov–avril · 💶 abordable · 🛟 prudence le soir"],
+      ["🇬🇷", "Santorin", "maisons blanches, mer Égée et soleil doré", "🗓️ Mai–sept · 💶 moyen+ · 🛟 très sûre"],
+      ["🇻🇳", "Hanoï", "scooters, pho fumant et baie d'Halong", "🗓️ Oct–avril · 💶 très éco · 🛟 sûre, gare au trafic"],
+      ["🇵🇪", "Cusco", "Andes, ruines incas et chemin du Machu Picchu", "🗓️ Mai–sept · 💶 éco · 🛟 ok, attention altitude"],
+      ["🇮🇹", "Rome", "ruines antiques, pasta et dolce vita", "🗓️ Avril–juin & sept–oct · 💶 moyen · 🛟 sûre"],
+      ["🇹🇭", "Chiang Mai", "temples dorés, marchés de nuit et nature luxuriante", "🗓️ Nov–févr · 💶 très éco · 🛟 top pour le solo"],
+      ["🇪🇸", "Barcelone", "Gaudí, tapas et plages urbaines", "🗓️ Mai–juin & sept · 💶 moyen · 🛟 sûre, gare aux pickpockets"],
+      ["🇳🇴", "Tromsø", "fjords, aurores et nuits polaires", "🗓️ Sept–mars (aurores) · 💶 cher · 🛟 très sûre"],
+      ["🇨🇴", "Carthagène", "façades colorées, salsa et Caraïbes", "🗓️ Déc–avril · 💶 abordable · 🛟 reste dans la vieille ville"],
+      ["🇦🇺", "Sydney", "opéra, surf et road trips côtiers", "🗓️ Oct–avril · 💶 cher · 🛟 très sûre"],
+      ["🇹🇷", "Istanbul", "entre deux continents, bazars et bosphore", "🗓️ Avril–juin & sept–oct · 💶 abordable · 🛟 sûre, marchande"],
     ];
     function renderInspo() {
       const box = $("hmInspo"); if (!box) return;
       const day = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-      const [flag, city, desc] = HM_INSPO[day % HM_INSPO.length];
+      const [flag, city, desc, tip] = HM_INSPO[day % HM_INSPO.length];
       const inWish = (typeof loadWishlist === "function" ? loadWishlist() : []).some((x) => x.toLowerCase() === (flag + " " + city).toLowerCase() || x.toLowerCase() === city.toLowerCase());
       box.innerHTML = `<div class="hm-inspo-top"><span class="hm-inspo-flag">${flag}</span>
           <div style="flex:1;min-width:0"><div class="hm-inspo-ttl">Inspiration du jour</div><div class="hm-inspo-city">${escapeHtml(city)}</div></div></div>
         <div class="hm-inspo-desc">${escapeHtml(desc)}</div>
+        ${tip ? `<div class="hm-inspo-tip">${escapeHtml(tip)}</div>` : ""}
         <button class="btn-accent btn-block hm-inspo-btn" id="hmInspoAdd" style="margin-top:.6rem" ${inWish ? "disabled" : ""}>${inWish ? "✓ Déjà dans tes envies" : "🌠 Ajouter à mes envies"}</button>`;
       const b = $("hmInspoAdd"); if (b && !inWish) b.addEventListener("click", () => {
         const a = (typeof loadWishlist === "function") ? loadWishlist() : [];
@@ -4595,12 +4600,21 @@
     }
     // Préparatifs de voyage : checklist sécurité/pratique liée au voyage planifié (locale)
     const TRIP_PREP = [
-      { t: "Partager mon itinéraire à un proche" },
-      { t: "Ajouter mes contacts d'urgence (ICE)", go: "ice" },
-      { t: "Noter le numéro d'urgence local", go: "numbers" },
-      { t: "Copie numérique de mon passeport" },
-      { t: "Vérifier que mon profil est à jour", go: "profil" },
-      { t: "Télécharger une carte hors-ligne" },
+      { cat: "🛟 Sécurité", t: "Partager mon itinéraire à un proche" },
+      { cat: "🛟 Sécurité", t: "Ajouter mes contacts d'urgence (ICE)", go: "ice" },
+      { cat: "🛟 Sécurité", t: "Noter le numéro d'urgence local", go: "numbers" },
+      { cat: "🛟 Sécurité", t: "Souscrire une assurance voyage" },
+      { cat: "📄 Documents", t: "Passeport / CNI valides (6 mois)" },
+      { cat: "📄 Documents", t: "Copie numérique de mes papiers" },
+      { cat: "📄 Documents", t: "Vérifier visa / autorisation (ESTA…)" },
+      { cat: "📄 Documents", t: "Photocopie carte bancaire + numéro d'opposition" },
+      { cat: "🎒 Pratique", t: "Télécharger une carte hors-ligne" },
+      { cat: "🎒 Pratique", t: "eSIM / forfait à l'étranger" },
+      { cat: "🎒 Pratique", t: "Adaptateur de prise + batterie externe" },
+      { cat: "🎒 Pratique", t: "Un peu de cash en monnaie locale" },
+      { cat: "💊 Santé", t: "Trousse de secours + médicaments" },
+      { cat: "💊 Santé", t: "Vérifier vaccins recommandés" },
+      { cat: "✨ SunMates", t: "Vérifier que mon profil est à jour", go: "profil" },
     ];
     function loadPrep() { try { return JSON.parse(localStorage.getItem("sm_trip_prep") || "[]") || []; } catch (e) { return []; } }
     function savePrep(a) { try { localStorage.setItem("sm_trip_prep", JSON.stringify(a)); } catch (e) {} }
@@ -4611,8 +4625,13 @@
       show(box, true);
       const done = loadPrep();
       const n = TRIP_PREP.filter((_, i) => done.includes(i)).length;
+      let lastCat = "";
       box.innerHTML = `<div class="wg-head"><span>🎒 Préparatifs · ${escapeHtml(trip.dest)}</span><span class="wg-count">${n}/${TRIP_PREP.length}</span></div>
-        ${TRIP_PREP.map((it, i) => { const ck = done.includes(i); return `<div class="prep-item${ck ? " done" : ""}" data-prep="${i}">
+        ${TRIP_PREP.map((it, i) => {
+          const ck = done.includes(i);
+          const head = (it.cat && it.cat !== lastCat) ? `<div class="prep-cat">${escapeHtml(it.cat)}</div>` : "";
+          lastCat = it.cat || lastCat;
+          return head + `<div class="prep-item${ck ? " done" : ""}" data-prep="${i}">
           <div class="prep-box">${ck ? "✅" : "⬜"}</div>
           <div class="prep-label">${escapeHtml(it.t)}</div>
           ${it.go ? `<button class="prep-go" data-prepgo="${it.go}" aria-label="Y aller">›</button>` : ""}
