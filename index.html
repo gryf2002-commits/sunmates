@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=213"></script>
-  <script src="sunmates-icons.js?v=213"></script>
+  <script src="sunmates-badges.js?v=214"></script>
+  <script src="sunmates-icons.js?v=214"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1447,7 +1447,9 @@
     .ph-xp-track { height: 8px; }
     .ph-xp-fill { box-shadow: none; } /* on coupe le néon doré */
     .ph-xp-fill::after { display: none; } /* on coupe le reflet brillant qui balaie la barre */
-    .ph-xp-next { display: none; } /* on retire le détail "plus que X XP" pour alléger */
+    /* La vignette vit maintenant dans l'onglet Jeux : on RÉAFFICHE "prochain niveau" (plus d'accueil à alléger) */
+    .ph-xp-next { display: flex; }
+    .ph-xp-val .xp-info { background: none; border: 0; color: rgba(255,255,255,.85); cursor: pointer; font-size: .85rem; padding: 0 .1rem; vertical-align: middle; }
     /* Tuiles d'accès rapide ÉCLATANTES : couleurs pleines + relief dimensionnel (le peps demandé) */
     .tab-panel[data-panel="accueil"] .tile .thumb {
       filter: drop-shadow(0 4px 6px rgba(90,25,10,.34)) saturate(1.12) brightness(1.03);
@@ -1896,6 +1898,8 @@
     .mseg button.active { background: var(--accent-grad); color: #fff; }
     .mseg .segb { position: absolute; top: 2px; right: 5px; background: var(--accent); color: #fff; font-size: .56rem; min-width: 15px; height: 15px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
     .mseg button.active .segb { background: #fff; color: var(--accent); }
+    /* Nav admin : emoji + libellé → chips qui s'adaptent au texte et passent à la ligne proprement */
+    .aseg-nav button { flex: 0 1 auto; padding: .5rem .7rem; white-space: nowrap; }
     .mates-stat { display: flex; width: fit-content; align-items: center; gap: .5rem; margin: .3rem auto .8rem; background: var(--accent-soft); border: 1px solid rgba(255,90,77,.22); border-radius: 999px; padding: .4rem .95rem; cursor: pointer; transition: transform .1s; }
     .mates-stat:active { transform: scale(.97); }
     .mates-stat b { font-size: 1.35rem; color: var(--accent); line-height: 1; }
@@ -2661,35 +2665,8 @@
         <!-- Héros joueur : l'identité, toujours en haut dans les deux modes -->
         <!-- (Vignette de niveau "player-hero" déplacée dans l'onglet Jeux — mieux intégrée là-bas) -->
 
-        <!-- Jeu solo (quête du jour + missions) : repositionné par setHomeMode
-             (en Maison = en haut, self-sufficient solo ; en Voyage = sous la carte) -->
-        <div id="soloHub">
-        <section class="quest-spotlight" id="questSpotlight" aria-label="Quête du jour">
-          <div class="qs-aura" aria-hidden="true"></div>
-          <div class="qs-head"><span class="qs-pill">⚡ Quête du jour</span><span class="qs-timer" id="qsTimer"></span></div>
-          <div class="qs-body">
-            <div class="qs-emblem" id="qsEmblem">🗼</div>
-            <div class="qs-txt"><h3 class="qs-title" id="qsTitle">—</h3><p class="qs-desc" id="qsDesc">—</p></div>
-          </div>
-          <div class="qs-reward"><span class="qs-xp"><b id="qsXp">+0</b> XP</span><span class="qs-dot">·</span><span class="qs-badge-hint">🏅 vise <b id="qsBadge">un badge</b></span></div>
-          <div class="qs-mode" role="group" aria-label="Jouer en solo ou à plusieurs">
-            <button class="qs-mode-btn active" data-qsmode="solo" id="qsModeSolo">🧭 Solo</button>
-            <button class="qs-mode-btn" data-qsmode="group" id="qsModeGroup">👥 En groupe <i>+bonus</i></button>
-          </div>
-          <button class="qs-play" id="qsPlayBtn">▶ Jouer cette quête</button>
-        </section>
-
-        <section class="qm-strip" aria-label="Missions rapides">
-          <div class="qm-head"><h3>Missions rapides ⚡</h3><a class="qm-all" data-goto="jeux">Tout voir ›</a></div>
-          <div class="qm-rail" id="qmRail">
-            <button class="qm-card qm-coral" data-mission="talk"><span class="qm-ic">🗣️</span><span class="qm-name">Parler à un·e inconnu·e</span><span class="qm-xp">+30 XP</span></button>
-            <button class="qm-card qm-teal" data-mission="coffee"><span class="qm-ic">☕</span><span class="qm-name">Café avec un Mate</span><span class="qm-xp">+40 XP</span></button>
-            <button class="qm-card qm-gold" data-mission="photo"><span class="qm-ic">📸</span><span class="qm-name">Photo d'un monument</span><span class="qm-xp">+50 XP</span></button>
-            <button class="qm-card qm-violet" data-mission="quartier"><span class="qm-ic">🧭</span><span class="qm-name">Explorer un quartier</span><span class="qm-xp">+60 XP</span></button>
-            <button class="qm-card qm-coral" data-mission="group" id="qmGroupCard"><span class="qm-ic">👥</span><span class="qm-name">Sortie de groupe</span><span class="qm-xp">+80 XP</span></button>
-          </div>
-        </section>
-        </div><!-- /#soloHub -->
+        <!-- (Quête du jour + missions rapides RETIRÉES de l'accueil : elles vivent dans l'onglet Jeux.
+             L'accueil = rencontre/carte d'abord. Le solo "à la maison" a ses propres défis/rituels plus bas.) -->
 
         <!-- ============ MODE MAISON (quand on n'est pas en voyage) ============ -->
         <div id="homeHomeMode" class="hidden">
@@ -2706,19 +2683,13 @@
               <h3 class="sp-title">Ta progression solo</h3>
               <button class="sp-streak" id="spStreak" title="Ta série de jours d'affilée"><span class="sp-fire">🔥</span><b id="spStreakN">1</b></button>
             </div>
+            <!-- (Le NIVEAU et la barre d'XP vivent dans la vignette de l'onglet Jeux → ici, métriques SOLO uniquement, pas de doublon) -->
             <div class="sp-stats">
-              <div class="sp-stat"><b id="spLevel">1</b><span>Niveau</span></div>
-              <div class="sp-stat"><b id="spXp">0</b><span>XP</span></div>
               <div class="sp-stat"><b id="spDone">0</b><span>Défis relevés</span></div>
+              <div class="sp-stat"><b id="spRit">0/3</b><span>Rituels du jour</span></div>
+              <div class="sp-stat"><b id="spXp">0</b><span>XP gagné</span></div>
             </div>
-            <div class="sp-next">
-              <div class="sp-next-bdg" id="spNextBdg" aria-hidden="true">🏅</div>
-              <div class="sp-next-txt">
-                <div class="sp-next-lbl">Prochain niveau</div>
-                <div class="sp-next-name" id="spNextName">Continue tes défis solo</div>
-                <div class="sp-bar"><span id="spBarFill" style="width:0%"></span></div>
-              </div>
-            </div>
+            <p class="muted" style="margin:.2rem 0 0;font-size:.8rem">Ta ville, comme une voyageuse 🧭 — relève des défis et grimpe au <b>Niveau</b> dans l'onglet Jeux.</p>
           </section>
 
           <section class="solo-ch" id="soloChallenges" aria-label="Défis solo de ta ville">
@@ -3402,14 +3373,14 @@
         </div><!-- /prof-seg premium -->
 
         <div class="prof-seg hidden" data-psegpanel="admin">
-          <div class="mseg" style="flex-wrap:wrap">
-            <button data-aseg="demo" class="active">🎤</button>
-            <button data-aseg="dash">📊</button>
-            <button data-aseg="users">👥</button>
-            <button data-aseg="places">📍</button>
-            <button data-aseg="reports">🚩</button>
-            <button data-aseg="quotes">💼</button>
-            <button data-aseg="sounds">🔊</button>
+          <div class="mseg aseg-nav" style="flex-wrap:wrap">
+            <button data-aseg="demo" class="active">🎤 Démo</button>
+            <button data-aseg="dash">📊 Bord</button>
+            <button data-aseg="users">👥 Membres</button>
+            <button data-aseg="places">📍 Lieux</button>
+            <button data-aseg="reports">🚩 Signal.</button>
+            <button data-aseg="quotes">💼 Devis</button>
+            <button data-aseg="sounds">🔊 Sons</button>
           </div>
 
           <div class="aseg" data-asegpanel="demo">
@@ -3566,7 +3537,7 @@
               <button class="ph-streak" id="phStreak" title="Ta série de jours d'affilée"><span class="ph-streak-fire">🔥</span><b id="phStreakN">1</b></button>
             </div>
             <div class="ph-xp">
-              <div class="ph-xp-head"><span class="ph-xp-lbl" id="phXpLbl">Niveau 1</span><span class="ph-xp-val"><b id="phXpCur">0</b> / <span id="phXpMax">100</span> XP</span></div>
+              <div class="ph-xp-head"><span class="ph-xp-lbl" id="phXpLbl">Niveau 1</span><span class="ph-xp-val"><b id="phXpCur">0</b> / <span id="phXpMax">100</span> XP <button class="xp-info" id="xpInfoBtn" title="Comment marche l'XP ?">ⓘ</button></span></div>
               <div class="ph-xp-track"><div class="ph-xp-fill" id="phXpFill" style="width:0%"></div></div>
               <div class="ph-xp-next"><span class="ph-next-ic">🚀</span><span class="ph-next-txt" id="phXpNext">Accomplis une quête pour gagner ton premier niveau</span></div>
             </div>
@@ -4258,28 +4229,8 @@
         if (typeof renderSoloHome === "function") renderSoloHome();
         renderInspo(); renderNextTrip(); renderTripPrep(); renderWishlist(); renderTripsDone(); renderVisitors(); renderHost();
       } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
-      // Repositionne le jeu solo selon le mode :
-      //  • Maison → juste sous le héros (l'app se suffit à elle-même en SOLO)
-      //  • Voyage → sous la carte (on garde la rencontre/carte amicale en avant)
-      { const hub = $("soloHub"), tmap = $("homeTravelMap"), sr = $("searchResults");
-        // (La vignette de niveau a été déplacée dans l'onglet Jeux ; ici on ne repositionne que le jeu solo.)
-        // Voyage : la CARTE en PREMIER PLAN → le jeu solo descend SOUS la carte.
-        // Maison : le jeu solo remonte en haut (l'app solo se suffit à elle-même).
-        if (home) {
-          if (sr && hub) sr.insertAdjacentElement("afterend", hub);
-        } else if (tmap && hub) {
-          tmap.appendChild(hub);
-        }
-        // Maison (ou pas prêt à rencontrer) = SOLO uniquement ; le groupe est réservé au Voyage
-        const grp = $("qsModeGroup"), grpCard = $("qmGroupCard");
-        if (grp) grp.style.display = home ? "none" : "";
-        if (grpCard) grpCard.style.display = home ? "none" : "";
-        if (home) { _qsMode = "solo"; const so = $("qsModeSolo"); if (so) so.classList.add("active"); if (grp) grp.classList.remove("active"); }
-        // Sobriété : en Voyage on allège (focus carte/rencontre) → on masque les missions rapides
-        // (le jeu solo vit surtout en mode Maison) ; en Maison on les montre.
-        const qms = hub ? hub.querySelector(".qm-strip") : null; if (qms) qms.style.display = home ? "" : "none";
-        if (typeof renderQuestSpotlight === "function") renderQuestSpotlight();
-      }
+      // (Le hub quête/missions a été retiré de l'accueil → plus rien à repositionner ici.
+      //  Le solo "à la maison" est rendu par renderSoloHome ; les quêtes vivent dans l'onglet Jeux.)
     }
     // Inspiration du jour : une destination rotative à ajouter à ses envies (1 tap).
     const HM_INSPO = [
@@ -5062,7 +5013,8 @@
         ["⛶", "Plein écran carte", "Outils Tout voir / Autour de moi / Partager, resync Leaflet."],
         ["➕", "Partager une activité", "Place une activité sur la carte d'un tap."],
         ["✨", "Ton fil", "Feed d'activité récente."],
-        ["⚡", "Accès rapides", "Tuiles vers Mates, Sécurité, Lieux, Profil, Jeux."],
+        ["⚡", "Accès rapides (6 tuiles)", "Tuiles éclatantes : Mates, Sécurité, Lieux, Jeux & Quêtes, Classement, Profil."],
+        ["🏠", "Bascule Voyage / Maison", "L'accueil s'adapte : carte de rencontre en Voyage, hub solo à la Maison."],
       ]],
       ["📍 Lieux sûrs", [
         ["☕", "Catalogue de lieux", "Cartes photo : éco, check-ins, note, top noté."],
@@ -5072,15 +5024,28 @@
         ["☀️", "Spot du jour", "Statut éphémère 24 h façon story."],
       ]],
       ["🎮 Jeux, XP & classement", [
+        ["🪪", "Vignette de niveau", "Carte joueur en haut de l'onglet : avatar, niveau, barre d'XP, série (streak)."],
+        ["⚡", "Quête du jour", "Quête vedette en rotation (solo ou groupe +bonus)."],
+        ["🗼", "Quêtes géolocalisées Paris", "Points de quête réels dans Paris (Tour Eiffel, Marais, canal…)."],
         ["🎯", "Quêtes du jour", "Ouvertes en feuille (anti-scroll), 3/jour + cooldown."],
         ["👥", "Quêtes de groupe", "Confirmées par un Mate → bonus XP partagé."],
         ["🎲", "Défis entre Mates", "Propose une quête à un Mate."],
-        ["⭐", "XP (monnaie de jeu)", "Gagnée via les quêtes, séparée du score de confiance."],
+        ["⭐", "XP (monnaie de jeu)", "Gagnée via les quêtes, séparée du score de confiance. Anti-triche serveur."],
+        ["📅", "Objectifs de la semaine", "Mini-objectifs hebdo pour garder le rythme."],
         ["🏆", "Classement multi-onglets", "XP / Check-ins / Confiance / Badges, opt-in si privé."],
         ["🎟️", "Coupons partenaires", "Récompenses débloquées par les quêtes."],
+        ["🛍️", "Boutique cosmétiques", "Titres & cadres d'avatar achetés avec l'XP."],
+      ]],
+      ["🏠 Mode Maison (solo)", [
+        ["🧭", "Défis solo de ta ville", "Redécouvre ton coin comme une voyageuse (10 défis, mélangeables)."],
+        ["☀️", "Rituels du jour", "3 petits rituels quotidiens (sortir, capturer, rêver une destination)."],
+        ["📈", "Progression solo", "Niveau, XP et défis relevés, série en cours."],
+        ["💡", "Inspiration du jour", "Une destination rotative à ajouter à tes envies en 1 tap."],
+        ["🧳", "Préparer mon voyage", "Prochain voyage, check-list, mes envies, voyages passés (replié)."],
+        ["👋", "De passage chez toi", "Voyageurs qui explorent ta ville ; devenir hôte/ambassadeur."],
       ]],
       ["🏅 Badges", [
-        ["🏅", "Catalogue de badges", "Formes & couleurs variées (collection)."],
+        ["🏅", "Catalogue de badges", "Médaillons ronds à emoji, couleurs variées (DA), grisés tant que verrouillés."],
         ["❓", "Badges secrets", "Cachés au public (teaser), conditions visibles par l'admin."],
         ["⭐", "Badges-jalons auto", "Premier check-in, vérifié, 5 quêtes, polyglotte, profil 100 %…"],
         ["📌", "Épinglage profil", "Choisis 3 badges à afficher sur ton profil."],
@@ -5128,7 +5093,7 @@
     // Mappe une zone du catalogue vers l'onglet correspondant (pour la démo « ▶ Voir »).
     function zoneTab(zone) {
       const z = zone.toLowerCase();
-      if (z.includes("accueil") || z.includes("carte")) return "accueil";
+      if (z.includes("accueil") || z.includes("carte") || z.includes("maison")) return "accueil";
       if (z.includes("lieux")) return "lieux";
       if (z.includes("jeux") || z.includes("badge")) return "jeux";
       if (z.includes("mates")) return "connexions";
@@ -6229,10 +6194,9 @@
             if (typeof celebrate === "function") celebrate();
           } else if (lvl < seen) { localStorage.setItem("sm_last_level", String(lvl)); }
         } catch (e) {}
-        xpb.classList.add("xpl-card");
-        xpb.innerHTML = `<div class="xpl-top"><span class="xpl-lvl">⭐ Niveau ${lvl}</span><span class="xpl-xp">${xp} XP</span><button class="xp-info" id="xpInfoBtn" title="Comment ça marche ?">ⓘ</button></div>
-          <div class="xpl-bar"><span style="width:${inLvl}%"></span></div>
-          <div class="xpl-next">Plus que <b>${100 - inLvl} XP</b> avant le niveau ${lvl + 1} 🚀</div>`;
+        // Le visuel niveau/XP est porté par la vignette player-hero (anti-doublon) → on masque ce bandeau,
+        // on garde seulement la célébration de level-up ci-dessus + le câblage du bouton ⓘ de la vignette.
+        xpb.style.display = "none"; xpb.innerHTML = "";
         const xi = $("xpInfoBtn"); if (xi) xi.onclick = () => showInfo("⭐ L'XP & les niveaux", `<div style="line-height:1.6;font-size:.9rem">
           <p style="margin:.2rem 0">Tu gagnes de l'<b>XP</b> en accomplissant des <b>quêtes</b> (3 par jour max). Chaque <b>100 XP</b> = un <b>niveau</b> en plus 🆙</p>
           <p style="margin:.2rem 0">Les <b>quêtes de groupe</b> (confirmées par un Mate) rapportent un <b>bonus</b> ✨</p>
@@ -8871,11 +8835,13 @@
     }
     function renderSoloProgress() {
       if (!$("soloProgress")) return;
-      const xp = (myProfile && myProfile.xp) || 0, lvl = Math.floor(xp / 100) + 1, inLvl = xp % 100;
+      const xp = (myProfile && myProfile.xp) || 0;
       let total = 0; try { total = parseInt(localStorage.getItem("sm_solo_total_" + (myUserId || "x")) || "0", 10) || 0; } catch (e) {}
-      $("spLevel").textContent = lvl; $("spXp").textContent = xp; $("spDone").textContent = total;
-      $("spBarFill").style.width = inLvl + "%";
-      $("spNextName").textContent = xp === 0 ? "Relève ton premier défi solo !" : ("Plus que " + (100 - inLvl) + " XP pour le niveau " + (lvl + 1));
+      // Métriques SOLO uniquement (le niveau/barre d'XP sont portés par la vignette de Jeux → anti-doublon)
+      const ritDone = Object.keys((_soloState().rit) || {}).length;
+      const sd = $("spDone"); if (sd) sd.textContent = total;
+      const sr = $("spRit"); if (sr) sr.textContent = ritDone + "/" + SOLO_RITUALS.length;
+      const sx = $("spXp"); if (sx) sx.textContent = xp;
       try { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("spStreakN").textContent = st.count || 1; } catch (e) {}
     }
     function renderSoloChallenges() {
