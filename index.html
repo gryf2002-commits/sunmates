@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=250"></script>
-  <script src="sunmates-icons.js?v=250"></script>
+  <script src="sunmates-badges.js?v=251"></script>
+  <script src="sunmates-icons.js?v=251"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1461,6 +1461,14 @@
     .tp-hero .dh-name { font-size: 1.6rem; }
     /* Stats de la fiche profil : chiffre en accent */
     #matesProfile .dstat b { color: var(--accent); font-size: 1.15rem; font-weight: 800; }
+    /* Fiche Mate : photo en PORTRAIT (plus haute) + actions en rangée compacte */
+    .tp-hero { height: 280px; }
+    .tp-actions2 { display: flex; gap: .5rem; margin-top: .7rem; }
+    .tpa-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .7rem .3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-size: .78rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-sm); }
+    .tpa-btn .tpa-ic { font-size: 1.4rem; }
+    .tpa-btn:active { transform: scale(.96); }
+    .tpa-btn.tpa-danger { color: var(--danger); }
+    body.theme-dusk .tpa-btn { background: #241b35; color: #f3e9f3; border-color: rgba(255,255,255,.08); }
 
     /* --------------------------- CHAT ------------------------------- */
     .chat-header { display: flex; align-items: center; gap: .5rem; padding: .2rem 0 1rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; flex-shrink: 0; }
@@ -3180,8 +3188,13 @@
             <button class="btn-accent" id="tpConnectBtn">🤝 Se connecter</button>
           </div>
           <div class="msg" id="tpMsg" style="text-align:center;margin:.5rem 0 1rem"></div>
+          <!-- « Pourquoi vous matchez » : pop juste sous la photo/compatibilité -->
+          <div class="card" id="tpCompatCard" style="display:none;cursor:pointer;padding:.85rem 1rem">
+            <div class="section-head" style="margin:0"><h3 style="margin:0;font-size:.95rem">❤️ Pourquoi vous matchez · <b id="tpCompatPct" style="color:var(--accent)">—%</b></h3><span class="qarrow">›</span></div>
+          </div>
+          <div id="tpCompatBreak" style="display:none"></div>
           <div class="card">
-            <div class="section-head" style="margin-bottom:.4rem"><h3 style="margin:0">À propos</h3><span class="badge no" id="tpVerif">Non vérifié</span></div>
+            <div class="section-head" style="margin-bottom:.4rem"><h3 style="margin:0">À propos</h3><span id="tpVerif"></span></div>
             <p class="muted" id="tpBio" style="line-height:1.5">—</p>
             <div class="hashtags" id="tpTags"></div>
           </div>
@@ -3195,10 +3208,6 @@
             </div>
             <div class="msg" id="tpVouchMsg" style="text-align:center;margin-top:.4rem"></div>
           </div>
-          <div class="card" id="tpCompatCard" style="display:none;cursor:pointer;padding:.85rem 1rem">
-            <div class="section-head" style="margin:0"><h3 style="margin:0;font-size:.95rem">❤️ Pourquoi vous matchez · <b id="tpCompatPct" style="color:var(--accent)">—%</b></h3><span class="qarrow">›</span></div>
-          </div>
-          <div id="tpCompatBreak" style="display:none"></div>
           <div class="card" id="tpInfoCard">
             <h3 style="margin-top:0">Infos</h3>
             <div class="pgrid" id="tpGrid"></div>
@@ -3208,13 +3217,12 @@
             <h3 style="margin-top:0">🏅 Badges</h3>
             <div class="bgrid" id="tpBadges"></div>
           </div>
-          <!-- Actions secondaires (moins fréquentes) -->
-          <button class="act-tile act-challenge" id="tpChallengeBtn" style="margin-top:.7rem">
-            <span class="ic">🎯</span><span class="lbl">Proposer un défi</span><span class="arr">›</span></button>
-          <button class="act-tile act-bff" id="tpBffBtn" style="margin-top:.5rem;display:none">
-            <span class="ic">⭐</span><span class="lbl">Définir comme BFF du moment</span><span class="arr">›</span></button>
-          <button class="act-tile act-block" id="tpBlockBtn" style="margin-top:.5rem">
-            <span class="ic">🚫</span><span class="lbl">Bloquer ce voyageur</span><span class="arr">›</span></button>
+          <!-- Actions secondaires : rangée compacte (au lieu d'un listing vertical) -->
+          <div class="tp-actions2">
+            <button class="tpa-btn" id="tpChallengeBtn"><span class="tpa-ic">🎯</span><span>Défi</span></button>
+            <button class="tpa-btn" id="tpBffBtn" style="display:none"><span class="tpa-ic">⭐</span><span>BFF</span></button>
+            <button class="tpa-btn tpa-danger" id="tpBlockBtn"><span class="tpa-ic">🚫</span><span>Bloquer</span></button>
+          </div>
         </div>
 
         <!-- Vue chat -->
