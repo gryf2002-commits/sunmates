@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=216"></script>
-  <script src="sunmates-icons.js?v=216"></script>
+  <script src="sunmates-badges.js?v=217"></script>
+  <script src="sunmates-icons.js?v=217"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1490,7 +1490,8 @@
     .sv-brand { font-weight: 800; letter-spacing: .04em; font-size: .95rem; opacity: .95; }
     .sv-avatar { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,.25); display: grid; place-items: center; font-size: 30px; font-weight: 800; margin: .9rem auto .5rem; border: 3px solid rgba(255,255,255,.7); background-size: cover; background-position: center; }
     .sv-name { font-size: 1.35rem; font-weight: 800; font-family: "Fraunces", serif; }
-    .sv-tag { font-size: .82rem; opacity: .9; margin-top: .1rem; }
+    .sv-level { display: inline-block; margin-top: .35rem; font-size: .78rem; font-weight: 800; background: rgba(255,255,255,.22); padding: .2rem .6rem; border-radius: 999px; }
+    .sv-tag { font-size: .82rem; opacity: .9; margin-top: .35rem; }
     .sv-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin: 1.1rem 0 .6rem; }
     .sv-stat { background: rgba(255,255,255,.16); border-radius: 14px; padding: .6rem .3rem; backdrop-filter: blur(4px); }
     .sv-stat .sv-n { font-size: 1.1rem; font-weight: 800; white-space: nowrap; }
@@ -2410,6 +2411,7 @@
         <div class="sv-brand">☀️ SunMates</div>
         <div class="sv-avatar" id="svAvatar">😎</div>
         <div class="sv-name" id="svName">—</div>
+        <div class="sv-level" id="svLevel"></div>
         <div class="sv-tag">Mon parcours de voyageur·se</div>
         <div class="sv-stats" id="svStats"></div>
         <div class="sv-badges" id="svBadges"></div>
@@ -6074,6 +6076,8 @@
       if (myProfile && myProfile.avatar_url) { av.style.backgroundImage = `url('${myProfile.avatar_url}')`; av.textContent = ""; av.classList.add("has-img"); }
       else { av.style.backgroundImage = ""; av.textContent = (uname[0] || "😎").toUpperCase(); av.classList.remove("has-img"); }
       $("svName").textContent = uname;
+      const _lvl = Math.floor(((myProfile && myProfile.xp) || 0) / 100) + 1;
+      { const sl = $("svLevel"); if (sl) sl.textContent = "⭐ Niveau " + _lvl + (typeof _hubTitle === "function" ? " · " + _hubTitle(_lvl) : ""); }
       const svRows = [["📍", "near", s.ck, "check-ins"], ["🎯", "quest", s.q, "quêtes"], ["🏅", "medal", s.b, "badges"], ["⭐", "rating", s.xp, "XP"]];
       if (s.trips > 0) svRows.push(["🧳", "trip", s.trips, s.trips > 1 ? "voyages" : "voyage"]);
       $("svStats").innerHTML = svRows.map(([e, name, n, l]) => { const ic = (window.SMIcon && SMIcon.has(name)) ? `<span class="sv-ico smgem">${SMIcon(name, { size: 14 })}</span>` : (e + " "); return `<div class="sv-stat"><div class="sv-n">${ic}${n}</div><div class="sv-l">${l}</div></div>`; }).join("");
@@ -6083,7 +6087,8 @@
     function shareParcours() {
       const s = parcoursStats();
       const name = (myProfile && myProfile.username) || "Moi";
-      const text = `🧭 Mon parcours SunMates, ${name}\n📍 ${s.ck} check-ins · 🎯 ${s.q} quêtes · 🏅 ${s.b} badges · ⭐ ${s.xp} XP${s.trips > 0 ? ` · 🧳 ${s.trips} voyage${s.trips > 1 ? "s" : ""}` : ""}\nRejoins-moi sur SunMates ☀️`;
+      const lvl = Math.floor(s.xp / 100) + 1;
+      const text = `🧭 Mon parcours SunMates, ${name} — ⭐ Niveau ${lvl}\n📍 ${s.ck} check-ins · 🎯 ${s.q} quêtes · 🏅 ${s.b} badges · ⭐ ${s.xp} XP${s.trips > 0 ? ` · 🧳 ${s.trips} voyage${s.trips > 1 ? "s" : ""}` : ""}\nRejoins-moi sur SunMates ☀️`;
       if (navigator.share) { navigator.share({ title: "Mon parcours SunMates", text }).catch(() => {}); }
       else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast("📋", "Parcours copié, colle-le où tu veux !"), () => {}); }
       else toast("🧭", text);
