@@ -81,14 +81,14 @@
       '<circle cx="64" cy="64" r="40" fill="url(#ex-leather)"/>'+grain+
       '<circle cx="64" cy="64" r="40" fill="none" stroke="url(#ex-brass)" stroke-width="3.5"/>'+
       '<circle cx="64" cy="64" r="33" fill="none" stroke="#FFE7AE" stroke-width="1.3" stroke-dasharray="2 4" opacity=".8"/>'+
-      emb(key,1.0)+'<circle cx="64" cy="64" r="40" fill="url(#sm-light)"/>'+
+      emb(key,1.12)+'<circle cx="64" cy="64" r="40" fill="url(#sm-light)"/>'+
       '</g>';
   }
   function frSocial(key, lite){
     var petals = loop(12, function(a){ var p=pt(64,40,a); return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="11" fill="url(#so-petal)" stroke="#FFE7AE" stroke-width="1.3"/>'; });
     return '<g'+drop(lite)+'>'+petals+
       '<circle cx="64" cy="64" r="40" fill="url(#so-enamel)"/><circle cx="64" cy="64" r="40" fill="none" stroke="#FFE7AE" stroke-width="2.4"/>'+
-      emb(key,1.0)+'<circle cx="64" cy="64" r="40" fill="url(#sm-light)"/>'+
+      emb(key,1.12)+'<circle cx="64" cy="64" r="40" fill="url(#sm-light)"/>'+
       '</g>';
   }
   function frSecurite(key, lite){
@@ -106,9 +106,8 @@
     var laurelL = loop(5, function(a,i){ var yy=44-i*15; return '<ellipse cx="26" cy="'+yy+'" rx="6" ry="3.2" fill="#C9831C" transform="rotate(-35 26 '+yy+')"/>'; });
     var laurelR = loop(5, function(a,i){ var yy=44-i*15; return '<ellipse cx="102" cy="'+yy+'" rx="6" ry="3.2" fill="#C9831C" transform="rotate(35 102 '+yy+')"/>'; });
     return '<g'+drop(lite)+'>'+rays+
-      '<path d="M26 88 Q14 60 26 26" fill="none" stroke="#C9831C" stroke-width="3"/><path d="M102 88 Q114 60 102 26" fill="none" stroke="#C9831C" stroke-width="3"/>'+laurelL+laurelR+
-      '<circle cx="64" cy="64" r="40" fill="url(#ac-gold)"/><circle cx="64" cy="64" r="35" fill="url(#ac-core)"/><circle cx="64" cy="64" r="35" fill="none" stroke="#FFE9A0" stroke-width="2"/>'+
-      emb(key,1.0)+'<circle cx="64" cy="64" r="35" fill="url(#sm-light)"/>'+
+      '<circle cx="64" cy="64" r="41" fill="url(#ac-gold)"/><circle cx="64" cy="64" r="36" fill="url(#ac-core)"/><circle cx="64" cy="64" r="36" fill="none" stroke="#FFE9A0" stroke-width="2"/>'+
+      emb(key,1.05)+'<circle cx="64" cy="64" r="36" fill="url(#sm-light)"/>'+
       '</g>';
   }
   function frSecret(key, lite){
@@ -118,7 +117,6 @@
     var anim = lite ? '' : '<animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64" dur="22s" repeatCount="indefinite"/>';
     var haloAnim = lite ? '' : '<animate attributeName="r" values="48;53;48" dur="3.2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;.45;.9" dur="3.2s" repeatCount="indefinite"/>';
     return '<g'+drop(lite)+'>'+
-      '<g opacity=".5"><g>'+rays+anim+'</g></g>'+
       '<circle cx="64" cy="64" r="50" fill="none" stroke="url(#lg-irid)" stroke-width="3">'+haloAnim+'</circle>'+
       '<circle cx="64" cy="64" r="44" fill="url(#lg-galaxy)"/>'+stars+
       '<circle cx="64" cy="64" r="44" fill="none" stroke="url(#lg-irid)" stroke-width="2.4"/><circle cx="64" cy="64" r="40" fill="none" stroke="url(#lg-irid)" stroke-width="1.2" opacity=".7"/>'+arches+
