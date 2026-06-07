@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=245"></script>
-  <script src="sunmates-icons.js?v=245"></script>
+  <script src="sunmates-badges.js?v=246"></script>
+  <script src="sunmates-icons.js?v=246"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -3619,6 +3619,21 @@
               <button class="btn-primary btn-block" id="demoPlay" style="font-size:1.05rem">▶ Démarrer la démo guidée</button>
               <p class="muted" style="font-size:.76rem;margin:.6rem 0 0">Tu peux mettre en pause, avancer ou quitter à tout moment.</p>
             </div>
+
+            <!-- Visites guidées INTERACTIVES : l'utilisateur avance à son rythme, chaque fonction est surlignée -->
+            <div class="card">
+              <h3 style="margin-top:0">🧭 Visites guidées interactives</h3>
+              <p class="muted" style="font-size:.8rem;margin:.1rem 0 .7rem">Pas-à-pas surligné sur l'app (Précédent / Suivant), idéal pour accompagner quelqu'un de A à Z. L'utilisateur avance à son rythme.</p>
+              <button class="btn-primary btn-block" data-tuto="full" style="margin-bottom:.5rem">▶ Visite complète (A → Z)</button>
+              <div class="grid2">
+                <button class="btn-ghost" data-tuto="accueil">🏠 Accueil & fil</button>
+                <button class="btn-ghost" data-tuto="jeux">🎮 Jeux</button>
+                <button class="btn-ghost" data-tuto="connexions">🤝 Mates</button>
+                <button class="btn-ghost" data-tuto="securite">🛡️ Sécurité</button>
+                <button class="btn-ghost" data-tuto="profil">👤 Profil</button>
+              </div>
+            </div>
+
             <div class="section-head"><h3 style="margin:.4rem 0 .2rem">📚 Knowledge base : tout ce que l'app permet</h3></div>
             <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">La liste des scènes de la démo. Touche « ▶ Jouer depuis ici » pour lancer la démo à partir d'une étape précise.</p>
             <div id="demoSteps"></div>
@@ -5451,6 +5466,7 @@
       ]],
       ["🛡️ Admin (back-office)", [
         ["🎬", "Démo guidée auto", "Parcours commenté de A à Z + ce catalogue."],
+        ["🧭", "Visites guidées interactives", "Tutos pas-à-pas surlignés sur l'app (complète A→Z + par onglet) pour accompagner les moins à l'aise."],
         ["📊", "Tableau de bord (KPIs)", "Membres ACTIFS (bannis exclus), suspendus & admins à part, check-ins, quêtes… cellules cliquables → segment."],
         ["👥", "Fiches membre", "Actifs vs suspendus séparés + filtre, recherche, actions (vérifier/bannir/admin), fiche détaillée."],
         ["📍", "Gestion des lieux", "Ajout/édition + codes check-in + géoloc auto."],
@@ -5639,6 +5655,7 @@
     A(() => {
       $("demoPlay").addEventListener("click", startAutoDemo);
       $("adQuit").addEventListener("click", endAutoDemo);
+      document.querySelectorAll("[data-tuto]").forEach((b) => b.addEventListener("click", () => { if (typeof startGuidedTour === "function") startGuidedTour(b.dataset.tuto); }));
       $("adNext").addEventListener("click", () => adPlay(adIdx + 1));
       $("adPrev").addEventListener("click", () => adPlay(Math.max(0, adIdx - 1)));
       $("adPause").addEventListener("click", () => { adPaused = !adPaused; $("adPause").textContent = adPaused ? "▶ Reprendre" : "⏸ Pause"; if (adPaused) clearTimeout(adTimer); else adSchedule(); adWake(); });
@@ -8904,23 +8921,56 @@
       { tab: "profil",     sel: '[data-tab="profil"]',     emoji: "👤", title: "Ton profil",         text: "Ton score de confiance, tes badges et tes réglages. Tu peux revoir ce tuto ici quand tu veux !" },
     ];
     let tourIdx = 0;
+    let _activeTour = TOUR_STEPS;   // étapes de la visite en cours (onboarding OU tuto admin)
+    let _tourOnEnd = null;          // callback de fin (onboarding) ; null pour un tuto
 
     function startTour() {
       const t = $("tour"); if (!t) { finishOnboarding(); return; }
+      _activeTour = TOUR_STEPS; _tourOnEnd = _onboardingTourEnd;
       tourIdx = 0; t.classList.remove("hidden");
       showTourStep(0);
     }
+    // Lance une visite guidée arbitraire (tuto admin) sur l'app, sans toucher l'onboarding.
+    function runGuidedTour(steps, onEnd) {
+      const t = $("tour"); if (!t || !steps || !steps.length) return;
+      _activeTour = steps; _tourOnEnd = onEnd || null;
+      tourIdx = 0; t.classList.remove("hidden");
+      showTourStep(0);
+    }
+    // ===== Visites guidées interactives (tutos admin, pour accompagner A→Z) =====
+    const GUIDED_TOURS = {
+      full: [
+        { tab: "accueil", sel: "#homeModeSwitch", emoji: "🏠", title: "Voyage ou Maison", text: "Bascule entre le mode Voyage (la carte de rencontre) et le mode Maison (ton hub solo, même chez toi)." },
+        { tab: "accueil", sel: "#homeSearch", emoji: "🔎", title: "Rechercher", text: "Trouve un lieu sûr ou un voyageur en tapant ici." },
+        { tab: "accueil", sel: ".homemap-card", emoji: "🗺️", title: "La carte vivante", text: "Les pastilles = lieux, Mates, activités, quêtes. Choisis ta ville en haut, touche une pastille pour agir." },
+        { tab: "accueil", sel: "#feedComposer", emoji: "📰", title: "Le fil", text: "Publie une humeur ou un spot, et like les posts de la communauté." },
+        { tab: "accueil", sel: ".grid2", emoji: "⚡", title: "Accès rapides", text: "Tes raccourcis vers Mates, Sécurité, Lieux, Jeux, Classement, Coupons, Boutique et Profil." },
+        { tab: "jeux", view: "jeuxHome", sel: "#playerHero", emoji: "⭐", title: "Ton niveau", text: "Gagne de l'XP en accomplissant des quêtes. Touche la carte pour voir tes récompenses et le classement." },
+        { tab: "jeux", sel: "#jeuxNav", emoji: "🎯", title: "Quêtes & jeux", text: "Quêtes, jeux, badges, coupons, classement, boutique : tout est ici." },
+        { tab: "connexions", sel: "#inviteFriendsBtn", emoji: "✨", title: "Inviter des amis", text: "Fais venir tes amis : un coupon « 1er verre offert » pour vous deux 🍹" },
+        { tab: "connexions", sel: ".mseg", emoji: "🤝", title: "Tes Mates", text: "Messages, Découvrir de nouveaux voyageurs, et Demandes de connexion." },
+        { tab: "securite", sel: '[data-tab="securite"]', emoji: "🛡️", title: "Sécurité", text: "SOS, faux appel, partage de position au cercle, contacts d'urgence — pour voyager serein·e." },
+        { tab: "profil", sel: "#editProfileBtn", emoji: "👤", title: "Ton profil", text: "Complète-le pour de meilleurs matchs. Mon parcours et ton BFF sont aussi sur cette carte." },
+      ],
+    };
+    function startGuidedTour(key) {
+      const steps = (key === "full") ? GUIDED_TOURS.full : GUIDED_TOURS.full.filter((s) => s.tab === key);
+      if (!steps.length) return;
+      runGuidedTour(steps);
+    }
     function showTourStep(i) {
-      if (i >= TOUR_STEPS.length) { endTour(); return; }
-      tourIdx = i; const st = TOUR_STEPS[i];
-      if (typeof goToTab === "function") goToTab(st.tab);
+      if (i >= _activeTour.length) { endTour(); return; }
+      tourIdx = i; const st = _activeTour[i];
+      if (st.tab && typeof goToTab === "function") goToTab(st.tab);
+      if (st.view && typeof showJeuxView === "function" && /^jeux/.test(st.view)) showJeuxView(st.view);
+      if (st.matesSeg && typeof showMatesSegment === "function") showMatesSegment(st.matesSeg);
       $("tourEmoji").textContent = st.emoji;
       $("tourTitle").textContent = st.title;
       $("tourText").textContent = st.text;
-      $("tourProg").textContent = (i + 1) + " / " + TOUR_STEPS.length;
-      $("tourNext").textContent = i === TOUR_STEPS.length - 1 ? "Terminer 🎉" : "Suivant →";
+      $("tourProg").textContent = (i + 1) + " / " + _activeTour.length;
+      $("tourNext").textContent = i === _activeTour.length - 1 ? "Terminer 🎉" : "Suivant →";
       show($("tourPrev"), i > 0); // « Précédent » caché à la 1re étape
-      setTimeout(() => positionTour(st), 280);
+      setTimeout(() => positionTour(st), 300);
     }
     function positionTour(st) {
       const el = document.querySelector(st.sel), spot = $("tourSpot"), pop = $("tourPop");
@@ -8936,13 +8986,15 @@
     }
     function endTour() {
       const t = $("tour"); if (t) t.classList.add("hidden");
+      const cb = _tourOnEnd; _tourOnEnd = null;
+      if (cb) cb(); // onboarding : enchaîne sur la complétion du profil ; tuto admin : rien
+    }
+    // Fin spécifique à l'onboarding (séparée pour que les tutos admin n'y touchent pas).
+    function _onboardingTourEnd() {
       finishOnboarding();
-      // Onboarding → ACTION : on emmène l'utilisateur compléter son profil (meilleurs
-      // matchs + points de confiance) plutôt que de le laisser sur un écran vide.
       setTimeout(() => {
         goToTab("profil");
         if (typeof showProfileSegment === "function") showProfileSegment("edit");
-        // Au lieu d'un pop-up éphémère : bannière in-page sur le profil (refermable).
         const b = $("onbDoneBanner"); if (b) show(b, true);
       }, 450);
     }
@@ -8958,7 +9010,7 @@
       const nx = $("tourNext"); if (nx) nx.addEventListener("click", () => showTourStep(tourIdx + 1));
       const pv = $("tourPrev"); if (pv) pv.addEventListener("click", () => { if (tourIdx > 0) showTourStep(tourIdx - 1); });
       const sk = $("tourSkip"); if (sk) sk.addEventListener("click", endTour);
-      window.addEventListener("resize", () => { const t = $("tour"); if (t && !t.classList.contains("hidden")) positionTour(TOUR_STEPS[tourIdx]); });
+      window.addEventListener("resize", () => { const t = $("tour"); if (t && !t.classList.contains("hidden")) positionTour(_activeTour[tourIdx]); });
     })();
 
     // Temps relatif (« il y a 5 min »)
