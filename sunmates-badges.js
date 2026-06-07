@@ -82,14 +82,14 @@
       '<circle cx="64" cy="64" r="40" fill="none" stroke="url(#ex-brass)" stroke-width="3.5"/>'+
       '<circle cx="64" cy="64" r="33" fill="none" stroke="#FFE7AE" stroke-width="1.3" stroke-dasharray="2 4" opacity=".8"/>'+
       emb(key,1.0)+'<circle cx="64" cy="64" r="40" fill="url(#sm-light)"/>'+
-      '<use href="#sm-sunseal" transform="translate(64 110) scale(.7)" color="#FFE7AE"/></g>';
+      '</g>';
   }
   function frSocial(key, lite){
     var petals = loop(12, function(a){ var p=pt(64,40,a); return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="11" fill="url(#so-petal)" stroke="#FFE7AE" stroke-width="1.3"/>'; });
     return '<g'+drop(lite)+'>'+petals+
       '<circle cx="64" cy="64" r="40" fill="url(#so-enamel)"/><circle cx="64" cy="64" r="40" fill="none" stroke="#FFE7AE" stroke-width="2.4"/>'+
       emb(key,1.0)+'<circle cx="64" cy="64" r="40" fill="url(#sm-light)"/>'+
-      '<use href="#sm-sunseal" transform="translate(64 112) scale(.7)" color="#FFE7AE"/></g>';
+      '</g>';
   }
   function frSecurite(key, lite){
     var shield='M64 8 L112 22 Q114 70 100 96 Q84 116 64 122 Q44 116 28 96 Q14 70 16 22 Z';
@@ -99,7 +99,7 @@
       '<circle cx="64" cy="60" r="34" fill="url(#se-core)"/><circle cx="64" cy="60" r="34" fill="none" stroke="#eef3f8" stroke-width="2"/>'+
       '<g transform="translate(0 -4)">'+emb(key,.92)+'</g>'+
       '<rect x="30" y="24" width="8" height="8" rx="1.6" fill="#9aa6b4" stroke="#eef3f8" stroke-width="1.2"/><rect x="90" y="24" width="8" height="8" rx="1.6" fill="#9aa6b4" stroke="#eef3f8" stroke-width="1.2"/>'+
-      '<path d="'+shield+'" fill="url(#sm-light)"/><use href="#sm-sunseal" transform="translate(64 104) scale(.66)" color="#ffd15c"/></g>';
+      '<path d="'+shield+'" fill="url(#sm-light)"/></g>';
   }
   function frAccomplissement(key, lite){
     var rays = loop(16, function(a,i){ var p1=pt(64,44,a-7),p2=pt(64,62,a),p3=pt(64,44,a+7); return '<path d="M'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' L'+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+' L'+p3[0].toFixed(1)+' '+p3[1].toFixed(1)+' Z" fill="url(#ac-gold)" opacity="'+(i%2?0.7:1)+'"/>'; });
@@ -109,7 +109,7 @@
       '<path d="M26 88 Q14 60 26 26" fill="none" stroke="#C9831C" stroke-width="3"/><path d="M102 88 Q114 60 102 26" fill="none" stroke="#C9831C" stroke-width="3"/>'+laurelL+laurelR+
       '<circle cx="64" cy="64" r="40" fill="url(#ac-gold)"/><circle cx="64" cy="64" r="35" fill="url(#ac-core)"/><circle cx="64" cy="64" r="35" fill="none" stroke="#FFE9A0" stroke-width="2"/>'+
       emb(key,1.0)+'<circle cx="64" cy="64" r="35" fill="url(#sm-light)"/>'+
-      '<use href="#sm-sunseal" transform="translate(64 96) scale(.62)" color="#ffd15c"/></g>';
+      '</g>';
   }
   function frSecret(key, lite){
     var arches = loop(12, function(a){ var p=pt(64,42,a); return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4" fill="none" stroke="url(#lg-irid)" stroke-width="1.2"/>'; });
@@ -130,7 +130,7 @@
     return '<g'+drop(lite)+'><circle cx="64" cy="64" r="48" fill="none" stroke="url(#lg-irid)" stroke-width="2" opacity=".28">'+halo+'</circle>'+
       '<circle cx="64" cy="64" r="44" fill="#15122e"/><circle cx="64" cy="64" r="44" fill="none" stroke="url(#lg-irid)" stroke-width="2" opacity=".35"/>'+
       '<text x="64" y="80" text-anchor="middle" font-size="44" font-weight="800" fill="url(#lg-irid)" opacity=".55">?</text>'+
-      '<use href="#sm-sunseal" transform="translate(64 64) scale(.5)" color="#7a5cff" opacity=".6"/></g>';
+      '</g>';
   }
 
   var FRAMES = { exploration:frExploration, social:frSocial, securite:frSecurite, accomplissement:frAccomplissement, secret:frSecret };
