@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=240"></script>
-  <script src="sunmates-icons.js?v=240"></script>
+  <script src="sunmates-badges.js?v=241"></script>
+  <script src="sunmates-icons.js?v=241"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -3363,7 +3363,7 @@
           <div class="person" style="border:0;padding:0">
             <div class="avatar" id="profileAvatar">😎</div>
             <div class="info">
-              <div class="name"><span id="profileName">Voyageur</span> <span id="verifBadge" class="badge no">Non vérifié</span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
+              <div class="name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
               <div class="profile-title" id="profileTitle"></div>
               <div class="meta" id="profileCity"></div>
             </div>
@@ -3379,24 +3379,23 @@
             <div class="completion-txt" id="completionTxt">Profil complété à 0%</div>
           </div>
           <div class="prof-badges" id="profileBadges" style="display:none"></div>
+          <!-- Mon parcours : intégré à la 1ʳᵉ carte -->
+          <div class="parcours-card" id="parcoursCard" style="display:flex;align-items:center;gap:.6rem;margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--line)">
+            <div style="flex:1;min-width:0"><b>🧭 Mon parcours</b> <span id="parcoursToday" class="muted" style="font-size:.82rem"></span></div>
+            <button class="btn-accent" id="shareParcoursBtn" style="padding:.4rem .8rem;font-size:.8rem;white-space:nowrap;flex-shrink:0">📤 Partager</button>
+          </div>
+          <!-- BFF : intégré à la 1ʳᵉ carte -->
+          <div id="bffCard" style="display:none;margin-top:.6rem"></div>
+          <button class="btn-primary btn-block" id="editProfileBtn" style="margin-top:.8rem">✏️ Modifier mon profil</button>
         </div>
 
-        <!-- Mon parcours : bandeau fin (le détail complet est dans la carte souvenir au partage) -->
-        <div class="card parcours-card" id="parcoursCard" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem">
-          <div style="flex:1;min-width:0"><b>🧭 Mon parcours</b> <span id="parcoursToday" class="muted" style="font-size:.82rem"></span></div>
-          <button class="btn-accent" id="shareParcoursBtn" style="padding:.4rem .8rem;font-size:.8rem;white-space:nowrap;flex-shrink:0">📤 Partager</button>
-        </div>
-
-
-        <div class="card" id="bffCard" style="display:none"></div>
-
-        <div class="mseg">
-          <button data-pseg="edit" class="active" data-i18n="prof.seg.edit">Mon profil</button>
+        <div class="mseg" style="flex-wrap:wrap">
           <button data-pseg="premium">Premium ✨</button>
           <button data-pseg="admin" id="adminSegBtn" style="display:none">Admin 🛡️</button>
         </div>
 
-        <div class="prof-seg" data-psegpanel="edit">
+        <div class="prof-seg hidden" data-psegpanel="edit">
+          <button class="backbtn" id="editProfileClose" style="margin-bottom:.6rem">‹ Fermer l'édition</button>
         <div class="card">
           <div class="section-head" style="align-items:center"><h3 style="margin-top:0">Modifier mon profil</h3><button id="previewProfileBtn" class="btn-accent" style="padding:.45rem .8rem;font-size:.8rem;white-space:nowrap">🪪 Aperçu</button></div>
           <p class="muted" style="font-size:.82rem;margin-top:0">Touche une section pour la déplier. Pense à <strong>Enregistrer</strong> en bas.</p>
@@ -8889,7 +8888,10 @@
     $("trustModal").addEventListener("click", (e) => { if (e.target.id === "trustModal") $("trustModal").classList.add("hidden"); });
     // « X Mates » → pop-up de mes connexions
     const matesStatBtn = $("matesStatBtn"); if (matesStatBtn) matesStatBtn.addEventListener("click", () => $("matesListModal").classList.remove("hidden"));
-    { const cb = $("completionBox"); if (cb) cb.addEventListener("click", () => { if (typeof showProfileSegment === "function") showProfileSegment("edit"); const ep = document.querySelector('[data-psegpanel="edit"]'); if (ep) setTimeout(() => ep.scrollIntoView({ behavior: "smooth", block: "start" }), 60); }); }
+    function openProfileEdit() { if (typeof showProfileSegment === "function") showProfileSegment("edit"); const ep = document.querySelector('[data-psegpanel="edit"]'); if (ep) setTimeout(() => ep.scrollIntoView({ behavior: "smooth", block: "start" }), 60); }
+    { const cb = $("completionBox"); if (cb) cb.addEventListener("click", openProfileEdit); }
+    { const eb = $("editProfileBtn"); if (eb) eb.addEventListener("click", openProfileEdit); }
+    { const ec = $("editProfileClose"); if (ec) ec.addEventListener("click", () => { document.querySelectorAll("[data-psegpanel]").forEach((p) => show(p, false)); document.querySelectorAll("[data-pseg]").forEach((b) => b.classList.remove("active")); window.scrollTo({ top: 0, behavior: "smooth" }); }); }
     $("matesListClose").addEventListener("click", () => $("matesListModal").classList.add("hidden"));
     $("matesListModal").addEventListener("click", (e) => { if (e.target.id === "matesListModal") $("matesListModal").classList.add("hidden"); });
     $("premiumBtn").addEventListener("click", () => { const m = $("premiumMsg"); m.textContent = "Génial ! On te préviendra dès le lancement de Gold 🎉"; });
