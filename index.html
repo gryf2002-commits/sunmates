@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=297"></script>
-  <script src="sunmates-icons.js?v=297"></script>
+  <script src="sunmates-badges.js?v=298"></script>
+  <script src="sunmates-icons.js?v=298"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -6383,15 +6383,37 @@
         } catch (e) {}
       })();
 
-      // Stockage live (asynchrone, ne bloque pas l'affichage)
+      // Stockage live (asynchrone, ne bloque pas l'affichage) — avec capacité RESTANTE estimée.
       _liveStorage().then((s) => {
         const box = $("adminStorageLive"); if (!box) return;
+        const CAP = 1073741824; // 1 Go (free tier)
         const tot = s.avatars.size + s.voicenotes.size;
-        box.innerHTML = `<div class="pgrid">
-          <div class="pcell"><div class="k">avatars</div><div class="v" style="font-size:1rem">${_fmtBytes(s.avatars.size)}</div><div class="k" style="margin-top:.1rem">${s.avatars.n} fichiers</div></div>
-          <div class="pcell"><div class="k">voicenotes</div><div class="v" style="font-size:1rem">${_fmtBytes(s.voicenotes.size)}</div><div class="k" style="margin-top:.1rem">${s.voicenotes.n} fichiers</div></div>
-          <div class="pcell"><div class="k">Total mesuré</div><div class="v" style="font-size:1rem">${_fmtBytes(tot)}</div><div class="k" style="margin-top:.1rem">/ 1 Go (${(tot / 1073741824 * 100).toFixed(2)} %)</div></div>
-        </div>`;
+        const free = Math.max(0, CAP - tot);
+        const pct = Math.min(100, tot / CAP * 100);
+        // Taille moyenne réelle si on a des fichiers, sinon estimation prudente
+        // (photo recadrée 720px ≈ 130 Ko, note vocale 30s Opus ≈ 250 Ko).
+        const avgPhoto = s.avatars.n ? (s.avatars.size / s.avatars.n) : 130 * 1024;
+        const avgVoice = s.voicenotes.n ? (s.voicenotes.size / s.voicenotes.n) : 250 * 1024;
+        const photosLeft = Math.floor(free / Math.max(1, avgPhoto));
+        const voiceLeft = Math.floor(free / Math.max(1, avgVoice));
+        const barColor = pct < 70 ? "var(--accent-grad)" : (pct < 90 ? "linear-gradient(90deg,#f0a93a,#ff6f3d)" : "linear-gradient(90deg,#ff6f3d,#e23b3b)");
+        box.innerHTML = `
+          <div style="margin:.2rem 0 .5rem">
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--ink)"><span>${_fmtBytes(tot)} utilisés</span><span class="muted">/ 1 Go · ${pct.toFixed(1)} %</span></div>
+            <div style="height:10px;border-radius:999px;background:var(--cream);overflow:hidden;margin-top:.3rem;border:1px solid var(--line)"><div style="height:100%;width:${Math.max(2, pct).toFixed(1)}%;background:${barColor};border-radius:999px"></div></div>
+            <div class="muted" style="font-size:.74rem;margin-top:.25rem">${_fmtBytes(free)} libres</div>
+          </div>
+          <div class="set-grouptitle" style="margin-top:.5rem">Capacité restante (estimée)</div>
+          <div class="pgrid">
+            <div class="pcell"><div class="k">📸 Photos</div><div class="v" style="font-size:1.1rem">~${photosLeft.toLocaleString("fr-FR")}</div><div class="k" style="margin-top:.1rem">encore possibles</div></div>
+            <div class="pcell"><div class="k">🎤 Vocaux</div><div class="v" style="font-size:1.1rem">~${voiceLeft.toLocaleString("fr-FR")}</div><div class="k" style="margin-top:.1rem">encore possibles</div></div>
+          </div>
+          <p class="muted" style="font-size:.7rem;margin:.35rem 0 .6rem">⚠️ Les deux puisent dans le <b>même</b> 1 Go (c'est « soit ~${photosLeft.toLocaleString("fr-FR")} photos, soit ~${voiceLeft.toLocaleString("fr-FR")} vocaux », pas les deux à la fois). Moyenne : ${_fmtBytes(avgPhoto)}/photo · ${_fmtBytes(avgVoice)}/vocal.</p>
+          <div class="set-grouptitle" style="margin-top:.2rem">Détail par bucket</div>
+          <div class="pgrid">
+            <div class="pcell"><div class="k">avatars</div><div class="v" style="font-size:1rem">${_fmtBytes(s.avatars.size)}</div><div class="k" style="margin-top:.1rem">${s.avatars.n} fichiers</div></div>
+            <div class="pcell"><div class="k">voicenotes</div><div class="v" style="font-size:1rem">${_fmtBytes(s.voicenotes.size)}</div><div class="k" style="margin-top:.1rem">${s.voicenotes.n} fichiers</div></div>
+          </div>`;
       }).catch(() => { const box = $("adminStorageLive"); if (box) box.innerHTML = '<p class="muted" style="font-size:.8rem">Mesure indisponible (droits storage).</p>'; });
     }
 
