@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=295"></script>
-  <script src="sunmates-icons.js?v=295"></script>
+  <script src="sunmates-badges.js?v=296"></script>
+  <script src="sunmates-icons.js?v=296"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -2299,7 +2299,17 @@
     .bubble.them .msg-quest { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     /* Heure cachée par défaut (la journée est déjà affichée plus haut) → révélée en touchant le message */
     .bubble-time { display: none; font-size: .66rem; opacity: .6; margin-top: .25rem; text-align: right; }
-    .bubble.show-time .bubble-time { display: block; }
+    .bubble.show-time .bubble-time, .chat-body.times-on .bubble-time { display: block; }
+    /* Cœur de réaction sur un message (double-tap) */
+    .bubble { position: relative; }
+    .bubble-heart { position: absolute; bottom: -9px; right: 8px; font-size: .82rem; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 0 .28rem; line-height: 1.5; box-shadow: 0 1px 4px rgba(0,0,0,.15); z-index: 3; display: inline-flex; align-items: center; gap: .1rem; }
+    .bubble.them .bubble-heart { right: auto; left: 8px; }
+    .bubble-heart b { font-size: .68rem; color: var(--muted); font-weight: 700; }
+    @keyframes heartPop { 0% { transform: scale(0); } 60% { transform: scale(1.3); } 100% { transform: scale(1); } }
+    .bubble-heart.pop { animation: heartPop .35s; }
+    /* Indice de swipe pour révéler l'heure */
+    .chat-body.times-on { /* léger décalage façon Insta */ }
+    .chat-body.times-on .bubble { transition: transform .15s; }
     .bubble.them .bubble-time { text-align: left; }
     .bubble-act { display: flex; gap: .3rem; margin-top: .3rem; justify-content: flex-end; opacity: .85; }
     .bubble-act button { background: rgba(255,255,255,.25); border: 0; border-radius: 999px; padding: 0; width: 22px; height: 22px; cursor: pointer; line-height: 1; display: grid; place-items: center; color: #fff; opacity: .8; }
@@ -8308,6 +8318,65 @@
       if (bub && !e.target.closest("button")) bub.classList.toggle("show-time");
     });
 
+    // ===== Item 12 — Liker un message (double-tap ❤️) + swipe pour voir l'heure (façon Insta) =====
+    const _msgReact = {}; // id → { mine: bool, count: int }
+    function _reactKey(mid) { return "sm_react_" + mid; }
+    function renderHeart(mid, pop) {
+      const bub = document.querySelector('.bubble[data-mid="' + mid + '"]'); if (!bub) return;
+      const r = _msgReact[mid] || { mine: false, count: 0 };
+      let h = bub.querySelector(".bubble-heart");
+      if (!r.count) { if (h) h.remove(); return; }
+      if (!h) { h = document.createElement("span"); h.className = "bubble-heart"; bub.appendChild(h); }
+      h.innerHTML = "❤️" + (r.count > 1 ? "<b>" + r.count + "</b>" : "");
+      if (pop) { h.classList.remove("pop"); void h.offsetWidth; h.classList.add("pop"); }
+    }
+    async function loadReactions(ids) {
+      ids = (ids || []).map(Number).filter(Boolean); if (!ids.length) return;
+      // Repli local d'abord (marche même sans la table) :
+      ids.forEach((id) => { try { const v = localStorage.getItem(_reactKey(id)); if (v === "1") _msgReact[id] = { mine: true, count: Math.max(1, (_msgReact[id] || {}).count || 0) }; } catch (e) {} });
+      try {
+        const { data, error } = await db.from("message_reactions").select("message_id,user_id").in("message_id", ids);
+        if (!error && data) { // la table existe → source de vérité partagée
+          const agg = {}; data.forEach((r) => { const m = r.message_id; (agg[m] = agg[m] || { mine: false, count: 0 }); agg[m].count++; if (r.user_id === myUserId) agg[m].mine = true; });
+          ids.forEach((id) => { _msgReact[id] = agg[id] || { mine: false, count: 0 }; });
+        }
+      } catch (e) {}
+      ids.forEach((id) => renderHeart(id));
+    }
+    async function toggleReaction(mid) {
+      mid = Number(mid); if (!mid) return;
+      const cur = _msgReact[mid] || { mine: false, count: 0 };
+      const willLike = !cur.mine;
+      _msgReact[mid] = { mine: willLike, count: Math.max(0, cur.count + (willLike ? 1 : -1)) };
+      renderHeart(mid, willLike);
+      if (window.SMSound) SMSound.play(willLike ? "pop" : "tap");
+      try { localStorage.setItem(_reactKey(mid), willLike ? "1" : "0"); } catch (e) {}
+      try {
+        if (willLike) await db.from("message_reactions").upsert({ message_id: mid, user_id: myUserId, emoji: "❤️" }, { onConflict: "message_id,user_id" });
+        else await db.from("message_reactions").delete().eq("message_id", mid).eq("user_id", myUserId);
+      } catch (e) {} // best-effort (table absente → reste local)
+    }
+    // Double-tap / double-clic sur une bulle = like.
+    { const cb = $("chatBody");
+      cb.addEventListener("dblclick", (e) => { const b = e.target.closest(".bubble"); if (b && b.dataset.mid && !e.target.closest("button")) { e.preventDefault(); toggleReaction(b.dataset.mid); } });
+      // Double-tap tactile (deux touches rapprochées au même endroit).
+      let _lastTap = 0, _lastEl = null;
+      cb.addEventListener("touchend", (e) => {
+        const b = e.target.closest(".bubble"); if (!b || !b.dataset.mid || e.target.closest("button")) return;
+        const now = (e.timeStamp || 0);
+        if (_lastEl === b && (now - _lastTap) < 320) { e.preventDefault(); toggleReaction(b.dataset.mid); _lastTap = 0; _lastEl = null; }
+        else { _lastTap = now; _lastEl = b; }
+      }, { passive: false });
+      // Swipe horizontal sur la conversation → révèle/masque toutes les heures (façon Insta).
+      let _sx = 0, _sy = 0, _sw = false;
+      cb.addEventListener("touchstart", (e) => { if (e.touches[0]) { _sx = e.touches[0].clientX; _sy = e.touches[0].clientY; _sw = false; } }, { passive: true });
+      cb.addEventListener("touchmove", (e) => {
+        if (!e.touches[0] || _sw) return;
+        const dx = e.touches[0].clientX - _sx, dy = e.touches[0].clientY - _sy;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.6) { _sw = true; cb.classList.toggle("times-on", dx < 0); } // glisser à gauche = montrer
+      }, { passive: true });
+    }
+
     // ---- Conversations d'exemple avec les comptes IA (démo), côté navigateur ----
     const demoChats = {}; // id -> [{ them:bool, text:string }]  (persiste le temps de la session)
     const DEMO_REPLIES = [
@@ -8402,6 +8471,7 @@
       if (error) { body.innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
       body.innerHTML = data.length ? chatHtml(data) : _iceBreakerHtml(p);
       if (!data.length) body.querySelectorAll("[data-ice-msg]").forEach((b) => b.addEventListener("click", () => { const i = $("chatInput"); if (i) { i.value = b.dataset.iceMsg; i.focus(); } if (window.SMSound) SMSound.play("tap"); }));
+      if (data.length) loadReactions(data.map((m) => m.id));
       scrollChatBottom();
       // Temps réel : « en train d'écrire » + accusés de lecture, et j'accuse réception (j'ai ouvert la conv).
       openChatRt(otherUserId);
