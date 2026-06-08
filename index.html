@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=292"></script>
-  <script src="sunmates-icons.js?v=292"></script>
+  <script src="sunmates-badges.js?v=293"></script>
+  <script src="sunmates-icons.js?v=293"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1081,7 +1081,11 @@
     .gcard .ghead.gh-purp   { background: linear-gradient(135deg,#C77DFF,#8A4FE0); }
     .gcard .ghead.gh-rose   { background: linear-gradient(135deg,#FF9CC2,#F0568F); }
     .gcard.gcard-play .ghead::after { background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.12)); }
-    .gcard.gcard-play .gemoji { left: 50%; top: 50%; transform: translate(-50%,-50%); width: 44px; height: 44px; font-size: 24px; background: rgba(255,255,255,.96); }
+    /* Emoji des jeux jouables : en COIN (bas-gauche) comme les autres, plus « au milieu » qui flottait. */
+    .gcard.gcard-play .gemoji { width: 40px; height: 40px; font-size: 22px; background: rgba(255,255,255,.96); }
+    /* Libellé de type (Mini-jeu / Quête) pour bien distinguer (item 23). */
+    .gcard .gtype { position: absolute; top: .5rem; left: .5rem; font-size: .64rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; padding: .14rem .45rem; border-radius: 999px; z-index: 2; background: rgba(255,255,255,.92); color: #5a3b12; }
+    .gcard .gtype.gt-quest { background: rgba(20,16,30,.55); color: #fff; backdrop-filter: blur(2px); }
     /* Bingo */
     .bingo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .4rem; }
     .bingo-cell { font-size: .64rem; font-weight: 700; line-height: 1.15; padding: .4rem .25rem; min-height: 64px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); cursor: pointer; display: grid; place-items: center; text-align: center; }
@@ -7601,22 +7605,24 @@
 
       // Jeux populaires : mini-jeux INTÉGRÉS jouables tout de suite (+ jeux BDD éventuels)
       { const gcEl = $("gamesCount"); if (gcEl) gcEl.textContent = (CLIENT_GAMES.length + games.length) + " jeux à jouer"; }
+      // Mini-jeux intégrés : libellé « Mini-jeu » + « ▶ Jouer » (rapides, sans XP).
       const clientCards = CLIENT_GAMES.map((g) => `
         <div class="gcard gcard-play" data-playgame="${g.key}">
           <div class="ghead gh-${g.color}">
+            <span class="gtype">🎮 Mini-jeu</span>
             <span class="gemoji">${g.emoji}</span>
             <span class="grate">▶ Jouer</span>
           </div>
           <div class="gbody"><div class="gname">${escapeHtml(g.name)}</div><div class="gdesc">${escapeHtml(g.desc)}</div></div>
         </div>`).join("");
-      // Jeux BDD : MÊME DA que les mini-jeux (tête en dégradé + emoji centré, plus de photos hétéroclites)
+      // Quêtes BDD : libellé « Quête » (vraies quêtes qui rapportent de l'XP) → distinction nette (item 23).
       const ghCol = ["gh-gold", "gh-teal", "gh-indigo", "gh-coral", "gh-purp", "gh-rose"];
       const dbCards = games.map((g, i) => `
         <div class="gcard gcard-play" data-qkey="${g.key}">
           <div class="ghead ${ghCol[i % ghCol.length]}">
+            ${myQuestStatus[g.key] === "completed" ? '<span class="gdone">✅ Fait</span>' : '<span class="gtype gt-quest">🧭 Quête</span>'}
             <span class="gemoji">${g.emoji || "🎮"}</span>
             <span class="grate">+${g.points || 0} XP</span>
-            ${myQuestStatus[g.key] === "completed" ? '<span class="gdone">✅ Fait</span>' : ""}
           </div>
           <div class="gbody"><div class="gname">${escapeHtml(g.title)}</div><div class="gdesc">${escapeHtml((g.description || g.city || "").slice(0, 70))}</div></div>
         </div>`).join("");
