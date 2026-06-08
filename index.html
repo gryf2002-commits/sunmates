@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=291"></script>
-  <script src="sunmates-icons.js?v=291"></script>
+  <script src="sunmates-badges.js?v=292"></script>
+  <script src="sunmates-icons.js?v=292"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1630,12 +1630,22 @@
 
     /* --------------------------- CHAT ------------------------------- */
     .chat-header { display: flex; align-items: center; gap: .5rem; padding: .2rem 0 1rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; flex-shrink: 0; }
-    .chat-flame { display: inline-flex; align-items: center; gap: .1rem; font-weight: 800; font-size: .9rem; color: var(--accent); flex-shrink: 0; }
+    .chat-flame { display: inline-flex; align-items: center; gap: .15rem; font-weight: 800; font-size: .82rem; color: #b4480e; flex-shrink: 0; background: linear-gradient(135deg, #fff1e0, #ffe2c4); border: 1px solid #ffcfa0; padding: .12rem .5rem .12rem .42rem; border-radius: 999px; box-shadow: 0 1px 4px rgba(214,108,32,.18); cursor: default; }
+    .chat-flame.flame-done { filter: saturate(.7); opacity: .85; } /* poc déjà envoyé aujourd'hui */
+    .chat-flame.flame-done::after { content: "✓"; font-size: .7rem; margin-left: .1rem; color: #2a9d5c; font-weight: 900; }
+    body.theme-dusk .chat-flame { background: linear-gradient(135deg, #3a2417, #4a2c15); border-color: #6b3d1c; color: #ffcaa0; }
     .chat-menu { position: absolute; top: 110%; right: 0; z-index: 50; background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-pop); padding: .3rem; min-width: 210px; display: flex; flex-direction: column; }
     .chat-menu button { text-align: left; background: none; border: 0; padding: .6rem .7rem; border-radius: 10px; font-size: .85rem; color: var(--ink); cursor: pointer; }
     .chat-menu button:active { background: var(--accent-soft); }
     body.theme-dusk .chat-menu { background: #241b35; } body.theme-dusk .chat-menu button { color: #f3e9f3; }
-    .chat-poc, .chat-mic { font-size: 1.2rem; flex-shrink: 0; }
+    .chat-mic { font-size: 1.2rem; flex-shrink: 0; }
+    /* Chips de type de feedback bêta */
+    .fb-chip { flex: 1; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: .45rem .3rem; font-size: .8rem; font-weight: 700; cursor: pointer; transition: .12s; }
+    .fb-chip.on { background: var(--accent-grad); color: #fff; border-color: transparent; box-shadow: 0 2px 8px rgba(255,111,60,.3); }
+    /* Bouton poc rafraîchi : pastille chaude vivante (avant : simple 🔥 plat « vieux »). */
+    .chat-poc { font-size: 1.1rem; flex-shrink: 0; background: linear-gradient(135deg, #ffb347, #ff6f3c); color: #fff; border: 0; box-shadow: 0 2px 8px rgba(255,111,60,.4); transition: transform .12s; }
+    .chat-poc:active { transform: scale(.88); }
+    .chat-poc[disabled] { filter: grayscale(.4); opacity: .55; }
     .voice-rec { display: flex; align-items: center; gap: .5rem; background: var(--accent-soft); border-radius: 12px; padding: .5rem .7rem; margin-bottom: .4rem; font-size: .82rem; font-weight: 600; color: var(--ink); }
     .voice-rec .vr-dot { width: 10px; height: 10px; border-radius: 50%; background: #e23b3b; animation: vrPulse 1s infinite; flex-shrink: 0; }
     @keyframes vrPulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
@@ -3983,6 +3993,7 @@
                contact = bientôt dispo (pas d'email perso affiché). -->
           <div class="set-grouptitle">Aide &amp; support</div>
           <button class="btn-ghost btn-block" data-secu="contactus">✉️ Nous contacter</button>
+          <button class="btn-ghost btn-block" id="betaFeedbackBtn" style="margin-top:.5rem">🧪 App en bêta · donne ton avis</button>
 
           <!-- Application -->
           <div class="set-grouptitle">Application</div>
@@ -6301,10 +6312,27 @@
           <div>s36 — notes vocales (bucket privé) &nbsp; <b>s37 — badges prestige + secret Légende</b></div>
         </div>`;
 
+      const feedbackBlock = `
+        <div class="set-grouptitle">🧪 Retours bêta (bug / idée / pixel) <span style="font-weight:400;color:var(--muted)">· live</span></div>
+        <div id="adminFeedback"><p class="muted" style="font-size:.82rem">Chargement…</p></div>`;
+
       const refreshBtn = '<button class="btn-ghost btn-block" id="adminDataRefresh" style="margin-bottom:.6rem">↻ Rafraîchir les données</button>';
 
-      el.innerHTML = refreshBtn + sblock + liveActivity + citiesBlock + catalog + storageBlock + migrations + stack;
+      el.innerHTML = refreshBtn + sblock + liveActivity + feedbackBlock + citiesBlock + catalog + storageBlock + migrations + stack;
       el.querySelectorAll("[data-datapop]").forEach((c) => c.addEventListener("click", () => { const p = (window._adminDataPop || {})[c.dataset.datapop]; if (p) popInfo("🗄️", p[0], p[1]); }));
+      // Retours bêta (table app_feedback) — best-effort : si la table n'existe pas encore, message clair.
+      (async () => {
+        const box = $("adminFeedback"); if (!box) return;
+        const ic = { bug: "🐞", idea: "💡", pixel: "🎨" };
+        let rows = null;
+        try { const { data, error } = await db.from("app_feedback").select("type,message,username,app_version,created_at").order("created_at", { ascending: false }).limit(40); if (!error) rows = data || []; } catch (e) {}
+        if (rows === null) { box.innerHTML = '<p class="muted" style="font-size:.8rem">Table <code>app_feedback</code> absente — lance <code>supabase_migration_feedback.sql</code> pour activer la collecte.</p>'; return; }
+        if (!rows.length) { box.innerHTML = '<p class="muted" style="font-size:.82rem">Aucun retour pour l\'instant.</p>'; return; }
+        const cnt = rows.reduce((a, r) => (a[r.type] = (a[r.type] || 0) + 1, a), {});
+        box.innerHTML =
+          `<div class="pgrid" style="margin-bottom:.5rem">${["bug", "idea", "pixel"].map((t) => `<div class="pcell"><div class="k">${ic[t]} ${t}</div><div class="v">${cnt[t] || 0}</div></div>`).join("")}</div>` +
+          rows.map((r) => `<div class="qrow" style="padding:.4rem .2rem;align-items:flex-start"><div class="qico">${ic[r.type] || "📝"}</div><div class="qname" style="flex:1;font-weight:500">${esc(r.message).slice(0, 240)}<div class="meta muted" style="font-size:.72rem;margin-top:.15rem">${esc(r.username || "anonyme")} · v${esc(r.app_version || "?")} · ${r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : ""}</div></div></div>`).join("");
+      })();
       { const rb = $("adminDataRefresh"); if (rb) rb.addEventListener("click", () => loadAdminData()); }
 
       // Activité du jour + derniers inscrits (requêtes légères, en parallèle)
@@ -8400,34 +8428,82 @@
     function _flameGet(id) {
       try { const o = JSON.parse(localStorage.getItem(_flameKey(id)) || "{}"); const active = o.last && (Date.now() - o.last) < 35 * 3600 * 1000; return { count: o.count || 0, last: o.last || 0, active: !!active }; } catch (e) { return { count: 0, last: 0, active: false }; }
     }
+    function _pocSentToday(f) { return f.last && new Date(f.last).toDateString() === new Date().toDateString(); }
     function renderChatFlame(id) {
       const el = $("chatFlame"), n = $("chatFlameN"); if (!el || !n) return;
       const f = _flameGet(id);
-      if (f.active && f.count > 0) { el.classList.remove("hidden"); n.textContent = f.count; } else el.classList.add("hidden");
+      if (f.active && f.count > 0) {
+        el.classList.remove("hidden"); n.textContent = f.count;
+        // Countdown : heures restantes avant de perdre la flamme (fenêtre 35 h, affichée façon ~24 h).
+        const hLeft = Math.max(0, Math.round((35 * 3600 * 1000 - (Date.now() - f.last)) / 3600000));
+        el.title = _pocSentToday(f) ? ("Flamme x" + f.count + " · poc envoyé aujourd'hui ✓ · reviens demain") : ("Flamme x" + f.count + " · plus que ~" + hLeft + " h pour la garder 🔥");
+        el.classList.toggle("flame-done", _pocSentToday(f)); // visuel "déjà fait aujourd'hui"
+      } else el.classList.add("hidden");
     }
-    let _lastPocAt = 0, _pocLock = false;
     function sendPoc() {
       const id = currentChatUserId; if (!id) return;
-      // Anti-spam : un poc max toutes les 4 s + verrou pendant l'envoi (évite le flood de messages).
-      const t = Date.now();
-      if (_pocLock || (t - _lastPocAt) < 4000) { if (typeof toast === "function") toast("🔥", "Doucement ! Un poc à la fois 😄"); return; }
-      _pocLock = true; _lastPocAt = t;
-      const pc = $("chatPoc"); if (pc) { pc.disabled = true; pc.style.opacity = ".5"; }
-      setTimeout(() => { _pocLock = false; const b = $("chatPoc"); if (b) { b.disabled = false; b.style.opacity = ""; } }, 4000);
       const f = _flameGet(id); const now = Date.now();
-      let count = f.count;
-      if (f.last && (now - f.last) < 35 * 3600 * 1000) {
-        const sameDay = new Date(f.last).toDateString() === new Date(now).toDateString();
-        if (!sameDay) count += 1; // nouveau jour dans la fenêtre → la flamme grandit
-      } else { count = 1; } // première ou flamme perdue → on (re)démarre
+      // UNE SEULE fois par jour : si déjà poc aujourd'hui → bloqué + countdown jusqu'à demain.
+      if (_pocSentToday(f)) {
+        const tmr = new Date(now); tmr.setHours(24, 0, 0, 0);
+        const hLeft = Math.ceil((tmr - now) / 3600000);
+        if (typeof toast === "function") toast("🔥", "Poc déjà envoyé aujourd'hui ! Reviens dans ~" + hLeft + " h pour faire grandir ta flamme 🔥" + f.count);
+        return;
+      }
+      // Jour consécutif (dans la fenêtre 35 h) → la flamme grandit ; sinon (perdue/première) → redémarre à 1.
+      const count = (f.last && (now - f.last) < 35 * 3600 * 1000) ? f.count + 1 : 1;
       try { localStorage.setItem(_flameKey(id), JSON.stringify({ count, last: now })); } catch (e) {}
       renderChatFlame(id);
       const inp = $("chatInput"); if (inp) inp.value = "🔥 Poc !";
       if (typeof sendChatMessage === "function") sendChatMessage();
       if (window.SMSound) SMSound.play("pop");
-      if (typeof toast === "function") toast("🔥", "Poc ! Flamme x" + count);
+      if (typeof celebrate === "function" && count >= 2) {} // (pas de confettis, on reste sobre)
+      if (typeof toast === "function") toast("🔥", count > 1 ? ("Poc ! Votre flamme grandit : x" + count + " 🔥") : "Poc envoyé ! Flamme allumée 🔥");
     }
     { const pc = $("chatPoc"); if (pc) pc.addEventListener("click", sendPoc); }
+
+    // ===== Feedback bêta (bug / idée / pixel) → table Supabase app_feedback (lue dans l'admin) =====
+    let _fbType = "bug";
+    function openBetaFeedback() {
+      const types = [["bug", "🐞", "Bug"], ["idea", "💡", "Idée"], ["pixel", "🎨", "Pixel/design"]];
+      _fbType = "bug";
+      const chips = types.map((t) => `<button class="fb-chip${t[0] === "bug" ? " on" : ""}" data-fbt="${t[0]}">${t[1]} ${t[2]}</button>`).join("");
+      popInfo("🧪", "App en bêta · ton avis compte", `
+        <p class="muted" style="font-size:.82rem;margin:0 0 .7rem;text-align:center">SunMates est en <b>bêta</b> : chaque retour file droit à l'équipe 💛</p>
+        <div class="fb-chips" style="display:flex;gap:.4rem;margin-bottom:.7rem">${chips}</div>
+        <textarea id="fbText" rows="4" placeholder="Décris le bug, l'idée ou le détail visuel à corriger…" style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:.6rem;font:inherit;resize:vertical;background:var(--card);color:var(--ink)"></textarea>
+        <button class="btn-primary btn-block" id="fbSend" style="margin-top:.7rem">Envoyer mon retour</button>
+        <p class="muted" style="font-size:.7rem;margin:.5rem 0 0;text-align:center">Anonymisé si tu n'es pas connecté · version ${typeof APP_VER !== "undefined" ? APP_VER : ""}</p>`);
+      setTimeout(() => {
+        document.querySelectorAll("[data-fbt]").forEach((b) => b.addEventListener("click", () => {
+          _fbType = b.dataset.fbt;
+          document.querySelectorAll("[data-fbt]").forEach((x) => x.classList.toggle("on", x === b));
+        }));
+        const sb = $("fbSend"); if (sb) sb.addEventListener("click", submitBetaFeedback);
+      }, 30);
+    }
+    async function submitBetaFeedback() {
+      const ta = $("fbText"); const msg = (ta && ta.value || "").trim();
+      if (msg.length < 3) { if (typeof toast === "function") toast("✍️", "Écris quelques mots avant d'envoyer 🙂"); return; }
+      const sb = $("fbSend"); if (sb) { sb.disabled = true; sb.textContent = "Envoi…"; }
+      const row = {
+        type: _fbType, message: msg.slice(0, 2000),
+        user_id: (typeof myUserId !== "undefined" && myUserId) ? myUserId : null,
+        username: (typeof myProfile !== "undefined" && myProfile) ? (myProfile.username || null) : null,
+        app_version: (typeof APP_VER !== "undefined" ? String(APP_VER) : ""),
+        user_agent: (navigator.userAgent || "").slice(0, 300),
+      };
+      let ok = false;
+      try { if (typeof db !== "undefined" && db) { const { error } = await db.from("app_feedback").insert(row); ok = !error; if (error) console.warn("feedback insert", error.message); } } catch (e) {}
+      if (!ok) { // repli local : on n'avale jamais le retour de l'utilisateur (table absente / offline)
+        try { const q = JSON.parse(localStorage.getItem("sm_feedback_queue") || "[]"); q.push({ ...row, ts: Date.now() }); localStorage.setItem("sm_feedback_queue", JSON.stringify(q.slice(-50))); } catch (e) {}
+      }
+      try { if (typeof track === "function") track("beta_feedback", { type: _fbType }); } catch (e) {}
+      if (typeof closePop === "function") closePop();
+      if (typeof toast === "function") toast("💛", "Merci ! Ton retour est bien arrivé.");
+      if (window.SMSound) SMSound.play("pop");
+    }
+    { const bf = $("betaFeedbackBtn"); if (bf) bf.addEventListener("click", openBetaFeedback); }
 
     // ===== Notes vocales (30 s max, Opus léger pour rester dans le free tier Supabase) =====
     let _mediaRec = null, _voiceChunks = [], _voiceTimer = null, _voiceSecs = 0, _voiceStream = null;
