@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=288"></script>
-  <script src="sunmates-icons.js?v=288"></script>
+  <script src="sunmates-badges.js?v=289"></script>
+  <script src="sunmates-icons.js?v=289"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -298,10 +298,10 @@
     /* ---- Fil d'actualité (posts) : cartes à bandeau coloré ---- */
     /* Composer du fil communautaire */
     .feed-composer { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .85rem .9rem; margin-bottom: .8rem; box-shadow: var(--shadow-sm); overflow: hidden; }
-    .feed-composer .fc-row { display: flex; gap: .6rem; align-items: flex-start; min-width: 0; }
-    .feed-composer .fc-av { font-size: 1.6rem; flex-shrink: 0; line-height: 1.4; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--cream); }
+    .feed-composer .fc-row { display: flex; gap: .6rem; align-items: center; min-width: 0; }
+    .feed-composer .fc-av { font-size: 1.4rem; flex-shrink: 0; line-height: 1; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--cream); }
     body.theme-dusk .feed-composer .fc-av { background: #2a2140; }
-    .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .3rem 0; min-height: 1.6rem; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
+    .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .55rem .2rem; min-height: 38px; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
     .feed-composer textarea:focus { outline: none; }
     .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
     .feed-composer .fc-kinds { display: flex; gap: .25rem; background: var(--cream); border-radius: 999px; padding: .2rem; }
@@ -788,7 +788,8 @@
     #navSecu { background: #F5A623; box-shadow: 0 0 0 0 rgba(245,166,35,.6); animation: sosPulse 1.9s ease-out infinite; min-width: 10px; width: 10px; height: 10px; padding: 0; font-size: 0; right: calc(50% - 16px); }
 
     /* --------------------- Carte tout-en-un (accueil) -------------------- */
-    .homemap-card { padding: .55rem; }
+    .homemap-card { padding: .55rem; background: #ffffff !important; } /* blanc pur (pas le blanc chaud #FFFCF6 = le 'bandeau jaune') */
+    body.theme-dusk .homemap-card { background: #1c1530 !important; }
     .homemap-filters { margin-bottom: .55rem; gap: .4rem; }
     .homemap-filters .chip { font-size: .78rem; padding: .35rem .7rem; opacity: .5; }
     .homemap-filters .chip.active { opacity: 1; }
@@ -818,13 +819,13 @@
     .fs-btn { flex-shrink: 0; background: var(--accent-grad); color: #fff; border: 0; border-radius: 999px; padding: .4rem .8rem; font-weight: 800; font-size: .8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255,90,77,.32); white-space: nowrap; }
     .fs-btn:active { transform: scale(.96); }
     /* Aussi un bouton flottant ⛶ dans le coin de la carte (toujours visible) */
-    .homemap-fsopen { position: absolute; top: .5rem; right: .5rem; z-index: 500; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 11px; background: var(--accent-grad); color: #fff; line-height: 0; cursor: pointer; box-shadow: 0 4px 12px rgba(255,90,77,.4); display: flex; align-items: center; justify-content: center; }
+    .homemap-fsopen { position: absolute; top: .5rem; right: .5rem; z-index: 500; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 11px; background: var(--accent-grad); color: #fff; line-height: 0; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); display: flex; align-items: center; justify-content: center; }
     .homemap-fsopen svg { display: block; }
     /* Filtres de la carte : UNE seule ligne compacte qui défile (au lieu d'un gros paquet sur plusieurs lignes) */
-    #homeMapFilters { flex-wrap: nowrap !important; overflow-x: auto; overflow-y: hidden; gap: .35rem; margin-bottom: .55rem; padding-bottom: .15rem; scrollbar-width: none; }
+    #homeMapFilters { flex-wrap: nowrap !important; overflow-x: auto; overflow-y: hidden; gap: .35rem; margin-bottom: .55rem; padding-bottom: .15rem; scrollbar-width: none; background: none !important; }
     #homeMapFilters::-webkit-scrollbar { display: none; }
     #homeMapFilters .chip { padding: .34rem .62rem; font-size: .76rem; flex: 0 0 auto; }
-    body.theme-dusk .homemap-fsopen { background: rgba(40,30,55,.95); }
+    /* (bouton plein écran : on garde l'accent-grad PLEIN même en sombre → plus de translucide) */
     .homemap-card.fs .homemap-fsopen { display: none; }
     /* Plein écran : TOUTE la carte (filtres + carte + légende) passe en plein écran */
     .homemap-fsclose { display: none; }
@@ -4969,17 +4970,21 @@
         : (st === "pending"
           ? "On vérifie ton profil (compte vérifié, ancienneté, sérieux) avant d'activer ton statut d'hôte. Tu seras prévenu·e dès que c'est bon ✨"
           : "Aide les voyageurs à se sentir en sécurité dans ta ville : conseils, bons spots, café d'accueil.");
-      if (b) { b.textContent = st === "1" ? "✓ Hôte actif" : (st === "pending" ? "⏳ En attente de validation" : "Je veux aider"); b.disabled = (st === "pending"); b.style.opacity = (st === "pending") ? ".6" : ""; }
+      if (b) { b.textContent = st === "1" ? "✓ Hôte actif" : (st === "pending" ? "⏳ Demande envoyée — voir le statut" : "Je veux aider"); b.disabled = false; b.style.opacity = ""; }
       const pb = $("profileHostBadge"); if (pb) show(pb, st === "1"); // badge profil seulement si validé
     }
     { const hb = $("hostBtn"); if (hb) hb.addEventListener("click", () => {
-      if (hostState() !== "none") return; // déjà en attente ou actif
-      showInfo("🛟 Devenir hôte SunMates", `<div style="line-height:1.6;font-size:.9rem">
-        <p style="margin:.2rem 0">En tant qu'<b>hôte</b>, tu aides les voyageurs de passage à se sentir <b>en sécurité</b> dans ta ville :</p>
-        <p style="margin:.2rem 0">☕ partage tes <b>bons spots</b> validés · 🗺️ donne des <b>conseils locaux</b> · 🤝 propose un <b>café d'accueil</b>.</p>
-        <p style="margin:.4rem 0"><b>Ta demande vient d'être envoyée.</b> Pour garder la confiance des voyageuses, le rôle d'hôte est <b>validé manuellement</b> (profil vérifié + sérieux). On revient vite vers toi 💛</p></div>`);
+      const st = hostState();
+      if (st === "1") { popInfo("🛟", "Tu es hôte SunMates", "Merci ! Les voyageurs de passage savent qu'ils peuvent compter sur toi dans ta ville 💛"); return; }
+      if (st === "pending") { popInfo("⏳", "Demande en cours", "Ta demande d'hôte est <b>en cours de validation</b> (on vérifie ton profil : vérifié, ancienneté, sérieux). Tu seras prévenu·e dès que c'est bon ✨"); return; }
+      // Première demande
       try { localStorage.setItem("sm_host", "pending"); } catch (e) {}
       renderHost();
+      popInfo("🛟", "Devenir hôte SunMates",
+        "<div style='text-align:left;line-height:1.6;font-size:.9rem'>" +
+        "<p style='margin:.2rem 0'>En tant qu'<b>hôte</b>, tu aides les voyageurs de passage à se sentir <b>en sécurité</b> dans ta ville :</p>" +
+        "<p style='margin:.2rem 0'>☕ tes <b>bons spots</b> validés · 🗺️ tes <b>conseils locaux</b> · 🤝 un <b>café d'accueil</b>.</p>" +
+        "<p style='margin:.5rem 0'><b>✅ Ta demande vient d'être envoyée.</b> Le rôle est <b>validé manuellement</b> (profil sérieux) pour garder la confiance de la communauté. On revient vite vers toi 💛</p></div>");
     }); }
 
     function updateCompletion() {
@@ -5189,7 +5194,7 @@
     function setAvatarEl(el, url, fallbackChar) {
       if (!el) return;
       if (url) { el.style.backgroundImage = "url('" + url + "')"; el.textContent = ""; }
-      else { el.style.backgroundImage = "none"; el.textContent = (fallbackChar || "?").toUpperCase(); }
+      else { el.style.backgroundImage = ""; el.textContent = (fallbackChar || "?").toUpperCase(); } // "" → on revient au dégradé CSS (sinon fond noir)
     }
     // Markup d'avatar pour les listes (photo si dispo, sinon initiale)
     // ===== Lazy-loading des images de fond (avatars, photos de lieux) =====
@@ -9491,6 +9496,8 @@
     // Centre la carte d'accueil sur un lieu (depuis l'onglet Lieux) et ouvre sa bulle
     function focusHomeMapOn(cafeId) {
       goToTab("accueil");
+      // IMPORTANT : sortir du mode Maison (sinon la carte est cachée → renderHomeMap se bloque, plus rien ne s'affiche).
+      if (typeof setHomeMode === "function") setHomeMode("travel");
       const go = () => {
         const c = (allCafes || []).find((x) => x.id === cafeId);
         if (!homeLeaf || !c || c.lat == null) return;
@@ -9502,7 +9509,7 @@
         else open();
       };
       // délai large pour passer APRÈS le rendu déclenché par goToTab (sinon la bulle se referme)
-      if (!homeLeaf) { renderHomeMap().then(() => setTimeout(go, 250)); } else setTimeout(go, 550);
+      if (!homeLeaf) { const r = renderHomeMap(); if (r && r.then) r.then(() => setTimeout(go, 300)); else setTimeout(go, 450); } else setTimeout(go, 550);
     }
 
     // Depuis la recherche : ouvre la fiche descriptive du lieu dans l'onglet Lieux
