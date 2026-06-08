@@ -44,7 +44,7 @@
   </script>
   <!-- viewport-fit=cover : l'app passe sous l'encoche / status bar (on gère les safe-area en CSS).
        maximum-scale retiré : le pinch-to-zoom d'accessibilité reste possible (surtout iOS). -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SunMates · pars solo, trouve ta bande</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=290"></script>
-  <script src="sunmates-icons.js?v=290"></script>
+  <script src="sunmates-badges.js?v=291"></script>
+  <script src="sunmates-icons.js?v=291"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -150,6 +150,12 @@
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    /* Feeling APP (pas web) : on désactive la sélection de texte sur l'UI… */
+    * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    /* …mais on la GARDE là où copier a du sens : champs de saisie, messages, posts du fil. */
+    input, textarea, select, [contenteditable="true"], .bubble, .bubble-txt, .bubble-audio span, .fpost-body, .smeta, .sname, .selectable, .selectable * {
+      -webkit-user-select: text; user-select: text; -webkit-touch-callout: default;
+    }
     html, body { height: 100%; }
     /* Barre de défilement thémée DA (fini le blanc système). Firefox + WebKit/Blink.
        Les conteneurs en scrollbar-width:none (chips, etc.) restent masqués (specificité de classe). */
@@ -278,7 +284,8 @@
       padding: .65rem .5rem; text-align: center; cursor: pointer; transition: transform .1s ease, box-shadow .15s ease, border-color .15s ease; }
     .cat-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
     .cat-tile:active { transform: scale(.96); }
-    .cat-tile .cic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 1.25rem; margin: 0 auto .35rem; color: #fff; box-shadow: inset 0 -8px 16px rgba(0,0,0,.08); }
+    .cat-tile .cic { position: relative; overflow: hidden; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 1.25rem; margin: 0 auto .35rem; color: #fff; box-shadow: inset 0 -8px 16px rgba(0,0,0,.08); }
+    .cat-tile .cic::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 56%; background: linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0)); pointer-events: none; }
     .cat-tile .clbl { font-size: .74rem; font-weight: 700; color: var(--ink); white-space: nowrap; }
     .cat-tile.active { border-color: var(--accent); box-shadow: 0 6px 16px rgba(255,90,77,.2); }
     .cic.c-sun { background: var(--accent-grad); }
@@ -958,6 +965,11 @@
       transition: transform .15s ease;
     }
     .tile:hover .thumb { transform: translateY(-2px) scale(1.02); }
+    /* BRILLANCE : reflet glossy en haut des tuiles (peps) — au-dessus du fond, sous l'emoji centré */
+    .tile .thumb { position: relative; overflow: hidden; }
+    .tile .thumb::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 58%;
+      background: linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,.12) 45%, rgba(255,255,255,0) 100%);
+      pointer-events: none; }
     .tile .thumb.green { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#8fe6a6,#34c77b); box-shadow: 0 6px 16px rgba(52,199,123,.24); }
     .tile .thumb.blue  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#8ed0ff,#3aa0f0); box-shadow: 0 6px 16px rgba(58,160,240,.24); }
     .tile .thumb.purp  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#b9a6ff,#7c5cff); box-shadow: 0 6px 16px rgba(124,92,255,.24); }
@@ -3190,6 +3202,7 @@
             </div>
             <button class="btn-primary fc-send" id="feedPostBtn" type="button">Publier</button>
           </div>
+          <div class="muted" style="font-size:.72rem;margin-top:.4rem;display:flex;align-items:center;gap:.3rem">🌍 Visible par <b>toute la communauté</b> SunMates.</div>
           <div class="msg" id="feedComposerMsg" style="text-align:center"></div>
         </div>
         <div id="homeFeed"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div></div>
