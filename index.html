@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=287"></script>
-  <script src="sunmates-icons.js?v=287"></script>
+  <script src="sunmates-badges.js?v=288"></script>
+  <script src="sunmates-icons.js?v=288"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1927,13 +1927,9 @@
     }
 
     /* --- Accueil : titre dégradé, vignettes en relief --- */
-    /* « Bonjour {pseudo} » et le « Sun » du logo aux COULEURS DU SOLEIL (or → ambre), jour ET nuit. */
-    :root { --sun-grad: linear-gradient(120deg, #FFC93C 0%, #FF9F1C 55%, #FF7E3D 100%); }
-    body.theme-dusk { --sun-grad: linear-gradient(120deg, #FFD96B 0%, #FFB347 58%, #FF9A4D 100%); }
-    #homeHello, #homeHello .hello-name {
-      background: var(--sun-grad) !important; -webkit-background-clip: text !important; background-clip: text !important;
-      color: transparent !important; -webkit-text-fill-color: transparent !important;
-    }
+    /* « Bonjour {pseudo} » en corail/rouge (l'âme SunMates) — couleur d'accent, qui DIFFÈRE jour/nuit. */
+    #homeHello { color: var(--accent); }
+    #homeHello .hello-name { color: var(--accent); }
     /* Série de jours (streak), gamification douce près du Bonjour */
     .hello-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: .1rem; flex-wrap: wrap; }
     .hello-row #homeSubtitle { min-width: 0; flex: 1; }
@@ -2361,7 +2357,7 @@
 
     /* --- Marque / en-tête --- */
     .brand b { font-weight: 600; letter-spacing: .015em; font-size: 1.2rem; }
-    .brand .mark { background: var(--sun-grad, var(--accent-grad)); border-radius: 11px; box-shadow: var(--shadow-sm); }
+    .brand .mark { background: var(--accent-grad); border-radius: 11px; box-shadow: var(--shadow-sm); }
     .topbar { background: linear-gradient(var(--bg) 72%, rgba(244,237,224,0)); }
 
     /* --- Cartes : épurées, bord fin, ombre douce --- */
@@ -2463,7 +2459,7 @@
 
     h1, h2, h3 { color: var(--ink); }
     .topbar { background: linear-gradient(var(--bg) 70%, rgba(255,244,230,0)); }
-    .brand .mark { background: var(--sun-grad, var(--accent-grad)); box-shadow: 0 6px 16px rgba(255,159,28,.42); }
+    .brand .mark { background: var(--accent-grad); box-shadow: 0 6px 16px rgba(255,90,77,.4); }
     .section-head a { color: var(--retro-teal); }
 
     /* Cartes chaleureuses */
@@ -2566,7 +2562,7 @@
     .mark .logo-night { display: none; }
     body.theme-dusk .mark .logo-day { display: none; }
     body.theme-dusk .mark .logo-night { display: block; }
-    body.theme-dusk .brand .mark { background: var(--sun-grad) !important; } /* soleil doré, nuit */
+    body.theme-dusk .brand .mark { background: linear-gradient(150deg, #7A2E5E, #C2502E) !important; } /* coucher de soleil sombre */
     /* Hero de connexion : ambiance NUIT en mode sombre */
     body.theme-dusk .auth-hero { background: linear-gradient(160deg, rgba(58,42,110,.74), rgba(40,24,78,.82) 58%, rgba(18,26,86,.86)), url('https://loremflickr.com/820/740/ocean,night,stars?lock=5151') center/cover !important; }
     body.theme-dusk .auth-hero .logo-badge { background: rgba(20,16,40,.88) !important; box-shadow: 0 12px 30px rgba(0,0,0,.4), 0 0 0 6px rgba(255,255,255,.12) !important; }
