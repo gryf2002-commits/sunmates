@@ -7,16 +7,23 @@
        Vie privée : on ne transmet JAMAIS d'email, de contenu de message, de GPS ni
        l'usage du SOS — on compte des événements, pas des contenus.
        ============================================================ -->
-  <script src="https://browser.sentry-cdn.com/8.0.0/bundle.min.js" crossorigin="anonymous"></script>
+  <script async src="https://browser.sentry-cdn.com/8.0.0/bundle.min.js" crossorigin="anonymous"></script>
   <script>
-    try {
-      if (window.Sentry) Sentry.init({
-        dsn: "https://383baae639ccef902adb48a8439570b8@o4511521167638528.ingest.de.sentry.io/4511521207746640",
-        release: "sunmates@v165",
-        sampleRate: 1.0,
-        beforeSend: function (event) { if (event.user) { delete event.user.email; delete event.user.ip_address; } return event; }
-      });
-    } catch (e) { /* le monitoring ne doit jamais bloquer l'app */ }
+    // Sentry chargé en async (ne bloque plus le rendu) → on attend qu'il soit prêt pour init.
+    (function initSentry(tries) {
+      try {
+        if (window.Sentry && Sentry.init) {
+          Sentry.init({
+            dsn: "https://383baae639ccef902adb48a8439570b8@o4511521167638528.ingest.de.sentry.io/4511521207746640",
+            release: "sunmates@v273",
+            sampleRate: 1.0,
+            beforeSend: function (event) { if (event.user) { delete event.user.email; delete event.user.ip_address; } return event; }
+          });
+          return;
+        }
+      } catch (e) { return; /* le monitoring ne doit jamais bloquer l'app */ }
+      if (tries < 60) setTimeout(function () { initSentry(tries + 1); }, 100);
+    })(0);
   </script>
   <script>
     // PostHog (cloud EU) — mesure d'audience anonymisée (RGPD : mask_all_text + pas d'email).
@@ -54,19 +61,19 @@
        la couleur réelle vient de theme-color, mis à jour dynamiquement selon le thème jour/nuit. -->
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="SunMates" />
-  <!-- Leaflet : carte interactive des lieux sûrs -->
+  <!-- Leaflet : carte interactive des lieux sûrs (defer = ne bloque PAS le rendu initial) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Regroupement de marqueurs (évite les pastilles superposées illisibles) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <!-- QR du profil : génération 100% locale (qrcodejs) + scan caméra (jsQR). Aucune donnée n'est envoyée. -->
-  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=273"></script>
-  <script src="sunmates-icons.js?v=273"></script>
+  <script src="sunmates-badges.js?v=274"></script>
+  <script src="sunmates-icons.js?v=274"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -4798,6 +4805,15 @@
       { name: "Colombie", flag: "🇨🇴", m: ["colombie", "colombia", "carthagène", "cartagena", "bogota", "medellin", "medellín", "🇨🇴"], visa: "Pas de visa (≤ 90 j).", money: "Peso colombien (COP). Cash pour le quotidien.", lang: "Espagnol ; peu d'anglais.", transport: "Vols internes pas chers (grandes distances), Uber/taxi via appli.", water: "Bouteille hors grandes villes.", plug: "Prise type A/B (US), 110V.", tip: "Pourboire ~10% (souvent 'propina' suggérée).", health: "Vaccin fièvre jaune pour l'Amazonie/zones tropicales.", custom: "Gens très accueillants ; 'no dar papaya' = ne tente pas les voleurs.", safe: "Reste dans les quartiers sûrs, commande tes taxis, discrétion avec téléphone/cash." },
       { name: "Australie", flag: "🇦🇺", m: ["australie", "australia", "sydney", "melbourne", "🇦🇺"], visa: "eVisitor/ETA obligatoire (en ligne, avant départ).", money: "Dollar australien (AUD). CB/sans contact partout.", lang: "Anglais.", transport: "Grandes distances → vols internes. Conduite à gauche ; faune sur les routes la nuit.", water: "Potable.", plug: "Prise type I, 230V — adaptateur spécifique.", tip: "Pas de pourboire attendu.", health: "Soleil très fort (indice UV extrême) : crème + chapeau. Méfie-toi des courants en mer (baigne-toi entre les drapeaux).", custom: "Décontracté et amical.", safe: "Très sûr." },
       { name: "Turquie", flag: "🇹🇷", m: ["turquie", "turkey", "istanbul", "cappadoce", "🇹🇷"], visa: "Pas de visa pour les Français (séjour ≤ 90 j).", money: "Livre turque (TRY), forte inflation — change peu à la fois. Cash pour bazars.", lang: "Turc ; anglais côté tourisme.", transport: "Tram/métro à Istanbul (Istanbulkart), vols internes pas chers, bus longue distance confortables.", water: "Eau en bouteille conseillée.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10%.", health: "RAS hors précautions alimentaires de base.", custom: "Marchander au bazar ; tenue correcte dans les mosquées (foulard pour les femmes).", safe: "Istanbul sûre en zones touristiques ; ignore les rabatteurs trop insistants." },
+      { name: "États-Unis", flag: "🇺🇸", m: ["états-unis", "etats-unis", "usa", "états unis", "new york", "los angeles", "miami", "🇺🇸"], visa: "ESTA obligatoire (en ligne, avant départ) pour ≤ 90 j.", money: "Dollar US (USD). CB/sans contact partout, cash pour les pourboires.", lang: "Anglais.", transport: "Voiture-roi hors grandes villes ; en ville Uber/Lyft + métro. Conduite à droite.", water: "Eau du robinet potable.", plug: "Prise type A/B (US), 120V — adaptateur nécessaire.", tip: "Pourboire ATTENDU : 18-20 % au resto, 1-2 $ par service.", health: "Soins TRÈS chers → assurance voyage indispensable.", custom: "Service ultra commercial et souriant ; taxes ajoutées en caisse (prix affichés HT).", safe: "Globalement sûr ; renseigne-toi quartier par quartier dans les grandes villes." },
+      { name: "Royaume-Uni", flag: "🇬🇧", m: ["royaume-uni", "angleterre", "uk", "londres", "london", "écosse", "ecosse", "🇬🇧"], visa: "Pas de visa pour les Français (≤ 6 mois) ; passeport requis (plus la CNI).", money: "Livre sterling (GBP). Sans contact partout.", lang: "Anglais.", transport: "Métro (Oyster/contactless), trains chers (réserve tôt). Conduite à gauche.", water: "Eau du robinet potable.", plug: "Prise type G (3 broches) — adaptateur spécifique.", tip: "Pourboire ~10-12,5 % (souvent inclus 'service charge').", health: "CEAM plus valable post-Brexit → assurance conseillée.", custom: "On fait la queue religieusement ; pub culture le soir.", safe: "Sûr ; vigilance pickpockets dans les transports londoniens." },
+      { name: "Indonésie (Bali)", flag: "🇮🇩", m: ["indonésie", "indonesie", "bali", "jakarta", "ubud", "🇮🇩"], visa: "Visa à l'arrivée (VOA, payant) ou e-VOA, 30 j prolongeables.", money: "Roupie indonésienne (IDR). Cash roi hors zones touristiques.", lang: "Indonésien ; anglais correct à Bali.", transport: "Scooter partout (permis international + casque), Grab/Gojek en ville. Trafic dense.", water: "Eau en bouteille uniquement.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire apprécié, pas obligatoire.", health: "Vaccins à vérifier ; attention 'Bali belly' (mange chaud), dengue (anti-moustiques).", custom: "Respect des temples (sarong, épaules couvertes) ; sourire et politesse partout.", safe: "Sûr ; gare aux arnaques de location de scooter et au trafic." },
+      { name: "Inde", flag: "🇮🇳", m: ["inde", "india", "delhi", "jaipur", "goa", "🇮🇳"], visa: "e-Visa touristique obligatoire (en ligne, avant départ).", money: "Roupie indienne (INR). Cash indispensable ; UPI très répandu localement.", lang: "Hindi, anglais (officiel) très utile.", transport: "Trains mythiques (réserve sur IRCTC), rickshaws (négocie/compteur), Uber/Ola en ville.", water: "Eau en bouteille SCELLÉE uniquement.", plug: "Prise type C/D/M, 230V.", tip: "Pourboire 10 % ; petits pourboires fréquents.", health: "Vaccins (hépatite A/typhoïde) ; mange chaud et très cuit, évite crudités/glaçons.", custom: "Tenue couvrante ; déchausse-toi aux temples ; main droite pour manger/donner.", safe: "Intense ; femmes solo : prudence accrue, transports réputés, évite la nuit isolée." },
+      { name: "Égypte", flag: "🇪🇬", m: ["égypte", "egypte", "egypt", "le caire", "caire", "louxor", "🇪🇬"], visa: "Visa à l'arrivée ou e-Visa (payant).", money: "Livre égyptienne (EGP). Cash roi ; beaucoup de petits pourboires (baksheesh).", lang: "Arabe ; anglais côté tourisme.", transport: "Uber/Careem au Caire (plus sûr que taxi de rue), trains pour Louxor/Assouan.", water: "Eau en bouteille uniquement.", plug: "Prise type C/F (comme France), 220V.", tip: "Baksheesh attendu pour tout petit service.", health: "Attention 'turista' ; protège-toi du soleil.", custom: "Marchander partout ; tenue couvrante (surtout femmes) ; rabatteurs insistants aux sites.", safe: "Sites touristiques sûrs/encadrés ; femmes solo : prévois le harcèlement de rue, reste ferme." },
+      { name: "Allemagne", flag: "🇩🇪", m: ["allemagne", "germany", "berlin", "munich", "münich", "🇩🇪"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). Étonnamment CASH dans beaucoup de bars/petits commerces.", lang: "Allemand ; très bon anglais.", transport: "Trains DB ponctuels, métros efficaces, vélos partout.", water: "Eau du robinet potable.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10 % (on annonce le total au serveur).", health: "CEAM valable.", custom: "Ponctualité et règles respectées ; le dimanche tout ferme.", safe: "Très sûr." },
+      { name: "Croatie", flag: "🇭🇷", m: ["croatie", "croatia", "dubrovnik", "split", "zagreb", "🇭🇷"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€) depuis 2023.", lang: "Croate ; bon anglais côté côte.", transport: "Bus confortables, ferries entre îles (Jadrolinija). Loue une voiture pour l'arrière-pays.", water: "Eau du robinet potable.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~10 %.", health: "CEAM valable.", custom: "Côte adriatique détendue ; haute saison très fréquentée (juillet-août).", safe: "Très sûr." },
+      { name: "Brésil", flag: "🇧🇷", m: ["brésil", "bresil", "brazil", "rio", "sao paulo", "são paulo", "🇧🇷"], visa: "Pas de visa pour les Français (≤ 90 j).", money: "Real (BRL). Cash + Pix (paiement instantané local) ; CB courante.", lang: "Portugais ; peu d'anglais.", transport: "Vols internes pour les distances, Uber/99 en ville (plus sûr que taxi).", water: "Eau en bouteille conseillée.", plug: "Prise type N (parfois C), 127/220V selon région.", tip: "Service 10 % souvent inclus.", health: "Vaccin fièvre jaune (Amazonie/zones) ; anti-moustiques (dengue).", custom: "Chaleureux et festif ; 'no dar bobeira' = discrétion avec tes affaires.", safe: "Varie fortement : discrétion (pas de bijoux/téléphone exposé), commande tes taxis, évite favelas non encadrées et la nuit isolée." },
+      { name: "Canada", flag: "🇨🇦", m: ["canada", "montréal", "montreal", "toronto", "vancouver", "québec", "quebec", "🇨🇦"], visa: "AVE obligatoire (en ligne, avant départ) pour ≤ 6 mois.", money: "Dollar canadien (CAD). Sans contact partout.", lang: "Anglais + français (Québec).", transport: "Grandes distances → vols/voiture ; bons transports urbains.", water: "Eau du robinet potable.", plug: "Prise type A/B (US), 120V — adaptateur.", tip: "Pourboire ATTENDU 15-20 % ; taxes ajoutées en caisse.", health: "Soins chers → assurance voyage.", custom: "Très poli ; hivers rudes (équipe-toi).", safe: "Très sûr." },
     ];
     function _countryFor(dest) {
       const d = (dest || "").toLowerCase();
