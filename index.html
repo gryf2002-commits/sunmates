@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=286"></script>
-  <script src="sunmates-icons.js?v=286"></script>
+  <script src="sunmates-badges.js?v=287"></script>
+  <script src="sunmates-icons.js?v=287"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1930,7 +1930,7 @@
     /* « Bonjour {pseudo} » et le « Sun » du logo aux COULEURS DU SOLEIL (or → ambre), jour ET nuit. */
     :root { --sun-grad: linear-gradient(120deg, #FFC93C 0%, #FF9F1C 55%, #FF7E3D 100%); }
     body.theme-dusk { --sun-grad: linear-gradient(120deg, #FFD96B 0%, #FFB347 58%, #FF9A4D 100%); }
-    #homeHello, #homeHello .hello-name, .brand b .sun {
+    #homeHello, #homeHello .hello-name {
       background: var(--sun-grad) !important; -webkit-background-clip: text !important; background-clip: text !important;
       color: transparent !important; -webkit-text-fill-color: transparent !important;
     }
@@ -2361,7 +2361,7 @@
 
     /* --- Marque / en-tête --- */
     .brand b { font-weight: 600; letter-spacing: .015em; font-size: 1.2rem; }
-    .brand .mark { background: var(--accent-grad); border-radius: 11px; box-shadow: var(--shadow-sm); }
+    .brand .mark { background: var(--sun-grad, var(--accent-grad)); border-radius: 11px; box-shadow: var(--shadow-sm); }
     .topbar { background: linear-gradient(var(--bg) 72%, rgba(244,237,224,0)); }
 
     /* --- Cartes : épurées, bord fin, ombre douce --- */
@@ -2463,7 +2463,7 @@
 
     h1, h2, h3 { color: var(--ink); }
     .topbar { background: linear-gradient(var(--bg) 70%, rgba(255,244,230,0)); }
-    .brand .mark { background: var(--accent-grad); box-shadow: 0 6px 16px rgba(255,90,77,.4); }
+    .brand .mark { background: var(--sun-grad, var(--accent-grad)); box-shadow: 0 6px 16px rgba(255,159,28,.42); }
     .section-head a { color: var(--retro-teal); }
 
     /* Cartes chaleureuses */
@@ -2566,7 +2566,7 @@
     .mark .logo-night { display: none; }
     body.theme-dusk .mark .logo-day { display: none; }
     body.theme-dusk .mark .logo-night { display: block; }
-    body.theme-dusk .brand .mark { background: linear-gradient(150deg, #7A2E5E, #C2502E) !important; } /* coucher de soleil sombre */
+    body.theme-dusk .brand .mark { background: var(--sun-grad) !important; } /* soleil doré, nuit */
     /* Hero de connexion : ambiance NUIT en mode sombre */
     body.theme-dusk .auth-hero { background: linear-gradient(160deg, rgba(58,42,110,.74), rgba(40,24,78,.82) 58%, rgba(18,26,86,.86)), url('https://loremflickr.com/820/740/ocean,night,stars?lock=5151') center/cover !important; }
     body.theme-dusk .auth-hero .logo-badge { background: rgba(20,16,40,.88) !important; box-shadow: 0 12px 30px rgba(0,0,0,.4), 0 0 0 6px rgba(255,255,255,.12) !important; }
@@ -3117,8 +3117,8 @@
         <div id="homeTravelMap">
 
         <!-- ===== Carte « tout-en-un » : lieux, Mates, activités, check-ins ===== -->
-        <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3></div>
-        <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Touche une pastille pour voir un lieu, un Mate ou une activité autour de toi ✨</p>
+        <div class="section-head" style="justify-content:center"><h3 style="margin-top:.4rem;text-align:center">Explore autour de toi 🗺️</h3></div>
+        <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem;text-align:center">Touche une pastille pour voir un lieu, un Mate ou une activité autour de toi ✨</p>
         <div class="card homemap-card">
           <!-- Sélecteur de ville (menu déroulant) : concentre la carte sur une ville de jeu -->
           <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button></div>
@@ -6573,7 +6573,18 @@
     { const lc = $("lbCitySelect"); if (lc) lc.addEventListener("change", () => { _lbCity = lc.value || ""; renderLeaderboard(); if (window.SMSound) SMSound.play("tap"); }); }
 
     // ====================== SÉCURITÉ ======================
-    $("shareLocBtn").addEventListener("click", () => sendLocation(false, $("locMsg"), "Position partagée avec ton cercle ✅"));
+    // Partage de position : CONFIRMATION (anti miss-click) + explication de ce que ça fait.
+    $("shareLocBtn").addEventListener("click", () => {
+      popInfo("📍", "Partager ma position ?",
+        "<p style='font-size:.88rem;line-height:1.5'>Ta position GPS sera <b>partagée avec ton cercle de confiance</b> (tes connexions acceptées), <b>visible 24 h</b>. Idéal quand tu sors seul·e — eux seuls la voient.</p>" +
+        "<button class='btn-primary btn-block' id='confirmShareLoc' style='margin-top:.9rem'>📍 Oui, partager</button>" +
+        "<button class='btn-ghost btn-block' id='cancelShareLoc' style='margin-top:.5rem'>Annuler</button>");
+      setTimeout(() => {
+        const close = () => { const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden"); };
+        const c = $("confirmShareLoc"); if (c) c.onclick = () => { close(); sendLocation(false, $("locMsg"), "Position partagée avec ton cercle ✅"); };
+        const x = $("cancelShareLoc"); if (x) x.onclick = close;
+      }, 40);
+    });
     $("emergencyBtn").addEventListener("click", () => {
       if (confirm("Déclencher une alerte d'urgence ? Ta position sera diffusée à ton cercle de confiance.")) {
         sendLocation(true, $("emergencyMsg"), "🚨 ALERTE diffusée à ton cercle de confiance !");
