@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=300"></script>
-  <script src="sunmates-icons.js?v=300"></script>
+  <script src="sunmates-badges.js?v=301"></script>
+  <script src="sunmates-icons.js?v=301"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -285,7 +285,7 @@
     .cat-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
     .cat-tile:active { transform: scale(.96); }
     .cat-tile .cic { position: relative; overflow: hidden; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 1.25rem; margin: 0 auto .35rem; color: #fff; box-shadow: inset 0 -8px 16px rgba(0,0,0,.08); }
-    .cat-tile .cic::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 56%; background: linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0)); pointer-events: none; }
+    .cat-tile .cic::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(157deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 26%, rgba(255,255,255,0) 54%); box-shadow: inset 0 1px 0 rgba(255,255,255,.5); pointer-events: none; }
     .cat-tile .clbl { font-size: .74rem; font-weight: 700; color: var(--ink); white-space: nowrap; }
     .cat-tile.active { border-color: var(--accent); box-shadow: 0 6px 16px rgba(255,90,77,.2); }
     .cic.c-sun { background: var(--accent-grad); }
@@ -332,8 +332,9 @@
     .fpost-del { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--muted); font-size: .9rem; }
     .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: .4rem; }
     .fpost { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .7rem; box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease; }
-    .fpost:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-    .fpost-top { display: flex; align-items: center; gap: .6rem; }
+    .fpost { cursor: default; } /* le corps blanc n'est PAS cliquable (anti mis-clic) */
+    .fpost-top { display: flex; align-items: center; gap: .6rem; cursor: pointer; } /* seul l'en-tête ouvre le profil */
+    .fpost-top:active { opacity: .75; }
     .fpost-who { flex: 1; display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
     .fpost-who b { font-size: .9rem; color: var(--ink); }
     .fpost-who span { font-size: .76rem; color: var(--muted); }
@@ -968,10 +969,11 @@
       transition: transform .15s ease;
     }
     .tile:hover .thumb { transform: translateY(-2px) scale(1.02); }
-    /* BRILLANCE : reflet glossy en haut des tuiles (peps) — au-dessus du fond, sous l'emoji centré */
+    /* POLISH VERRE : reflet diagonal doux + liseré clair en haut (effet verre, plus le halo blanc moche) */
     .tile .thumb { position: relative; overflow: hidden; }
-    .tile .thumb::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 58%;
-      background: linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,.12) 45%, rgba(255,255,255,0) 100%);
+    .tile .thumb::before { content: ""; position: absolute; inset: 0; border-radius: inherit;
+      background: linear-gradient(157deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 24%, rgba(255,255,255,0) 52%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
       pointer-events: none; }
     .tile .thumb.green { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#8fe6a6,#34c77b); box-shadow: 0 6px 16px rgba(52,199,123,.24); }
     .tile .thumb.blue  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#8ed0ff,#3aa0f0); box-shadow: 0 6px 16px rgba(58,160,240,.24); }
@@ -1770,7 +1772,8 @@
     .tab-panel[data-panel="accueil"] .tile .thumb::after,
     .tab-panel[data-panel="securite"] .tile .thumb::after {
       content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-      background:linear-gradient(160deg, rgba(255,255,255,.45), rgba(255,255,255,0) 42%); }
+      /* léger voile retiré (faisait doublon avec le reflet verre ::before = halo blanc) ; on garde juste une ombre interne basse pour le volume */
+      background:linear-gradient(180deg, rgba(255,255,255,0) 62%, rgba(0,0,0,.06) 100%); }
     .tab-panel[data-panel="accueil"] .tile:active .thumb,
     .tab-panel[data-panel="securite"] .tile:active .thumb { transform: scale(.96); }
     /* Quête du jour : aura calmée sur l'accueil (moins « jeu ») */
@@ -3027,8 +3030,8 @@
   <section id="appView" class="app-shell hidden">
     <header class="topbar">
       <div class="brand"><span class="mark">
-        <svg class="logo-day" viewBox="0 0 64 64" width="20" height="20"><g stroke="#fff" stroke-width="3.4" stroke-linecap="round"><line x1="32" y1="8" x2="32" y2="15"/><line x1="15" y1="16" x2="20" y2="21"/><line x1="49" y1="16" x2="44" y2="21"/><line x1="9" y1="34" x2="16" y2="34"/><line x1="48" y1="34" x2="55" y2="34"/></g><circle cx="32" cy="34" r="11" fill="#fff"/><path d="M13 47h38" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>
-        <svg class="logo-night" viewBox="0 0 64 64" width="20" height="20"><g stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"><line x1="32" y1="13" x2="32" y2="18"/><line x1="18" y1="20" x2="22" y2="24"/><line x1="46" y1="20" x2="42" y2="24"/></g><circle cx="32" cy="37" r="11" fill="#fff"/><path d="M10 41h44" stroke="#FFD15C" stroke-width="3.6" stroke-linecap="round"/><path d="M17 47h30" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></svg>
+        <svg class="logo-day" viewBox="0 0 64 64" width="22" height="22"><g stroke="#fff" stroke-width="3.4" stroke-linecap="round"><line x1="32" y1="8" x2="32" y2="15"/><line x1="15" y1="16" x2="20" y2="21"/><line x1="49" y1="16" x2="44" y2="21"/><line x1="9" y1="34" x2="16" y2="34"/><line x1="48" y1="34" x2="55" y2="34"/></g><circle cx="32" cy="34" r="11" fill="#fff"/><path d="M13 47h38" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>
+        <svg class="logo-night" viewBox="0 0 64 64" width="22" height="22"><g stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"><line x1="32" y1="13" x2="32" y2="18"/><line x1="18" y1="20" x2="22" y2="24"/><line x1="46" y1="20" x2="42" y2="24"/></g><circle cx="32" cy="37" r="11" fill="#fff"/><path d="M10 41h44" stroke="#FFD15C" stroke-width="3.6" stroke-linecap="round"/><path d="M17 47h30" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></svg>
       </span><b><span class="sun">Sun</span>Mates</b></div>
       <div class="topbar-actions hidden" id="userBox">
         <button class="iconbtn" id="themeToggle" title="Changer de thème" aria-label="Changer de thème jour / nuit">🌙</button>
@@ -10670,9 +10673,12 @@
         e.stopPropagation(); if (!confirm("Supprimer ce post ?")) return;
         try { await db.from("feed_posts").delete().eq("id", Number(el.dataset.del)); buildHomeFeed(); } catch (er) {}
       }));
-      feed.querySelectorAll(".fpost").forEach((el) => el.addEventListener("click", (e) => {
+      // On ouvre le profil SEULEMENT via l'en-tête (avatar + pseudo), pas en touchant le blanc
+      // du post → fini les mis-clics quand on veut liker/commenter (le corps n'est plus cliquable).
+      feed.querySelectorAll(".fpost-top").forEach((el) => el.addEventListener("click", (e) => {
         if (e.target.closest("button")) return;
-        const uid = el.dataset.fuid; if (uid && uid !== myUserId && travelerMap[uid]) { goToTab("connexions"); openTravelerProfile(travelerMap[uid]); }
+        const fp = el.closest(".fpost"); const uid = fp && fp.dataset.fuid;
+        if (uid && uid !== myUserId && travelerMap[uid]) { goToTab("connexions"); openTravelerProfile(travelerMap[uid]); }
       }));
     }
     // Commentaires d'un post du fil (modale : liste + champ d'ajout).
@@ -11493,8 +11499,8 @@
       const dusk = t === "dusk";
       document.body.classList.toggle("theme-dusk", dusk);
       const tt = $("themeToggle"); if (tt) tt.innerHTML = dusk
-        ? '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="display:block"><circle cx="12" cy="12" r="5" fill="#ffd15c"/><g stroke="#FF8A3D" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></g></svg>'
-        : '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="display:block"><path d="M20 14.6A8 8 0 1 1 11 4.2a6.5 6.5 0 0 0 9 10.4z" fill="#ffd15c"/><circle cx="17.5" cy="6.5" r="1.2" fill="#FF8A3D"/></svg>';
+        ? '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><circle cx="12" cy="12" r="5" fill="#ffd15c"/><g stroke="#FF8A3D" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></g></svg>'
+        : '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><path d="M20 14.6A8 8 0 1 1 11 4.2a6.5 6.5 0 0 0 9 10.4z" fill="#ffd15c"/><circle cx="17.5" cy="6.5" r="1.2" fill="#FF8A3D"/></svg>';
       const st = $("setThemeToggle"); if (st) st.checked = dusk; // garde le toggle des Réglages synchro
       const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dusk ? "#171026" : "#fbeee9");
     }
