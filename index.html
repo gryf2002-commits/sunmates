@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=269"></script>
-  <script src="sunmates-icons.js?v=269"></script>
+  <script src="sunmates-badges.js?v=270"></script>
+  <script src="sunmates-icons.js?v=270"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -3730,10 +3730,10 @@
           </div>
 
           <div class="aseg" data-asegpanel="demo">
-            <!-- FUSION : UNE seule visite guidée (auto + pas-à-pas), 41 chapitres A→Z. -->
+            <!-- FUSION : UNE seule visite guidée (auto + pas-à-pas), 83 chapitres A→Z. -->
             <div class="card demo-intro" style="text-align:center">
               <h3 style="margin-top:0">🎬 Visite guidée complète (A → Z)</h3>
-              <p class="muted" style="margin:.2rem 0 .9rem;font-size:.84rem">Un seul parcours qui combine TOUT : l'app se déroule toute seule, écran par écran, avec narration — et tu peux <b>mettre en pause, avancer ou reculer</b> (Précédent / Suivant) pour aller à ton rythme. 41 chapitres.</p>
+              <p class="muted" style="margin:.2rem 0 .9rem;font-size:.84rem">Un seul parcours qui combine TOUT : l'app se déroule toute seule, écran par écran, avec narration — et tu peux <b>mettre en pause, avancer ou reculer</b> (Précédent / Suivant) pour aller à ton rythme. Plus de 80 chapitres.</p>
               <button class="btn-primary btn-block" id="demoPlay" style="font-size:1.05rem">▶ Lancer la visite guidée</button>
               <p class="muted" style="font-size:.76rem;margin:.6rem 0 0">Pause / avancer / reculer / quitter à tout moment. Chaque « ▶ Démo guidée » du catalogue l'ouvre directement au bon chapitre.</p>
             </div>
@@ -5643,7 +5643,7 @@
         ["💼", "Espace Pro / B2B", "Pitch partenaires, demande de partenariat."],
       ]],
       ["🛡️ Admin (back-office)", [
-        ["🎬", "Démo guidée UNIQUE (A→Z)", "Un seul parcours commenté de 41 chapitres : auto OU pas-à-pas (Précédent/Suivant/Pause). Chaque « Voir » du catalogue l'ouvre au bon chapitre. (Fusion tuto + démo)"],
+        ["🎬", "Démo guidée UNIQUE (A→Z)", "Un seul parcours commenté de 80+ chapitres : auto OU pas-à-pas (Précédent/Suivant/Pause). Chaque « Voir » du catalogue l'ouvre au bon chapitre. (Fusion tuto + démo)"],
         ["🗄️", "Données (base)", "Vue admin sur la base Supabase (tables/compteurs) + le contenu de jeu (quêtes par ville, badges, défis) + schéma/sécurité."],
         ["📊", "Tableau de bord (KPIs)", "Membres ACTIFS (bannis exclus), suspendus & admins à part, check-ins, quêtes… cellules cliquables → segment."],
         ["👥", "Fiches membre", "Actifs vs suspendus séparés + filtre, recherche, actions (vérifier/bannir/admin), fiche détaillée."],
@@ -5791,6 +5791,91 @@
         run: () => { adCleanup(); A(() => goToTab("accueil")); setTimeout(() => { if (!document.body.classList.contains("theme-dusk")) adClick("themeToggle"); }, 500); } },
       { title: "☀️ …et le retour au jour", text: "Un simple bouton bascule entre nuit tropicale et mode jour ensoleillé.", ms: 5500,
         run: () => { setTimeout(() => { if (document.body.classList.contains("theme-dusk")) adClick("themeToggle"); }, 400); } },
+      // ===== Chapitres ÉTENDUS (mode Maison, hub de jeu, sécurité avancée, admin) =====
+      { title: "🏠 Le mode Maison", text: "Même rentré·e chez toi, l'app continue : bascule « Voyage / Maison » pour accéder à ton hub solo.", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("accueil")); setTimeout(() => { if (typeof setHomeMode === "function") setHomeMode("home"); adInto("#homeModeSwitch", 200); }, 350); } },
+      { title: "📈 Ta progression solo", text: "Défis relevés, rituels, XP, série : touche un chiffre, une tuile pop t'explique tout, sans te rediriger.", ms: 6000,
+        run: () => { A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#soloProgress", 250); } },
+      { title: "🧭 Les défis solo de ta ville", text: "Redécouvre ton coin comme en voyage : 10 défis adaptés à TA ville, à relever en vrai.", ms: 6000,
+        run: () => { A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#soloChallenges", 250); } },
+      { title: "🎲 Mélanger les défis", text: "Pas inspiré·e ? Un bouton « Mélanger » t'en propose d'autres instantanément.", ms: 5500,
+        run: () => { adInto("#soloChallenges", 150); setTimeout(() => adClick("scReroll"), 700); } },
+      { title: "☀️ Les rituels du jour", text: "De petites habitudes quotidiennes à cocher pour garder ta série de jours.", ms: 5500,
+        run: () => { A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#soloRituals", 250); } },
+      { title: "✍️ Crée ton rituel perso", text: "Au-delà des 3 rituels, tu peux ajouter le TIEN : ta propre routine, à ta façon.", ms: 6000,
+        run: () => { adInto("#soloRituals", 150); setTimeout(() => { if (typeof editCustomRitual === "function") editCustomRitual(); }, 700); } },
+      { title: "💡 L'inspiration du jour", text: "Une destination différente chaque jour, avec pourquoi y aller et ses incontournables.", ms: 6000,
+        run: () => { adCleanup(); A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#hmInspo", 250); } },
+      { title: "✨ Découvrir une destination", text: "Touche « Découvrir » : une vraie fiche (ambiance, quand partir, budget, sécurité, must-see) s'ouvre.", ms: 6500,
+        run: () => { adInto("#hmInspo", 150); setTimeout(() => { const b = document.getElementById("hmInspoMore"); if (b) A(() => b.click()); }, 800); } },
+      { title: "🧳 Préparer mon prochain voyage", text: "Planifie ta destination + une check-list par catégories (sécurité, papiers, santé…).", ms: 6000,
+        run: () => { adCleanup(); A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto(".hm-plan", 250); setTimeout(() => { const d = document.querySelector(".hm-plan"); if (d) d.open = true; }, 500); } },
+      { title: "🛂 La fiche pays (must-know)", text: "Selon ta destination, une fiche te donne les vraies infos : formalités, argent, transport, coutumes, sécurité.", ms: 6500,
+        run: () => { const d = document.querySelector(".hm-plan"); if (d) d.open = true; adInto("#tripPrepCard", 300); } },
+      { title: "🌠 Mes envies d'ailleurs", text: "Ta liste privée de destinations rêvées, pour préparer tes prochaines aventures.", ms: 5500,
+        run: () => { const d = document.querySelector(".hm-plan"); if (d) d.open = true; adInto("#wishlistCard", 300); } },
+      { title: "🛟 Devenir hôte SunMates", text: "Aide les voyageurs de passage dans ta ville. Le rôle est validé manuellement (confiance).", ms: 6000,
+        run: () => { A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#hostBtn", 300); } },
+      { title: "🏡 HomeMates — tes souvenirs", text: "Tes aventures et tes Mates restent avec toi : récap Mates/villes/quêtes/check-ins.", ms: 6000,
+        run: () => { A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#homeMates", 300); } },
+      { title: "📖 L'album souvenir par ville", text: "Note un souvenir marquant par ville visitée — ton carnet de route perso.", ms: 5500,
+        run: () => { adInto("#homeMates", 200); } },
+      { title: "📍 Mon spot du jour", text: "Dis où tu traînes : tes Mates te voient sur la carte et peuvent te rejoindre. Visible 24 h, façon story.", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("lieux")); setTimeout(() => { const s = document.getElementById("spotCard"); if (s) s.open = true; adInto("#spotCard", 250); }, 400); } },
+      { title: "📰 Le fil : humeur ou spot", text: "Publie en un geste : touche une tuile d'humeur ou de spot, le champ se pré-remplit.", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("accueil")); A(() => { if (typeof setHomeMode === "function") setHomeMode("travel"); }); adInto("#feedComposer", 350); } },
+      { title: "🏙️ La capitale du jour", text: "Une ville mise à l'honneur chaque jour : un teaser de ses quêtes avant d'explorer.", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => adInto("#capitaleDuJour", 250), 400); } },
+      { title: "🎯 Le radar : quête la plus proche", text: "Géolocalisé : la quête la plus proche de toi, avec la distance. Touche pour la liste complète.", ms: 6000,
+        run: () => { A(() => goToTab("jeux")); adInto("#nearQuestCard", 300); } },
+      { title: "🗺️ Ma collection", text: "Toutes tes quêtes accomplies / à faire, par ville, + tes villes explorées.", ms: 5500,
+        run: () => { A(() => goToTab("jeux")); setTimeout(() => { if (typeof showCollectionSheet === "function") showCollectionSheet(); }, 500); } },
+      { title: "🗓️ Les objectifs de la semaine", text: "3 mini-objectifs qui changent chaque semaine pour garder le rythme.", ms: 5500,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { const d = document.querySelector(".wg-card"); if (d) d.open = true; adInto("#weeklyGoals", 250); }, 450); } },
+      { title: "⭐ Ton niveau & tes titres", text: "Gagne de l'XP, monte en niveau, débloque des titres… et quelques surprises aux paliers élevés 😏", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showLevelInfo === "function") showLevelInfo(); }, 500); } },
+      { title: "🎮 Les jeux populaires", text: "6 mini-jeux intégrés, jouables tout de suite, en solo ou avec un Mate.", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof openJeuxSheet === "function") openJeuxSheet("games"); }, 500); } },
+      { title: "🎲 La roue des défis", text: "Un défi fun tiré au sort à chaque clic — parfait pour se lancer.", ms: 5500,
+        run: () => { setTimeout(() => { if (typeof playGame === "function") playGame("wheel"); }, 300); } },
+      { title: "❓ Le quiz du voyageur", text: "Teste ta culture voyage, une question à la fois, et enchaîne les bonnes réponses.", ms: 6000,
+        run: () => { setTimeout(() => { if (typeof playGame === "function") playGame("quiz"); }, 300); } },
+      { title: "🗺️ Le bingo de voyage", text: "Coche les expériences vécues, vise la grille complète pour le BINGO !", ms: 5500,
+        run: () => { setTimeout(() => { if (typeof playGame === "function") playGame("bingo"); }, 300); } },
+      { title: "🧊 Le brise-glace", text: "À court de mots ? Une question parfaite pour lancer la conversation avec un Mate.", ms: 5500,
+        run: () => { setTimeout(() => { if (typeof playGame === "function") playGame("ice"); }, 300); } },
+      { title: "🔎 Chercher / trier les quêtes", text: "La feuille des quêtes a une recherche + un tri « près de moi » pour viser l'essentiel.", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof openJeuxSheet === "function") openJeuxSheet("quests"); }, 500); } },
+      { title: "🏅 La collection de badges", text: "Des médaillons à débloquer : grisés tant que verrouillés, façon jeu vidéo.", ms: 5500,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); }, 450); } },
+      { title: "🌟 Badges prestige & secret", text: "Des paliers endgame très exigeants… et un badge SECRET « Légende de SunMates » à découvrir.", ms: 6000,
+        run: () => { A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); }, 350); } },
+      { title: "🛍️ La boutique de titres", text: "Dépense ton XP en titres exclusifs qui s'affichent sur ton profil.", ms: 5500,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxShop"); }, 450); } },
+      { title: "🖼️ Les cadres d'avatar", text: "Des cadres rares (émeraude, royal…) pour personnaliser ta photo.", ms: 5500,
+        run: () => { A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxShop"); }, 350); } },
+      { title: "🎟️ Tes coupons partenaires", text: "Les récompenses débloquées (1er verre offert, happy hour…), prêtes à dégainer.", ms: 5500,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxCoupons"); }, 450); } },
+      { title: "🏆 Le classement par ville", text: "Compare-toi par XP, check-ins, confiance ou badges — filtrable par ville.", ms: 6000,
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") { showJeuxView("jeuxRank"); if (typeof renderLeaderboard === "function") renderLeaderboard(); } }, 450); } },
+      { title: "❤️ La compatibilité d'un Mate", text: "Sur chaque profil, un score de compatibilité — touche-le pour voir pourquoi vous matchez.", ms: 6000,
+        run: () => { adCleanup(); A(() => ensureIaPersonas && ensureIaPersonas()); A(() => goToTab("connexions")); setTimeout(() => { const m = adDemoProfile(); if (m && typeof openTravelerProfile === "function") openTravelerProfile(m); setTimeout(() => adInto("#tpCompatStat", 0, "center"), 500); }, 600); } },
+      { title: "⭐ Recommander un Mate (vouch)", text: "Tu peux te porter garant d'un Mate de confiance — un vrai signal pour la communauté.", ms: 5500,
+        run: () => { setTimeout(() => adInto("#tpVouchCard", 0, "center"), 300); } },
+      { title: "🎯 Défi, BFF ou Bloquer", text: "Sous le profil : lance un défi, désigne ton BFF du moment, ou bloque/signale en un geste.", ms: 5500,
+        run: () => { setTimeout(() => adInto(".tp-actions2", 0, "center"), 300); } },
+      { title: "📞 Configurer le faux appel", text: "Choisis le NOM de l'appelant et lance un appel simulé pour t'extraire d'une situation gênante.", ms: 6500,
+        run: () => { adCleanup(); A(() => goToTab("securite")); setTimeout(() => adClick("fakeCallBtn"), 600); } },
+      { title: "🎵 Ta sonnerie perso", text: "Tu peux même charger TA sonnerie (gardée sur ton appareil) pour un faux appel crédible.", ms: 6000,
+        run: () => { setTimeout(() => { const ov = document.getElementById("popInfoOv"); if (ov) ov.classList.add("hidden"); if (typeof openRingtonePicker === "function") openRingtonePicker(); }, 400); } },
+      { title: "✈️ Voyager en sécurité", text: "Un guide complet : avant de partir, transports, logement, soirée, rencontres, argent, pépins.", ms: 6500,
+        run: () => { adCleanup(); A(() => goToTab("securite")); setTimeout(() => { if (typeof handleSecu === "function") handleSecu("voyage"); }, 500); } },
+      { title: "🌍 Les numéros d'urgence", text: "Le bon numéro selon le pays — indispensable à l'étranger.", ms: 5500,
+        run: () => { const ov = document.getElementById("pickerOverlay"); A(() => goToTab("securite")); setTimeout(() => { if (typeof openNumbers === "function") openNumbers(); }, 500); } },
+      { title: "🗄️ Admin : les données derrière", text: "Côté admin : un panneau « Données » montre la base, le contenu de jeu et le stockage Supabase EN LIVE.", ms: 6500,
+        run: () => { adCleanup(); A(() => goToTab("profil")); setTimeout(() => { if (typeof showProfileSegment === "function") showProfileSegment("admin"); setTimeout(() => { if (typeof showAdminSegment === "function") showAdminSegment("data"); }, 400); }, 450); } },
+      { title: "🎬 Tout est dans la visite guidée", text: "Cette visite EST le tuto : tu peux la relancer, avancer chapitre par chapitre, ou l'ouvrir sur une zone précise depuis le catalogue.", ms: 6500,
+        run: () => { adCleanup(); A(() => goToTab("accueil")); } },
       { title: "🎉 Et voilà, de A à Z !", text: "Pars solo, trouve ta bande. SunMates transforme un voyage en solo en aventure partagée. Merci !", ms: 7000,
         run: () => { adCleanup(); A(() => goToTab("accueil")); } },
     ];
@@ -5856,53 +5941,112 @@
     }
 
     // ---- Segment ADMIN « Données » : vue d'ensemble de la base + du contenu de jeu ----
+    function _fmtBytes(b) { if (!b) return "0 o"; const u = ["o", "Ko", "Mo", "Go"]; let i = 0; while (b >= 1024 && i < 3) { b /= 1024; i++; } return (i ? b.toFixed(1) : b) + " " + u[i]; }
+    // Estimation LIVE du stockage Supabase (somme des tailles de fichiers listés).
+    async function _liveStorage() {
+      const out = { avatars: { n: 0, size: 0 }, voicenotes: { n: 0, size: 0 } };
+      try { const { data } = await db.storage.from("avatars").list("", { limit: 1000 }); (data || []).forEach((f) => { if (f.id || (f.metadata && f.metadata.size != null)) { out.avatars.n++; out.avatars.size += (f.metadata && f.metadata.size) || 0; } }); } catch (e) {}
+      try {
+        const { data: folders } = await db.storage.from("voicenotes").list("", { limit: 200 });
+        for (const fo of (folders || []).slice(0, 60)) {
+          if (fo.id) { out.voicenotes.n++; out.voicenotes.size += (fo.metadata && fo.metadata.size) || 0; continue; }
+          try { const { data: files } = await db.storage.from("voicenotes").list(fo.name, { limit: 100 }); (files || []).forEach((f) => { out.voicenotes.n++; out.voicenotes.size += (f.metadata && f.metadata.size) || 0; }); } catch (e) {}
+        }
+      } catch (e) {}
+      return out;
+    }
     async function loadAdminData() {
       const el = $("adminData"); if (!el) return;
+      el.innerHTML = '<p class="muted">Chargement…</p>';
       const esc = (s) => (typeof escapeHtml === "function" ? escapeHtml(String(s)) : String(s));
       let stats = null; try { const { data } = await db.rpc("admin_stats"); if (data && data.ok) stats = data; } catch (e) {}
-      // Contenu de jeu chargé côté client
       const quests = (typeof allQuests !== "undefined" ? allQuests : []).filter((q) => q.kind === "quest");
       const games = (typeof allQuests !== "undefined" ? allQuests : []).filter((q) => q.kind && q.kind !== "quest");
-      const byCity = {}; quests.forEach((q) => { const c = (q.city || "—").replace(/, France$/, ""); byCity[c] = (byCity[c] || 0) + 1; });
+      const byCity = {}; quests.forEach((q) => { const c = (q.city || "—").replace(/, France$/, ""); (byCity[c] = byCity[c] || []).push(q); });
       const cities = Object.keys(byCity).sort();
-      const badges = (typeof allBadgeDefs !== "undefined" && allBadgeDefs.length) ? allBadgeDefs.length : 0;
-      const nChal = (typeof SOLO_CHALLENGES !== "undefined") ? SOLO_CHALLENGES.length : 0;
-      const nRit = (typeof SOLO_RITUALS !== "undefined") ? SOLO_RITUALS.length : 0;
-      const nNums = (typeof EMERGENCY_NUMBERS !== "undefined") ? EMERGENCY_NUMBERS.length : 0;
+      const badges = (typeof allBadgeDefs !== "undefined") ? allBadgeDefs : [];
+      const chal = (typeof SOLO_CHALLENGES !== "undefined") ? SOLO_CHALLENGES : [];
+      const rits = (typeof SOLO_RITUALS !== "undefined") ? SOLO_RITUALS : [];
+      const nums = (typeof EMERGENCY_NUMBERS !== "undefined") ? EMERGENCY_NUMBERS : [];
+      const cgames = (typeof CLIENT_GAMES !== "undefined") ? CLIENT_GAMES : [];
+      const countries = (typeof COUNTRY_TIPS !== "undefined") ? COUNTRY_TIPS : [];
+      const moods = (typeof FEED_MOODS !== "undefined") ? FEED_MOODS : [];
+
+      // On mémorise le contenu détaillé des tuiles cliquables (popent au clic)
+      const POP = {};
+      const list = (arr) => "<div style='text-align:left'>" + arr.map((x) => "<div class='coll-row'>" + x + "</div>").join("") + "</div>";
+      cities.forEach((c) => { POP["city:" + c] = ["🗺️ " + esc(c), list(byCity[c].map((q) => (q.emoji || "🎯") + " " + esc(q.title) + " <span style='color:var(--muted)'>· +" + (q.points || 0) + " XP</span>"))]; });
+      POP["games"] = ["🎮 Jeux populaires (intégrés)", list(cgames.map((g) => g.emoji + " <b>" + esc(g.name) + "</b> — " + esc(g.desc)))];
+      POP["badges"] = ["🏅 Badges (catalogue)", badges.length ? list(badges.map((b) => (b.emoji || "🏅") + " <b>" + esc(b.name) + "</b>" + (b.is_secret ? " 🔒 secret" : "") + (b.description ? " — " + esc(b.description) : ""))) : "<p class='muted'>Lance les migrations badges.</p>"];
+      POP["chal"] = ["🧭 Défis solo", list(chal.map((c) => c.emoji + " <b>" + esc(c.title) + "</b> · +" + c.xp + " XP"))];
+      POP["rits"] = ["☀️ Rituels", list(rits.map((r) => r.emoji + " " + esc(r.title)))];
+      POP["nums"] = ["🌍 Numéros d'urgence (" + nums.length + " pays)", list(nums.map((n) => (n.f || "🏳️") + " <b>" + esc(n.c) + "</b> · " + esc(n.n)))];
+      POP["countries"] = ["🧳 Fiches pays (préparatifs)", list(countries.map((c) => c.flag + " <b>" + esc(c.name) + "</b>"))];
+      POP["moods"] = ["📰 Tuiles du fil (humeurs + spots)", list(moods.concat(typeof FEED_SPOTS !== "undefined" ? FEED_SPOTS : []).map((m) => esc(m)))];
+      window._adminDataPop = POP;
+
+      const cell = (k, v, pop) => `<div class="pcell${pop ? " pcell-jump" : ""}"${pop ? ` data-datapop="${pop}" style="cursor:pointer"` : ""}><div class="k">${esc(k)}${pop ? " ›" : ""}</div><div class="v">${v ?? 0}</div></div>`;
 
       const sblock = stats ? `
         <div class="set-grouptitle">📊 Tables Supabase (live)</div>
         <div class="pgrid">
-          ${[["profiles", stats.users + " actifs"], ["dont vérifiés", stats.verified], ["dont Gold 👑", stats.gold], ["dont bannis 🚫", stats.banned],
-             ["matches_connections", stats.connections], ["checkpoints", stats.checkins], ["messages", stats.messages],
-             ["user_quests (finies)", stats.quests_done], ["suggestions (défis)", stats.suggestions], ["badges attribués", stats.badges],
-             ["coupons", stats.coupons], ["referrals", stats.referrals], ["partner_cafes", stats.places], ["reports (en attente)", stats.reports_pending], ["b2b_quotes", stats.quotes]]
-            .map(([k, v]) => `<div class="pcell"><div class="k">${esc(k)}</div><div class="v">${v ?? 0}</div></div>`).join("")}
+          ${[["profiles", stats.users + " actifs"], ["vérifiés ✓", stats.verified], ["Gold 👑", stats.gold], ["bannis 🚫", stats.banned],
+             ["connexions", stats.connections], ["demandes", stats.pending_conn], ["check-ins", stats.checkins], ["messages", stats.messages],
+             ["quêtes finies", stats.quests_done], ["défis", stats.suggestions], ["badges donnés", stats.badges],
+             ["coupons", stats.coupons], ["parrainages", stats.referrals], ["lieux", stats.places], ["signalements", stats.reports_pending], ["devis B2B", stats.quotes]]
+            .map(([k, v]) => cell(k, v)).join("")}
         </div>` : '<p class="muted">Stats indisponibles (accès admin requis).</p>';
 
       const citiesBlock = `
-        <div class="set-grouptitle">🗺️ Contenu de jeu — quêtes par ville (${quests.length} quêtes · ${cities.length} villes)</div>
-        ${cities.length ? cities.map((c) => `<div class="qrow" style="padding:.4rem .2rem"><div class="qname">${esc(c)}</div><b style="color:var(--accent)">${byCity[c]}</b></div>`).join("") : '<p class="muted">Aucune quête chargée.</p>'}`;
+        <div class="set-grouptitle">🗺️ Contenu de jeu — quêtes par ville (${quests.length} quêtes · ${cities.length} villes) <span style="font-weight:400;color:var(--muted)">· touche une ville</span></div>
+        <div class="pgrid">${cities.length ? cities.map((c) => cell(c, byCity[c].length, "city:" + c)).join("") : '<div class="pcell"><div class="k">—</div><div class="v">0</div></div>'}</div>`;
 
       const catalog = `
-        <div class="set-grouptitle">🎒 Catalogues</div>
+        <div class="set-grouptitle">🎒 Catalogues <span style="font-weight:400;color:var(--muted)">· touche pour ouvrir</span></div>
         <div class="pgrid">
-          <div class="pcell"><div class="k">Jeux populaires</div><div class="v">${games.length}</div></div>
-          <div class="pcell"><div class="k">Badges (défs)</div><div class="v">${badges}</div></div>
-          <div class="pcell"><div class="k">Défis solo</div><div class="v">${nChal}</div></div>
-          <div class="pcell"><div class="k">Rituels</div><div class="v">${nRit}</div></div>
-          <div class="pcell"><div class="k">Pays (urgence)</div><div class="v">${nNums}</div></div>
+          ${cell("Mini-jeux", cgames.length, "games")}
+          ${cell("Badges", badges.length, "badges")}
+          ${cell("Défis solo", chal.length, "chal")}
+          ${cell("Rituels", rits.length, "rits")}
+          ${cell("Fiches pays", countries.length, "countries")}
+          ${cell("Pays urgence", nums.length, "nums")}
+          ${cell("Tuiles du fil", moods.length + (typeof FEED_SPOTS !== "undefined" ? FEED_SPOTS.length : 0), "moods")}
+          ${cell("Jeux BDD", games.length)}
         </div>`;
 
-      const schema = `
-        <div class="set-grouptitle">🏗️ Schéma &amp; sécurité</div>
-        <p class="muted" style="font-size:.82rem;line-height:1.6">
-        Backend = <b>Supabase Postgres</b> (pas de serveur Node). <b>RLS activé sur chaque table</b> : chacun ne lit/écrit que ses données
-        (profil, positions, check-ins), lecture publique des lieux sûrs et profils non bannis (matching).
-        Stockage : bucket <b>avatars</b> (public) + <b>voicenotes</b> (privé, URL signée). Clé <b>anon</b> publique par design (sécurité = RLS).
-        Migrations : <b>s30→s36</b> (villes, modération, parrainage, classement par ville, badges, feed, vocaux).</p>`;
+      const stack = `
+        <div class="set-grouptitle">🏗️ Stack technique (toute la stack derrière)</div>
+        <div style="font-size:.82rem;line-height:1.7">
+          <div>🖥️ <b>Front</b> : 1 fichier <code>index.html</code> HTML/CSS/JS <b>vanilla</b> (zéro framework, zéro build).</div>
+          <div>🗄️ <b>Base</b> : <b>Supabase Postgres</b> + <b>RLS</b> sur chaque table (chacun ne touche que ses données).</div>
+          <div>🔐 <b>Auth</b> : Supabase Auth (email/mot de passe), clé <b>anon</b> publique par design.</div>
+          <div>📦 <b>Storage</b> : buckets <b>avatars</b> (public) + <b>voicenotes</b> (privé, URL signée). Sonnerie perso = <b>IndexedDB</b> (appareil).</div>
+          <div>⚡ <b>Temps réel</b> : Supabase Realtime (connexions, défis, présence).</div>
+          <div>🗺️ <b>Carte</b> : Leaflet (CDN) + OpenStreetMap.</div>
+          <div>🌐 <b>Hébergement</b> : <b>GitHub Pages</b> (statique) + <b>PWA</b> (service worker, installable, hors-ligne).</div>
+          <div>📈 <b>Monitoring</b> : Sentry + PostHog (EU).</div>
+          <div>🌍 <b>i18n</b> : dictionnaire FR/EN + filet de traduction auto (MyMemory).</div>
+          <div>🔔 <b>Sons</b> : SMSound (synthés WebAudio, libre de droit).</div>
+        </div>`;
 
-      el.innerHTML = sblock + citiesBlock + catalog + schema;
+      const storageBlock = `
+        <div class="set-grouptitle">📦 Stockage Supabase (live)</div>
+        <div id="adminStorageLive"><p class="muted" style="font-size:.82rem">Mesure en cours…</p></div>
+        <p class="muted" style="font-size:.74rem;margin:.4rem 0 0">Free tier : Storage 1 Go · Base 500 Mo · Egress 5 Go/mois.</p>`;
+
+      el.innerHTML = sblock + citiesBlock + catalog + storageBlock + stack;
+      el.querySelectorAll("[data-datapop]").forEach((c) => c.addEventListener("click", () => { const p = (window._adminDataPop || {})[c.dataset.datapop]; if (p) popInfo("🗄️", p[0], p[1]); }));
+
+      // Stockage live (asynchrone, ne bloque pas l'affichage)
+      _liveStorage().then((s) => {
+        const box = $("adminStorageLive"); if (!box) return;
+        const tot = s.avatars.size + s.voicenotes.size;
+        box.innerHTML = `<div class="pgrid">
+          <div class="pcell"><div class="k">avatars</div><div class="v" style="font-size:1rem">${_fmtBytes(s.avatars.size)}</div><div class="k" style="margin-top:.1rem">${s.avatars.n} fichiers</div></div>
+          <div class="pcell"><div class="k">voicenotes</div><div class="v" style="font-size:1rem">${_fmtBytes(s.voicenotes.size)}</div><div class="k" style="margin-top:.1rem">${s.voicenotes.n} fichiers</div></div>
+          <div class="pcell"><div class="k">Total mesuré</div><div class="v" style="font-size:1rem">${_fmtBytes(tot)}</div><div class="k" style="margin-top:.1rem">/ 1 Go (${(tot / 1073741824 * 100).toFixed(2)} %)</div></div>
+        </div>`;
+      }).catch(() => { const box = $("adminStorageLive"); if (box) box.innerHTML = '<p class="muted" style="font-size:.8rem">Mesure indisponible (droits storage).</p>'; });
     }
 
     let adminUsersCache = [];
