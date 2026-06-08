@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=265"></script>
-  <script src="sunmates-icons.js?v=265"></script>
+  <script src="sunmates-badges.js?v=266"></script>
+  <script src="sunmates-icons.js?v=266"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -655,15 +655,16 @@
     .ds-go { margin-top: .55rem; padding: .4rem .8rem; font-size: .8rem; }
 
     /* Carte « score de confiance » */
-    /* Profil : métrique HÉRO (score de confiance) + nom focal */
-    #profMain .person .info .name { font-size: 1.3rem; font-weight: 800; }
-    .prof-hero-stat { display: flex; align-items: center; gap: .7rem; margin-top: 1rem; padding: .7rem .85rem; border-radius: 16px; cursor: pointer; color: #fff; background: radial-gradient(120% 130% at 12% -10%, rgba(255,255,255,.22), rgba(255,255,255,0) 46%), var(--accent-grad); box-shadow: var(--shadow-pop); }
-    .prof-hero-stat .phs-ic { font-size: 1.7rem; flex-shrink: 0; }
-    .prof-hero-stat .phs-txt { flex: 1; min-width: 0; line-height: 1.2; }
-    .prof-hero-stat .phs-lbl { font-weight: 800; font-size: .92rem; }
-    .prof-hero-stat .phs-sub { font-size: .72rem; opacity: .95; }
-    .prof-hero-stat .phs-v { font-size: 1.9rem; font-weight: 900; flex-shrink: 0; }
-    .prof-hero-stat:active { transform: scale(.99); }
+    /* Profil : photo grande & entière, nom/titre/ville centrés, confiance compacte */
+    .prof-photo { width: 132px; height: 132px; margin: .2rem auto .7rem; border-radius: 20px; background-color: var(--cream); background-size: contain; background-position: center; background-repeat: no-repeat; display: grid; place-items: center; font-size: 3.2rem; box-shadow: var(--shadow-sm); }
+    body.theme-dusk .prof-photo { background-color: #2a2140; }
+    .prof-name { font-size: 1.45rem; font-weight: 800; justify-content: center; display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+    .prof-title { font-size: .95rem; color: var(--accent); font-weight: 700; margin-top: .15rem; }
+    .prof-city { font-size: .9rem; margin-top: .15rem; }
+    .prof-trust { display: inline-flex; align-items: center; gap: .35rem; margin: .8rem auto 0; padding: .35rem .8rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: .85rem; cursor: pointer; }
+    .prof-trust b { font-size: 1rem; color: var(--accent); }
+    .prof-trust .pt-info { opacity: .7; font-size: .8rem; }
+    .prof-trust:active { transform: scale(.97); }
     .stat-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .5rem; }
     /* popInfo : tuile explicative qui pop au centre (DA sunset) */
     .popinfo-ov { position: fixed; inset: 0; z-index: 100000; display: grid; place-items: center; padding: 1.2rem; background: rgba(20,8,30,.55); backdrop-filter: blur(3px); animation: popinfoFade .18s ease; }
@@ -1335,9 +1336,12 @@
     .city-pick select{ flex:1; padding:.5rem 1.8rem .5rem .7rem; border-radius:12px; border:1px solid var(--line); background-color:var(--card); color:var(--ink); font-weight:700; font-size:.85rem; cursor:pointer; -webkit-appearance:none; appearance:none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23E8961F' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .7rem center; }
     body.theme-dusk .city-pick select{ background-color:#2a2140; color:#fff; border-color:rgba(255,255,255,.12); }
-    .todo-toggle{ flex-shrink:0; padding:.5rem .7rem; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--text); font-weight:700; font-size:.8rem; cursor:pointer; white-space:nowrap; }
+    .todo-toggle{ flex-shrink:0; display:inline-flex; align-items:center; gap:.35rem; padding:.45rem .6rem; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--text); font-weight:700; font-size:.8rem; cursor:pointer; white-space:nowrap; }
+    .todo-toggle .tt-ic{ line-height:1; }
+    .todo-toggle .tt-state{ font-size:.62rem; font-weight:900; letter-spacing:.04em; padding:.08rem .35rem; border-radius:999px; background:rgba(0,0,0,.10); color:var(--muted); }
     .todo-toggle.active{ background:var(--accent-grad); color:#fff; border-color:transparent; }
-    body.theme-dusk .todo-toggle{ background:#2a2140; color:#eee; border-color:rgba(255,255,255,.12); }
+    .todo-toggle.active .tt-state{ background:rgba(255,255,255,.28); color:#fff; }
+    body.theme-dusk .todo-toggle:not(.active){ background:#2a2140; color:#eee; border-color:rgba(255,255,255,.12); }
     /* HomeMates — souvenirs (mode Maison) */
     .hm-recap{ display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.6rem; }
     .hm-recap .hr-chip{ background:var(--cream); border-radius:12px; padding:.4rem .6rem; font-size:.8rem; font-weight:700; color:var(--ink); }
@@ -1539,7 +1543,8 @@
     .tpa-btn:active { transform: scale(.96); }
     /* Peps : chaque action a sa couleur (dans la DA) */
     .tpa-btn.tpa-chal { background: linear-gradient(135deg,#FF9E4D,#FF6F3D); }
-    .tpa-btn.tpa-bff { background: linear-gradient(135deg,#FFCF5C,#FF9F1C); }
+    .tpa-btn.tpa-bff { background: linear-gradient(135deg,#FFCF5C,#FF9F1C); color: #5a3d00; }
+    .tpa-btn span { line-height: 1.1; }
     .tpa-btn.tpa-danger { background: linear-gradient(135deg,#FF7A6B,#E0463B); }
 
     /* --------------------------- CHAT ------------------------------- */
@@ -2636,7 +2641,6 @@
   <!-- ===== Faux appel (sortie de secours pour voyageur solo) ===== -->
   <div id="fakeCall" class="fakecall hidden">
     <div class="fc-inner">
-      <button class="fc-gear" id="fcGear" title="Choisir ma sonnerie" aria-label="Choisir ma sonnerie">⚙️</button>
       <input type="file" accept="audio/*" id="fcSoundFile" style="display:none" />
       <div class="fc-top">
         <div class="fc-avatar" id="fcAvatar">📞</div>
@@ -2782,7 +2786,7 @@
   <!-- ===== Pop-up : mes connexions (ouverte par le compteur de Mates) ===== -->
   <div id="matesListModal" class="act-overlay hidden">
     <div class="act-card">
-      <div class="picker-head"><h3 style="margin:0">✅ Mes connexions</h3><button id="matesListClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
+      <div class="picker-head"><h3 style="margin:0">🤝 Mes connexions</h3><button id="matesListClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
       <div id="myConnectionsList" style="max-height:60vh;overflow-y:auto"><p class="muted">—</p></div>
     </div>
   </div>
@@ -3029,7 +3033,7 @@
         <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Filtre, puis <b>touche une pastille</b> pour agir 👇</p>
         <div class="card homemap-card">
           <!-- Sélecteur de ville (menu déroulant) : concentre la carte sur une ville de jeu -->
-          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites">À faire</button></div>
+          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button></div>
           <!-- Chips colorés + emojis (l'âme SunMates) : couleur = type de marqueur sur la carte -->
           <div class="chips wrap homemap-filters" id="homeMapFilters">
             <button class="chip active cl-places" data-layer="places">📍 Lieux <b data-cnt></b></button>
@@ -3276,7 +3280,13 @@
             <button class="btn-primary" id="tpMsgBtn">💬 Message</button>
             <button class="btn-accent" id="tpConnectBtn">🤝 Se connecter</button>
           </div>
-          <div class="msg" id="tpMsg" style="text-align:center;margin:.5rem 0 1rem"></div>
+          <div class="msg" id="tpMsg" style="text-align:center;margin:.5rem 0 .6rem"></div>
+          <!-- Actions secondaires : rangée compacte, remontée pour être bien visible -->
+          <div class="tp-actions2" style="margin-bottom:1rem">
+            <button class="tpa-btn tpa-chal" id="tpChallengeBtn"><span class="tpa-ic">🎯</span><span>Défi</span></button>
+            <button class="tpa-btn tpa-bff" id="tpBffBtn" style="display:none"><span class="tpa-ic">⭐</span><span>BFF</span></button>
+            <button class="tpa-btn tpa-danger" id="tpBlockBtn"><span class="tpa-ic">🚫</span><span>Bloquer</span></button>
+          </div>
           <div class="card">
             <div class="section-head" style="margin-bottom:.4rem"><h3 style="margin:0">À propos</h3><span id="tpVerif"></span></div>
             <p class="muted" id="tpBio" style="line-height:1.5">—</p>
@@ -3300,12 +3310,6 @@
           <div class="card" id="tpBadgesCard" style="display:none;margin-top:.5rem">
             <h3 style="margin-top:0">🏅 Badges</h3>
             <div class="bgrid" id="tpBadges"></div>
-          </div>
-          <!-- Actions secondaires : rangée compacte (au lieu d'un listing vertical) -->
-          <div class="tp-actions2">
-            <button class="tpa-btn tpa-chal" id="tpChallengeBtn"><span class="tpa-ic">🎯</span><span>Défi</span></button>
-            <button class="tpa-btn tpa-bff" id="tpBffBtn" style="display:none"><span class="tpa-ic">⭐</span><span>BFF</span></button>
-            <button class="tpa-btn tpa-danger" id="tpBlockBtn"><span class="tpa-ic">🚫</span><span>Bloquer</span></button>
           </div>
         </div>
 
@@ -3467,21 +3471,16 @@
           <div style="flex:1;cursor:pointer" id="onbDoneCta"><b>🎯 Dernière étape !</b><div style="font-size:.82rem;opacity:.95">Choisis ton pseudo et complète ton profil → <b>commencer ›</b></div></div>
           <button id="onbDoneClose" aria-label="Fermer">✕</button>
         </div>
-        <div class="card" style="position:relative">
+        <div class="card prof-head" style="position:relative;text-align:center">
           <button class="iconbtn" id="profileSettingsBtn" title="Paramètres du compte" aria-label="Paramètres du compte" style="position:absolute;top:.7rem;right:.7rem">⚙️</button>
-          <div class="person" style="border:0;padding:0">
-            <div class="avatar" id="profileAvatar">😎</div>
-            <div class="info">
-              <div class="name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
-              <div class="profile-title" id="profileTitle"></div>
-              <div class="meta" id="profileCity"></div>
-            </div>
-          </div>
-          <!-- Hiérarchie : le score de confiance (cœur « sécurité d'abord ») en métrique HÉRO -->
-          <div class="prof-hero-stat stat-click" data-stat="trust" role="button" tabindex="0">
-            <span class="phs-ic">🛟</span>
-            <div class="phs-txt"><div class="phs-lbl">Score de confiance</div><div class="phs-sub">ta fiabilité aux yeux des voyageurs ⓘ</div></div>
-            <div class="phs-v" id="trustScore">0</div>
+          <!-- Photo plus grande, ENTIÈRE (non rognée), centrée -->
+          <div class="prof-photo" id="profileAvatar">😎</div>
+          <div class="name prof-name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
+          <div class="profile-title prof-title" id="profileTitle"></div>
+          <div class="meta prof-city" id="profileCity"></div>
+          <!-- Score de confiance MINIMISÉ (compact, cliquable) -->
+          <div class="prof-trust stat-click" data-stat="trust" role="button" tabindex="0">
+            <span>🛟 Confiance</span> <b id="trustScore">0</b> <span class="pt-info">ⓘ</span>
           </div>
           <!-- Stats secondaires -->
           <div class="stat-row stat-row-3" style="margin-top:.55rem">
@@ -4047,7 +4046,7 @@
             <button data-lb="trust">🛡️ Confiance</button>
             <button data-lb="badges">🏅 Badges</button>
           </div>
-          <div class="city-pick" style="margin-top:.6rem"><span class="city-pick-ic">🏙️</span><select id="lbCitySelect" aria-label="Classement par ville"><option value="">Toutes les villes</option></select></div>
+          <div class="city-pick" style="margin-top:.6rem"><select id="lbCitySelect" aria-label="Classement par ville"><option value="">Toutes les villes</option></select></div>
           <div id="leaderboardList"><p class="muted">Chargement…</p></div>
         </div>
 
@@ -6261,29 +6260,29 @@
     _ringGet().then((blob) => { if (blob && window.SMSound && SMSound.reloadRing) { _hasCustomRing = true; SMSound.reloadRing(URL.createObjectURL(blob)); } });
     // Nettoyage de l'ancien stockage localStorage (migration vers IndexedDB).
     try { if (localStorage.getItem("sm_ringtone")) localStorage.removeItem("sm_ringtone"); } catch (e) {}
-    { const gear = $("fcGear"), fileIn = $("fcSoundFile");
-      if (gear && fileIn) {
-        gear.addEventListener("click", () => {
-          popInfo("🎵", "Ma sonnerie",
-            "<p style='font-size:.84rem;margin:0 0 .8rem'>Choisis un fichier audio depuis ton téléphone — idéalement <b>court (≈30 s) et léger (&lt; 2 Mo)</b>. Il reste <b>sur ton appareil</b> (rien n'est envoyé en ligne).</p>" +
-            "<button class='btn-primary btn-block' id='ringPick'>📂 Choisir un fichier</button>" +
-            (_hasCustomRing ? "<button class='btn-ghost btn-block' id='ringReset' style='margin-top:.5rem'>↩️ Revenir à la sonnerie par défaut</button>" : ""));
-          setTimeout(() => {
-            const pk = document.getElementById("ringPick"); if (pk) pk.onclick = () => fileIn.click();
-            const rs = document.getElementById("ringReset"); if (rs) rs.onclick = () => { _ringDel().then(() => { _hasCustomRing = false; if (window.SMSound) SMSound.reloadRing(null); const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden"); toast("🎵", "Sonnerie par défaut rétablie"); _stopFakeRing(); _playFakeRing(); }); };
-          }, 40);
-        });
-        fileIn.addEventListener("change", () => {
-          const f = fileIn.files && fileIn.files[0]; if (!f) return;
-          if (!/^audio\//.test(f.type || "")) { toast("⚠️", "Choisis un fichier audio (mp3, m4a…)."); fileIn.value = ""; return; }
-          if (f.size > RING_MAX) { toast("⚠️", "Fichier trop lourd (max 2 Mo). Prends un extrait plus court / moins bon débit."); fileIn.value = ""; return; }
-          _ringPut(f).then(() => {
-            _hasCustomRing = true; if (window.SMSound) SMSound.reloadRing(URL.createObjectURL(f));
-            const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden"); toast("🎵", "Ta sonnerie est enregistrée !"); _stopFakeRing(); _playFakeRing();
-          }).catch(() => toast("⚠️", "Impossible d'enregistrer ce fichier."));
-          fileIn.value = "";
-        });
-      }
+    // Picker de sonnerie réutilisable (appelé depuis la CONFIG du faux appel, pas l'écran d'appel).
+    function openRingtonePicker() {
+      const fileIn = $("fcSoundFile"); if (!fileIn) return;
+      popInfo("🎵", "Ma sonnerie",
+        "<p style='font-size:.84rem;margin:0 0 .8rem'>Choisis un fichier audio depuis ton téléphone — idéalement <b>court (≈30 s) et léger (&lt; 2 Mo)</b>. Il reste <b>sur ton appareil</b> (rien n'est envoyé en ligne).</p>" +
+        "<button class='btn-primary btn-block' id='ringPick'>📂 Choisir un fichier</button>" +
+        (_hasCustomRing ? "<button class='btn-ghost btn-block' id='ringReset' style='margin-top:.5rem'>↩️ Revenir à la sonnerie par défaut</button>" : ""));
+      setTimeout(() => {
+        const pk = document.getElementById("ringPick"); if (pk) pk.onclick = () => fileIn.click();
+        const rs = document.getElementById("ringReset"); if (rs) rs.onclick = () => { _ringDel().then(() => { _hasCustomRing = false; if (window.SMSound) SMSound.reloadRing(null); const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden"); toast("🎵", "Sonnerie par défaut rétablie"); }); };
+      }, 40);
+    }
+    { const fileIn = $("fcSoundFile");
+      if (fileIn) fileIn.addEventListener("change", () => {
+        const f = fileIn.files && fileIn.files[0]; if (!f) return;
+        if (!/^audio\//.test(f.type || "")) { toast("⚠️", "Choisis un fichier audio (mp3, m4a…)."); fileIn.value = ""; return; }
+        if (f.size > RING_MAX) { toast("⚠️", "Fichier trop lourd (max 2 Mo). Prends un extrait plus court / moins bon débit."); fileIn.value = ""; return; }
+        _ringPut(f).then(() => {
+          _hasCustomRing = true; if (window.SMSound) SMSound.reloadRing(URL.createObjectURL(f));
+          const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden"); toast("🎵", "Ta sonnerie est enregistrée !");
+        }).catch(() => toast("⚠️", "Impossible d'enregistrer ce fichier."));
+        fileIn.value = "";
+      });
     }
     function startFakeCall(name) {
       name = name || "Maman";
@@ -6310,13 +6309,28 @@
     { const h = $("fcHangup"); if (h) h.addEventListener("click", fcStop); }
     { const b = $("fakeCallBtn"); if (b) b.addEventListener("click", () => {
       const names = ["Maman", "Papa", "Léa", "Le boulot", "Numéro inconnu"];
-      // Chooser compact (petits boutons) au lieu d'un gros picker avec avatars.
-      showInfo("📞 Qui t'appelle ?", `<div style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center">${names.map((n, i) => `<button class="btn-ghost fc-pick" data-fcname="${escapeHtml(n)}" style="flex:0 0 auto">${escapeHtml(n)}</button>`).join("")}</div>`);
-      document.querySelectorAll(".fc-pick").forEach((bt) => bt.addEventListener("click", () => {
-        const name = bt.dataset.fcname; closePicker();
-        toast("📞", "Appel simulé dans 5 s… range ton téléphone 😉");
-        fcStartTimeout = setTimeout(() => startFakeCall(name), 5000);
-      }));
+      const saved = (() => { try { return localStorage.getItem("sm_fc_name") || ""; } catch (e) { return ""; } })();
+      const ringTxt = _hasCustomRing ? "🎵 Ma sonnerie (perso) ›" : "🎵 Choisir ma sonnerie ›";
+      showInfo("📞 Configurer le faux appel", `
+        <div style="text-align:left">
+          <label style="font-weight:700;font-size:.85rem">Nom de l'appelant</label>
+          <input id="fcNameInput" type="text" maxlength="24" placeholder="Ex : Maman, Le boulot…" value="${escapeHtml(saved)}" style="width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin:.3rem 0 .6rem" />
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.9rem">${names.map((n) => `<button class="btn-ghost fc-pickname" data-n="${escapeHtml(n)}" style="flex:0 0 auto;padding:.35rem .7rem;font-size:.82rem">${escapeHtml(n)}</button>`).join("")}</div>
+          <button class="btn-ghost btn-block" id="fcRingBtn" style="margin-bottom:.6rem">${ringTxt}</button>
+          <button class="btn-primary btn-block" id="fcLaunch">📞 Lancer l'appel (dans 5 s)</button>
+          <p class="muted" style="font-size:.74rem;text-align:center;margin:.5rem 0 0">L'appel sonnera dans 5 s — range ton téléphone 😉</p>
+        </div>`);
+      setTimeout(() => {
+        document.querySelectorAll(".fc-pickname").forEach((bt) => bt.onclick = () => { const i = $("fcNameInput"); if (i) { i.value = bt.dataset.n; } });
+        const rb = $("fcRingBtn"); if (rb) rb.onclick = () => openRingtonePicker();
+        const lb = $("fcLaunch"); if (lb) lb.onclick = () => {
+          const name = (($("fcNameInput") && $("fcNameInput").value) || "").trim() || "Maman";
+          try { localStorage.setItem("sm_fc_name", name); } catch (e) {}
+          closePicker();
+          toast("📞", "Appel simulé dans 5 s… range ton téléphone 😉");
+          fcStartTimeout = setTimeout(() => startFakeCall(name), 5000);
+        };
+      }, 40);
     }); }
 
     // ---- Signal lumineux d'aide : écran clair (pulsation LENTE, pas de strobe) + écran maintenu allumé. ----
@@ -6397,7 +6411,7 @@
         ? [...connectedIds].map((other) => `<div class="person trav-open" data-profile="${other}" style="cursor:pointer">
               ${avatarMarkup(nameOf(other), avatarOf(other), null, isActive(travelerMap[other]))}
               <div class="info"><div class="name">${escapeHtml(nameOf(other))}</div><div class="meta">Voir le profil ›</div></div>
-              <span class="badge ok">✅</span></div>`).join("")
+              <span class="vchip" title="Connecté">✓</span></div>`).join("")
         : emptyState("🛡️", "Aucune connexion pour l'instant", "Trouve des voyageurs de confiance et envoie une demande de connexion.", "Découvrir des Mates", "discover");
       $("myConnectionsList").querySelectorAll("[data-profile]").forEach((el) =>
         el.addEventListener("click", () => { const mm = $("matesListModal"); if (mm) mm.classList.add("hidden"); openTravelerProfile(travelerMap[el.dataset.profile]); }));
@@ -8671,18 +8685,16 @@
       if (window.SMSound) SMSound.play("tap");
     }); }
     { const tt = $("questTodoToggle"); if (tt) tt.addEventListener("click", () => {
-      _questTodoOnly = !_questTodoOnly; tt.classList.toggle("active", _questTodoOnly);
+      _questTodoOnly = !_questTodoOnly;
+      tt.classList.toggle("active", _questTodoOnly);
+      const st = $("todoState"); if (st) st.textContent = _questTodoOnly ? "ON" : "OFF";
       if (typeof renderHomeMap === "function") renderHomeMap();
       if (window.SMSound) SMSound.play("tap");
-      // On explique ce que fait le filtre (sinon une quête « disparaît » sans raison)
-      try {
-        if (_questTodoOnly && !localStorage.getItem("sm_todo_seen")) {
-          localStorage.setItem("sm_todo_seen", "1");
-          popInfo("🎯", "Filtre « À faire »", "On <b>masque les quêtes que tu as déjà accomplies</b> pour ne garder que celles qu'il te reste à faire sur la carte. Re-touche le bouton pour <b>tout réafficher</b>.");
-        } else if (typeof toast === "function") {
-          toast("🎯", _questTodoOnly ? "Quêtes déjà faites masquées — re-touche pour tout revoir." : "Toutes les quêtes réaffichées.");
-        }
-      } catch (e) {}
+      // Explication TOUJOURS dispo (tuile qui pop), à chaque activation/désactivation.
+      popInfo("🎯", _questTodoOnly ? "Filtre « À faire » : activé" : "Filtre « À faire » : désactivé",
+        _questTodoOnly
+          ? "On <b>masque les quêtes déjà accomplies</b> : tu ne vois sur la carte que celles qu'il te <b>reste à faire</b>. Re-touche le bouton (<b>OFF</b>) pour tout réafficher."
+          : "Toutes les quêtes sont <b>réaffichées</b> sur la carte (faites + à faire). Re-touche (<b>ON</b>) pour ne garder que celles à faire.");
     }); }
 
     async function renderHomeMap() {
