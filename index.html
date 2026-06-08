@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=275"></script>
-  <script src="sunmates-icons.js?v=275"></script>
+  <script src="sunmates-badges.js?v=276"></script>
+  <script src="sunmates-icons.js?v=276"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -297,20 +297,22 @@
 
     /* ---- Fil d'actualité (posts) : cartes à bandeau coloré ---- */
     /* Composer du fil communautaire */
-    .feed-composer { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .7rem .8rem; margin-bottom: .8rem; box-shadow: var(--shadow-sm); }
-    .feed-composer .fc-row { display: flex; gap: .6rem; align-items: flex-start; }
-    .feed-composer .fc-av { font-size: 1.6rem; flex-shrink: 0; line-height: 1.4; }
+    .feed-composer { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .85rem .9rem; margin-bottom: .8rem; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .feed-composer .fc-row { display: flex; gap: .6rem; align-items: flex-start; min-width: 0; }
+    .feed-composer .fc-av { font-size: 1.6rem; flex-shrink: 0; line-height: 1.4; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--cream); }
+    body.theme-dusk .feed-composer .fc-av { background: #2a2140; }
     .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .3rem 0; min-height: 1.6rem; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
     .feed-composer textarea:focus { outline: none; }
     .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
-    .feed-composer .fc-kinds { display: flex; gap: .3rem; }
+    .feed-composer .fc-kinds { display: flex; gap: .25rem; background: var(--cream); border-radius: 999px; padding: .2rem; }
+    body.theme-dusk .feed-composer .fc-kinds { background: #2a2140; }
     .fc-chips { display: flex; gap: .35rem; overflow-x: auto; padding: .5rem 0 .2rem; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .fc-chips::-webkit-scrollbar { display: none; }
     .fc-chip { flex: 0 0 auto; font-size: .78rem; font-weight: 600; padding: .35rem .65rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--ink); cursor: pointer; white-space: nowrap; }
     .fc-chip:active { transform: scale(.96); }
     body.theme-dusk .fc-chip { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
-    .fc-kind { font-size: .74rem; font-weight: 700; padding: .3rem .6rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--text); cursor: pointer; }
-    .fc-kind.active { background: var(--accent-grad); color: #fff; border-color: transparent; }
+    .fc-kind { font-size: .76rem; font-weight: 700; padding: .35rem .75rem; border-radius: 999px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+    .fc-kind.active { background: var(--accent-grad); color: #fff; box-shadow: 0 2px 8px rgba(255,90,77,.3); }
     .fc-send { padding: .45rem 1rem; font-size: .85rem; }
     body.theme-dusk .fc-kind { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
     /* Post : barre d'actions (like / supprimer) */
@@ -510,8 +512,10 @@
     .spot-emoji-pick button { flex: 0 0 auto; background: var(--accent-soft); border: 1.5px solid transparent; border-radius: 10px; padding: .25rem .45rem; font-size: 1.05rem; cursor: pointer; }
     .spot-emoji-pick button.active { border-color: var(--accent); background: #fff; }
     /* Spot du jour : suggestions rapides */
-    .spot-quick { display: flex; flex-wrap: wrap; gap: .35rem; margin: .1rem 0 .6rem; }
-    .spot-quick button { font-size: .76rem; font-weight: 700; padding: .35rem .6rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--text); cursor: pointer; }
+    .spot-quick { display: flex; flex-wrap: wrap; gap: .4rem; margin: .1rem 0 .7rem; }
+    .spot-quick button { font-size: .78rem; font-weight: 700; padding: .4rem .7rem; border-radius: 999px; border: 0; background: linear-gradient(135deg, rgba(255,201,60,.22), rgba(255,138,61,.2)); color: var(--ink); cursor: pointer; transition: transform .12s ease; }
+    .spot-quick button:active { transform: scale(.95); }
+    body.theme-dusk .spot-quick button { background: rgba(255,138,61,.2); color: #ffe; }
     .spot-quick button:active { transform: scale(.96); }
     body.theme-dusk .spot-quick button { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
     /* Carte « spot du jour » repliable pour ne pas encombrer le profil */
