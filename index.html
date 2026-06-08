@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=302"></script>
-  <script src="sunmates-icons.js?v=302"></script>
+  <script src="sunmates-badges.js?v=303"></script>
+  <script src="sunmates-icons.js?v=303"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -913,12 +913,13 @@
     /* --------------------- Visite guidée (spotlights) -------------------- */
     .tour { position: fixed; inset: 0; z-index: var(--z-tour); }
     .tour-catch { position: absolute; inset: 0; }                  /* avale les clics pendant la visite */
+    /* On déplace le spotlight pendant qu'il est INVISIBLE (opacity 0) puis on le ré-affiche →
+       plus de glissement depuis le coin. Seule l'opacité est animée (fondu doux entre étapes). */
     .tour-spot { position: absolute; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(12,7,32,.72);
-      border: 2px solid rgba(255,255,255,.9); transition: all .35s cubic-bezier(.4,0,.2,1); pointer-events: none; }
+      border: 2px solid rgba(255,255,255,.9); transition: opacity .2s ease; pointer-events: none; opacity: 0; }
     .tour-pop { position: absolute; left: 50%; transform: translateX(-50%); width: calc(100% - 2rem); max-width: 360px;
       background: var(--card); color: var(--ink); border-radius: 20px; padding: 1.1rem 1.2rem; box-shadow: 0 24px 60px rgba(0,0,0,.5);
-      text-align: center; animation: tourPop .3s ease; }
-    @keyframes tourPop { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; } }
+      text-align: center; opacity: 0; transition: opacity .2s ease; }
     .tour-emoji { font-size: 40px; margin-bottom: .3rem; }
     .tour-pop h4 { margin: 0 0 .35rem; font-size: 1.15rem; }
     .tour-pop p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
@@ -4772,9 +4773,20 @@
       const key = "sm_streak_" + (myUserId || "x");
       let st = {}; try { st = JSON.parse(localStorage.getItem(key) || "{}") || {}; } catch (e) {}
       const n = st.count || 1, best = st.best || n;
+      // Prochain palier (récompense symbolique) + progression.
+      const PALIERS = [3, 7, 14, 30, 60, 100];
+      const next = PALIERS.find((p) => p > n) || (n + 1);
+      const prev = [...PALIERS].reverse().find((p) => p <= n) || 0;
+      const pct = Math.min(100, Math.round((n - prev) / (next - prev) * 100));
+      // Petite frise de 7 jours (la semaine en cours, façon habit-tracker).
+      const inWeek = ((n - 1) % 7) + 1;
+      const dots = Array.from({ length: 7 }, (_, i) => `<span style="font-size:1.05rem;filter:${i < inWeek ? "none" : "grayscale(1) opacity(.35)"}">🔥</span>`).join("");
       showInfo("🔥 Ta série", `<div style="text-align:center;line-height:1.6">
         <div style="font-size:2.6rem;font-weight:800;color:#B5740E">${n} jour${n > 1 ? "s" : ""}</div>
         <p style="margin:.3rem 0">Tu ouvres SunMates <b>${n} jour${n > 1 ? "s" : ""} d'affilée</b> ! Reviens chaque jour pour faire grimper ta flamme 🔥</p>
+        <div style="display:flex;justify-content:center;gap:.25rem;margin:.5rem 0">${dots}</div>
+        <div style="background:var(--cream);border:1px solid var(--line);border-radius:999px;height:9px;overflow:hidden;margin:.5rem 0 .25rem"><div style="height:100%;width:${pct}%;background:var(--accent-grad);border-radius:999px"></div></div>
+        <p class="muted" style="font-size:.8rem;margin:.1rem 0">Prochain palier : <b style="color:#B5740E">${next} jours</b> (plus que ${next - n} 🔥)</p>
         <p class="muted" style="font-size:.82rem">🏆 Ton record : <b>${best} jour${best > 1 ? "s" : ""}</b></p></div>`);
     }); }
     // ====================== MODE VOYAGE / MAISON ======================
@@ -10113,23 +10125,27 @@
       $("tourProg").textContent = (i + 1) + " / " + _activeTour.length;
       $("tourNext").textContent = i === _activeTour.length - 1 ? "Terminer 🎉" : "Suivant →";
       show($("tourPrev"), i > 0); // « Précédent » caché à la 1re étape
-      setTimeout(() => positionTour(st), 300);
+      // On MASQUE la bulle + le spotlight le temps de calculer leur place → fini le « apparaît
+      // en haut puis redescend ». Délai court juste pour laisser l'onglet/la vue se rendre.
+      { const sp = $("tourSpot"), pp = $("tourPop"); if (sp) sp.style.opacity = "0"; if (pp) pp.style.opacity = "0"; }
+      setTimeout(() => positionTour(st), 150);
     }
     function positionTour(st) {
       const el = document.querySelector(st.sel), spot = $("tourSpot"), pop = $("tourPop");
       if (!spot || !pop) return;
-      if (!el) { spot.style.opacity = "0"; pop.style.top = "auto"; pop.style.bottom = "42%"; return; }
-      // FIX bug : on amène d'abord l'élément dans la vue, puis on cale le spotlight dessus.
+      if (!el) { spot.style.opacity = "0"; pop.style.top = "auto"; pop.style.bottom = "42%"; pop.style.opacity = "1"; return; }
+      // On amène l'élément dans la vue (scroll instantané), on attend que la mise en page se
+      // stabilise (double rAF), puis on place spotlight + bulle ENCORE invisibles, et on ré-affiche.
       try { el.scrollIntoView({ block: "center", behavior: "auto" }); } catch (e) {}
-      setTimeout(() => {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
         const r = el.getBoundingClientRect(), pad = 8;
-        spot.style.opacity = "1";
         spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
         spot.style.width = (r.width + pad * 2) + "px"; spot.style.height = (r.height + pad * 2) + "px";
         if (window.innerHeight - r.bottom > 240) { pop.style.top = (r.bottom + 14) + "px"; pop.style.bottom = "auto"; }
         else if (r.top > 240) { pop.style.bottom = (window.innerHeight - r.top + 14) + "px"; pop.style.top = "auto"; }
         else { pop.style.top = "auto"; pop.style.bottom = "16px"; } // élément plein écran → bulle en bas
-      }, 130);
+        spot.style.opacity = "1"; pop.style.opacity = "1"; // placés → on révèle (fondu doux)
+      }));
     }
     function endTour() {
       const t = $("tour"); if (t) t.classList.add("hidden");
