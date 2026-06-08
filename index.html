@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=266"></script>
-  <script src="sunmates-icons.js?v=266"></script>
+  <script src="sunmates-badges.js?v=267"></script>
+  <script src="sunmates-icons.js?v=267"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -289,6 +289,11 @@
     .feed-composer textarea:focus { outline: none; }
     .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
     .feed-composer .fc-kinds { display: flex; gap: .3rem; }
+    .fc-chips { display: flex; gap: .35rem; overflow-x: auto; padding: .5rem 0 .2rem; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .fc-chips::-webkit-scrollbar { display: none; }
+    .fc-chip { flex: 0 0 auto; font-size: .78rem; font-weight: 600; padding: .35rem .65rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--ink); cursor: pointer; white-space: nowrap; }
+    .fc-chip:active { transform: scale(.96); }
+    body.theme-dusk .fc-chip { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
     .fc-kind { font-size: .74rem; font-weight: 700; padding: .3rem .6rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--text); cursor: pointer; }
     .fc-kind.active { background: var(--accent-grad); color: #fff; border-color: transparent; }
     .fc-send { padding: .45rem 1rem; font-size: .85rem; }
@@ -1926,7 +1931,7 @@
     .prep-country:active { transform: scale(.99); }
     .prep-label { flex: 1; font-size: .85rem; font-weight: 600; }
     .prep-item.done .prep-label { color: var(--muted); text-decoration: line-through; }
-    .prep-go { border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent); width: 24px; height: 24px; border-radius: 50%; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; }
+    .prep-go { border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent); width: 24px; height: 24px; border-radius: 50%; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; display: grid; place-items: center; padding: 0; }
     /* Retour tactile sur les nouveaux éléments cliquables (cohérence premium) */
     .wish-chip.ntpick, .hm-visitor, .wg-goal[data-wggo] { transition: transform .1s ease; }
     .wish-chip.ntpick:active, .hm-visitor:active, .wg-goal[data-wggo]:active, .mode-switch button:active, .streak-chip:active { transform: scale(.97); }
@@ -3089,6 +3094,8 @@
             <span class="fc-av" id="feedComposerAv">🙂</span>
             <textarea id="feedInput" rows="1" maxlength="280" placeholder="Écris quelque chose…"></textarea>
           </div>
+          <!-- Tuiles de sélection rapides (humeur ou spot) -->
+          <div class="fc-chips" id="feedChips"></div>
           <div class="fc-bottom">
             <div class="fc-kinds">
               <button class="fc-kind active" data-fkind="post" type="button">✨ Humeur</button>
@@ -6722,14 +6729,24 @@
       const prof = _lastCompletionPct || 0;
       const ritDone = Object.keys((typeof _soloState === "function" ? (_soloState().rit || {}) : {})).length;
       // Pool d'objectifs qui VARIE chaque semaine (3 piochés selon le n° de semaine).
+      const matesW = (typeof connectedIds !== "undefined" && connectedIds) ? connectedIds.size : 0;
       const pool = [
         { ic: "🎯", label: "Accomplir 2 quêtes", cur: Math.min(qWeek, 2), max: 2, go: "quests" },
         { ic: "🎯", label: "Accomplir 3 quêtes", cur: Math.min(qWeek, 3), max: 3, go: "quests" },
+        { ic: "🏆", label: "Accomplir 5 quêtes", cur: Math.min(qWeek, 5), max: 5, go: "quests" },
         { ic: "📍", label: "Faire 1 check-in", cur: Math.min(ckWeek, 1), max: 1, go: "lieux" },
         { ic: "📍", label: "Faire 2 check-ins", cur: Math.min(ckWeek, 2), max: 2, go: "lieux" },
+        { ic: "📍", label: "Faire 3 check-ins", cur: Math.min(ckWeek, 3), max: 3, go: "lieux" },
         { ic: "🪪", label: "Profil complété à 80 %", cur: Math.min(prof, 80), max: 80, unit: "%", go: "profil" },
+        { ic: "🪪", label: "Profil complété à 100 %", cur: Math.min(prof, 100), max: 100, unit: "%", go: "profil" },
+        { ic: "☀️", label: "Cocher 2 rituels", cur: Math.min(ritDone, 2), max: 2, go: "home" },
         { ic: "☀️", label: "Cocher 3 rituels", cur: Math.min(ritDone, 3), max: 3, go: "home" },
+        { ic: "🧭", label: "Relever 1 défi solo", cur: 0, max: 1, go: "home" },
         { ic: "🤝", label: "Recommander un Mate", cur: 0, max: 1, go: "mates" },
+        { ic: "🤝", label: "Te connecter à 1 nouveau Mate", cur: Math.min(matesW, 1), max: 1, go: "mates" },
+        { ic: "🎮", label: "Jouer à un mini-jeu", cur: 0, max: 1, go: "jeux" },
+        { ic: "📰", label: "Publier sur le fil", cur: 0, max: 1, go: "accueil" },
+        { ic: "🗺️", label: "Explorer une nouvelle ville (quête)", cur: 0, max: 1, go: "quests" },
       ];
       // Sélection déterministe par semaine (toujours 3, mais elles tournent)
       const wk = (function () { const m = /(\d+)/.exec(String(_weekStart ? _weekStart() : "0")); return m ? parseInt(m[1].slice(-4), 10) : 0; })();
@@ -6742,7 +6759,7 @@
         const wkKey = "sm_wg_done_" + _weekStart();
         try { if (!localStorage.getItem(wkKey)) { localStorage.setItem(wkKey, "1"); if (typeof toast === "function") toast("🎉", "Objectifs de la semaine bouclés, bravo !"); if (typeof celebrate === "function") celebrate(); } } catch (e) {}
       }
-      box.innerHTML = `<details class="card wg-card" ${doneCount < goals.length ? "open" : ""}>
+      box.innerHTML = `<details class="card wg-card">
         <summary class="wg-head"><span>🗓️ Objectifs de la semaine</span><span class="wg-count">${doneCount}/${goals.length}</span><span class="wg-chev">▾</span></summary>
         ${goals.map((g) => {
           const done = g.cur >= g.max, pct = Math.round((g.cur / g.max) * 100);
@@ -6762,6 +6779,8 @@
         else if (g === "profil") { goToTab("profil"); if (typeof showProfileSegment === "function") showProfileSegment("edit"); }
         else if (g === "home") { goToTab("accueil"); if (typeof setHomeMode === "function") setHomeMode("home"); }
         else if (g === "mates") { goToTab("connexions"); }
+        else if (g === "accueil") { goToTab("accueil"); }
+        else if (g === "jeux") { goToTab("jeux"); if (typeof openJeuxSheet === "function") setTimeout(() => openJeuxSheet("games"), 80); }
       }));
     }
     function renderParcours() {
@@ -9912,20 +9931,30 @@
         try { if (typeof track === "function") track("feed_post", { kind: _feedKind }); } catch (e) {}
         buildHomeFeed();
       }); }
+    // Tuiles de sélection rapides : humeur (ressenti) ou spot (lieu) → pré-remplissent le champ.
+    const FEED_MOODS = ["😎 Au top", "🥳 En vadrouille", "😌 Zen", "🤩 Inspiré·e", "🫶 Reconnaissant·e", "😴 Crevé·e mais content·e", "🌍 Envie d'ailleurs"];
+    const FEED_SPOTS = ["☕ Café cosy", "🍹 En terrasse", "🏖️ À la plage", "🌳 Au parc", "🏛️ Musée / expo", "🌇 Spot sunset", "🍜 Bonne adresse"];
+    function renderFeedChips() {
+      const box = $("feedChips"); if (!box) return;
+      const items = _feedKind === "spot" ? FEED_SPOTS : FEED_MOODS;
+      box.innerHTML = items.map((t) => `<button type="button" class="fc-chip" data-fchip="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join("");
+      box.querySelectorAll("[data-fchip]").forEach((c) => c.addEventListener("click", () => {
+        const ta = $("feedInput"); if (!ta) return;
+        const base = c.dataset.fchip;
+        // Spot = on suffixe la ville si connue ; humeur = on pose le ressenti, prêt à compléter.
+        const city = (myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : "";
+        ta.value = (_feedKind === "spot" && city) ? base + " à " + city : base;
+        ta.focus(); ta.dispatchEvent(new Event("input"));
+      }));
+    }
     document.querySelectorAll(".fc-kind").forEach((b) => b.addEventListener("click", () => {
       _feedKind = b.dataset.fkind;
       document.querySelectorAll(".fc-kind").forEach((x) => x.classList.toggle("active", x === b));
-      // Le toggle AGIT visiblement : on adapte le placeholder + l'avatar de saisie selon le type de post
-      const ta = $("feedInput"); if (ta) {
-        const city = (myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : "";
-        ta.placeholder = _feedKind === "spot"
-          ? ("Où es-tu posé·e ? Ex : café cosy" + (city ? " à " + city : "") + " ☕")
-          : "Quoi de neuf ? Partage ton humeur ✨";
-        ta.focus();
-      }
-      const av = $("feedComposerAv"); // petit repère visuel du mode choisi
-      if (av && !(myProfile && myProfile.avatar_url)) av.textContent = _feedKind === "spot" ? "📍" : "🙂";
+      const ta = $("feedInput"); if (ta) { ta.placeholder = _feedKind === "spot" ? "Ton spot du moment (ou touche une tuile) 📍" : "Ton humeur du jour (ou touche une tuile) ✨"; }
+      const av = $("feedComposerAv"); if (av && !(myProfile && myProfile.avatar_url)) av.textContent = _feedKind === "spot" ? "📍" : "🙂";
+      renderFeedChips();
     }));
+    renderFeedChips();  // tuiles d'humeur affichées d'emblée
     // Auto-grandissement du champ (évite tout débordement / barre qui dépasse)
     { const ta = $("feedInput"); if (ta) ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 112) + "px"; }); }
     $("feedRefresh").addEventListener("click", () => { buildHomeFeed(); });
@@ -10027,7 +10056,8 @@
       showInfo("⭐ Niveau " + lvl + " · tes récompenses", `<div style="line-height:1.6;font-size:.9rem">
         <p style="margin:.2rem 0">Tu es <b>Niveau ${lvl}</b> (${inLvl}/100 XP) — plus que <b>${100 - inLvl} XP</b> pour le suivant 🚀</p>
         <p style="margin:.2rem 0">Chaque <b>100 XP</b> (gagnés en quêtes) = un niveau. Tes <b>titres</b> évoluent :</p>
-        <p style="margin:.2rem 0">🧭 Tes titres évoluent : Touriste → Explorateur·rice (3) → Routard·e (10) → Aventurier·ère (20) → Globe-trotter (35) → Grand·e voyageur·se (50) → Légende (75) → <b>Mythe vivant (99)</b> 🌟</p>
+        <p style="margin:.2rem 0">🧭 Tes titres évoluent : Touriste → Explorateur·rice → Routard·e → Aventurier·ère → Globe-trotter → Grand·e voyageur·se → Légende… <b>et bien au-delà</b> 🌟</p>
+        <p style="margin:.2rem 0">🎁 <b>Des surprises t'attendent aux niveaux élevés</b> : titres rares, cadres exclusifs et quelques secrets gardés pour les vrais mordus. À toi de les découvrir 😏</p>
         <p style="margin:.2rem 0">Plus de niveau = tu grimpes au <b>Classement</b> 🏆 et tu débloques des cosmétiques en <b>Boutique</b> 🛍️</p>
         <button class="btn-primary btn-block" id="lvlGoRank" style="margin-top:.7rem">🏆 Voir le classement</button></div>`);
       setTimeout(() => { const b = $("lvlGoRank"); if (b) b.onclick = () => { closePicker(); goToTab("jeux"); if (typeof showJeuxView === "function") { showJeuxView("jeuxRank"); if (typeof renderLeaderboard === "function") renderLeaderboard(); } }; }, 40);
