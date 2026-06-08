@@ -65,8 +65,8 @@
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=272"></script>
-  <script src="sunmates-icons.js?v=272"></script>
+  <script src="sunmates-badges.js?v=273"></script>
+  <script src="sunmates-icons.js?v=273"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -196,7 +196,7 @@
     .section-head a { color: var(--accent); font-size: .8rem; font-weight: 600; text-decoration: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
 
     /* ----------------------------- Cartes --------------------------- */
-    main { flex: 1; padding: 0 1.25rem 6.5rem; }
+    main { flex: 1; padding: 0 1.25rem calc(7rem + env(safe-area-inset-bottom, 0px)); }
     .card {
       background: var(--card); border-radius: var(--radius); padding: 1.25rem;
       margin-bottom: 1rem; box-shadow: var(--shadow); border: 1px solid #fff;
@@ -787,6 +787,13 @@
       .souvenir-card { padding: 1rem 1.1rem; }
       #photoLightboxImg { max-height: 84vh; }
     }
+    /* Bouton « Plein écran » bien visible (pill accent) */
+    .fs-btn { flex-shrink: 0; background: var(--accent-grad); color: #fff; border: 0; border-radius: 999px; padding: .4rem .8rem; font-weight: 800; font-size: .8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255,90,77,.32); white-space: nowrap; }
+    .fs-btn:active { transform: scale(.96); }
+    /* Aussi un bouton flottant ⛶ dans le coin de la carte (toujours visible) */
+    .homemap-fsopen { position: absolute; top: .5rem; right: .5rem; z-index: 500; width: 38px; height: 38px; border: 0; border-radius: 11px; background: rgba(255,255,255,.95); color: var(--accent); font-size: 1.1rem; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,.2); display: grid; place-items: center; }
+    body.theme-dusk .homemap-fsopen { background: rgba(40,30,55,.95); }
+    .homemap-card.fs .homemap-fsopen { display: none; }
     /* Plein écran : TOUTE la carte (filtres + carte + légende) passe en plein écran */
     .homemap-fsclose { display: none; }
     .homemap-card.fs { position: fixed; inset: 0; z-index: var(--z-map-fs); margin: 0; border-radius: 0; padding: .55rem;
@@ -2213,7 +2220,8 @@
     .bubble.show-time .bubble-time { display: block; }
     .bubble.them .bubble-time { text-align: left; }
     .bubble-act { display: flex; gap: .3rem; margin-top: .3rem; justify-content: flex-end; opacity: .85; }
-    .bubble-act button { background: rgba(255,255,255,.25); border: 0; border-radius: 7px; padding: .12rem .4rem; font-size: .72rem; cursor: pointer; line-height: 1; }
+    .bubble-act button { background: rgba(255,255,255,.25); border: 0; border-radius: 999px; padding: 0; width: 22px; height: 22px; cursor: pointer; line-height: 1; display: grid; place-items: center; color: #fff; opacity: .8; }
+    .bubble.them .bubble-act button { color: var(--muted); background: rgba(0,0,0,.06); }
     .bubble.me .bubble-act button:hover { background: rgba(255,255,255,.45); }
 
     /* ===================================================================
@@ -3051,7 +3059,7 @@
         <div id="homeTravelMap">
 
         <!-- ===== Carte « tout-en-un » : lieux, Mates, activités, check-ins ===== -->
-        <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3><a id="hmFull" style="cursor:pointer">⛶ Plein écran</a></div>
+        <div class="section-head"><h3 style="margin-top:.4rem">Explore autour de toi 🗺️</h3><button id="hmFull" class="fs-btn" type="button">⛶ Plein écran</button></div>
         <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Filtre, puis <b>touche une pastille</b> pour agir 👇</p>
         <div class="card homemap-card">
           <!-- Sélecteur de ville (menu déroulant) : concentre la carte sur une ville de jeu -->
@@ -3066,6 +3074,7 @@
           </div>
           <div class="homemap-wrap">
             <div id="homeMap" class="homemap"></div>
+            <button class="homemap-fsopen" id="hmFullCorner" type="button" title="Plein écran" aria-label="Plein écran">⛶</button>
             <div class="homemap-capture hidden" id="homeMapCapture"></div>
             <button class="homemap-fsclose" id="hmFullClose">✕ Fermer</button>
             <div class="homemap-hint hidden" id="homeMapHint">👆 Touche la carte pour placer ton activité · <a id="homeMapHintCancel">Annuler</a></div>
@@ -7909,7 +7918,7 @@
     let _chatTranslatable = true; // false si le Mate parle déjà ta langue
     function bubbleHtml(m) {
       const mine = m.sender_id === myUserId;
-      const act = mine ? `<div class="bubble-act"><button class="msg-del" data-mid="${m.id}">🗑️</button></div>` : "";
+      const act = mine ? `<div class="bubble-act"><button class="msg-del" data-mid="${m.id}" aria-label="Supprimer" title="Supprimer"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></div>` : "";
       // Note vocale : lecteur (lecture via URL signée au clic)
       if (m.audio_path) {
         return `<div class="bubble ${mine ? "me" : "them"}" data-mid="${m.id}"><span class="bubble-audio"><button data-vplay="${escapeHtml(m.audio_path)}">▶</button><span>${escapeHtml(m.content || "🎤 Note vocale")}</span></span><span class="bubble-time">${msgTime(m.created_at)}</span>${act}</div>`;
@@ -9438,6 +9447,7 @@
         openActCreate(latlng);
       });
       const full = $("hmFull"); if (full) full.addEventListener("click", () => { if (!homeLeaf) renderHomeMap(); toggleHomeFull(); });
+      const fullCorner = $("hmFullCorner"); if (fullCorner) fullCorner.addEventListener("click", () => { if (!homeLeaf) renderHomeMap(); toggleHomeFull(true); });
       const fullC = $("hmFullClose"); if (fullC) fullC.addEventListener("click", () => toggleHomeFull(false));
       document.addEventListener("keydown", (e) => { if (e.key === "Escape") toggleHomeFull(false); });
       // Rafraîchit la carte toutes les 2,5 min : check-ins / positions de + d'1 h disparaissent tout seuls
@@ -12233,6 +12243,8 @@
       window.addEventListener("touchstart", (e) => {
         if (window.scrollY > 4 || document.querySelector(".homemap-card.fs") || document.querySelector(".act-overlay:not(.hidden)")) { pulling = false; return; }
         if ($("appView") && $("appView").classList.contains("hidden")) { pulling = false; return; }
+        // Pas de pull-to-refresh quand on scrolle une zone interne (chat, modals, listes déroulantes).
+        if (e.target.closest(".chat-body, #chatView, .popinfo-card, .act-card, #pickerBody, [data-noptr]")) { pulling = false; return; }
         startY = e.touches[0].clientY; pulling = true; dist = 0;
       }, { passive: true });
       window.addEventListener("touchmove", (e) => {
