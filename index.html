@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=276"></script>
-  <script src="sunmates-icons.js?v=276"></script>
+  <script src="sunmates-badges.js?v=277"></script>
+  <script src="sunmates-icons.js?v=277"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -695,7 +695,14 @@
     .fc-gear { position: absolute; top: calc(1rem + env(safe-area-inset-top)); right: 1rem; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.16); color: #fff; font-size: 1.1rem; cursor: pointer; display: grid; place-items: center; }
     .popinfo-ov.hidden { display: none; }
     .popinfo-card { position: relative; width: 100%; max-width: 340px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 1.5rem 1.3rem 1.3rem; box-shadow: 0 18px 50px rgba(0,0,0,.32); text-align: center; animation: popinfoPop .22s cubic-bezier(.2,1.2,.4,1); }
-    .popinfo-x { position: absolute; top: .6rem; right: .6rem; width: 30px; height: 30px; border: 0; border-radius: 50%; background: var(--cream); color: var(--muted); font-size: .9rem; cursor: pointer; display: grid; place-items: center; }
+    .popinfo-x { position: absolute; top: .6rem; right: .6rem; width: 30px; height: 30px; border: 0; border-radius: 50%; background: var(--cream); color: var(--muted); font-size: .9rem; cursor: pointer; display: grid; place-items: center; line-height: 1; padding: 0; }
+    /* Croix SVG centrée (fix systémique) : marche dans n'importe quel bouton de fermeture */
+    .xbtn { display: inline-grid !important; place-items: center !important; line-height: 1 !important; padding: 0 !important; }
+    .xbtn svg { display: block; }
+    .kb-search { position: relative; }
+    .kb-search .kb-clear { position: absolute; right: .5rem; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--cream); color: var(--muted); cursor: pointer; }
+    body.theme-dusk .kb-search .kb-clear { background: #2a2140; }
+    .admin-only-cat > summary { list-style: none; } .admin-only-cat > summary::-webkit-details-marker { display: none; }
     body.theme-dusk .popinfo-x { background: #2a2140; color: #ccc; }
     .popinfo-ic { width: 58px; height: 58px; margin: 0 auto .7rem; border-radius: 18px; display: grid; place-items: center; font-size: 1.9rem; background: var(--accent-grad); box-shadow: 0 8px 20px rgba(255,138,61,.32); }
     .popinfo-t { margin: 0 0 .5rem; font-size: 1.08rem; }
@@ -1831,8 +1838,10 @@
     ::selection { background: rgba(255,90,77,.18); }
 
     /* Header & nav en verre dépoli */
-    .topbar { background: rgba(251,238,233,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,90,77,.07); }
-    .bottom-nav { background: rgba(255,255,255,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 -10px 34px rgba(20,20,40,.10); }
+    /* Pas de backdrop-filter sur les barres fixes (topbar/nav) : il repeint à CHAQUE frame de
+       scroll = jank mobile. Fonds plus opaques à la place → bien plus fluide. */
+    .topbar { background: rgba(251,238,233,.96); border-bottom: 1px solid rgba(255,90,77,.07); }
+    .bottom-nav { background: rgba(255,255,255,.97); box-shadow: 0 -10px 34px rgba(20,20,40,.10); }
     .bottom-nav button { transition: color .2s; }
     .bottom-nav button .ni { transition: transform .22s cubic-bezier(.2,.8,.3,1), filter .2s; }
     .bottom-nav button.active .ni { transform: translateY(-2px) scale(1.12); }
@@ -3104,7 +3113,7 @@
           </div>
           <div class="homemap-wrap">
             <div id="homeMap" class="homemap"></div>
-            <button class="homemap-fsopen" id="hmFullCorner" type="button" title="Plein écran" aria-label="Plein écran">⛶</button>
+            <button class="homemap-fsopen" id="hmFullCorner" type="button" title="Plein écran" aria-label="Plein écran"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
             <div class="homemap-capture hidden" id="homeMapCapture"></div>
             <button class="homemap-fsclose" id="hmFullClose">✕ Fermer</button>
             <div class="homemap-hint hidden" id="homeMapHint">👆 Touche la carte pour placer ton activité · <a id="homeMapHintCancel">Annuler</a></div>
@@ -3791,13 +3800,19 @@
               <p class="muted" style="font-size:.76rem;margin:.6rem 0 0">Pause / avancer / reculer / quitter à tout moment. Chaque « ▶ Démo guidée » du catalogue l'ouvre directement au bon chapitre.</p>
             </div>
 
-            <div class="section-head"><h3 style="margin:.4rem 0 .2rem">📚 Knowledge base : tout ce que l'app permet</h3></div>
-            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">La liste des scènes de la démo. Touche « ▶ Jouer depuis ici » pour lancer la démo à partir d'une étape précise.</p>
+            <!-- Recherche UNIQUE : filtre la visite (chapitres) ET le catalogue d'un coup -->
+            <div class="search kb-search" style="margin:.6rem 0"><span class="ico">🔍</span><input id="kbSearch" type="text" placeholder="Rechercher une fonctionnalité, un écran, un chapitre…" /><button class="kb-clear" id="kbClear" type="button" aria-label="Effacer" style="display:none">✕</button></div>
+            <div class="section-head"><h3 style="margin:.4rem 0 .2rem">📚 Les chapitres de la visite</h3></div>
+            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">Touche « ▶ Jouer depuis ici » pour lancer la visite à un chapitre précis.</p>
             <div id="demoSteps"></div>
             <div class="section-head"><h3 style="margin:1rem 0 .2rem">📋 Catalogue des fonctionnalités</h3></div>
-            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">Tout ce que fait SunMates, par zone. Touche « ▶ Démo guidée » pour lancer la visite directement au chapitre de cette zone.</p>
-            <div class="search" style="margin-bottom:.6rem"><span class="ico">🔍</span><input id="featSearch" type="text" placeholder="Rechercher une fonctionnalité…" /></div>
+            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">Tout ce que fait SunMates, par zone. « ▶ Démo guidée » ouvre la visite au bon chapitre.</p>
             <div id="featureCatalog"></div>
+            <!-- Réservé admin : back-office, JAMAIS montré au public ni dans la démo -->
+            <details class="card admin-only-cat" id="adminOnlyCat" style="margin-top:.8rem">
+              <summary style="font-weight:800;cursor:pointer">🛡️ Réservé admin (back-office) <span class="muted" style="font-weight:400;font-size:.78rem">· non public</span></summary>
+              <div id="adminOnlyList"></div>
+            </details>
           </div>
 
           <div class="aseg hidden" data-asegpanel="dash">
@@ -5230,12 +5245,15 @@
       const stage = $("cropStage"), img = $("cropImg");
       const url = URL.createObjectURL(file);
       img.onload = () => {
-        const sw = stage.clientWidth || 280, sh = stage.clientHeight || 280;
-        const nw = img.naturalWidth, nh = img.naturalHeight;
-        _crop = { url, nw, nh, sw, sh, base: Math.max(sw / nw, sh / nh), scale: 1, x: 0, y: 0 };
-        $("cropZoom").value = "1"; $("cropMsg").textContent = "";
-        _applyCrop();
+        // IMPORTANT : afficher le modal AVANT de mesurer le stage (sinon clientWidth = 0 → cadrage faux).
         $("cropModal").classList.remove("hidden");
+        requestAnimationFrame(() => {
+          const sw = stage.clientWidth || 280, sh = stage.clientHeight || sw;
+          const nw = img.naturalWidth, nh = img.naturalHeight;
+          _crop = { url, nw, nh, sw, sh, base: Math.max(sw / nw, sh / nh), scale: 1, x: 0, y: 0 };
+          $("cropZoom").value = "1"; $("cropMsg").textContent = "";
+          _applyCrop();
+        });
       };
       img.src = url;
     }
@@ -5656,9 +5674,11 @@
 
     // ---- Knowledge base : l'aperçu complet de TOUT ce que l'app permet (onglet 🎤) ----
     // La liste est générée depuis le scénario de la démo, donc toujours à jour et exhaustive.
-    function renderDemoScript() {
+    function renderDemoScript(q) {
       const box = $("demoSteps"); if (!box || typeof AUTO_DEMO === "undefined") return;
-      box.innerHTML = AUTO_DEMO.map((s, i) => `
+      q = (q || "").trim().toLowerCase();
+      const rows = AUTO_DEMO.map((s, i) => ({ s, i })).filter(({ s }) => !q || (s.title + " " + s.text).toLowerCase().includes(q));
+      box.innerHTML = rows.length ? rows.map(({ s, i }) => `
         <div class="demo-step">
           <div class="ds-num">${i + 1}</div>
           <div class="ds-body">
@@ -5666,9 +5686,14 @@
             <div class="ds-wowtxt">${escapeHtml(s.text)}</div>
             <button class="btn-ghost ds-go" data-demojump="${i}">▶ Jouer depuis ici</button>
           </div>
-        </div>`).join("");
+        </div>`).join("") : '<p class="muted" style="font-size:.82rem">Aucun chapitre ne correspond.</p>';
       box.querySelectorAll("[data-demojump]").forEach((b) => b.addEventListener("click", () => startAutoDemo(Number(b.dataset.demojump))));
-      renderFeatureCatalog();
+      renderFeatureCatalog(q);
+    }
+    // Recherche UNIQUE : filtre visite + catalogue d'un coup.
+    { const ks = $("kbSearch"), kc = $("kbClear");
+      if (ks) ks.addEventListener("input", () => { renderDemoScript(ks.value); if (kc) kc.style.display = ks.value ? "" : "none"; });
+      if (kc) kc.addEventListener("click", () => { if (ks) { ks.value = ""; ks.focus(); } renderDemoScript(""); kc.style.display = "none"; });
     }
     // Catalogue exhaustif des fonctionnalités (knowledge base). À enrichir quand on push.
     const SM_FEATURES = [
@@ -5792,25 +5817,32 @@
       if (z.includes("profil") || z.includes("réglages")) return "profil";
       return null; // connexion/PWA/admin : pas de redirection
     }
-    function renderFeatureCatalog(q) {
-      const box = $("featureCatalog"); if (!box) return;
-      q = (q || "").trim().toLowerCase();
+    function _isAdminZone(zone) { return /admin/i.test(zone); }
+    function _renderCatalogInto(box, zones, q) {
+      if (!box) return false;
       let any = false;
-      box.innerHTML = SM_FEATURES.map(([zone, items]) => {
+      box.innerHTML = zones.map(([zone, items]) => {
         const matched = items.filter(([ic, name, desc]) => !q || (name + " " + desc + " " + zone).toLowerCase().includes(q));
         if (!matched.length) return "";
         any = true;
         const tab = zoneTab(zone);
-        // FUSION : « Voir » lance LA démo guidée unique (AUTO_DEMO) directement au bon chapitre.
         const goBtn = tab ? `<button class="feat-go" data-feattab="${tab}">▶ Démo guidée</button>` : "";
         return `<div class="feat-zone">${escapeHtml(zone)}${goBtn}</div>
           ${matched.map(([ic, name, desc]) => `<div class="feat-item"><div class="feat-ic">${ic}</div><div><div class="feat-name">${escapeHtml(name)}</div><div class="feat-desc">${escapeHtml(desc)}</div></div></div>`).join("")}`;
-      }).join("") || "";
-      if (!any) box.innerHTML = '<p class="muted" style="text-align:center;padding:1rem">Aucune fonctionnalité ne correspond à « ' + escapeHtml(q) + ' ».</p>';
-      // « Voir » = LA démo guidée unique, ouverte au chapitre de la zone (plus de système de tour séparé).
+      }).join("");
       box.querySelectorAll("[data-feattab]").forEach((b) => b.addEventListener("click", () => startGuidedTour(b.dataset.feattab)));
+      return any;
     }
-    { const fs2 = $("featSearch"); if (fs2) fs2.addEventListener("input", (e) => renderFeatureCatalog(e.target.value)); }
+    function renderFeatureCatalog(q) {
+      q = (q || "").trim().toLowerCase();
+      // Catalogue PUBLIC (tout sauf admin) + bloc « Réservé admin » À PART (jamais dans le public).
+      const pub = SM_FEATURES.filter(([z]) => !_isAdminZone(z));
+      const adm = SM_FEATURES.filter(([z]) => _isAdminZone(z));
+      const anyPub = _renderCatalogInto($("featureCatalog"), pub, q);
+      if (!anyPub) { const fc = $("featureCatalog"); if (fc) fc.innerHTML = '<p class="muted" style="text-align:center;padding:1rem">Aucune fonctionnalité publique ne correspond.</p>'; }
+      const anyAdm = _renderCatalogInto($("adminOnlyList"), adm, q);
+      const aoc = $("adminOnlyCat"); if (aoc) { aoc.style.display = anyAdm ? "" : "none"; if (q && anyAdm) aoc.open = true; }
+    }
     // ====================== DÉMO GUIDÉE AUTOMATIQUE (clé en main, A à Z) ======================
     let adIdx = 0, adTimer = null, adPaused = false, adHideTimer = null, adThemeWasDusk = false;
     const A = (fn) => { try { fn(); } catch (e) {} };
@@ -5998,8 +6030,6 @@
         run: () => { adCleanup(); A(() => goToTab("securite")); setTimeout(() => { if (typeof handleSecu === "function") handleSecu("voyage"); }, 500); } },
       { title: "🌍 Les numéros d'urgence", text: "Le bon numéro selon le pays — indispensable à l'étranger.", ms: 5500,
         run: () => { const ov = document.getElementById("pickerOverlay"); A(() => goToTab("securite")); setTimeout(() => { if (typeof openNumbers === "function") openNumbers(); }, 500); } },
-      { title: "🗄️ Admin : les données derrière", text: "Côté admin : un panneau « Données » montre la base, le contenu de jeu et le stockage Supabase EN LIVE.", ms: 6500,
-        run: () => { adCleanup(); A(() => goToTab("profil")); setTimeout(() => { if (typeof showProfileSegment === "function") showProfileSegment("admin"); setTimeout(() => { if (typeof showAdminSegment === "function") showAdminSegment("data"); }, 400); }, 450); } },
       { title: "🎬 Tout est dans la visite guidée", text: "Cette visite EST le tuto : tu peux la relancer, avancer chapitre par chapitre, ou l'ouvrir sur une zone précise depuis le catalogue.", ms: 6500,
         run: () => { adCleanup(); A(() => goToTab("accueil")); } },
       { title: "🎉 Et voilà, de A à Z !", text: "Pars solo, trouve ta bande. SunMates transforme un voyage en solo en aventure partagée. Merci !", ms: 7000,
@@ -10069,7 +10099,7 @@
       let ov = document.getElementById("popInfoOv");
       if (!ov) {
         ov = document.createElement("div"); ov.id = "popInfoOv"; ov.className = "popinfo-ov hidden";
-        ov.innerHTML = '<div class="popinfo-card" role="dialog" aria-modal="true"><button class="popinfo-x" aria-label="Fermer">✕</button><div class="popinfo-ic"></div><h3 class="popinfo-t"></h3><div class="popinfo-b"></div></div>';
+        ov.innerHTML = '<div class="popinfo-card" role="dialog" aria-modal="true"><button class="popinfo-x" aria-label="Fermer"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="popinfo-ic"></div><h3 class="popinfo-t"></h3><div class="popinfo-b"></div></div>';
         document.body.appendChild(ov);
         const close = () => ov.classList.add("hidden");
         ov.addEventListener("click", (e) => { if (e.target === ov || e.target.closest(".popinfo-x")) close(); });
@@ -10908,6 +10938,19 @@
 
     // Toggle Paramètres
     { const st = $("soundToggle"); if (st) { st.checked = SMSound.isOn(); st.addEventListener("change", () => SMSound.set(st.checked)); } }
+
+    // ===== Centrage GARANTI des croix de fermeture (fix systémique) =====
+    // Les glyphes/emoji « ✕ » ne se centrent jamais parfaitement → on remplace toute croix
+    // PURE par une icône SVG (centrée au pixel) + flex-center. Idem à chaque modal ouverte (MutationObserver).
+    const _XSVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    function _fixCloseGlyphs(root) {
+      (root || document).querySelectorAll("button:not([data-xfix])").forEach((b) => {
+        const t = (b.textContent || "").trim();
+        if (b.children.length === 0 && (t === "✕" || t === "×" || t === "✖")) { b.dataset.xfix = "1"; b.classList.add("xbtn"); b.innerHTML = _XSVG; }
+      });
+    }
+    _fixCloseGlyphs(document);
+    try { new MutationObserver((muts) => { muts.forEach((m) => m.addedNodes && m.addedNodes.forEach((n) => { if (n.nodeType === 1) _fixCloseGlyphs(n); })); }).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
 
     // Son « tap » discret sur tous les éléments interactifs de l'interface
     document.addEventListener("click", (e) => {
