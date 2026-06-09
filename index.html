@@ -1164,7 +1164,7 @@
     .gcard .ghead.gh-rose   { background: linear-gradient(135deg,#FF9CC2,#F0568F); }
     .gcard.gcard-play .ghead::after { background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.12)); }
     /* Emoji des jeux jouables : en COIN (bas-gauche) comme les autres, plus « au milieu » qui flottait. */
-    .gcard.gcard-play .gemoji { width: 40px; height: 40px; font-size: 22px; background: rgba(255,255,255,.96); }
+    .gcard.gcard-play .gemoji { font-size: 42px; }
     /* Libellé de type (Mini-jeu / Quête) pour bien distinguer (item 23). */
     .gcard .gtype { position: absolute; top: .5rem; left: .5rem; font-size: .64rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; padding: .14rem .45rem; border-radius: 999px; z-index: 2; background: rgba(255,255,255,.92); color: #5a3b12; }
     .gcard .gtype.gt-quest { background: rgba(20,16,30,.55); color: #fff; backdrop-filter: blur(2px); }
@@ -1208,7 +1208,8 @@
     body.theme-dusk .reward-card .rc-name, body.theme-dusk .reward-card .rc-meta, body.theme-dusk .reward-card .rc-arr { color: #f3e9d8; }
     body.theme-dusk .xp-banner { background: linear-gradient(135deg,rgba(255,201,60,.14),rgba(255,138,61,.12)); }
     body.theme-dusk .xp-banner b { color: #ffce8a; }
-    .gcard .gemoji { position: absolute; left: .5rem; bottom: .5rem; width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,.94); display: grid; place-items: center; font-size: 19px; box-shadow: var(--shadow-sm); z-index: 2; }
+    /* Emoji = grand, centré, intégré dans l'en-tête (plus de carré blanc qui « flotte au milieu »). */
+    .gcard .gemoji { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 38px; line-height: 1; filter: drop-shadow(0 4px 9px rgba(0,0,0,.42)); z-index: 1; pointer-events: none; }
     .gcard .grate { position: absolute; top: .5rem; right: .5rem; background: #fff; color: var(--accent); font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 999px; z-index: 2; }
     .gcard .gdone { position: absolute; top: .5rem; left: .5rem; background: rgba(255,177,60,.95); color: #6b4a00; font-size: .68rem; font-weight: 800; padding: .12rem .45rem; border-radius: 999px; z-index: 2; }
     .gcard .gbody { padding: .7rem .8rem; }
@@ -1386,6 +1387,11 @@
     .shop-item.buyable .shop-meta { color: #B5740E; font-weight: 800; } /* prix abordable = mis en avant */
     body.theme-dusk .shop-item.buyable .shop-meta { color: #ffd58a; }
     .shop-item.locked .shop-meta { color: var(--muted); } /* pas assez de coins → prix grisé (item reste teasé) */
+    /* P2.16+ : en mode NUIT, voile sunset chaud sur les cartes (fini le rendu sombre/terne hors-DA). */
+    body.theme-dusk .shop-item { background: linear-gradient(180deg, rgba(255,150,80,.13), rgba(120,40,10,.17)); border-color: rgba(255,160,90,.20); }
+    body.theme-dusk .shop-item.on { background: linear-gradient(180deg, rgba(255,201,60,.22), rgba(255,126,95,.16)); border-color: var(--accent); }
+    body.theme-dusk .shop-name { color: #f6ead9; }
+    body.theme-dusk .boost-card { background: linear-gradient(180deg, rgba(255,150,80,.13), rgba(120,40,10,.17)); border-color: rgba(255,160,90,.20); }
     /* Boosts (P2.17) */
     .boost-card { display: flex; align-items: center; gap: .7rem; width: 100%; text-align: left; padding: .8rem .9rem; margin-bottom: .5rem;
       border: 1.5px solid var(--line); border-radius: 16px; background: linear-gradient(180deg, var(--card), var(--cream)); cursor: pointer; box-shadow: var(--shadow-sm); }
