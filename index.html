@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=331"></script>
-  <script src="sunmates-icons.js?v=331"></script>
+  <script src="sunmates-badges.js?v=332"></script>
+  <script src="sunmates-icons.js?v=332"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -11153,16 +11153,16 @@
     }
     // ---- Bloquer un voyageur ----
     let blockedIds = new Set();
-    async function blockUser(uid) {
+    function blockUser(uid) {
       if (!uid || !myUserId) return;
-      if (!confirm("Bloquer ce voyageur ? Il n'apparaîtra plus dans ta découverte ni tes messages.")) return;
-      await once("block:" + uid, async () => {
+      // P2.44 : confirmation en DA (plus le confirm() natif moche).
+      smConfirm("🚫", "Bloquer ce voyageur ?", "Il n'apparaîtra plus dans ta découverte ni tes messages. Tu pourras le débloquer plus tard.", "Bloquer", () => once("block:" + uid, async () => {
         const { error } = await db.from("blocks").insert({ blocker: myUserId, blocked: uid });
         if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
         toast("🚫", "Voyageur bloqué");
         showMatesView("matesHome");
         await loadConnections();
-      });
+      }));
     }
 
     // ---- BFF du moment ----
@@ -11233,6 +11233,18 @@
     // Fermeture programmatique de la modale popInfo (ex. après envoi d'un formulaire).
     function closePopInfo() { const ov = document.getElementById("popInfoOv"); if (ov) ov.classList.add("hidden"); }
     window.closePopInfo = closePopInfo;
+    // Confirmation EN DA (remplace le confirm() natif « moche » — P2.44). onConfirm appelé si on valide.
+    function smConfirm(emoji, title, message, confirmLabel, onConfirm) {
+      popInfo(emoji, title,
+        '<p style="font-size:.88rem;line-height:1.5;margin:.1rem 0 1rem;text-align:center">' + message + '</p>' +
+        '<div class="row"><button class="btn-ghost" id="smcCancel" style="flex:1">Annuler</button>' +
+        '<button class="btn-danger" id="smcOk" style="flex:1">' + escapeHtml(confirmLabel || "Confirmer") + '</button></div>');
+      setTimeout(() => {
+        const c = $("smcCancel"), o = $("smcOk");
+        if (c) c.onclick = closePopInfo;
+        if (o) o.onclick = () => { closePopInfo(); try { onConfirm && onConfirm(); } catch (e) {} };
+      }, 40);
+    }
 
     // ---- Confettis (déblocage de badge, moment de fête 🎉) ----
     function celebrate() {

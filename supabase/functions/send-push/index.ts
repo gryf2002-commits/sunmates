@@ -43,6 +43,7 @@ Deno.serve(async (req) => {
       title: "💬 " + senderName,
       body: content.slice(0, 120),
       url: "./",
+      tab: "connexions",        // P2.38 : le clic ouvre directement l'onglet Connexions
       tag: "msg-" + senderId,
     });
 
