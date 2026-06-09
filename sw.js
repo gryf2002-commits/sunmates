@@ -3,7 +3,7 @@
 // cache à la volée les libs CDN et les images (avatars, tuiles de carte) en
 // "stale-while-revalidate" (on sert le cache tout de suite, on rafraîchit en fond).
 // Les écritures Supabase (POST/PATCH…) ne sont jamais touchées.
-const VER = "v327";
+const VER = "v328";
 const SHELL_CACHE = "sunmates-shell-" + VER;   // coquille (versionnée → purge à chaque déploiement)
 const RUNTIME = "sunmates-rt-" + VER;          // CDN + images (regénéré par version)
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./sunmates-badges.js", "./sunmates-icons.js",
@@ -104,18 +104,24 @@ self.addEventListener("push", (e) => {
     icon: "./icon-192.png",            // vraie icône couleur, nette
     badge: "./icon-192.png",
     tag: d.tag || "sunmates",
-    data: { url: d.url || "./" },
+    data: { url: d.url || "./", tab: d.tab || "" }, // P2.38 : onglet cible transporté dans la notif
   };
   e.waitUntil(self.registration.showNotification(title, opts));
 });
 
-// --- Clic sur la notification : ouvrir / focaliser l'app ---
+// --- Clic sur la notification : ouvrir / focaliser l'app SUR LE BON ONGLET (P2.38) ---
 self.addEventListener("notificationclick", (e) => {
   e.notification.close();
-  const target = (e.notification.data && e.notification.data.url) || "./";
+  const data = e.notification.data || {};
+  const tab = data.tab || "";
+  // Si l'app est déjà ouverte → on la focalise ET on lui dit quel onglet afficher (postMessage).
+  // Sinon → on ouvre une fenêtre avec ?tab=… (la page lit ce paramètre au démarrage).
+  const target = tab ? ("./?tab=" + encodeURIComponent(tab)) : (data.url || "./");
   e.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((cl) => {
-      for (const c of cl) { if ("focus" in c) return c.focus(); }
+      for (const c of cl) {
+        if ("focus" in c) { if (tab) { try { c.postMessage({ type: "sm-nav", tab: tab }); } catch (_) {} } return c.focus(); }
+      }
       if (clients.openWindow) return clients.openWindow(target);
     })
   );

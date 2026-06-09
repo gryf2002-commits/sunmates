@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=327"></script>
-  <script src="sunmates-icons.js?v=327"></script>
+  <script src="sunmates-badges.js?v=328"></script>
+  <script src="sunmates-icons.js?v=328"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -3634,7 +3634,7 @@
             <button id="sosLogo" class="sos-logo" aria-label="Ouvrir les actions d'urgence" title="Actions d'urgence">🆘</button>
             <h2 style="margin:.5rem 0 .2rem;color:var(--accent)">Besoin d'aide ?</h2>
             <p class="muted" style="font-size:.85rem;margin:0 0 1.2rem;max-width:300px">Partage de position, alerte d'urgence, cercle de confiance et plus.</p>
-            <button class="btn-danger" id="needHelpBtn" style="font-size:1.15rem;padding:1.1rem 1rem;width:100%;max-width:320px">🆘 J'ai besoin d'aide</button>
+            <button class="btn-danger" id="needHelpBtn" style="font-size:1.15rem;padding:1.1rem 1rem;width:100%;max-width:320px">J'ai besoin d'aide</button>
           </div>
 
           <!-- « Tout va bien » : masqué par défaut, n'apparaît qu'APRÈS une alerte d'urgence
@@ -3662,6 +3662,8 @@
             <div class="tile" data-secuquick="safearrival"><div class="thumb gold" data-smicon="clock" data-smicon-size="30">⏱️</div><div class="t-name">Rentrée en sécurité</div><div class="t-meta">Minuteur « bien arrivé·e »</div></div>
             <div class="tile" data-secuquick="circle"><div class="thumb teal" data-smicon="users" data-smicon-size="30">🛟</div><div class="t-name">Mon cercle</div><div class="t-meta">Positions partagées</div></div>
             <div class="tile" data-secuquick="lieux"><div class="thumb coral" data-smicon="aid" data-smicon-size="30">🏛️</div><div class="t-name">Aide à proximité</div><div class="t-meta">Police · hôpital</div></div>
+            <!-- P2.23 : 8e tuile → grille symétrique (4 lignes de 2). Numéros d'urgence locaux par pays. -->
+            <div class="tile" data-secuquick="numbers"><div class="thumb green" data-smicon="phone" data-smicon-size="30">☎️</div><div class="t-name">Numéros d'urgence</div><div class="t-meta">112 · SAMU · police</div></div>
           </div>
           <button class="btn-ghost btn-block" id="fakeCallBtn" style="display:none"></button>
           <button class="btn-ghost btn-block" id="signalBtn" style="display:none"></button>
@@ -9352,7 +9354,7 @@
             if (window.SMSound) SMSound.play("notify"); // ping signature SunMates
             toast("💬", `<b>${escapeHtml(nameById(m.sender_id))}</b> t'a envoyé un message`,
               () => { goToTab("connexions"); openChat(m.sender_id); markMsgsSeen(); });
-            sysNotify("Nouveau message 💬", nameById(m.sender_id) + " t'a écrit sur SunMates");
+            sysNotify("Nouveau message 💬", nameById(m.sender_id) + " t'a écrit sur SunMates", "connexions");
             loadConnections();
           }
         })
@@ -12167,6 +12169,7 @@
         if (a === "fakecall") { $("fakeCallBtn").click(); return; }
         if (a === "signal") { $("signalBtn").click(); return; }
         if (a === "safearrival") { openSafeArrival(); return; }
+        if (a === "numbers") { if (typeof openNumbers === "function") openNumbers(); return; }
         showSecuView("secuHelp");
         if (a === "position") $("shareLocBtn").click();
         else if (a === "emergency") $("emergencyBtn").click();
@@ -12185,7 +12188,7 @@
           if (payload.eventType === "INSERT" && row.user_b === myUserId && notifyOnce("conn-new:" + row.id)) {
             if (window.SMSound) SMSound.play("notify");
             toast("📨", `<b>${escapeHtml(nameById(row.user_a))}</b> souhaite se connecter`, () => goToTab("connexions"));
-            sysNotify("Nouvelle demande 📨", nameById(row.user_a) + " souhaite se connecter");
+            sysNotify("Nouvelle demande 📨", nameById(row.user_a) + " souhaite se connecter", "connexions");
           }
           if (payload.eventType === "UPDATE" && row.status === "accepted" && (row.user_a === myUserId || row.user_b === myUserId) && notifyOnce("conn-acc:" + row.id)) {
             const other = row.user_a === myUserId ? row.user_b : row.user_a;
@@ -12205,7 +12208,7 @@
           if (notifyOnce("sugg-new:" + row.id)) {
             if (window.SMSound) SMSound.play("notify");
             toast("🎯", `<b>${escapeHtml(nameById(row.from_user))}</b> te propose : ${escapeHtml(row.quest_title || "une quête")}`, () => goToTab("jeux"));
-            sysNotify("Nouveau défi 🎯", nameById(row.from_user) + " te propose : " + (row.quest_title || "une quête"));
+            sysNotify("Nouveau défi 🎯", nameById(row.from_user) + " te propose : " + (row.quest_title || "une quête"), "jeux");
           }
           loadGameData();
         }).subscribe();
@@ -13741,12 +13744,13 @@
         );
       } catch (e) { /* push indisponible (file://, iOS non installé, refus…), silencieux */ }
     }
-    function sysNotify(title, body) {
+    function sysNotify(title, body, tab) {
       if (!("Notification" in window) || Notification.permission !== "granted") return;
       if (!document.hidden) return; // app déjà visible → le toast à l'écran suffit
       // P2.52 : icône PNG nette (icon.svg ne s'affiche pas dans beaucoup de systèmes de notif).
       // P2.49 : tag commun + renotify:false → les notifs SE REMPLACENT (jamais d'empilement de vieilles notifs).
-      const opts = { body: body, icon: "icon-192.png", badge: "icon-192.png", tag: "sunmates", renotify: false };
+      // P2.38 : on transporte l'onglet cible dans data → le clic ouvre le bon onglet.
+      const opts = { body: body, icon: "icon-192.png", badge: "icon-192.png", tag: "sunmates", renotify: false, data: { tab: tab || "" } };
       try {
         if (navigator.serviceWorker && navigator.serviceWorker.ready) {
           navigator.serviceWorker.ready
@@ -13755,6 +13759,22 @@
         } else { new Notification(title, opts); }
       } catch (e) {}
     }
+
+    // P2.38 : routage des notifications → bon onglet.
+    // (a) app déjà ouverte : le SW envoie un message au clic → on va sur l'onglet.
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener("message", (e) => {
+        if (e.data && e.data.type === "sm-nav" && e.data.tab && typeof goToTab === "function") goToTab(e.data.tab);
+      });
+    }
+    // (b) app ouverte via la notif (nouvelle fenêtre) : on lit ?tab= au démarrage.
+    (function navFromNotifQuery() {
+      try {
+        const t = new URLSearchParams(location.search).get("tab");
+        if (!t) return;
+        setTimeout(() => { const app = $("appView"); if (app && !app.classList.contains("hidden") && typeof goToTab === "function") goToTab(t); }, 900);
+      } catch (e) {}
+    })();
 
     // Bandeau d'état réseau : prévient quand on est hors-ligne (Supabase devient injoignable).
     (function netStatus() {
