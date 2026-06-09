@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=314"></script>
-  <script src="sunmates-icons.js?v=314"></script>
+  <script src="sunmates-badges.js?v=325"></script>
+  <script src="sunmates-icons.js?v=325"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -311,7 +311,9 @@
     .feed-composer .fc-row { display: flex; gap: .6rem; align-items: center; min-width: 0; }
     .feed-composer .fc-av { font-size: 1.4rem; flex-shrink: 0; line-height: 1; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--cream); }
     body.theme-dusk .feed-composer .fc-av { background: #2a2140; }
-    .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .55rem .2rem; min-height: 38px; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
+    /* min-height 42px + padding .5rem .4rem : la ligne (≈21px) tient SANS être rognée et reste
+       centrée face à l'avatar (P1.4/P1.14). overflow-y:auto seulement quand ça dépasse plusieurs lignes. */
+    .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .5rem .4rem; min-height: 42px; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
     .feed-composer textarea:focus { outline: none; }
     .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
     .feed-composer .fc-kinds { display: flex; gap: .25rem; background: var(--cream); border-radius: 999px; padding: .2rem; }
@@ -883,7 +885,8 @@
     .fs-btn { flex-shrink: 0; background: var(--accent-grad); color: #fff; border: 0; border-radius: 999px; padding: .4rem .8rem; font-weight: 800; font-size: .8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255,90,77,.32); white-space: nowrap; }
     .fs-btn:active { transform: scale(.96); }
     /* Aussi un bouton flottant ⛶ dans le coin de la carte (toujours visible) */
-    .homemap-fsopen { position: absolute; top: .5rem; right: .5rem; z-index: 500; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 11px; background: var(--accent-grad); color: #fff; line-height: 0; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); display: flex; align-items: center; justify-content: center; }
+    /* Bouton plein écran : net (liseré blanc + ombre resserrée) plutôt qu'un halo rouge flou/transparent (P1.26). */
+    .homemap-fsopen { position: absolute; top: .5rem; right: .5rem; z-index: 500; width: 38px; height: 38px; padding: 0; border: 1.5px solid rgba(255,255,255,.9); border-radius: 11px; background: var(--accent-grad); color: #fff; line-height: 0; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.22); display: flex; align-items: center; justify-content: center; }
     .homemap-fsopen svg { display: block; }
     /* Filtres de la carte : UNE seule ligne compacte qui défile (au lieu d'un gros paquet sur plusieurs lignes) */
     #homeMapFilters { flex-wrap: nowrap !important; overflow-x: auto; overflow-y: hidden; gap: .35rem; margin-bottom: .55rem; padding-bottom: .15rem; scrollbar-width: none; background: none !important; }
@@ -940,12 +943,16 @@
     .onb-bg .o3 { width: 160px; height: 160px; background: #29d8c2; top: 42%; right: 26%; animation-delay: -6s; }
     /* translate SEUL (pas de scale) : le flou n'est plus recalculé à chaque frame → fluide. */
     @keyframes orbFloat { 0%, 100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,-22px,0); } }
-    .onb-card { position: relative; width: 100%; max-width: 420px; background: rgba(22,15,42,.30);
+    .onb-card { position: relative; width: 100%; max-width: 420px; background: rgba(22,15,42,.34);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.22);
       border-radius: 28px; padding: 2.4rem 1.6rem 1.4rem; color: #fff; box-shadow: 0 30px 80px rgba(0,0,0,.45); text-align: center; }
+    /* P2.1/P1.13 : pendant le glissement de slide, on COUPE le backdrop-filter (re-floute tout le fond à
+       chaque frame = saccade sur mobile) et on le remplace par un fond opaque équivalent → switch fluide.
+       Au repos, le frosted glass revient. */
+    .onb-card.onb-sliding { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(20,13,38,.78); }
     .onb-skip { position: absolute; top: 1rem; right: 1.1rem; background: none; border: 0; color: rgba(255,255,255,.7); font-size: .82rem; cursor: pointer; }
     .onb-stage { position: relative; min-height: 280px; }
-    .onb-step { position: absolute; inset: 0; opacity: 0; transform: translateX(34px); transition: opacity .42s ease, transform .42s ease;
+    .onb-step { position: absolute; inset: 0; opacity: 0; transform: translateX(34px); transition: opacity .3s ease, transform .3s ease;
       pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; will-change: transform, opacity; backface-visibility: hidden; }
     .onb-step.active { opacity: 1; transform: none; pointer-events: auto; }
     .onb-step.left { transform: translateX(-34px); }
@@ -1062,7 +1069,10 @@
     .stat-box .lbl { color: var(--muted); font-size: .72rem; margin-top: .2rem; white-space: nowrap; }
 
     /* ----------------------------- Avatars -------------------------- */
-    .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent-grad); background-size: cover; background-position: center; background-repeat: no-repeat; display: grid; place-items: center; color: #fff; font-weight: 700; flex-shrink: 0; overflow: hidden; }
+    /* background-color sunset = filet de sécurité (P1.11) : si une PHOTO d'avatar échoue/manque,
+       l'image inline masque le dégradé → en thème nuit on voyait le fond sombre (« rond noir »).
+       Le fond corail garantit un avatar toujours sunset, jamais noir. */
+    .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent-grad); background-color: var(--accent); background-size: cover; background-position: center; background-repeat: no-repeat; display: grid; place-items: center; color: #fff; font-weight: 700; flex-shrink: 0; overflow: hidden; }
     .person { display: flex; align-items: center; gap: .75rem; padding: .8rem 0; border-bottom: 1px solid var(--line); }
     .person:last-child { border-bottom: 0; }
     .person .info { flex: 1; min-width: 0; }
@@ -1217,6 +1227,10 @@
     .qrow-done .qico { opacity: .6; }
     .qrow:last-child { border-bottom: 0; padding-bottom: 0; }
     .qico { width: 42px; height: 42px; border-radius: 12px; background: var(--accent-soft); display: grid; place-items: center; font-size: 20px; flex-shrink: 0; }
+    /* P2.11 : le badge récompense (médaillon 46px) déborde d'un cadre 42 → cadre dédié plus grand,
+       fond transparent (le médaillon a déjà son serti), médaillon parfaitement centré. */
+    #detailBadgeIco { width: 54px; height: 54px; background: transparent; }
+    #detailBadgeRow { align-items: center; }
     .qrow .qname { font-weight: 600; color: var(--ink); flex: 1; }
     .qrow .qrow-sub { font-weight: 600; font-size: .73rem; color: var(--accent); margin-top: .15rem; }
     .qrow .qarrow { color: var(--accent); font-weight: 800; }
@@ -1349,6 +1363,11 @@
     .shop-item.locked { opacity: .55; }
     .shop-ic { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; font-size: 24px;
       background: var(--accent-soft, rgba(255,170,90,.16)); }
+    /* P2.16 : titres = cercle dégradé sunset vibrant (fini le 🏷️ gris répété) + petit reflet glossy. */
+    .shop-ic-title { background: radial-gradient(circle at 50% 28%, rgba(255,255,255,.45), rgba(255,255,255,0) 55%), var(--accent-grad);
+      box-shadow: 0 4px 12px rgba(255,90,77,.28); }
+    .shop-ic-none { background: var(--cream); box-shadow: none; filter: grayscale(.4); }
+    body.theme-dusk .shop-ic-none { background: #2a2140; }
     .shop-name { font-size: .82rem; font-weight: 700; line-height: 1.2; }
     .shop-meta { font-size: .72rem; color: var(--muted); }
     .shop-item.on .shop-meta { color: var(--accent); font-weight: 700; }
@@ -1414,21 +1433,23 @@
     /* ============ HOME v2 — « Paris, ton terrain de jeu » ========= */
     /* ============================================================= */
     /* --- 1. Héros joueur --- */
-    .player-hero{ position:relative; overflow:hidden; border-radius:var(--radius-lg); padding:1.1rem 1.15rem 1.25rem; margin:.2rem 0 1rem;
-      background: radial-gradient(120% 130% at 18% -10%, rgba(255,255,255,.30), rgba(255,255,255,0) 46%), var(--accent-grad);
-      box-shadow:var(--shadow-pop); color:#fff; isolation:isolate; }
-    .player-hero .ph-glow{ position:absolute; z-index:-1; inset:auto auto 0 0; width:200px; height:200px; left:-40px; bottom:-70px;
-      background:radial-gradient(circle, rgba(255,201,60,.55), rgba(255,201,60,0) 70%); filter:blur(6px); animation:phBreathe 5.5s ease-in-out infinite; }
-    .ph-top{ display:flex; align-items:center; gap:.8rem; }
-    .ph-avatar{ position:relative; flex-shrink:0; width:60px; height:60px; }
-    .ph-av-emoji{ display:grid; place-items:center; width:60px; height:60px; font-size:30px; border-radius:50%; overflow:hidden;
+    /* P2.20 : plus COMPACT et plus CALME (moins imposant/flashy) — padding réduit, ombre douce,
+       halo statique discret (plus de « respiration »), avatar et titre plus petits. */
+    .player-hero{ position:relative; overflow:hidden; border-radius:var(--radius); padding:.8rem .95rem .9rem; margin:.2rem 0 .85rem;
+      background: radial-gradient(120% 130% at 18% -10%, rgba(255,255,255,.22), rgba(255,255,255,0) 46%), var(--accent-grad);
+      box-shadow:var(--shadow); color:#fff; isolation:isolate; }
+    .player-hero .ph-glow{ position:absolute; z-index:-1; inset:auto auto 0 0; width:170px; height:170px; left:-50px; bottom:-80px;
+      background:radial-gradient(circle, rgba(255,201,60,.32), rgba(255,201,60,0) 70%); filter:blur(8px); }
+    .ph-top{ display:flex; align-items:center; gap:.7rem; }
+    .ph-avatar{ position:relative; flex-shrink:0; width:50px; height:50px; }
+    .ph-av-emoji{ display:grid; place-items:center; width:50px; height:50px; font-size:26px; border-radius:50%; overflow:hidden;
       background:rgba(255,255,255,.18); background-size:cover; background-position:center;
       box-shadow: inset 0 2px 6px rgba(255,255,255,.4), inset 0 -8px 16px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.18); border:2px solid rgba(255,255,255,.55); }
     .ph-lvl-ring{ position:absolute; right:-6px; bottom:-6px; min-width:26px; height:26px; padding:0 5px; display:grid; place-items:center;
       font-family:"Fraunces",serif; font-weight:900; font-size:.86rem; line-height:1; color:#8a3b00;
       background:linear-gradient(135deg,#FFF2C2,#FFD15C 55%,#E8961F); border-radius:999px; border:2px solid #fff; box-shadow:0 3px 8px rgba(184,90,18,.4); }
     .ph-id{ flex:1; min-width:0; }
-    .ph-name{ font-family:"Fraunces",serif; font-weight:900; font-size:1.32rem; line-height:1.05; letter-spacing:.2px;
+    .ph-name{ font-family:"Fraunces",serif; font-weight:900; font-size:1.12rem; line-height:1.08; letter-spacing:.2px;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 2px rgba(120,40,0,.22); }
     .ph-title{ font-size:.8rem; font-weight:700; opacity:.92; margin-top:.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .ph-streak{ flex-shrink:0; align-self:flex-start; display:inline-flex; align-items:center; gap:.2rem; min-height:38px; padding:.4rem .65rem;
@@ -1436,15 +1457,16 @@
       backdrop-filter:blur(2px); transition:transform .14s ease, background .18s; }
     .ph-streak:hover{ background:rgba(255,255,255,.30); } .ph-streak:active{ transform:scale(.94); }
     .ph-streak-fire{ font-size:1rem; filter:drop-shadow(0 1px 1px rgba(180,60,0,.4)); }
-    .ph-xp{ margin-top:1rem; }
+    .ph-xp{ margin-top:.7rem; }
     .ph-xp-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:.4rem; }
     .ph-xp-lbl{ font-weight:800; font-size:.82rem; opacity:.95; } .ph-xp-val{ font-size:.82rem; opacity:.95; }
     .ph-xp-val b{ font-family:"Fraunces",serif; font-weight:900; font-size:.95rem; }
     .ph-xp-track{ height:12px; border-radius:999px; background:rgba(120,40,10,.28); box-shadow:inset 0 1px 3px rgba(0,0,0,.28); overflow:hidden; }
     .ph-xp-fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,#FFF2C2,#FFD15C 60%,#FFE9A8); box-shadow:0 0 10px rgba(255,209,92,.7);
       position:relative; transition:width .9s cubic-bezier(.2,.8,.2,1); }
-    .ph-xp-fill::after{ content:""; position:absolute; inset:0; background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.6) 50%, transparent 70%);
-      transform:translateX(-120%); animation:phShine 3.4s ease-in-out 1s infinite; }
+    /* P2.20 : reflet figé (plus de balayage clignotant) → barre XP plus calme/tangible. */
+    .ph-xp-fill::after{ content:""; position:absolute; inset:0; background:linear-gradient(100deg, transparent 40%, rgba(255,255,255,.28) 50%, transparent 60%);
+      transform:translateX(-120%); }
     .ph-xp-next{ display:flex; align-items:center; gap:.4rem; margin-top:.55rem; font-size:.8rem; opacity:.96; }
     .ph-next-ic{ font-size:1rem; flex-shrink:0; } .ph-next-txt{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .ph-next-txt b{ font-weight:800; }
     @keyframes phBreathe{ 0%,100%{ transform:scale(1); opacity:.85 } 50%{ transform:scale(1.12); opacity:1 } }
@@ -1475,7 +1497,7 @@
     /* Sélecteur de ville (menu déroulant carte) */
     .city-pick{ display:flex; align-items:center; gap:.45rem; margin-bottom:.55rem; }
     .city-pick-ic{ font-size:18px; flex-shrink:0; }
-    .city-pick select{ flex:1; padding:.5rem 1.8rem .5rem .7rem; border-radius:12px; border:1px solid var(--line); background-color:var(--card); color:var(--ink); font-weight:700; font-size:.85rem; cursor:pointer; -webkit-appearance:none; appearance:none;
+    .city-pick select{ flex:1; padding:.5rem 1.8rem .5rem 1.8rem; text-align:center; text-align-last:center; border-radius:12px; border:1px solid var(--line); background-color:var(--card); color:var(--ink); font-weight:700; font-size:.85rem; cursor:pointer; -webkit-appearance:none; appearance:none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23E8961F' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .7rem center; }
     body.theme-dusk .city-pick select{ background-color:#2a2140; color:#fff; border-color:rgba(255,255,255,.12); }
     .todo-toggle{ flex-shrink:0; display:inline-flex; align-items:center; gap:.35rem; padding:.45rem .6rem; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--text); font-weight:700; font-size:.8rem; cursor:pointer; white-space:nowrap; }
@@ -1758,6 +1780,17 @@
     .completion-bar { height: 9px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
     .completion-bar span { display: block; height: 100%; width: 0; background: var(--accent-grad); transition: width .4s ease; }
     .completion-txt { font-size: .78rem; color: var(--muted); margin-top: .35rem; }
+    /* P2.29 : bloc « Mon parcours » plus attrayant — header + rangée de mini-stats façon résumé d'aventure. */
+    .parcours-card .pc-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
+    .parcours-card .pc-head b { font-size: .95rem; }
+    .parcours-card .pc-share { padding: .4rem .8rem; font-size: .8rem; white-space: nowrap; flex-shrink: 0; }
+    .pc-stats { display: flex; gap: .4rem; margin-top: .6rem; }
+    .pc-stat { flex: 1; text-align: center; padding: .45rem .2rem; border-radius: 12px;
+      background: linear-gradient(180deg, var(--accent-soft), rgba(255,255,255,0)); border: 1px solid var(--line); }
+    body.theme-dusk .pc-stat { background: rgba(255,201,60,.10); border-color: rgba(255,255,255,.08); }
+    .pc-stat .pc-n { font-weight: 800; font-size: .92rem; color: var(--ink); white-space: nowrap; }
+    .pc-stat .pc-l { font-size: .64rem; color: var(--muted); margin-top: .1rem; }
+    .pc-today { font-size: .8rem; margin-top: .55rem; text-align: center; }
     /* Rangée de badges sur la carte profil */
     .prof-badges { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin-top: .8rem; cursor: pointer; }
     .prof-badges .pb-badge { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-grad); color: #fff; display: grid; place-items: center; font-size: 16px; box-shadow: var(--shadow-sm); }
@@ -1837,7 +1870,10 @@
     /* Quête du jour : aura calmée sur l'accueil (moins « jeu ») */
     .tab-panel[data-panel="accueil"] .qs-aura { opacity: .45; }
     /* Accessibilité : croix de fermeture des panneaux → vraie cible tactile 44px */
-    .picker-head > button.btn-ghost { min-width: 44px; min-height: 44px; padding: 0 !important; display: inline-grid; place-items: center; font-size: 1.05rem; line-height: 1; }
+    .picker-head button.btn-ghost { min-width: 44px; min-height: 44px; padding: 0 !important; display: inline-grid; place-items: center; font-size: 1.05rem; line-height: 1; }
+    /* P2.3 : toutes les croix icône-seule centrées proprement (desktop + iOS), même hors picker-head
+       (le glyphe ✕ se calait trop haut/bas selon la plateforme). */
+    .ice-del, button[data-suggno], #onbDoneClose, .pwa-x { display: inline-flex !important; align-items: center; justify-content: center; line-height: 1; }
     /* Mode Maison : préparation voyage repliée (sobriété) */
     .hm-plan { margin: .4rem 0 1rem; }
     .hm-plan > summary { list-style: none; cursor: pointer; padding: .85rem 1rem; border-radius: var(--radius); background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); font-family: "Fraunces", serif; font-weight: 800; color: var(--ink); display: flex; align-items: center; justify-content: space-between; }
@@ -1886,7 +1922,10 @@
     .compat.low  { background: #f1f2f5; color: var(--muted); }
 
     /* ------------------------ Avatars / photos --------------------- */
-    .avatar { background-size: cover; background-position: center; overflow: hidden; }
+    /* overflow:visible → la pastille « en ligne » (.pdot, placée à -1px) n'est plus ROGNÉE par le cadre
+       rond (P2.32). La photo reste découpée en rond par border-radius:50% (pas besoin d'overflow:hidden
+       puisque l'avatar est un background-image, pas un <img> enfant). */
+    .avatar { background-size: cover; background-position: center; overflow: visible; }
     .avatar.lg { width: 74px; height: 74px; font-size: 28px; border-radius: 50%; }
     .avatar-edit { display: flex; align-items: center; gap: 1rem; margin-bottom: .4rem; }
     .detail-hero.has-photo { background-size: cover; background-position: center; }
@@ -3729,20 +3768,22 @@
             <div class="completion-bar"><span id="completionFill"></span></div>
             <div class="completion-txt" id="completionTxt">Profil complété à 0%</div>
           </div>
+          <!-- P2.28 : accès Premium/Admin remontés DANS la carte (sous les stats) → toujours visibles
+               sans devoir scroller au-delà des badges/parcours quand le profil est bien rempli. -->
+          <div class="mseg" id="profSegNav" style="flex-wrap:wrap;margin-top:.7rem">
+            <button data-pseg="premium">Premium ✨</button>
+            <button data-pseg="admin" id="adminSegBtn" style="display:none">Admin 🛡️</button>
+          </div>
           <div class="prof-badges" id="profileBadges" style="display:none"></div>
           <!-- Mon parcours : intégré à la 1ʳᵉ carte -->
-          <div class="parcours-card" id="parcoursCard" style="display:flex;align-items:center;gap:.6rem;margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--line)">
-            <div style="flex:1;min-width:0"><b>🧭 Mon parcours</b> <span id="parcoursToday" class="muted" style="font-size:.82rem"></span></div>
-            <button class="btn-accent" id="shareParcoursBtn" style="padding:.4rem .8rem;font-size:.8rem;white-space:nowrap;flex-shrink:0">📤 Partager</button>
+          <div class="parcours-card" id="parcoursCard" style="margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--line)">
+            <div class="pc-head"><b>🧭 Mon parcours</b><button class="btn-accent pc-share" id="shareParcoursBtn">📤 Partager</button></div>
+            <div class="pc-stats" id="parcoursStatsRow"></div>
+            <div id="parcoursToday" class="pc-today muted"></div>
           </div>
           <!-- BFF : intégré à la 1ʳᵉ carte -->
           <div id="bffCard" style="display:none;margin-top:.6rem"></div>
           <button class="btn-primary btn-block" id="editProfileBtn" style="margin-top:.8rem">✏️ Modifier mon profil</button>
-        </div>
-
-        <div class="mseg" style="flex-wrap:wrap">
-          <button data-pseg="premium">Premium ✨</button>
-          <button data-pseg="admin" id="adminSegBtn" style="display:none">Admin 🛡️</button>
         </div>
 
         <div class="prof-seg hidden" data-psegpanel="edit">
@@ -4266,6 +4307,7 @@
             <button class="btn-ghost" id="detailSuggestBtn">🤝 Proposer à un Mate</button>
             <button class="btn-ghost" id="detailMapBtn">📍 Voir sur la carte</button>
           </div>
+          <button class="btn-ghost btn-block" id="detailLeaveBtn" style="margin-top:.5rem;display:none;color:var(--muted);font-size:.82rem">Quitter cette quête</button>
           <div class="msg" id="detailMsg" style="text-align:center"></div>
         </div>
 
@@ -4700,6 +4742,11 @@
     let __lastTab = null;
     function goToTab(target) {
       const changed = target !== __lastTab;
+      // P2.4 : on QUITTE un onglet → on vide sa recherche (sinon on revient sur d'anciens résultats).
+      if (changed) {
+        const hs = $("homeSearch"); if (hs && hs.value) { hs.value = ""; const sr = $("searchResults"); if (sr) sr.innerHTML = ""; }
+        const ts = $("travSearch"); if (ts && ts.value) { ts.value = ""; if (typeof renderTravelers === "function") renderTravelers(""); }
+      }
       if (typeof toggleHomeFull === "function" && document.querySelector(".homemap-card.fs")) toggleHomeFull(false); // sort du plein écran seulement si actif
       document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle("active", b.dataset.tab === target));
       document.querySelectorAll(".tab-panel").forEach((p) => show(p, p.dataset.panel === target));
@@ -5095,7 +5142,7 @@
         if (typeof renderSoloHome === "function") renderSoloHome();
         renderInspo(); renderNextTrip(); renderTripPrep(); renderWishlist(); renderTripsDone(); renderVisitors(); renderHost();
         if (typeof renderHomeMates === "function") renderHomeMates();
-      } else if (typeof renderHomeMap === "function" && homeLeaf) { setTimeout(renderHomeMap, 60); } // resync la carte au retour
+      } else if (typeof renderHomeMap === "function") { setTimeout(renderHomeMap, 60); } // resync OU crée la carte au retour (P1.3 : homeLeaf pouvait n'avoir jamais été initialisé en mode Maison)
       // (Le hub quête/missions a été retiré de l'accueil → plus rien à repositionner ici.
       //  Le solo "à la maison" est rendu par renderSoloHome ; les quêtes vivent dans l'onglet Jeux.)
     }
@@ -6149,12 +6196,14 @@
         if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map((k) => caches.delete(k))); }
         if (navigator.serviceWorker) { const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map((r) => r.unregister())); }
         if (m) { m.style.color = "var(--ok)"; m.textContent = "Cache vidé ✅ rechargement…"; }
-        setTimeout(() => location.reload(), 600);
+        // Recharge avec un paramètre anti-cache → le document HTML lui-même est re-téléchargé FRAIS
+        // (un location.reload() simple pouvait re-servir l'ancien index.html depuis le cache HTTP/CDN).
+        setTimeout(() => { location.replace(location.pathname + "?fresh=" + Date.now()); }, 600);
       } catch (e) { if (m) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + (e.message || e); } }
     }); }
 
     // Banque de sons (admin) : un bouton par son, lecture FORCÉE (même si coupé), + toggle global.
-    const SOUND_LABELS = { tap:"👆 Tap", pop:"🫧 Pop", nav:"🧭 Navigation", select:"✔️ Sélection", toggle:"🔀 Toggle", success:"✅ Succès", coin:"🪙 Pièce / XP", star:"⭐ Étoile", levelup:"🆙 Niveau sup.", unlock:"🔓 Déblocage", badge:"🏅 Badge", error:"⚠️ Erreur", whoosh:"💨 Whoosh", message:"💬 Message", ringtone:"📞 Sonnerie faux appel" };
+    const SOUND_LABELS = { tap:"👆 Tap", pop:"🫧 Pop", nav:"🧭 Navigation", select:"✔️ Sélection", toggle:"🔀 Toggle", success:"✅ Succès", coin:"🪙 Pièce / XP", star:"⭐ Étoile", levelup:"🆙 Niveau sup.", unlock:"🔓 Déblocage", badge:"🏅 Badge", error:"⚠️ Erreur", whoosh:"💨 Whoosh", message:"💬 Message", notify:"🔔 Notif (signature)", match:"💛 Match / connexion", ringtone:"📞 Sonnerie faux appel" };
     function loadAdminSounds() {
       const box = $("adminSounds"); if (!box || !window.SMSound) return;
       box.innerHTML = SMSound.list().map((n) => `<button class="btn-ghost" data-snd="${n}" style="justify-content:center;font-size:.82rem">${SOUND_LABELS[n] || n}</button>`).join("");
@@ -6549,7 +6598,18 @@
       adWake();                    // ré-affiche le texte en douceur, puis se replie tout seul
       adSchedule();
     }
+    // P2.42 : pendant la démo (vitrine passive, elle ne tape jamais), on empêche tout champ
+    // de prendre le focus → le clavier mobile ne s'ouvre plus intempestivement.
+    window._demoOn = false;
+    document.addEventListener("focusin", (e) => {
+      if (!window._demoOn) return;
+      const t = e.target;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) {
+        try { t.blur(); } catch (_) {}
+      }
+    }, true);
     function startAutoDemo(i) {
+      window._demoOn = true;
       adPaused = false; $("adPause").textContent = "⏸ Pause";
       adThemeWasDusk = document.body.classList.contains("theme-dusk");
       $("autoDemo").classList.remove("hidden");
@@ -6557,6 +6617,7 @@
       adPlay(typeof i === "number" ? i : 0);
     }
     function endAutoDemo() {
+      window._demoOn = false;
       clearTimeout(adTimer); clearTimeout(adHideTimer); adCleanup();
       const bar = $("autoDemo"); if (bar) { bar.classList.add("hidden"); bar.classList.remove("dim"); }
       if (document.body.classList.contains("theme-dusk") !== adThemeWasDusk) adClick("themeToggle"); // restaure le thème
@@ -7304,6 +7365,7 @@
       ]);
       blockedIds = new Set((blk || []).map((b) => b.blocked));
       // BANNIS exclus à la SOURCE → ils ne peuplent ni travelerMap, ni la carte, ni la recherche, ni les chats.
+      const bannedIds = new Set((profiles || []).filter((p) => p.banned && p.id !== myId).map((p) => p.id));
       const all = (profiles || []).filter((p) => p.id === myId || !p.banned);
       const list = conns || [];
       // Dernier message échangé avec chaque interlocuteur (pour l'aperçu)
@@ -7322,10 +7384,11 @@
 
       // Connexions acceptées (calculées d'abord pour exclure les Mates déjà connectés des demandes)
       const accepted = list.filter((c) => c.status === "accepted" && (c.user_a === myId || c.user_b === myId));
-      connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)).filter((id) => !blockedIds.has(id)));
+      // !bannedIds : un Mate connecté PUIS banni ne doit plus apparaître (connexions, conversations, historique).
+      connectedIds = new Set(accepted.map((c) => (c.user_a === myId ? c.user_b : c.user_a)).filter((id) => !blockedIds.has(id) && !bannedIds.has(id)));
 
-      // Demandes reçues (je suis user_b, en attente), JAMAIS quelqu'un déjà connecté
-      const received = list.filter((c) => c.user_b === myId && c.status === "pending" && !connectedIds.has(c.user_a));
+      // Demandes reçues (je suis user_b, en attente), JAMAIS quelqu'un déjà connecté ni banni
+      const received = list.filter((c) => c.user_b === myId && c.status === "pending" && !connectedIds.has(c.user_a) && !bannedIds.has(c.user_a));
       pendingRequestsList = received.map((c) => ({ connId: c.id, fromId: c.user_a }));
       $("requestsList").innerHTML = received.length
         ? received.map((c) => `<div class="person">
@@ -7339,7 +7402,7 @@
       // (connexions acceptées déjà calculées plus haut)
       const msgCountByPeer = {};
       (msgs || []).forEach((mm) => { const peer = mm.sender_id === myId ? mm.recipient_id : mm.sender_id; msgCountByPeer[peer] = (msgCountByPeer[peer] || 0) + 1; });
-      connHistory = accepted.map((c) => { const uid = c.user_a === myId ? c.user_b : c.user_a; return { uid, since: c.created_at, msgs: msgCountByPeer[uid] || 0 }; }).filter((h) => !blockedIds.has(h.uid));
+      connHistory = accepted.map((c) => { const uid = c.user_a === myId ? c.user_b : c.user_a; return { uid, since: c.created_at, msgs: msgCountByPeer[uid] || 0 }; }).filter((h) => !blockedIds.has(h.uid) && !bannedIds.has(h.uid));
       // « Mes connexions » : on ouvre le PROFIL du Mate (compat + trust + bouton message)
       $("myConnectionsList").innerHTML = connectedIds.size
         ? [...connectedIds].map((other) => `<div class="person trav-open" data-profile="${other}" style="cursor:pointer">
@@ -7484,11 +7547,11 @@
     }
     function renderTravelers(query) {
       renderMateOfDay();
-      const q = (query || "").trim().toLowerCase();
+      const q = _deburr(query);
       let list = travelersCache
         .filter((p) => {
-          const nameHit = (p.username || "").toLowerCase().includes(q);
-          const cityHit = (p.city || "").toLowerCase().includes(q);
+          const nameHit = _deburr(p.username).includes(q);
+          const cityHit = _deburr(p.city).includes(q);
           // Profils démo (IA) : toujours visibles dans la découverte.
           if (p.is_demo) return !q || nameHit || cityHit;
           // Vrais utilisateurs : trouvables UNIQUEMENT en cherchant leur pseudo.
@@ -7617,6 +7680,8 @@
     }
 
     // ====================== UTILITAIRE ======================
+    // Normalise pour la recherche : minuscules + accents retirés (« José » trouvable en tapant « jose »).
+    function _deburr(s) { return String(s == null ? "" : s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim(); }
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, (c) =>
         ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -7749,6 +7814,14 @@
     }
     function renderParcours() {
       const el = $("parcoursToday"); if (!el) return;
+      // Rangée de mini-stats TOTALES (résumé d'aventure attrayant) — P2.29.
+      const row = $("parcoursStatsRow");
+      if (row) {
+        const s = parcoursStats();
+        const cells = [["📍", s.ck, "check-ins"], ["🎯", s.q, "quêtes"], ["🏅", s.b, "badges"], ["⭐", s.xp, "XP"]];
+        if (s.trips > 0) cells.push(["🧳", s.trips, s.trips > 1 ? "voyages" : "voyage"]);
+        row.innerHTML = cells.map(([e, n, l]) => `<div class="pc-stat"><div class="pc-n">${e} ${n}</div><div class="pc-l">${l}</div></div>`).join("");
+      }
       const ckToday = myCheckinsRaw.filter((c) => _isToday(c.created_at)).length;
       const qToday = myQuestRows.filter((r) => r.status === "completed" && _isToday(r.completed_at)).length;
       const bToday = myBadges.filter((b) => _isToday(b.earned_at)).length;
@@ -7756,7 +7829,7 @@
       if (ckToday) bits.push(`📍 ${ckToday}`);
       if (qToday) bits.push(`🎯 ${qToday}`);
       if (bToday) bits.push(`🏅 ${bToday}`);
-      el.textContent = bits.length ? "· aujourd'hui : " + bits.join(" · ") : "· prêt·e pour de nouvelles aventures 🌞";
+      el.textContent = bits.length ? "✨ aujourd'hui : " + bits.join(" · ") : "Prêt·e pour de nouvelles aventures 🌞";
     }
     function parcoursStats() {
       const trips = (typeof loadTripsDone === "function") ? loadTripsDone().length : 0;
@@ -7797,13 +7870,14 @@
     function shareInvite() {
       const base = location.href.split("#")[0].split("?")[0];
       const url = myUserId ? (base + "?ref=" + encodeURIComponent(myUserId)) : base;
-      const text = "🌍 Rejoins-moi sur SunMates — l'app pour voyager solo en sécurité et se faire des potes ! ☀️ On se boit un verre ? 🍹\n" + url;
+      // P2.21 : message SANS l'URL (sinon navigator.share l'ajoute via le champ `url` → lien en double).
+      const msg = "🌍 Rejoins-moi sur SunMates ☀️ — l'appli pour voyager solo en sécurité et se faire de vrais potes en route. On démarre avec un verre offert à tous les deux 🍹";
       try { if (typeof track === "function") track("invite_shared", {}); } catch (e) {}
       // Compteur local d'invitations partagées (sert au badge « Early Bird » de la campagne de lancement)
       try { const k = "sm_invites_shared"; localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || "0", 10) || 0) + 1)); } catch (e) {}
-      if (navigator.share) { navigator.share({ title: "SunMates", text, url }).catch(() => {}); }
-      else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast("📋", "Lien d'invitation copié, partage-le !"), () => toast("✨", text)); }
-      else toast("✨", text);
+      if (navigator.share) { navigator.share({ title: "SunMates", text: msg, url }).catch(() => {}); } // url à part → une seule fois
+      else if (navigator.clipboard) { navigator.clipboard.writeText(msg + "\n" + url).then(() => toast("📋", "Invitation copiée, partage-la !"), () => toast("✨", msg + "\n" + url)); }
+      else toast("✨", msg + "\n" + url);
     }
     { const ib = $("inviteFriendsBtn"); if (ib) ib.addEventListener("click", shareInvite); }
     // Capte le parrain à l'arrivée (?ref=…) : on le mémorise pour l'attribution future (referral).
@@ -7913,9 +7987,12 @@
     // mot-clé). `lock` rend l'image stable. Un dégradé vif reste derrière, donc
     // jamais d'image cassée. Mots-clés distincts → villes/pays variés.
     function flickrImg(keywords, seed) {
-      const s = seed || keywords; let n = 0;
+      // P2.43 : loremflickr était LENT et changeait l'image à chaque fois (lock peu fiable).
+      // Picsum /seed/ = strictement DÉTERMINISTE (même lieu/quête → toujours la même photo),
+      // sur un CDN rapide et cachable par le service worker → fini les « 1000 ans » de chargement.
+      const s = String(seed || "") + "|" + String(keywords || ""); let n = 0;
       for (let i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) >>> 0;
-      return `https://loremflickr.com/640/320/${encodeURIComponent(keywords)}?lock=${n % 100000}`;
+      return `https://picsum.photos/seed/sm${n % 100000}/640/320`;
     }
     // Chaque quête → sa ville (+ nuance pour varier si même pays)
     const QUEST_CITY = {
@@ -8243,17 +8320,17 @@
     // à un palier d'XP atteint. Le choix actif est mémorisé en localStorage par utilisateur.
     // Titres = FLAIR/vibe affiché sous le pseudo (différent des badges = accomplissements).
     const SHOP_TITLES = [
-      { id: "none", name: "Aucun titre", xp: 0, label: "" },
-      { id: "freebird", name: "Esprit libre 🦋", xp: 0, label: "🦋 Esprit libre" },
-      { id: "sunheart", name: "Cœur nomade 🧡", xp: 50, label: "🧡 Cœur nomade" },
-      { id: "sunchaser", name: "Chasseur·euse de soleil 🌅", xp: 120, label: "🌅 Chasseur·euse de soleil" },
-      { id: "wildsoul", name: "Âme aventurière 🔥", xp: 250, label: "🔥 Âme aventurière" },
-      { id: "shootingstar", name: "Étoile filante 🌠", xp: 500, label: "🌠 Étoile filante" },
-      { id: "globetrotter", name: "Globe-trotter 🌍", xp: 1000, label: "🌍 Globe-trotter" },
-      { id: "pathfinder", name: "Éclaireur·euse 🧭", xp: 2000, label: "🧭 Éclaireur·euse" },
-      { id: "citylegend", name: "Légende urbaine 🏙️", xp: 3500, label: "🏙️ Légende urbaine" },
-      { id: "sunlegend", name: "Légende SunMates 👑", xp: 5000, label: "👑 Légende SunMates" },
-      { id: "mythic", name: "Mythe vivant 🌟", xp: 9000, label: "🌟 Mythe vivant" },
+      { id: "none", name: "Aucun titre", xp: 0, label: "", emoji: "🚫" },
+      { id: "freebird", name: "Esprit libre", xp: 0, label: "🦋 Esprit libre", emoji: "🦋" },
+      { id: "sunheart", name: "Cœur nomade", xp: 50, label: "🧡 Cœur nomade", emoji: "🧡" },
+      { id: "sunchaser", name: "Chasseur·euse de soleil", xp: 120, label: "🌅 Chasseur·euse de soleil", emoji: "🌅" },
+      { id: "wildsoul", name: "Âme aventurière", xp: 250, label: "🔥 Âme aventurière", emoji: "🔥" },
+      { id: "shootingstar", name: "Étoile filante", xp: 500, label: "🌠 Étoile filante", emoji: "🌠" },
+      { id: "globetrotter", name: "Globe-trotter", xp: 1000, label: "🌍 Globe-trotter", emoji: "🌍" },
+      { id: "pathfinder", name: "Éclaireur·euse", xp: 2000, label: "🧭 Éclaireur·euse", emoji: "🧭" },
+      { id: "citylegend", name: "Légende urbaine", xp: 3500, label: "🏙️ Légende urbaine", emoji: "🏙️" },
+      { id: "sunlegend", name: "Légende SunMates", xp: 5000, label: "👑 Légende SunMates", emoji: "👑" },
+      { id: "mythic", name: "Mythe vivant", xp: 9000, label: "🌟 Mythe vivant", emoji: "🌟" },
     ];
     const SHOP_FRAMES = [
       { id: "none", name: "Classique", xp: 0, cls: "" },
@@ -8315,7 +8392,7 @@
       const card = (kind, it, selected) => {
         const locked = xp < it.xp;
         const swatch = kind === "title"
-          ? `<div class="shop-ic">${it.id === "none" ? "🚫" : "🏷️"}</div>`
+          ? `<div class="shop-ic shop-ic-title${it.id === "none" ? " shop-ic-none" : ""}">${it.emoji || "🏷️"}</div>`
           : `<div class="shop-ic shop-frame-prev ${it.cls}">🙂</div>`;
         return `<button class="shop-item${selected ? " on" : ""}${locked ? " locked" : ""}" data-shopkind="${kind}" data-shopid="${escapeHtml(it.id)}"${locked ? " aria-disabled=\"true\"" : ""}>
           ${swatch}
@@ -8388,6 +8465,8 @@
         $("detailMsg").style.color = "var(--muted)";
         $("detailMsg").textContent = status === "completed" ? "✅ Quête accomplie !" : (status === "joined" ? "🎒 Quête en cours — accomplis-la puis valide" : "Rejoins la quête pour la démarrer");
       }
+      // P2.12 : on peut QUITTER une quête rejointe (mais pas une déjà accomplie).
+      { const lv = $("detailLeaveBtn"); if (lv) lv.style.display = (!q.demo && status === "joined") ? "" : "none"; }
       showJeuxView("jeuxDetail");
     }
 
@@ -8403,6 +8482,22 @@
         myQuestStatus[qkey] = "joined";
         openDetail(currentQuest);
         m.textContent = ""; toast("🎒", "Quête rejointe !");
+      });
+    });
+
+    // P2.12 : quitter une quête rejointe → on retire la ligne user_quests (status 'joined' uniquement).
+    $("detailLeaveBtn").addEventListener("click", async () => {
+      if (!currentQuest || !myUserId) return;
+      const qkey = currentQuest.key;
+      if (myQuestStatus[qkey] !== "joined") return; // jamais quitter une quête accomplie
+      if (!confirm("Quitter cette quête ? Tu pourras la rejoindre à nouveau plus tard.")) return;
+      await once("leave:" + qkey, async () => {
+        const m = $("detailMsg"); m.style.color = "var(--muted)"; m.textContent = "…";
+        const { error } = await db.from("user_quests").delete().eq("user_id", myUserId).eq("quest_key", qkey).eq("status", "joined");
+        if (error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; return; }
+        delete myQuestStatus[qkey];
+        openDetail(currentQuest);
+        m.textContent = ""; if (typeof toast === "function") toast("👋", "Quête quittée");
       });
     });
 
@@ -8457,6 +8552,9 @@
       let h = 0; const s = String(currentQuest.key); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
       focusHomeMapOn(places[h % places.length].id);
     });
+    // P2.10 : la tuile récompense (badge) avait l'air cliquable mais ne faisait rien → elle ouvre
+    // maintenant la collection de badges (on y voit le badge à débloquer en grand).
+    { const br = $("detailBadgeRow"); if (br) { br.style.cursor = "pointer"; br.setAttribute("role", "button"); br.addEventListener("click", () => { if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); }); } }
     $("detailSuggestBtn").addEventListener("click", () => {
       if (!currentQuest) return;
       const mates = [...connectedIds].map((id) => travelerMap[id]).filter(Boolean);
@@ -8992,13 +9090,25 @@
     function renderChatFlame(id) {
       const el = $("chatFlame"), n = $("chatFlameN"); if (!el || !n) return;
       const f = _flameGet(id);
+      const done = _pocSentToday(f);
       if (f.active && f.count > 0) {
         el.classList.remove("hidden"); n.textContent = f.count;
         // Countdown : heures restantes avant de perdre la flamme (fenêtre 35 h, affichée façon ~24 h).
         const hLeft = Math.max(0, Math.round((35 * 3600 * 1000 - (Date.now() - f.last)) / 3600000));
-        el.title = _pocSentToday(f) ? ("Flamme x" + f.count + " · poc envoyé aujourd'hui ✓ · reviens demain") : ("Flamme x" + f.count + " · plus que ~" + hLeft + " h pour la garder 🔥");
-        el.classList.toggle("flame-done", _pocSentToday(f)); // visuel "déjà fait aujourd'hui"
+        el.title = done ? ("Flamme x" + f.count + " · poc envoyé aujourd'hui ✓ · reviens demain") : ("Flamme x" + f.count + " · plus que ~" + hLeft + " h pour la garder 🔥");
+        el.classList.toggle("flame-done", done); // visuel "déjà fait aujourd'hui"
       } else el.classList.add("hidden");
+      // Bouton poc : VERROUILLÉ visiblement quand déjà envoyé aujourd'hui (1 poc / jour) + countdown jusqu'à minuit.
+      const pc = $("chatPoc");
+      if (pc) {
+        if (done) {
+          const tmr = new Date(); tmr.setHours(24, 0, 0, 0);
+          const hToMidnight = Math.max(1, Math.ceil((tmr - Date.now()) / 3600000));
+          pc.disabled = true; pc.textContent = "✓"; pc.title = "Poc envoyé aujourd'hui · reviens dans ~" + hToMidnight + " h 🔥";
+        } else {
+          pc.disabled = false; pc.textContent = "🔥"; pc.title = "Envoyer un poc 🔥 (1 / jour, fait grandir ta flamme)";
+        }
+      }
     }
     function sendPoc() {
       const id = currentChatUserId; if (!id) return;
@@ -9031,7 +9141,7 @@
       popInfo("🧪", "App en bêta · ton avis compte", `
         <p class="muted" style="font-size:.82rem;margin:0 0 .7rem;text-align:center">SunMates est en <b>bêta</b> : chaque retour file droit à l'équipe 💛</p>
         <div class="fb-chips" style="display:flex;gap:.4rem;margin-bottom:.7rem">${chips}</div>
-        <textarea id="fbText" rows="4" placeholder="Décris le bug, l'idée ou le détail visuel à corriger…" style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:.6rem;font:inherit;resize:vertical;background:var(--card);color:var(--ink)"></textarea>
+        <textarea id="fbText" rows="4" placeholder="Décris le bug, l'idée ou le détail visuel à corriger…" style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:.6rem;font:inherit;resize:none;background:var(--card);color:var(--ink)"></textarea>
         <button class="btn-primary btn-block" id="fbSend" style="margin-top:.7rem">Envoyer mon retour</button>
         <p class="muted" style="font-size:.7rem;margin:.5rem 0 0;text-align:center">Anonymisé si tu n'es pas connecté · version ${typeof _appBuild === "function" ? _appBuild() : ""}</p>`);
       setTimeout(() => {
@@ -9208,6 +9318,7 @@
             unreadList.unshift({ sender_id: m.sender_id, content: m.content, created_at: m.created_at });
             unreadMsgCount = unreadList.length;
             updateNotifBadges();
+            if (window.SMSound) SMSound.play("notify"); // ping signature SunMates
             toast("💬", `<b>${escapeHtml(nameById(m.sender_id))}</b> t'a envoyé un message`,
               () => { goToTab("connexions"); openChat(m.sender_id); markMsgsSeen(); });
             sysNotify("Nouveau message 💬", nameById(m.sender_id) + " t'a écrit sur SunMates");
@@ -9336,8 +9447,11 @@
       const bffBtn = $("tpBffBtn");
       if (connectedIds.has(p.id)) {
         bffBtn.style.display = "";
-        if (!iAmGold) { bffBtn.textContent = "⭐ BFF du moment réservé à Gold 👑"; bffBtn.disabled = true; bffBtn.style.opacity = ".6"; }
-        else { bffBtn.disabled = false; bffBtn.style.opacity = "1"; bffBtn.textContent = (myBffId === p.id) ? "⭐ Retirer des BFF" : "⭐ Définir comme BFF du moment"; }
+        // P2.31 : libellé COURT (la tuile est petite) → on ne touche qu'au span label, l'explication va en title.
+        const bffLbl = bffBtn.querySelector("span:last-child");
+        const setBffTxt = (s) => { if (bffLbl && bffLbl !== bffBtn.querySelector(".tpa-ic")) bffLbl.textContent = s; else bffBtn.textContent = "⭐ " + s; };
+        if (!iAmGold) { bffBtn.disabled = true; bffBtn.style.opacity = ".6"; setBffTxt("BFF 👑"); bffBtn.title = "« BFF du moment » réservé aux membres Gold 👑"; }
+        else { bffBtn.disabled = false; bffBtn.style.opacity = "1"; const on = (myBffId === p.id); setBffTxt(on ? "BFF ✓" : "BFF"); bffBtn.title = on ? "Retirer ce Mate de tes BFF du moment" : "Définir ce Mate comme ton BFF du moment ⭐"; }
       } else { bffBtn.style.display = "none"; }
       $("tpMsg").textContent = "";
       $("tpBadgesCard").style.display = "none"; $("tpBadges").innerHTML = "";
@@ -9647,19 +9761,23 @@
       const box = $("searchResults"); if (!box) return;
       if (!q) { box.innerHTML = ""; return; }
       const ql = q.toLowerCase();
+      const qd = _deburr(q); // version sans accents (« jose » trouve « José »)
       const wantPlaces = _searchScope === "all" || _searchScope === "places";
       const wantPeople = _searchScope === "all" || _searchScope === "people" || _searchScope === "verified";
-      let places = wantPlaces ? allCafes.filter((c) => (c.name || "").toLowerCase().includes(ql) || (c.city || "").toLowerCase().includes(ql)).slice(0, 5) : [];
+      let places = wantPlaces ? allCafes.filter((c) => _deburr(c.name).includes(qd) || _deburr(c.city).includes(qd)).slice(0, 5) : [];
       // Recherche de pseudo CÔTÉ SERVEUR (fiable : trouve n'importe quel·le voyageur·se, pas que le cache local).
       let people = [];
       if (wantPeople) {
         try {
-          const { data } = await db.from("profiles").select("id,username,avatar_url,city,is_verified,banned")
-            .ilike("username", "%" + q + "%").limit(8);
+          // 1) RPC insensible aux accents (migration search_unaccent). 2) repli ilike si absente.
+          let data = null;
+          const rpc = await db.rpc("search_profiles", { q: q, p_limit: 8 });
+          if (!rpc.error && rpc.data) data = rpc.data;
+          else { const r = await db.from("profiles").select("id,username,avatar_url,city,is_verified,banned").ilike("username", "%" + q + "%").limit(8); data = r.data; }
           people = (data || []).filter((p) => p.id !== myUserId && !p.banned);
           people.forEach((p) => { if (!travelerMap[p.id]) travelerMap[p.id] = p; }); // cache → ouverture de la fiche
         } catch (e) {
-          people = Object.values(travelerMap).filter((p) => p.id !== myUserId && !p.banned && (p.username || "").toLowerCase().includes(ql)).slice(0, 6);
+          people = Object.values(travelerMap).filter((p) => p.id !== myUserId && !p.banned && _deburr(p.username).includes(qd)).slice(0, 6);
         }
         if (_searchScope === "verified") people = people.filter((p) => p.is_verified); // portée « Vérifiés »
       }
@@ -9726,6 +9844,8 @@
     // les activités à venir (défis acceptés) et les check-ins récents. Chaque type
     // est une couche que l'on peut afficher/masquer via les filtres.
     let homeLeaf = null;
+    let homePopupOpen = false;   // P2.5 : un aperçu de pastille est-il ouvert ? (on ne reconstruit pas la carte pendant)
+    let _homeMapDeferred = false; // un rendu a-t-il été reporté car un aperçu était ouvert ?
     let homeCluster = null;                                  // UN SEUL groupe de cluster → les marqueurs au même endroit fusionnent (rosace au clic)
     let homeMarkersByType = { places: [], mates: [], activities: [], checkins: [], quests: [] }; // marqueurs par type (pour les filtres)
     const homeLayerOn = { places: true, mates: true, activities: true, checkins: true, quests: true };
@@ -9931,7 +10051,9 @@
           if (kids.length <= 6) { cl.spiderfy(); return; }     // peu d'éléments → éventail
           openColocatedList(cl.getLatLng(), kids, cl);          // beaucoup → liste (jamais 16 côte à côte)
         });
+        // P2.5 : un aperçu (popup) est ouvert → on NE reconstruit pas les marqueurs (ça le fermerait).
         homeLeaf.on("popupopen", (e) => {
+          homePopupOpen = true;
           const node = e.popup._contentNode; if (!node) return;
           // Check-in sur un lieu
           node.querySelectorAll("[data-hmcid]").forEach((b) => b.addEventListener("click", () => checkIn(Number(b.dataset.hmcid), b.dataset.hmcname)));
@@ -9960,6 +10082,8 @@
         });
         // Clic sur la carte en mode « placement » → créer une activité ici
         homeLeaf.on("click", (e) => { if (homeAddMode) { setHomeAddMode(false); openActCreate(e.latlng); } });
+        // À la fermeture de l'aperçu : si un rendu a été reporté pendant qu'il était ouvert, on l'applique.
+        homeLeaf.on("popupclose", () => { homePopupOpen = false; if (_homeMapDeferred) { _homeMapDeferred = false; setTimeout(() => { if (typeof renderHomeMap === "function") renderHomeMap(); }, 60); } });
       }
       // --- On charge TOUTES les données d'abord (évite les doublons si 2 rendus se chevauchent) ---
       const token = ++homeMapToken;
@@ -9995,6 +10119,10 @@
         setTimeout(() => { try { homeLeaf.invalidateSize(); } catch (e) {} }, 120);
         return; // rien n'a changé → on garde les marqueurs en place
       }
+      // P2.5 : un aperçu (popup) est ouvert → reconstruire fermerait l'aperçu (« la carte disparaît »).
+      // On reporte le rebuild à la fermeture du popup (cf. handler popupclose). homeMapSig PAS mis à jour
+      // → le prochain rendu reconstruira bien avec les données fraîches.
+      if (homePopupOpen) { _homeMapDeferred = true; setTimeout(() => { try { homeLeaf.invalidateSize(); } catch (e) {} }, 120); return; }
       homeMapSig = _sig;
 
       // À partir d'ici tout est synchrone : on vide puis on reconstruit d'un bloc.
@@ -10411,13 +10539,16 @@
       const d = $("onbDots"); if (!d) return;
       d.innerHTML = Array.from({ length: ONB_STEPS }, (_, i) => `<i class="${i === 0 ? "on" : ""}"></i>`).join("");
     }
-    let _onbOrbT = null;
+    let _onbOrbT = null, _onbCardT = null;
     function showOnbStep(i) {
       onbStep = Math.max(0, Math.min(ONB_STEPS - 1, i));
       // Anti-saccade : on fige les orbes floutées (blur 32px = lourd au repaint) pendant
       // le glissement de la slide, puis on les relance (le GPU ne fait plus 2 anims lourdes à la fois).
       const bg = document.querySelector(".onb-bg");
       if (bg) { bg.classList.add("orb-paused"); if (_onbOrbT) clearTimeout(_onbOrbT); _onbOrbT = setTimeout(() => bg.classList.remove("orb-paused"), 480); }
+      // On coupe le backdrop-filter de la carte pendant le glissement (anti-saccade) puis on le rétablit.
+      const card = document.querySelector(".onb-card");
+      if (card) { card.classList.add("onb-sliding"); if (_onbCardT) clearTimeout(_onbCardT); _onbCardT = setTimeout(() => card.classList.remove("onb-sliding"), 420); }
       document.querySelectorAll("#onbStage .onb-step").forEach((s, idx) => {
         s.classList.toggle("active", idx === onbStep);
         s.classList.toggle("left", idx < onbStep);
@@ -10598,6 +10729,9 @@
       document.querySelectorAll("[data-pseg]").forEach((b) => b.classList.toggle("active", b.dataset.pseg === seg));
       document.querySelectorAll("[data-psegpanel]").forEach((p) => show(p, p.dataset.psegpanel === seg));
       if (seg === "admin" && typeof showAdminSegment === "function") showAdminSegment("demo");
+      // P2.28 : on amène le panneau à l'écran (sinon il s'ouvre plus bas, hors vue, après la carte profil).
+      const panel = document.querySelector('[data-psegpanel="' + seg + '"]');
+      if (panel) setTimeout(() => { try { panel.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }, 40);
     }
     document.querySelectorAll("[data-pseg]").forEach((b) => b.addEventListener("click", () => showProfileSegment(b.dataset.pseg)));
     // Chiffres du profil cliquables
@@ -11838,22 +11972,43 @@
         o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.03);
       }
       const arp = (n, freqs, dur, type, vol, step) => freqs.forEach((f, i) => blip(f, dur, type, vol, n + i * step));
+      // TIMBRE SIGNATURE SUNMATES : note « marimba/cloche » chaude = triangle + octave sine,
+      // attaque douce, longue décroissance. C'est ce qui donne l'identité « coucher de soleil »
+      // (chaud, organique) plutôt que des bips synthés génériques. Tous les sons « joyeux »
+      // (notif, succès, badge, niveau…) sont rebâtis dessus pour une famille sonore cohérente.
+      function warm(freq, dur, vol, when, freqEnd) {
+        const c = ac(); if (!c) return; const t = when || c.currentTime;
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = "triangle"; o.frequency.setValueAtTime(freq, t);
+        if (freqEnd) o.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+        const o2 = c.createOscillator(), g2 = c.createGain();
+        o2.type = "sine"; o2.frequency.setValueAtTime(freq * 2, t);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.1, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        g2.gain.setValueAtTime(0.0001, t); g2.gain.exponentialRampToValueAtTime((vol || 0.1) * 0.34, t + 0.012); g2.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.6);
+        o.connect(g); g.connect(c.destination); o2.connect(g2); g2.connect(c.destination);
+        o.start(t); o.stop(t + dur + 0.05); o2.start(t); o2.stop(t + dur * 0.6 + 0.05);
+      }
+      const warmArp = (n, freqs, dur, vol, step) => freqs.forEach((f, i) => warm(f, dur, vol, n + i * step));
       // Banque de sons SYNTHÉTISÉS (aucun fichier → 100% libre de droit).
       const SEQ = {
-        tap:     (n) => blip(430, 0.06, "triangle", 0.05, n),
-        pop:     (n) => blip(660, 0.09, "sine", 0.07, n, 990),
-        nav:     (n) => { blip(540, 0.07, "sine", 0.06, n); blip(810, 0.08, "sine", 0.04, n + 0.04); },
+        tap:     (n) => blip(430, 0.06, "triangle", 0.05, n),                 // UI : ticks nets (gardés)
+        pop:     (n) => warm(660, 0.11, 0.07, n, 990),                        // bulle chaude
+        nav:     (n) => { warm(540, 0.09, 0.05, n); warm(810, 0.1, 0.035, n + 0.045); },
         select:  (n) => blip(720, 0.05, "square", 0.04, n),
         toggle:  (n) => blip(360, 0.05, "square", 0.04, n),
-        success: (n) => arp(n, [523, 659, 784], 0.16, "sine", 0.08, 0.075),
-        coin:    (n) => { blip(988, 0.06, "square", 0.06, n); blip(1319, 0.13, "square", 0.05, n + 0.06); },
-        star:    (n) => blip(1200, 0.2, "sine", 0.06, n, 2400),
-        levelup: (n) => arp(n, [523, 659, 784, 1047, 1319], 0.18, "triangle", 0.08, 0.07),
-        unlock:  (n) => arp(n, [523, 659, 784, 1047], 0.2, "triangle", 0.085, 0.085),
-        badge:   (n) => { arp(n, [659, 988], 0.22, "sine", 0.08, 0.09); blip(1319, 0.32, "triangle", 0.06, n + 0.18); },
-        error:   (n) => blip(220, 0.22, "sawtooth", 0.06, n, 130),
+        success: (n) => warmArp(n, [523, 659, 784], 0.2, 0.08, 0.08),         // tierce majeure chaude
+        coin:    (n) => { warm(988, 0.09, 0.06, n); warm(1319, 0.16, 0.05, n + 0.07); },
+        star:    (n) => warm(1200, 0.24, 0.06, n, 2400),
+        levelup: (n) => warmArp(n, [523, 659, 784, 1047, 1319], 0.22, 0.085, 0.075), // montée triomphale
+        unlock:  (n) => warmArp(n, [523, 659, 784, 1047], 0.24, 0.085, 0.09),
+        badge:   (n) => { warmArp(n, [659, 988], 0.26, 0.085, 0.1); warm(1319, 0.38, 0.07, n + 0.2); }, // petite fanfare
+        error:   (n) => blip(220, 0.22, "sawtooth", 0.06, n, 130),            // volontairement distinct (pas chaud)
         whoosh:  (n) => blip(300, 0.26, "sine", 0.05, n, 900),
-        message: (n) => { blip(740, 0.07, "sine", 0.06, n); blip(990, 0.08, "sine", 0.05, n + 0.05); },
+        message: (n) => { warm(740, 0.1, 0.06, n); warm(990, 0.12, 0.05, n + 0.06); },
+        // SIGNATURE SUNMATES — « ping » de notification : quinte montante chaude, douce, reconnaissable.
+        notify:  (n) => { warm(659, 0.13, 0.075, n); warm(988, 0.2, 0.07, n + 0.08); },
+        // MATCH / connexion acceptée — petit accord majeur ensoleillé + étoile.
+        match:   (n) => { warmArp(n, [659, 880, 1047], 0.24, 0.08, 0.07); warm(1568, 0.3, 0.05, n + 0.22, 2200); },
         // Aperçu (1 phrase marimba) de la sonnerie du faux appel → visible/testable dans l'admin
         ringtone: (n) => { [523, 659, 784, 1047, 880, 784, 659, 587].forEach((f, i) => { blip(f, 0.45, "triangle", 0.16, n + i * 0.26); blip(f * 2, 0.26, "sine", 0.05, n + i * 0.26); }); },
       };
@@ -11997,11 +12152,13 @@
         { event: "*", schema: "public", table: "matches_connections" }, (payload) => {
           const row = payload.new || payload.old; if (!row) return;
           if (payload.eventType === "INSERT" && row.user_b === myUserId && notifyOnce("conn-new:" + row.id)) {
+            if (window.SMSound) SMSound.play("notify");
             toast("📨", `<b>${escapeHtml(nameById(row.user_a))}</b> souhaite se connecter`, () => goToTab("connexions"));
             sysNotify("Nouvelle demande 📨", nameById(row.user_a) + " souhaite se connecter");
           }
           if (payload.eventType === "UPDATE" && row.status === "accepted" && (row.user_a === myUserId || row.user_b === myUserId) && notifyOnce("conn-acc:" + row.id)) {
             const other = row.user_a === myUserId ? row.user_b : row.user_a;
+            if (window.SMSound) SMSound.play("match"); // connexion mutuelle = petit accord ensoleillé
             toast("✅", `<b>${escapeHtml(nameById(other))}</b> a accepté ta connexion`, () => goToTab("connexions"));
           }
           loadConnections();
@@ -12015,6 +12172,7 @@
         { event: "INSERT", schema: "public", table: "quest_suggestions" }, (payload) => {
           const row = payload.new; if (!row || row.to_user !== myUserId) return;
           if (notifyOnce("sugg-new:" + row.id)) {
+            if (window.SMSound) SMSound.play("notify");
             toast("🎯", `<b>${escapeHtml(nameById(row.from_user))}</b> te propose : ${escapeHtml(row.quest_title || "une quête")}`, () => goToTab("jeux"));
             sysNotify("Nouveau défi 🎯", nameById(row.from_user) + " te propose : " + (row.quest_title || "une quête"));
           }
@@ -12208,7 +12366,8 @@
       "Plein écran": "Fullscreen", "Quitter le plein écran": "Exit fullscreen", "Tout afficher": "Show all", "Centrer sur ma position": "Center on my location",
       "Partager une activité sur la carte": "Share an activity on the map", "Quand, où exactement, niveau…": "When, where exactly, level…",
       // — Batch 8 : vues profondes (réglages, premium, B2B, actions profil, chat) —
-      "Application": "App", "Compte": "Account", "Apparaître dans le classement": "Appear in the leaderboard", "Mode sombre": "Dark mode", "Langue": "Language",
+      "Application": "App", "Compte": "Account", "Apparaître dans le classement": "Appear in the leaderboard", "Mode sombre": "Dark mode", "🌙 Mode sombre": "🌙 Dark mode", "Thème « nuit tropicale », repose les yeux": "“Tropical night” theme, easy on the eyes", "Langue": "Language",
+      "Afficher ma présence": "Show my presence", "« En ligne » sur ton avatar": "“Online” on your avatar",
       "Mes connexions": "My connections", "Voir mes connexions": "See my connections", "✅ Mes connexions": "✅ My connections",
       "Boostez votre visibilité": "Boost your visibility", "Coupons utilisés": "Used coupons", "Coupons de juin 2026": "June 2026 coupons", "Récompenses & coupons": "Rewards & coupons",
       "Code du lieu partenaire 🔒": "Partner venue code 🔒", "Demande-le sur place": "Ask for it on site", "Cette quête se valide avec le code affiché chez le partenaire.": "This quest is validated with the code shown at the partner venue.",
@@ -13341,6 +13500,7 @@
     }
     async function onNewMatch(otherId) {
       vibrate([0, 45, 50, 90]);
+      if (window.SMSound) SMSound.play("match"); // accord ensoleillé « C'est un match ! »
       if (typeof celebrate === "function") celebrate();
       let other = otherId ? travelerMap[otherId] : null;
       if (otherId && !other) { try { const { data } = await db.from("profiles").select("*").eq("id", otherId).maybeSingle(); if (data) { other = data; travelerMap[otherId] = data; } } catch (e) {} }
@@ -13553,12 +13713,15 @@
     function sysNotify(title, body) {
       if (!("Notification" in window) || Notification.permission !== "granted") return;
       if (!document.hidden) return; // app déjà visible → le toast à l'écran suffit
+      // P2.52 : icône PNG nette (icon.svg ne s'affiche pas dans beaucoup de systèmes de notif).
+      // P2.49 : tag commun + renotify:false → les notifs SE REMPLACENT (jamais d'empilement de vieilles notifs).
+      const opts = { body: body, icon: "icon-192.png", badge: "icon-192.png", tag: "sunmates", renotify: false };
       try {
         if (navigator.serviceWorker && navigator.serviceWorker.ready) {
           navigator.serviceWorker.ready
-            .then((reg) => reg.showNotification(title, { body: body, icon: "icon.svg", badge: "icon.svg", tag: "sunmates" }))
-            .catch(() => { new Notification(title, { body: body, icon: "icon.svg" }); });
-        } else { new Notification(title, { body: body, icon: "icon.svg" }); }
+            .then((reg) => reg.showNotification(title, opts))
+            .catch(() => { try { new Notification(title, opts); } catch (_) {} });
+        } else { new Notification(title, opts); }
       } catch (e) {}
     }
 
@@ -13701,6 +13864,12 @@
       const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
       const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
       let deferredPrompt = null;
+      // P2.37 : dès qu'on détecte l'app comme installée UNE fois (standalone ou event appinstalled),
+      // on s'en souvient → la bannière ne réapparaît plus jamais (même ouverte ensuite en onglet),
+      // sauf re-déclenchement manuel depuis les Réglages.
+      const markInstalled = () => { try { localStorage.setItem("sm_pwa_installed", "1"); } catch (e) {} };
+      const isInstalled = () => { try { return localStorage.getItem("sm_pwa_installed") === "1"; } catch (e) { return false; } };
+      if (isStandalone()) markInstalled();
 
       // « Fermer » ne masque plus la bannière POUR TOUJOURS : on la met en veille 5 jours,
       // puis elle revient tant que l'app n'est pas installée. Re-déclenchable depuis les Réglages.
@@ -13716,8 +13885,8 @@
       const hideBanner = () => banner.classList.remove("show");
       // force = ignore la mise en veille (re-déclenchement manuel)
       const showBanner = (force) => {
-        if (isStandalone()) return;
-        if (!force && isSnoozed()) return;
+        if (isStandalone()) { markInstalled(); return; }
+        if (!force && (isSnoozed() || isInstalled())) return;
         installBtn.style.display = deferredPrompt ? "" : "none"; // pas de bouton 1-clic sans invite native (ex. iOS)
         sub.textContent = deferredPrompt ? "Accès direct depuis ton écran d'accueil, comme une vraie app." : manualHint();
         banner.classList.add("show");
@@ -13727,7 +13896,7 @@
 
       // Android / Chrome / Edge : on intercepte l'invite native pour la déclencher nous-mêmes.
       window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; showBanner(); });
-      window.addEventListener("appinstalled", () => { track("pwa_installed"); hideBanner(); try { localStorage.removeItem("sm_pwa_snooze"); } catch (e) {} });
+      window.addEventListener("appinstalled", () => { track("pwa_installed"); markInstalled(); hideBanner(); try { localStorage.removeItem("sm_pwa_snooze"); } catch (e) {} });
 
       installBtn.addEventListener("click", () => once("pwa-install", async () => {
         if (!deferredPrompt) { sub.textContent = manualHint(); return; }
@@ -13772,7 +13941,7 @@
 
       // Au démarrage : si pas installée et pas en veille, on affiche la bannière (invite native
       // si dispo, sinon instructions manuelles). Elle reste affichée jusqu'à fermeture/installation.
-      if (!isStandalone() && !isSnoozed()) setTimeout(() => showBanner(), 1800);
+      if (!isStandalone() && !isSnoozed() && !isInstalled()) setTimeout(() => showBanner(), 1800);
     })();
 
     // Au chargement : vérifie s'il y a déjà une session

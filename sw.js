@@ -3,7 +3,7 @@
 // cache à la volée les libs CDN et les images (avatars, tuiles de carte) en
 // "stale-while-revalidate" (on sert le cache tout de suite, on rafraîchit en fond).
 // Les écritures Supabase (POST/PATCH…) ne sont jamais touchées.
-const VER = "v314";
+const VER = "v325";
 const SHELL_CACHE = "sunmates-shell-" + VER;   // coquille (versionnée → purge à chaque déploiement)
 const RUNTIME = "sunmates-rt-" + VER;          // CDN + images (regénéré par version)
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./sunmates-badges.js", "./sunmates-icons.js",
@@ -22,7 +22,8 @@ const CDN_PRECACHE = [
 self.addEventListener("install", (e) => {
   e.waitUntil((async () => {
     // Best-effort PAR FICHIER (addAll est atomique : 1 asset manquant viderait toute la coquille → offline cassé).
-    try { const c = await caches.open(SHELL_CACHE); await Promise.allSettled(SHELL.map((u) => c.add(u))); } catch (e) {}
+    // cache:"reload" → on précache une coquille FRAÎCHE (jamais la version périmée du cache HTTP/CDN).
+    try { const c = await caches.open(SHELL_CACHE); await Promise.allSettled(SHELL.map(async (u) => { try { const r = await fetch(u, { cache: "reload" }); if (r && r.ok) await c.put(u, r); } catch (e) {} })); } catch (e) {}
     // Les CDN en best-effort (ne bloquent pas l'install si offline/CORS).
     try { const r = await caches.open(RUNTIME); await Promise.allSettled(CDN_PRECACHE.map((u) => r.add(u))); } catch (e) {}
   })());
@@ -56,17 +57,19 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(req.url);
 
   // 1) Navigation : réseau d'abord (pour avoir la dernière version), repli coquille hors-ligne.
+  // cache:"no-store" → on BYPASSE le cache HTTP du navigateur ET le CDN GitHub Pages/Fastly
+  //   (qui peuvent servir un index.html périmé plusieurs minutes) → on a TOUJOURS le HTML le plus frais.
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req).catch(() => caches.match("./index.html")));
+    e.respondWith(fetch(req.url, { cache: "no-store" }).catch(() => caches.match("./index.html")));
     return;
   }
 
-  // 2) Même origine (JS, CSS, icônes, manifest) : RÉSEAU D'ABORD, cache en secours (offline).
+  // 2) Même origine (JS, CSS, icônes, manifest) : RÉSEAU D'ABORD (sans cache HTTP), cache en secours (offline).
   // → on a TOUJOURS le code le plus frais (zéro état « cache hybride » ancien/nouveau qui buggue),
   //   tout en restant utilisable hors-ligne grâce au repli sur la coquille.
   if (url.origin === self.location.origin) {
     e.respondWith(
-      fetch(req).then((res) => {
+      fetch(req, { cache: "no-store" }).then((res) => {
         if (res && res.ok) { const c = res.clone(); caches.open(SHELL_CACHE).then((cc) => cc.put(req, c)).catch(() => {}); }
         return res;
       }).catch(() => caches.match(req).then((c) => c || caches.match("./index.html")))
@@ -79,7 +82,7 @@ self.addEventListener("fetch", (e) => {
   // session/token) ne sont JAMAIS servis depuis le cache (données toujours fraîches pour une
   // app temps réel/sécurité). Seules ses IMAGES Storage (avatars) sont cachées via `isImg`.
   const host = url.hostname;
-  const isCdn = /(^|\.)(jsdelivr\.net|unpkg\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com|tile\.openstreetmap\.org|basemaps\.cartocdn\.com)$/i.test(host);
+  const isCdn = /(^|\.)(jsdelivr\.net|unpkg\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com|tile\.openstreetmap\.org|basemaps\.cartocdn\.com|picsum\.photos|fastly\.picsum\.photos)$/i.test(host);
   const isImg = req.destination === "image";
   if (isCdn || isImg) {
     e.respondWith(staleWhileRevalidate(req, RUNTIME));
