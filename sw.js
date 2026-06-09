@@ -3,11 +3,11 @@
 // cache à la volée les libs CDN et les images (avatars, tuiles de carte) en
 // "stale-while-revalidate" (on sert le cache tout de suite, on rafraîchit en fond).
 // Les écritures Supabase (POST/PATCH…) ne sont jamais touchées.
-const VER = "v332";
+const VER = "v333";
 const SHELL_CACHE = "sunmates-shell-" + VER;   // coquille (versionnée → purge à chaque déploiement)
 const RUNTIME = "sunmates-rt-" + VER;          // CDN + images (regénéré par version)
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./sunmates-badges.js", "./sunmates-icons.js",
-  "./icon-192.png", "./icon-512.png", "./icon-180.png", "./icon-maskable-512.png"];
+  "./icon-192.png", "./icon-512.png", "./icon-180.png", "./icon-maskable-512.png", "./badge-96.png"];
 // Libs CDN précachées dès l'install → carte/QR/etc. dispo INSTANTANÉMENT et hors-ligne (cache plus "lourd" mais + fluide).
 const CDN_PRECACHE = [
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
@@ -101,8 +101,8 @@ self.addEventListener("push", (e) => {
   const title = d.title || "SunMates";
   const opts = {
     body: d.body || "",
-    icon: "./icon-192.png",            // vraie icône couleur, nette
-    badge: "./icon-192.png",
+    icon: "./icon-192.png",            // grande icône couleur (côté droit de la notif)
+    badge: "./badge-96.png",           // petite icône monochrome (barre d'état Android) — silhouette blanche, plus de « pavé gris »
     tag: d.tag || "sunmates",
     data: { url: d.url || "./", tab: d.tab || "" }, // P2.38 : onglet cible transporté dans la notif
   };

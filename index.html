@@ -2751,7 +2751,7 @@
     body.theme-dusk .mark .logo-night { display: block; }
     body.theme-dusk .brand .mark { background: linear-gradient(150deg, #7A2E5E, #C2502E) !important; } /* coucher de soleil sombre */
     /* Hero de connexion : ambiance NUIT en mode sombre */
-    body.theme-dusk .auth-hero { background: linear-gradient(160deg, rgba(58,42,110,.74), rgba(40,24,78,.82) 58%, rgba(18,26,86,.86)), url('https://loremflickr.com/820/740/ocean,night,stars?lock=5151') center/cover !important; }
+    body.theme-dusk .auth-hero { background: linear-gradient(160deg, rgba(58,42,110,.74), rgba(40,24,78,.82) 58%, rgba(18,26,86,.86)), url('https://picsum.photos/seed/sunmates-night/820/740') center/cover !important; }
     body.theme-dusk .auth-hero .logo-badge { background: rgba(20,16,40,.88) !important; box-shadow: 0 12px 30px rgba(0,0,0,.4), 0 0 0 6px rgba(255,255,255,.12) !important; }
     /* Modale d'info (badge…) centrée à l'écran, pas en bas */
     #pickerOverlay.info { align-items: center; }
@@ -2805,6 +2805,10 @@
     .ice-name { font-weight: 700; color: var(--ink); }
     .ice-num { font-size: .8rem; }
     .ice-del { flex-shrink: 0; background: none; border: 0; color: var(--muted); font-size: 1rem; cursor: pointer; padding: .4rem .5rem; }
+    .ice-flbl { display: block; font-size: .72rem; font-weight: 800; color: var(--muted); margin: .55rem 0 .25rem; text-transform: uppercase; letter-spacing: .04em; }
+    .ice-fin { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 12px; padding: .62rem .72rem; font-size: .95rem; color: var(--ink); background: var(--card); font-family: inherit; }
+    .ice-fin:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    body.theme-dusk .ice-fin { background: #241b35; color: #f3e9f3; border-color: rgba(255,255,255,.1); }
     /* Signal lumineux d'aide (pulsation LENTE 1.6s = sans danger photosensible) */
     .signal-screen { position: fixed; inset: 0; z-index: 99999; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: signalPulse 1.6s ease-in-out infinite; }
     .signal-screen.hidden { display: none; }
@@ -3393,7 +3397,7 @@
         <div id="tripMatchBanner"></div>
         <div id="myTrips"></div>
 
-        <div class="section-head"><h3>Accès rapide</h3></div>
+        <div class="section-head"><h3>Accès rapides</h3></div>
         <div class="grid2">
           <div class="tile" data-goto="connexions"><div class="thumb purp">🤝</div><div class="t-name">Mes Mates</div><div class="t-meta" id="qaMates">Rencontre &amp; discute</div></div>
           <div class="tile" data-goto="securite"><div class="thumb red">🛟</div><div class="t-name">Sécurité</div><div class="t-meta">Position &amp; alerte</div></div>
@@ -4096,7 +4100,7 @@
 
           <div class="aseg hidden" data-asegpanel="feedback">
             <div class="card"><h3 style="margin-top:0">🧪 Retours bêta</h3>
-              <p class="muted" style="font-size:.82rem;margin:.2rem 0 .7rem">Les retours envoyés par les utilisateurs via « App en bêta · donne ton avis » (bug 🐞 / idée 💡 / pixel 🎨).</p>
+              <p class="muted" style="font-size:.82rem;margin:.2rem 0 .7rem">Les retours envoyés par les utilisateurs via « App en bêta · donne ton avis » (problème ⚠️ / idée 💡 / pixel 🎨).</p>
               <div id="adminFeedback"><p class="muted">Chargement…</p></div>
             </div>
           </div>
@@ -5039,7 +5043,7 @@
         const sub = t.country ? `<div class="trip-note" style="margin-top:.15rem">${escapeHtml(t.country)}</div>` : "";
         return `<div class="trip-card"><div class="trip-top"><div class="trip-city">📍 ${escapeHtml(t.city)}</div><span class="trip-dates">${_fmtTripDates(t.start_date, t.end_date)}</span><button class="trip-del" data-tdel="${t.id}" title="Supprimer">🗑️</button></div>${sub}${t.note ? `<div class="trip-note">${escapeHtml(t.note)}</div>` : ""}${matesHtml}</div>`;
       }).join("");
-      box.querySelectorAll("[data-tdel]").forEach((el) => el.addEventListener("click", async () => { if (!confirm("Supprimer ce voyage ?")) return; await deleteTrip(Number(el.dataset.tdel)); renderTrips(); }));
+      box.querySelectorAll("[data-tdel]").forEach((el) => el.addEventListener("click", () => { smConfirm("🗑️", "Supprimer ce voyage ?", "Ce voyage sera retiré de ton profil.", "Supprimer", async () => { await deleteTrip(Number(el.dataset.tdel)); renderTrips(); }); }));
       box.querySelectorAll("[data-tmate]").forEach((el) => el.addEventListener("click", () => { const p = profById[el.dataset.tmate] || travelerMap[el.dataset.tmate]; if (p) { goToTab("connexions"); if (typeof openTravelerProfile === "function") openTravelerProfile(p); } }));
     }
     const _trIn = "width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:.5rem .6rem;font:inherit;background:var(--card);color:var(--ink);margin-top:.15rem";
@@ -6043,7 +6047,7 @@
     async function checkIn(cafeId, cafeName) {
       const msg = $("cafesMsg");
       if (!myUserId) return;
-      const code = prompt("Entre le code affiché à « " + (cafeName || "ce lieu") + " » pour valider ton check-in :");
+      const code = await smPromptP("📍", "Valider ton check-in", "Entre le code affiché à « " + escapeHtml(cafeName || "ce lieu") + " » :", { placeholder: "Code du lieu", okLabel: "Valider", maxlength: 20 });
       if (code === null) return; // annulé
       return once("checkin:" + cafeId, async () => {
         msg.style.color = "var(--muted)"; msg.textContent = "Vérification du code…";
@@ -6151,10 +6155,11 @@
         await db.from("reports").update({ handled: true, status: "reviewed" }).eq("id", Number(el.dataset.handle));
         toast("✅", "Signalement traité"); loadReports();
       }));
-      wrap.querySelectorAll("[data-delreport]").forEach((el) => el.addEventListener("click", async () => {
-        if (!confirm("Supprimer définitivement ce signalement ?")) return;
-        await db.from("reports").delete().eq("id", Number(el.dataset.delreport));
-        toast("🗑️", "Signalement supprimé"); loadReports();
+      wrap.querySelectorAll("[data-delreport]").forEach((el) => el.addEventListener("click", () => {
+        smConfirm("🗑️", "Supprimer ce signalement ?", "Suppression définitive de ce signalement.", "Supprimer", async () => {
+          await db.from("reports").delete().eq("id", Number(el.dataset.delreport));
+          toast("🗑️", "Signalement supprimé"); loadReports();
+        });
       }));
       wrap.querySelectorAll("[data-viewrep]").forEach((el) => el.addEventListener("click", async () => {
         const id = el.dataset.viewrep; let p = travelerMap[id];
@@ -6183,7 +6188,7 @@
     async function loadAdminFeedback() {
       const box = $("adminFeedback"); if (!box) return;
       box.innerHTML = '<p class="muted" style="font-size:.82rem">Chargement…</p>';
-      const ic = { bug: "🐞", idea: "💡", pixel: "🎨" };
+      const ic = { bug: "⚠️", idea: "💡", pixel: "🎨" };
       let rows = null;
       // P2.34 : on lit aussi id + réponse + statut pour permettre de répondre.
       try { const { data, error } = await db.from("app_feedback").select("id,type,message,username,app_version,created_at,admin_reply,status").order("created_at", { ascending: false }).limit(60); if (!error) rows = data || []; } catch (e) {}
@@ -6922,7 +6927,7 @@
       </div>`);
       const reason = () => (($("banReasonInput") && $("banReasonInput").value) || "").trim() || null;
       { const t = $("banTempBtn"); if (t) t.addEventListener("click", () => { closePicker(); upd(u.id, { banned: true, ban_permanent: false, banned_at: new Date().toISOString(), ban_reason: reason(), recovery_requested: false }); }); }
-      { const p = $("banPermBtn"); if (p) p.addEventListener("click", () => { if (!confirm("Bannir DÉFINITIVEMENT ce membre ? Il disparaîtra de la liste.")) return; closePicker(); upd(u.id, { banned: true, ban_permanent: true, banned_at: new Date().toISOString(), ban_reason: reason() }); }); }
+      { const p = $("banPermBtn"); if (p) p.addEventListener("click", () => { smConfirm("🚫", "Bannir définitivement ?", "Ce membre disparaîtra de la liste.", "Bannir", () => { closePicker(); upd(u.id, { banned: true, ban_permanent: true, banned_at: new Date().toISOString(), ban_reason: reason() }); }); }); }
     }
     // Fiche admin d'un membre : activité + manips (score, vérif, ban, admin)
     async function openAdminUser(uid) {
@@ -6988,10 +6993,11 @@
         $("apMsg").style.color = "var(--muted)"; $("apMsg").textContent = "Édition de « " + (c.name || "") + " », le code actuel est affiché, modifie-le si besoin.";
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
       }));
-      wrap.querySelectorAll("[data-ap-del]").forEach((b) => b.addEventListener("click", async () => {
-        if (!confirm("Supprimer ce lieu ?")) return;
-        await db.from("partner_cafes").delete().eq("id", Number(b.dataset.apDel));
-        loadAdminPlaces(); loadCafes();
+      wrap.querySelectorAll("[data-ap-del]").forEach((b) => b.addEventListener("click", () => {
+        smConfirm("🗑️", "Supprimer ce lieu ?", "Ce lieu partenaire sera supprimé.", "Supprimer", async () => {
+          await db.from("partner_cafes").delete().eq("id", Number(b.dataset.apDel));
+          loadAdminPlaces(); loadCafes();
+        });
       }));
     }
     async function adminSavePlace() {
@@ -7139,9 +7145,9 @@
       }, 40);
     });
     $("emergencyBtn").addEventListener("click", () => {
-      if (confirm("Déclencher une alerte d'urgence ? Ta position sera diffusée à ton cercle de confiance.")) {
+      smConfirm("🚨", "Déclencher une alerte d'urgence ?", "Ta position sera diffusée aussitôt à ton cercle de confiance.", "Déclencher l'alerte", () => {
         sendLocation(true, $("emergencyMsg"), "🚨 ALERTE diffusée à ton cercle de confiance !");
-      }
+      });
     });
 
     function sendLocation(isEmergency, msg, okText) {
@@ -7285,13 +7291,31 @@
       el.querySelectorAll("[data-ice]").forEach((b) => b.addEventListener("click", () => { const a = loadIce(); a.splice(Number(b.dataset.ice), 1); saveIce(a); renderIce(); toast("🗑️", "Contact supprimé"); }));
       const add = $("iceAddBtn"); if (add) add.style.display = arr.length >= 3 ? "none" : "";
     }
-    { const add = $("iceAddBtn"); if (add) add.addEventListener("click", () => {
-      const name = (prompt("Nom du contact (ex : Maman, Léa…)") || "").trim();
-      if (!name) return;
-      const phone = (prompt("Son numéro de téléphone (avec l'indicatif, ex : +33 6 12 34 56 78)") || "").trim();
-      if (!phone) return;
-      const a = loadIce(); a.push({ name, phone }); saveIce(a); renderIce(); toast("📇", "Contact d'urgence ajouté");
-    }); }
+    // Ajout d'un contact d'urgence : formulaire EN DA (popInfo), fini les prompt() natifs « moches » et hors-app.
+    function openIceForm() {
+      popInfo("📇", "Nouveau contact d'urgence",
+        "<p style='font-size:.84rem;margin:0 0 .8rem;text-align:center'>Un proche à prévenir d'un geste. Il reste <b>sur ton appareil</b> (privé, rien n'est envoyé en ligne).</p>" +
+        "<label class='ice-flbl'>Nom</label>" +
+        "<input id='iceFName' class='ice-fin' type='text' placeholder='ex : Maman, Léa…' autocomplete='name' maxlength='40'>" +
+        "<label class='ice-flbl'>Téléphone</label>" +
+        "<input id='iceFPhone' class='ice-fin' type='tel' placeholder='+33 6 12 34 56 78' autocomplete='tel' inputmode='tel' maxlength='25'>" +
+        "<div class='msg' id='iceFMsg' style='text-align:center;min-height:0'></div>" +
+        "<button class='btn-primary btn-block' id='iceFSave' style='margin-top:.6rem'>Ajouter le contact</button>");
+      setTimeout(() => {
+        const fn = $("iceFName"), fp = $("iceFPhone"), save = $("iceFSave"), msg = $("iceFMsg");
+        if (fn) fn.focus();
+        const submit = () => {
+          const n = (fn && fn.value || "").trim(), p = (fp && fp.value || "").trim();
+          if (!n) { if (msg) msg.textContent = "Indique un nom."; if (fn) fn.focus(); return; }
+          if (!p) { if (msg) msg.textContent = "Indique un numéro."; if (fp) fp.focus(); return; }
+          const a = loadIce(); a.push({ name: n, phone: p }); saveIce(a); renderIce();
+          closePopInfo(); toast("📇", "Contact d'urgence ajouté");
+        };
+        if (save) save.onclick = submit;
+        if (fp) fp.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+      }, 40);
+    }
+    { const add = $("iceAddBtn"); if (add) add.addEventListener("click", () => openIceForm()); }
 
     // ---- Faux appel : sortie de secours discrète (voyageur solo). 100 % local, aucune donnée. ----
     let fcRingTick = null, fcCallTimer = null, fcSeconds = 0, fcStartTimeout = null;
@@ -8634,7 +8658,7 @@
       if (!currentQuest || !myUserId) return;
       const qkey = currentQuest.key;
       if (myQuestStatus[qkey] !== "joined") return; // jamais quitter une quête accomplie
-      if (!confirm("Quitter cette quête ? Tu pourras la rejoindre à nouveau plus tard.")) return;
+      if (!(await smConfirmP("🚪", "Quitter cette quête ?", "Tu pourras la rejoindre à nouveau plus tard.", "Quitter", false))) return;
       await once("leave:" + qkey, async () => {
         const m = $("detailMsg"); m.style.color = "var(--muted)"; m.textContent = "…";
         const { error } = await db.from("user_quests").delete().eq("user_id", myUserId).eq("quest_key", qkey).eq("status", "joined");
@@ -9008,7 +9032,7 @@
       const del = e.target.closest(".msg-del");
       if (del) {
         const id = del.dataset.mid;
-        if (!confirm("Supprimer ce message ?")) return;
+        if (!(await smConfirmP("🗑️", "Supprimer ce message ?", "Ce message sera retiré de la conversation.", "Supprimer"))) return;
         const { error } = await db.from("messages").delete().eq("id", id);
         if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
         const b = document.querySelector(`.bubble[data-mid="${id}"]`); if (b) (b.closest(".msg-row") || b).remove();
@@ -9197,7 +9221,7 @@
     // Supprimer la conversation en cours
     async function deleteConversation() {
       const id = currentChatUserId; if (!id) return;
-      if (!confirm("Supprimer cette conversation ?")) return;
+      if (!(await smConfirmP("🗑️", "Supprimer cette conversation ?", "Tes messages de cette conversation seront supprimés.", "Supprimer"))) return;
       if (travelerMap[id] && travelerMap[id].is_demo) {
         delete demoChats[id]; // conversation IA = effacée côté navigateur
       } else {
@@ -9279,7 +9303,7 @@
     // ===== Feedback bêta (bug / idée / pixel) → table Supabase app_feedback (lue dans l'admin) =====
     let _fbType = "bug";
     function openBetaFeedback() {
-      const types = [["bug", "🐞", "Bug"], ["idea", "💡", "Idée"], ["pixel", "🎨", "Pixel/design"]];
+      const types = [["bug", "⚠️", "Problème"], ["idea", "💡", "Idée"], ["pixel", "🎨", "Pixel/design"]];
       _fbType = "bug";
       const chips = types.map((t) => `<button class="fb-chip${t[0] === "bug" ? " on" : ""}" data-fbt="${t[0]}">${t[1]} ${t[2]}</button>`).join("");
       popInfo("🧪", "App en bêta · ton avis compte", `
@@ -9327,7 +9351,7 @@
       if ((travelerMap[currentChatUserId] || {}).is_demo) { toast("🎤", "Les vocaux marchent avec un vrai Mate 🙂"); return; }
       if (_mediaRec && _mediaRec.state === "recording") return;
       if (!navigator.mediaDevices || !window.MediaRecorder) { toast("🎤", "Micro indisponible sur cet appareil"); return; }
-      if (!confirm("SunMates va utiliser ton micro pour une note vocale (30 s max). Aucun enregistrement n'est gardé tant que tu n'envoies pas. Continuer ?")) return;
+      if (!(await smConfirmP("🎤", "Activer le micro ?", "Pour une note vocale (30 s max). Rien n'est gardé tant que tu n'envoies pas.", "Continuer", false))) return;
       try { _voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { toast("🎤", "Accès micro refusé"); return; }
       _voiceChunks = []; _voiceSecs = 0;
       let mime = "audio/webm;codecs=opus"; if (!MediaRecorder.isTypeSupported(mime)) mime = "audio/webm"; if (!MediaRecorder.isTypeSupported(mime)) mime = "";
@@ -9716,7 +9740,7 @@
         if (!people.length) { m.style.color = "var(--danger)"; m.textContent = "Aucun voyageur à signaler pour l'instant."; return; }
         openPicker("Signaler un voyageur", people.map((p) => ({ label: p.username || "Voyageur", avatar: p.avatar_url, id: p.id })), async (it) => {
           closePicker();
-          const reason = prompt("Pour quelle raison signales-tu « " + it.label + " » ?\n(ex : comportement déplacé, faux profil, spam…)");
+          const reason = await smPromptP("🚩", "Signaler « " + escapeHtml(it.label) + " »", "Pour quelle raison ? (comportement déplacé, faux profil, spam…)", { placeholder: "Motif du signalement", okLabel: "Signaler", maxlength: 200 });
           if (!reason) return;
           const { data, error } = await once("report:" + it.id, async () =>
             db.rpc("report_user", { p_reported: it.id, p_reason: reason })
@@ -10605,7 +10629,7 @@
       });
     }
     async function deleteMapActivity(id) {
-      if (!confirm("Supprimer cette activité ?")) return;
+      if (!(await smConfirmP("🗑️", "Supprimer cette activité ?", "Elle sera retirée de la carte.", "Supprimer"))) return;
       if (homeLeaf) homeLeaf.closePopup();
       const { error } = await db.from("map_activities").delete().eq("id", id);
       if (error) { if (typeof toast === "function") toast("⚠️", "Erreur : " + error.message); return; }
@@ -11056,7 +11080,7 @@
     }
     $("b2bUnlockCta").addEventListener("click", async () => {
       if (myProfile && myProfile.is_admin) {
-        const pw = prompt("Accès aperçu Pro (admin), confirme ton mot de passe :");
+        const pw = await smPromptP("🔒", "Accès aperçu Pro", "Confirme ton mot de passe (admin).", { type: "password", placeholder: "Mot de passe", okLabel: "Valider", maxlength: 80 });
         if (pw == null) return;
         const { error } = await db.auth.signInWithPassword({ email: myEmail, password: pw });
         if (error) { toast("🔒", "Mot de passe incorrect"); return; }
@@ -11095,8 +11119,8 @@
     { const ia = $("installAppBtn"); if (ia) ia.addEventListener("click", () => { if (typeof window.openInstallHelp === "function") window.openInstallHelp(); }); }
     // P2.50 RGPD : suppression de compte (irréversible) → double confirmation, RPC, déconnexion.
     { const da = $("deleteAccountBtn"); if (da) da.addEventListener("click", () => once("delete-account", async () => {
-      if (!confirm("Supprimer DÉFINITIVEMENT ton compte et toutes tes données ?\n\nCette action est irréversible.")) return;
-      const typed = prompt("Pour confirmer, écris SUPPRIMER :");
+      if (!(await smConfirmP("⚠️", "Supprimer ton compte ?", "Suppression DÉFINITIVE de ton compte et de toutes tes données. Cette action est irréversible.", "Continuer"))) return;
+      const typed = await smPromptP("🗑️", "Confirmer la suppression", "Pour confirmer, écris SUPPRIMER en majuscules.", { placeholder: "SUPPRIMER", okLabel: "Supprimer mon compte", maxlength: 20 });
       if ((typed || "").trim().toUpperCase() !== "SUPPRIMER") { toast("🙅", "Suppression annulée"); return; }
       const m = $("settingsMsg"); if (m) { m.style.color = "var(--muted)"; m.textContent = "Suppression en cours…"; }
       try {
@@ -11104,8 +11128,8 @@
         if (error) { if (m) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + error.message; } return; }
         try { await db.auth.signOut(); } catch (e) {}
         try { localStorage.clear(); } catch (e) {}
-        alert("Ton compte et tes données ont été supprimés. À bientôt 🌅");
-        location.replace(location.pathname);
+        popInfo("🌅", "Compte supprimé", "<p style='text-align:center;font-size:.9rem;margin:.2rem 0;line-height:1.5'>Ton compte et tes données ont été supprimés.<br>À bientôt 🌅</p>");
+        setTimeout(() => location.replace(location.pathname), 1900);
       } catch (e) { if (m) { m.style.color = "var(--danger)"; m.textContent = "Erreur : réessaie."; } }
     })); }
     $("saveEmailBtn").addEventListener("click", async () => {
@@ -11144,7 +11168,7 @@
     }
     // ---- Utiliser un coupon ----
     async function useCoupon(id) {
-      if (!confirm("Marquer ce coupon comme utilisé ?")) return;
+      if (!(await smConfirmP("🎟️", "Marquer ce coupon comme utilisé ?", "Il sera marqué utilisé et ne pourra plus servir.", "Marquer utilisé"))) return;
       const { error } = await db.from("user_coupons").update({ used: true }).eq("id", id);
       if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
       track("coupon_used");
@@ -11244,6 +11268,45 @@
         if (c) c.onclick = closePopInfo;
         if (o) o.onclick = () => { closePopInfo(); try { onConfirm && onConfirm(); } catch (e) {} };
       }, 40);
+    }
+    // Variante Promise de smConfirm → `if (!(await smConfirmP(...))) return;` (remplace les confirm() natifs « moches »).
+    // danger=false → bouton primaire (corail) au lieu de rouge (pour les confirmations non destructrices : permissions…).
+    function smConfirmP(emoji, title, message, confirmLabel, danger) {
+      return new Promise((resolve) => {
+        let done = false;
+        const finish = (v) => { if (done) return; done = true; closePopInfo(); resolve(v); };
+        popInfo(emoji, title,
+          '<p style="font-size:.88rem;line-height:1.5;margin:.1rem 0 1rem;text-align:center">' + message + '</p>' +
+          '<div class="row"><button class="btn-ghost" id="smcpCancel" style="flex:1">Annuler</button>' +
+          '<button class="' + (danger === false ? "btn-primary" : "btn-danger") + '" id="smcpOk" style="flex:1">' + escapeHtml(confirmLabel || "Confirmer") + '</button></div>');
+        setTimeout(() => {
+          const c = $("smcpCancel"), o = $("smcpOk");
+          if (c) c.onclick = () => finish(false);
+          if (o) o.onclick = () => finish(true);
+        }, 40);
+      });
+    }
+    // Saisie texte EN DA (remplace prompt() natif). Résout la valeur saisie, ou null si annulé.
+    function smPromptP(emoji, title, message, opts) {
+      opts = opts || {};
+      return new Promise((resolve) => {
+        let done = false;
+        const finish = (v) => { if (done) return; done = true; closePopInfo(); resolve(v); };
+        popInfo(emoji, title,
+          (message ? '<p style="font-size:.84rem;line-height:1.45;margin:0 0 .7rem;text-align:center">' + message + '</p>' : '') +
+          '<input id="smpIn" class="ice-fin" type="' + (opts.type || "text") + '" placeholder="' + escapeHtml(opts.placeholder || "") + '" ' +
+            (opts.inputmode ? 'inputmode="' + opts.inputmode + '" ' : '') + 'maxlength="' + (opts.maxlength || 120) + '">' +
+          '<div class="row" style="margin-top:.7rem"><button class="btn-ghost" id="smpCancel" style="flex:1">Annuler</button>' +
+          '<button class="btn-primary" id="smpOk" style="flex:1">' + escapeHtml(opts.okLabel || "Valider") + '</button></div>');
+        setTimeout(() => {
+          const inp = $("smpIn"), c = $("smpCancel"), o = $("smpOk");
+          if (inp) inp.focus();
+          const ok = () => finish(inp ? inp.value : "");
+          if (o) o.onclick = ok;
+          if (c) c.onclick = () => finish(null);
+          if (inp) inp.addEventListener("keydown", (e) => { if (e.key === "Enter") ok(); });
+        }, 40);
+      });
     }
 
     // ---- Confettis (déblocage de badge, moment de fête 🎉) ----
@@ -11430,7 +11493,7 @@
         try { const { data } = await db.rpc("toggle_feed_like", { p_post: Number(el.dataset.like) }); if (data && data.ok) { el.classList.toggle("liked", data.liked); el.innerHTML = (data.liked ? "❤️" : "🤍") + " <span>" + data.likes + "</span>"; if (window.SMSound) SMSound.play("tap"); } } catch (er) {}
       }));
       feed.querySelectorAll("[data-del]").forEach((el) => el.addEventListener("click", async (e) => {
-        e.stopPropagation(); if (!confirm("Supprimer ce post ?")) return;
+        e.stopPropagation(); if (!(await smConfirmP("🗑️", "Supprimer ce post ?", "Ce post sera retiré du fil.", "Supprimer"))) return;
         try { await db.from("feed_posts").delete().eq("id", Number(el.dataset.del)); buildHomeFeed(); } catch (er) {}
       }));
       // On ouvre le profil SEULEMENT via l'en-tête (avatar + pseudo), pas en touchant le blanc
@@ -13759,7 +13822,7 @@
     }
     async function openQrScan() {
       // RGPD : on explique et on demande l'accord AVANT d'allumer la caméra.
-      if (!confirm("SunMates va utiliser ta caméra uniquement pour scanner le QR d'un Mate. Aucune image n'est enregistrée ni envoyée. Continuer ?")) return;
+      if (!(await smConfirmP("📷", "Activer la caméra ?", "Uniquement pour scanner le QR d'un Mate. Aucune image n'est enregistrée ni envoyée.", "Continuer", false))) return;
       const msg = $("qrScanMsg"); if (msg) msg.textContent = "";
       $("qrScanModal").classList.remove("hidden");
       const v = $("qrScanVideo");
