@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=305"></script>
-  <script src="sunmates-icons.js?v=305"></script>
+  <script src="sunmates-badges.js?v=306"></script>
+  <script src="sunmates-icons.js?v=306"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -335,7 +335,10 @@
     .fpost-del { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--muted); font-size: .9rem; }
     .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: .4rem; }
     .fpost { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .7rem; box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease; }
-    .fpost { cursor: default; } /* le corps blanc n'est PAS cliquable (anti mis-clic) */
+    .fpost { cursor: default; position: relative; } /* le corps blanc n'est PAS cliquable (anti mis-clic) */
+    /* Burst de cœur au double-tap d'un post (façon Insta) */
+    .fp-heartburst { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) scale(0); font-size: 3.4rem; pointer-events: none; z-index: 5; filter: drop-shadow(0 4px 10px rgba(0,0,0,.3)); animation: fpHeart .75s ease-out forwards; }
+    @keyframes fpHeart { 0% { transform: translate(-50%,-50%) scale(0); opacity: 0; } 20% { transform: translate(-50%,-50%) scale(1.25); opacity: 1; } 70% { transform: translate(-50%,-50%) scale(1); opacity: 1; } 100% { transform: translate(-50%,-60%) scale(.9); opacity: 0; } }
     .fpost-top { display: flex; align-items: center; gap: .6rem; cursor: pointer; } /* seul l'en-tête ouvre le profil */
     .fpost-top:active { opacity: .75; }
     .fpost-who { flex: 1; display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
@@ -3208,6 +3211,7 @@
             <div class="homemap-hint hidden" id="homeMapHint">👆 Touche la carte pour placer ton activité · <a id="homeMapHintCancel">Annuler</a></div>
             <div class="homemap-tools">
               <button id="hmAdd" title="Partager une activité sur la carte">➕ Partager</button>
+              <button id="hmTonight" title="Qui est dans le coin maintenant">🌃 Qui est là ?</button>
               <button id="hmLocate" title="Centrer sur ma position">📍 Autour de moi</button>
               <button id="hmFit" title="Tout afficher">🌍 Tout voir</button>
             </div>
@@ -4758,12 +4762,24 @@
       const key = "sm_streak_" + (myUserId || "x");
       let st = {}; try { st = JSON.parse(localStorage.getItem(key) || "{}") || {}; } catch (e) { st = {}; }
       const today = new Date(); const todayStr = ymd(today);
+      const _weekKey = (d) => { const x = new Date(d); const dow = (x.getDay() + 6) % 7; x.setDate(x.getDate() - dow); return ymd(x); };
+      let frozeNow = false;
       if (st.last !== todayStr) {
-        const y = new Date(today); y.setDate(y.getDate() - 1);
-        st.count = (st.last === ymd(y)) ? (st.count || 0) + 1 : 1; // hier → +1, sinon on repart à 1
+        const y = new Date(today); y.setDate(y.getDate() - 1); const yStr = ymd(y);
+        const d2 = new Date(today); d2.setDate(today.getDate() - 2); const d2Str = ymd(d2);
+        const wk = _weekKey(today);
+        if (st.last === yStr) {
+          st.count = (st.count || 0) + 1; // hier → +1 (continuité normale)
+        } else if (st.last === d2Str && st.freezeWeek !== wk && (st.count || 0) > 0) {
+          // JOKER hebdo : 1 seul jour manqué + joker dispo cette semaine → on sauve la flamme.
+          st.freezeWeek = wk; st.count = (st.count || 0) + 1; frozeNow = true;
+        } else {
+          st.count = 1; // flamme perdue (>1 jour manqué ou joker déjà utilisé) → on repart à 1
+        }
         st.best = Math.max(st.best || 0, st.count);
         st.last = todayStr;
         try { localStorage.setItem(key, JSON.stringify(st)); } catch (e) {}
+        if (frozeNow && typeof toast === "function") toast("🧊", "Jour manqué rattrapé ! Ton <b>joker hebdo</b> a sauvé ta flamme 🔥");
       }
       const n = st.count || 1;
       const enLang = (currentLang === "en");
@@ -4790,14 +4806,40 @@
       // Petite frise de 7 jours (la semaine en cours, façon habit-tracker).
       const inWeek = ((n - 1) % 7) + 1;
       const dots = Array.from({ length: 7 }, (_, i) => `<span style="font-size:1.05rem;filter:${i < inWeek ? "none" : "grayscale(1) opacity(.35)"}">🔥</span>`).join("");
+      // Joker hebdo (1 jour de grâce/semaine) : dispo ou déjà utilisé cette semaine ?
+      const _wk = (() => { const x = new Date(); const dow = (x.getDay() + 6) % 7; x.setDate(x.getDate() - dow); return ymd(x); })();
+      const jokerOk = st.freezeWeek !== _wk;
       showInfo("🔥 Ta série", `<div style="text-align:center;line-height:1.6">
         <div style="font-size:2.6rem;font-weight:800;color:#B5740E">${n} jour${n > 1 ? "s" : ""}</div>
         <p style="margin:.3rem 0">Tu ouvres SunMates <b>${n} jour${n > 1 ? "s" : ""} d'affilée</b> ! Reviens chaque jour pour faire grimper ta flamme 🔥</p>
         <div style="display:flex;justify-content:center;gap:.25rem;margin:.5rem 0">${dots}</div>
         <div style="background:var(--cream);border:1px solid var(--line);border-radius:999px;height:9px;overflow:hidden;margin:.5rem 0 .25rem"><div style="height:100%;width:${pct}%;background:var(--accent-grad);border-radius:999px"></div></div>
         <p class="muted" style="font-size:.8rem;margin:.1rem 0">Prochain palier : <b style="color:#B5740E">${next} jours</b> (plus que ${next - n} 🔥)</p>
+        <p style="font-size:.82rem;margin:.1rem 0">🧊 Joker hebdo : <b style="color:${jokerOk ? "#2a9d5c" : "var(--muted)"}">${jokerOk ? "disponible" : "utilisé cette semaine"}</b> <span class="muted">· rattrape 1 jour manqué/semaine</span></p>
         <p class="muted" style="font-size:.82rem">🏆 Ton record : <b>${best} jour${best > 1 ? "s" : ""}</b></p></div>`);
     }); }
+    // Récap hebdo (le DIMANCHE, une seule fois) : ramène l'utilisateur avec un bilan motivant.
+    function maybeWeeklyRecap() {
+      try {
+        if (!myUserId) return;
+        const today = new Date();
+        if (today.getDay() !== 0) return;                 // 0 = dimanche
+        const k = "sm_recap_" + myUserId, todayStr = ymd(today);
+        if (localStorage.getItem(k) === todayStr) return; // déjà montré aujourd'hui
+        localStorage.setItem(k, todayStr);
+        let st = {}; try { st = JSON.parse(localStorage.getItem("sm_streak_" + myUserId) || "{}") || {}; } catch (e) {}
+        const streak = st.count || 0;
+        const matesN = (typeof connectedIds !== "undefined" && connectedIds) ? connectedIds.size : 0;
+        const xp = (myProfile && myProfile.xp) || 0;
+        const line = (e, lbl, v) => `<div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.2rem 0"><span style="font-size:1.2rem">${e}</span><b style="color:#B5740E;font-size:1.1rem">${v}</b><span class="muted" style="font-size:.85rem">${lbl}</span></div>`;
+        setTimeout(() => popInfo("🌅", "Ta semaine sur SunMates", `
+          <p class="muted" style="font-size:.84rem;margin:0 0 .6rem;text-align:center">Nouvelle semaine qui commence — petit bilan ✨</p>
+          ${line("🔥", "jours de série", streak)}
+          ${line("🤝", "Mates dans ton cercle", matesN)}
+          ${line("⭐", "XP au total", xp)}
+          <p style="font-size:.85rem;margin:.7rem 0 0;text-align:center">Prêt·e à faire encore mieux cette semaine ? 🚀</p>`), 1500);
+      } catch (e) {}
+    }
     // ====================== MODE VOYAGE / MAISON ======================
     // Quand on n'est pas en vadrouille, l'accueil se transforme : prochain voyage,
     // voyageurs de passage chez toi, devenir hôte. 100% local, aucune migration.
@@ -5194,6 +5236,7 @@
       // Accueil : « Bonjour {pseudo} ». Seul le pseudo reçoit le dégradé ; « Bonjour » reste en texte normal.
       $("homeHello").innerHTML = 'Bonjour <span class="hello-name">' + escapeHtml(uname) + "</span>";
       if (typeof updateStreak === "function") updateStreak();
+      if (typeof maybeWeeklyRecap === "function") maybeWeeklyRecap();
       if (typeof renderGameHub === "function") renderGameHub();
       if (typeof claimReferralIfAny === "function") claimReferralIfAny(); // parrainage : crédite le 1er verre si arrivé via un lien ?ref
       if (typeof retentionNudge === "function") retentionNudge(); // relance douce si retour après ≥3 jours
@@ -5678,6 +5721,8 @@
         // Flash sur la TUILE du lieu validé.
         const card = document.querySelector(`[data-cafecard="${cafeId}"]`);
         if (card) { flashOk(card); card.scrollIntoView({ behavior: "smooth", block: "center" }); }
+        // Confirmation FESTIVE : confettis + son de déblocage (moment gratifiant).
+        if (typeof celebrate === "function") celebrate();
         // Toast cliquable : invite à laisser un avis (relie check-in -> avis).
         track("checkin");
         toast("✅", "Check-in validé ! ⭐ Touche ici pour laisser un avis", () => openReviews(cafeId, cafeName));
@@ -9422,6 +9467,15 @@
 
     // Beaucoup d'éléments au MÊME endroit (>6) : au lieu d'une spirale illisible, une petite
     // carte qui résume par type, avec un bouton pour déplier en éventail si on le souhaite.
+    // « Qui est là ce soir ? » : liste les Mates actuellement repérés sur la carte (avec un lieu).
+    function whoIsOutTonight() {
+      const list = (window._presentMates || []);
+      const city = (typeof myProfile !== "undefined" && myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : "ta zone";
+      if (!list.length) { popInfo("🌙", "Personne dans le coin", "<p style='text-align:center'>Aucun Mate repéré autour de toi là tout de suite. Reviens plus tard, ou pars à la rencontre sur la carte ✨</p>"); return; }
+      const rows = list.slice(0, 25).map(({ p, cafe }) => `<div class="qrow" data-wmate="${escapeHtml(p.id)}" style="cursor:pointer;padding:.45rem .2rem">${avatarMarkup(p.username, p.avatar_url)}<div class="qname" style="flex:1">${escapeHtml(p.username || "Voyageur")}${p.is_verified ? ' <span class="vchip" title="Vérifié">✓</span>' : ""}<div class="meta muted" style="font-size:.72rem">📍 ${escapeHtml(cafe.name)}</div></div><div class="qarrow">›</div></div>`).join("");
+      popInfo("🌃", "Qui est dans le coin ?", `<p class="muted" style="font-size:.82rem;margin:0 0 .5rem;text-align:center">${list.length} Mate${list.length > 1 ? "s" : ""} repéré${list.length > 1 ? "s" : ""} autour de <b>${escapeHtml(city)}</b> 👇</p><div style="text-align:left;max-height:46vh;overflow:auto">${rows}</div>`);
+      setTimeout(() => { document.querySelectorAll("[data-wmate]").forEach((el) => el.addEventListener("click", () => { if (typeof closePopInfo === "function") closePopInfo(); goToTab("connexions"); const p = travelerMap[el.dataset.wmate]; if (p && typeof openTravelerProfile === "function") openTravelerProfile(p); })); }, 30);
+    }
     function openColocatedList(latlng, markers, cluster) {
       const counts = {}; markers.forEach((m) => { const t = m.smType || "places"; counts[t] = (counts[t] || 0) + 1; });
       const LABELS = { places: "📍 lieu", mates: "🧑 Mates", activities: "🎉 activités", checkins: "✅ check-ins" };
@@ -9640,6 +9694,8 @@
         }
         return null;
       }
+      // Snapshot pour le bouton « Qui est là ce soir ? » : Mates présents (avec un lieu connu).
+      try { window._presentMates = mates.map((p) => ({ p, cafe: cafeForMember(p) })).filter((x) => x.cafe); } catch (e) {}
 
       // 📍 Lieux sûrs, à leurs vraies coordonnées
       places.forEach((c) => {
@@ -9990,6 +10046,7 @@
       }));
       const loc = $("hmLocate"); if (loc) loc.addEventListener("click", homeLocateMe);
       const fit = $("hmFit"); if (fit) fit.addEventListener("click", homeFitAll);
+      const ton = $("hmTonight"); if (ton) ton.addEventListener("click", whoIsOutTonight);
       const add = $("hmAdd"); if (add) add.addEventListener("click", () => setHomeAddMode(!homeAddMode));
       const hc = $("homeMapHintCancel"); if (hc) hc.addEventListener("click", () => setHomeAddMode(false));
       // La couche de capture transforme le tap (même sur un marqueur) en position
@@ -10730,6 +10787,23 @@
         const fp = el.closest(".fpost"); const uid = fp && fp.dataset.fuid;
         if (uid && uid !== myUserId && travelerMap[uid]) { goToTab("connexions"); openTravelerProfile(travelerMap[uid]); }
       }));
+      // Double-tap un post = ❤️ (façon Insta) : like + grosse animation cœur.
+      feed.querySelectorAll(".fpost").forEach((fp) => {
+        const dbl = (e) => { if (e.target.closest("button")) return; _feedDoubleLike(fp); };
+        fp.addEventListener("dblclick", dbl);
+        let _lt = 0; fp.addEventListener("touchend", (e) => { if (e.target.closest("button")) return; const now = e.timeStamp || 0; if (now - _lt < 320) { e.preventDefault(); _feedDoubleLike(fp); _lt = 0; } else _lt = now; }, { passive: false });
+      });
+    }
+    // Like par double-tap : ne fait que LIKER (jamais unliker) + burst de cœur centré sur le post.
+    async function _feedDoubleLike(fp) {
+      if (!fp) return;
+      const btn = fp.querySelector("[data-like]"); if (!btn) return;
+      // Burst visuel immédiat (ressenti instantané).
+      const burst = document.createElement("div"); burst.className = "fp-heartburst"; burst.textContent = "❤️"; fp.appendChild(burst);
+      setTimeout(() => burst.remove(), 750);
+      if (window.SMSound) SMSound.play("pop");
+      if (btn.classList.contains("liked")) return; // déjà liké → on garde, on ne retire pas
+      try { const { data } = await db.rpc("toggle_feed_like", { p_post: Number(btn.dataset.like) }); if (data && data.ok) { btn.classList.toggle("liked", data.liked); btn.innerHTML = (data.liked ? "❤️" : "🤍") + " <span>" + data.likes + "</span>"; } } catch (e) {}
     }
     // Commentaires d'un post du fil (modale : liste + champ d'ajout).
     async function openFeedComments(postId) {
