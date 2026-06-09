@@ -3537,12 +3537,12 @@
                 </div>
                 <button class="btn-ghost btn-block" id="fReset" style="margin-top:.6rem">Réinitialiser les filtres</button>
               </details>
-              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem">
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap">
                 <span class="muted" style="font-size:.82rem;white-space:nowrap">Trier par</span>
-                <select id="travSort">
-                  <option value="compat">Compatibilité ❤️</option>
-                  <option value="trust">Score de confiance 🛡️</option>
-                </select>
+                <div id="travSort" style="display:flex;gap:.4rem">
+                  <button type="button" class="chip active" data-sort="compat">Compatibilité ❤️</button>
+                  <button type="button" class="chip" data-sort="trust">Confiance 🛡️</button>
+                </div>
               </div>
               <div id="travelersList"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line l"></div><div class="skel skel-line s"></div></div></div></div>
               <div class="msg" id="connMsg"></div>
@@ -7709,7 +7709,11 @@
         b.classList.toggle("active", travFilters[k]);
         renderTravelers($("travSearch").value);
       }));
-    $("travSort").addEventListener("change", (e) => { travSortKey = e.target.value; renderTravelers($("travSearch").value); });
+    document.querySelectorAll("#travSort .chip").forEach((b) => b.addEventListener("click", () => {
+      travSortKey = b.dataset.sort;
+      document.querySelectorAll("#travSort .chip").forEach((o) => o.classList.toggle("active", o === b));
+      renderTravelers($("travSearch").value);
+    }));
     // Filtres avancés : re-rendu à chaque changement
     const ADV_FILTER_IDS = ["fAgeMin", "fAgeMax", "fIntent", "fLang", "fStyle", "fGender", "fOrient", "fRel", "fFit", "fDrink", "fSmoke", "fDiet", "fZod", "fPerso", "fPhoto", "fInterest", "fEdu", "fChild", "fRelig"];
     ADV_FILTER_IDS.forEach((id) => {

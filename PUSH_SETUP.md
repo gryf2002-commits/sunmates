@@ -27,21 +27,30 @@ Edge Functions → `send-push` → onglet **Secrets** (ou « Manage secrets ») 
 Dans les réglages de la fonction `send-push`, **désactive « Verify JWT »**
 (le webhook l'appelle sans jeton utilisateur).
 
-## 5) Créer le Database Webhook (déclencheur)
-Menu **Database** → **Webhooks** → **Create a new hook** :
-- **Table** : `messages`
-- **Events** : ☑️ Insert
+## 5) Créer les Database Webhooks (déclencheurs)
+La **même** fonction `send-push` gère plusieurs cas selon la table : crée **3 webhooks**
+(Menu **Database** → **Webhooks** → **Create a new hook**). Pour chacun :
 - **Type** : *Supabase Edge Functions* → choisir **`send-push`**
   *(ou HTTP Request POST vers `https://ihiwuharxkmkzaxixhae.functions.supabase.co/send-push`)*
-- **Method** : POST
-- Laisse les en-têtes par défaut → **Create**.
+- **Method** : POST, en-têtes par défaut → **Create**.
+
+| # | Table | Events | Ce que ça notifie |
+|---|-------|--------|-------------------|
+| 1 | `messages` | ☑️ Insert | Nouveau message reçu |
+| 2 | `matches_connections` | ☑️ Insert | Nouvelle demande de connexion (→ destinataire) |
+| 3 | `matches_connections` | ☑️ Update | Demande **acceptée** = nouveau match (→ demandeur) |
+
+> ⚠️ Si tu avais DÉJÀ créé le webhook `messages`, garde-le. Ajoute juste les **2 nouveaux**
+> sur `matches_connections` (un Insert, un Update). Et **re-déploie** la fonction `send-push`
+> (étape 2) car son code a été mis à jour pour gérer ces nouveaux cas.
 
 ## 6) Tester 🎉
 1. Ouvre l'app **en ligne** (HTTPS) et **autorise les notifications** quand le navigateur demande.
 2. Sur Android/desktop : installe la PWA (« Ajouter à l'écran d'accueil ») pour le mode app fermée.
    *(Sur iPhone, le push web ne marche QUE si l'app est installée sur l'écran d'accueil, iOS 16.4+.)*
-3. Depuis un **autre compte**, envoie-toi un message → tu dois recevoir une notification
-   **même si l'onglet/l'app est fermé**.
+3. Depuis un **autre compte** : envoie-toi un message **OU** une demande de connexion, puis
+   **accepte une demande** → tu dois recevoir une notification **même app fermée**, avec un
+   petit logo soleil net (plus de pavé gris) qui ouvre directement l'onglet **Connexions**.
 
 ---
 
