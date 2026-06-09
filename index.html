@@ -72,13 +72,13 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=332"></script>
-  <script src="sunmates-icons.js?v=332"></script>
+  <script src="sunmates-badges.js?v=336"></script>
+  <script src="sunmates-icons.js?v=336"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
-      // prend le contrôle, on recharge la page une fois -> tout le monde passe
-      // automatiquement à la dernière version (y compris les prochaines).
+      // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
+      // Dès qu'un nouveau service worker prend le contrôle, on recharge UNE fois →
+      // tout le monde bascule sur la dernière version sans rien faire.
       var hadController = !!navigator.serviceWorker.controller; // false à la 1re visite -> pas de reload inutile
       var swRefreshing = false;
       navigator.serviceWorker.addEventListener("controllerchange", function () {
@@ -86,16 +86,25 @@
         swRefreshing = true;
         window.location.reload();
       });
+      // Quand un nouveau SW est "installed" alors qu'un ancien contrôle encore la page,
+      // on lui demande EXPLICITEMENT de prendre la main tout de suite (skipWaiting) — au cas où
+      // l'auto-skip du SW serait ignoré par le navigateur (Safari/iOS notamment).
+      function promoteSW(reg) {
+        var w = reg.installing || reg.waiting; if (!w) return;
+        var ask = function () { if (w.state === "installed" && navigator.serviceWorker.controller) { try { w.postMessage("skipWaiting"); } catch (e) {} } };
+        ask(); w.addEventListener("statechange", ask);
+      }
       window.addEventListener("load", function () {
         // updateViaCache:'none' = le navigateur ne sert jamais un sw.js périmé depuis son cache HTTP.
         navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(function (reg) {
-          // iOS lève "InvalidStateError: newestWorker is null" si on appelle update()
-          // alors qu'aucun worker n'est encore rattaché → on garde-fou + try/catch.
+          if (reg.waiting && navigator.serviceWorker.controller) { try { reg.waiting.postMessage("skipWaiting"); } catch (e) {} }
+          reg.addEventListener("updatefound", function () { promoteSW(reg); });
+          // iOS lève "InvalidStateError" si on appelle update() sans worker rattaché → garde-fou + try/catch.
           function safeUpdate() {
             try { if (reg && (reg.installing || reg.waiting || reg.active)) { var p = reg.update(); if (p && p.catch) p.catch(function () {}); } } catch (e) {}
           }
           safeUpdate();
-          setInterval(safeUpdate, 30 * 60 * 1000); // puis toutes les 30 min
+          setInterval(safeUpdate, 5 * 60 * 1000); // check toutes les 5 min (au lieu de 30) -> MAJ quasi immédiate
           document.addEventListener("visibilitychange", function () { if (!document.hidden) safeUpdate(); }); // et au retour sur l'app
         }).catch(function () {});
       });
