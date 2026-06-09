@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=308"></script>
-  <script src="sunmates-icons.js?v=308"></script>
+  <script src="sunmates-badges.js?v=309"></script>
+  <script src="sunmates-icons.js?v=309"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -5572,14 +5572,33 @@
         "<div style='display:flex;gap:.5rem;margin-top:.5rem'>" +
           "<button class='btn-ghost' id='cdReviews' style='flex:1'>⭐ Avis</button>" +
           (c.lat != null && c.lng != null ? "<button class='btn-ghost' id='cdMap' style='flex:1'>📍 Sur la carte</button>" : "") +
-        "</div></div>";
+        "</div>" +
+        "<button class='btn-ghost btn-block' id='cdRecommend' style='margin-top:.5rem'>🤝 Recommander à un Mate</button>" +
+        "</div>";
       popInfo("📍", c.name, html);
       setTimeout(() => {
         const close = () => { const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden"); };
         const ci = $("cdCheckin"); if (ci) ci.onclick = () => { close(); checkIn(c.id, c.name); };
         const rv = $("cdReviews"); if (rv) rv.onclick = () => { close(); openReviews(c.id, c.name); };
         const mp = $("cdMap"); if (mp) mp.onclick = () => { close(); focusHomeMapOn(c.id); };
+        const rc = $("cdRecommend"); if (rc) rc.onclick = () => { close(); recommendPlaceToMate(c); };
       }, 40);
+    }
+    // Recommander un lieu à un Mate connecté → message dans le chat avec un bouton « Voir le lieu ».
+    function recommendPlaceToMate(c) {
+      if (!c) return;
+      const mates = (typeof connectedIds !== "undefined" ? [...connectedIds] : []).map((id) => travelerMap[id]).filter(Boolean);
+      if (!mates.length) { if (typeof toast === "function") toast("🤝", "Connecte-toi d'abord avec un Mate pour lui recommander un lieu."); return; }
+      openPicker("À quel Mate recommander « " + (c.name || "ce lieu") + " » ?",
+        mates.map((p) => ({ label: p.username || "Voyageur", avatar: p.avatar_url, id: p.id })),
+        async (item) => {
+          if (!item || !myUserId) return;
+          try {
+            await db.from("messages").insert({ sender_id: myUserId, recipient_id: item.id, content: PLACE_MSG_PREFIX + c.name });
+            if (typeof toast === "function") toast("📍", "Lieu recommandé à " + (item.label || "ton Mate") + " ✅");
+            if (window.SMSound) SMSound.play("success");
+          } catch (e) { if (typeof toast === "function") toast("⚠️", "Réessaie dans un instant."); }
+        });
     }
     function renderCafesList() {
       const list = $("cafesList"); if (!list) return;
@@ -8460,6 +8479,7 @@
       return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" }) + " · " + time;
     }
     const QUEST_MSG_PREFIX = "🎯 Je te propose la quête : ";
+    const PLACE_MSG_PREFIX = "📍 Je te recommande ce lieu : ";
     let _chatTranslatable = true; // false si le Mate parle déjà ta langue
     function bubbleHtml(m) {
       const mine = m.sender_id === myUserId;
@@ -8476,6 +8496,12 @@
         const title = m.content.slice(QUEST_MSG_PREFIX.length).trim();
         const q = allQuests.find((x) => (x.title || "") === title);
         if (q) questBtn = `<button class="msg-quest" data-qview="${escapeHtml(q.key)}">▶ Voir la quête</button>`;
+      }
+      // Si le message recommande un lieu → bouton « Voir le lieu » (retrouvé par nom).
+      if ((m.content || "").startsWith(PLACE_MSG_PREFIX) && typeof allCafes !== "undefined") {
+        const pname = m.content.slice(PLACE_MSG_PREFIX.length).trim();
+        const cf = (allCafes || []).find((x) => (x.name || "") === pname);
+        if (cf) questBtn += `<button class="msg-quest" data-placeview="${cf.id}">📍 Voir le lieu</button>`;
       }
       const trLbl = (typeof t === "function") ? t("chat.translate") : "Traduire";
       // Pas de bouton « Traduire » si le Mate parle déjà ta langue (pollution visuelle inutile).
@@ -8507,8 +8533,14 @@
       if (vp) { playVoiceNote(vp); return; }
       const tr = e.target.closest(".bubble-translate");
       if (tr) { if (typeof translateBubble === "function") translateBubble(tr.closest(".bubble"), tr); return; }
+      const pv = e.target.closest("[data-placeview]");
+      if (pv) {
+        const cf = (allCafes || []).find((x) => String(x.id) === String(pv.dataset.placeview));
+        if (cf && typeof showCafeDetail === "function") showCafeDetail(cf);
+        return;
+      }
       const qv = e.target.closest(".msg-quest");
-      if (qv) {
+      if (qv && qv.dataset.qview) {
         goToTab("jeux");
         const q = (typeof questByKey === "function") && questByKey(qv.dataset.qview);
         if (q && typeof openDetail === "function") setTimeout(() => openDetail(q), 80);
