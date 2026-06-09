@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=329"></script>
-  <script src="sunmates-icons.js?v=329"></script>
+  <script src="sunmates-badges.js?v=330"></script>
+  <script src="sunmates-icons.js?v=330"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1896,6 +1896,11 @@
     /* P2.3 : toutes les croix icône-seule centrées proprement (desktop + iOS), même hors picker-head
        (le glyphe ✕ se calait trop haut/bas selon la plateforme). */
     .ice-del, button[data-suggno], #onbDoneClose, .pwa-x { display: inline-flex !important; align-items: center; justify-content: center; line-height: 1; }
+    /* P2.34 : réponse admin aux feedbacks */
+    .fb-reply { display: flex; gap: .4rem; width: 100%; padding-left: 2.4rem; }
+    .fb-reply-in { flex: 1; min-width: 0; padding: .4rem .6rem; border: 1px solid var(--line); border-radius: 10px; font: inherit; font-size: .82rem; background: var(--card); color: var(--ink); }
+    .fb-replied { width: 100%; padding-left: 2.4rem; font-size: .8rem; color: var(--ok, #2a9d6e); font-weight: 600; }
+    body.theme-dusk .fb-replied { color: #7fe3b0; }
     /* Mode Maison : préparation voyage repliée (sobriété) */
     .hm-plan { margin: .4rem 0 1rem; }
     .hm-plan > summary { list-style: none; cursor: pointer; padding: .85rem 1rem; border-radius: var(--radius); background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); font-family: "Fraunces", serif; font-weight: 800; color: var(--ink); display: flex; align-items: center; justify-content: space-between; }
@@ -5537,6 +5542,7 @@
       setAvatarEl($("pAvatarPreview"), data.avatar_url, uname[0] || "😎");
       if (typeof applyProfileCosmetics === "function") applyProfileCosmetics(); // titre + cadre boutique
       if (typeof claimDailyCoins === "function") claimDailyCoins(); // bonus SunCoins du jour (+10, 1x/jour)
+      if (typeof checkFeedbackReplies === "function") checkFeedbackReplies(); // P2.34 : réponse admin à un de mes retours ?
       // Accueil : « Bonjour {pseudo} ». Seul le pseudo reçoit le dégradé ; « Bonjour » reste en texte normal.
       $("homeHello").innerHTML = 'Bonjour <span class="hello-name">' + escapeHtml(uname) + "</span>";
       if (typeof updateStreak === "function") updateStreak();
@@ -6174,13 +6180,37 @@
       box.innerHTML = '<p class="muted" style="font-size:.82rem">Chargement…</p>';
       const ic = { bug: "🐞", idea: "💡", pixel: "🎨" };
       let rows = null;
-      try { const { data, error } = await db.from("app_feedback").select("type,message,username,app_version,created_at").order("created_at", { ascending: false }).limit(60); if (!error) rows = data || []; } catch (e) {}
+      // P2.34 : on lit aussi id + réponse + statut pour permettre de répondre.
+      try { const { data, error } = await db.from("app_feedback").select("id,type,message,username,app_version,created_at,admin_reply,status").order("created_at", { ascending: false }).limit(60); if (!error) rows = data || []; } catch (e) {}
       if (rows === null) { box.innerHTML = '<p class="muted" style="font-size:.8rem">Table <code>app_feedback</code> absente — lance <code>supabase_migration_feedback.sql</code> pour activer la collecte.</p>'; return; }
       if (!rows.length) { box.innerHTML = '<p class="muted" style="font-size:.82rem">Aucun retour pour l\'instant.</p>'; return; }
       const cnt = rows.reduce((a, r) => (a[r.type] = (a[r.type] || 0) + 1, a), {});
       box.innerHTML =
         `<div class="pgrid" style="margin-bottom:.5rem">${["bug", "idea", "pixel"].map((t) => `<div class="pcell"><div class="k">${ic[t]} ${t}</div><div class="v">${cnt[t] || 0}</div></div>`).join("")}</div>` +
-        rows.map((r) => `<div class="qrow" style="padding:.4rem .2rem;align-items:flex-start"><div class="qico">${ic[r.type] || "📝"}</div><div class="qname" style="flex:1;font-weight:500">${escapeHtml((r.message || "").slice(0, 280))}<div class="meta muted" style="font-size:.72rem;margin-top:.15rem">${escapeHtml(r.username || "anonyme")} · v${escapeHtml(r.app_version || "?")} · ${r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : ""}</div></div></div>`).join("");
+        rows.map((r) => {
+          const resolved = r.status === "resolved";
+          const replyBlock = resolved
+            ? `<div class="fb-replied">✅ Répondu : ${escapeHtml(r.admin_reply || "")}</div>`
+            : `<div class="fb-reply" data-fbid="${r.id}"><input type="text" class="fb-reply-in" placeholder="Réponse à l'auteur… (notifie « corrigé ✅ »)" maxlength="280"><button class="btn-primary fb-reply-go" style="padding:.4rem .7rem;font-size:.78rem;white-space:nowrap">Répondre</button></div>`;
+          return `<div class="qrow" style="padding:.5rem .2rem;align-items:flex-start;flex-direction:column;gap:.35rem">
+            <div style="display:flex;gap:.5rem;align-items:flex-start;width:100%"><div class="qico">${ic[r.type] || "📝"}</div><div class="qname" style="flex:1;font-weight:500">${escapeHtml((r.message || "").slice(0, 280))}<div class="meta muted" style="font-size:.72rem;margin-top:.15rem">${escapeHtml(r.username || "anonyme")} · v${escapeHtml(r.app_version || "?")} · ${r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : ""}${resolved ? " · ✅ résolu" : ""}</div></div></div>
+            ${replyBlock}</div>`;
+        }).join("");
+      // Câblage : répondre à un feedback (admin) → RPC → notif auteur au prochain passage.
+      box.querySelectorAll(".fb-reply").forEach((row) => {
+        const go = row.querySelector(".fb-reply-go"), inp = row.querySelector(".fb-reply-in");
+        if (go) go.addEventListener("click", async () => {
+          const txt = (inp && inp.value || "").trim(); if (txt.length < 2) { toast("✍️", "Écris une réponse"); return; }
+          go.disabled = true; go.textContent = "…";
+          try {
+            const { data, error } = await db.rpc("sm_reply_feedback", { p_id: row.dataset.fbid, p_reply: txt });
+            const res = (data && data[0]) || data || {};
+            if (error || !res.ok) { toast("⚠️", (res && res.message) || "Erreur"); go.disabled = false; go.textContent = "Répondre"; return; }
+            toast("✅", "Réponse envoyée — l'auteur sera notifié");
+            loadAdminFeedback();
+          } catch (e) { toast("⚠️", "Erreur"); go.disabled = false; go.textContent = "Répondre"; }
+        });
+      });
     }
     document.querySelectorAll("[data-aseg]").forEach((b) => b.addEventListener("click", () => showAdminSegment(b.dataset.aseg)));
 
@@ -8429,6 +8459,23 @@
         if (typeof renderShop === "function" && !$("jeuxShop").classList.contains("hidden")) renderShop();
       } catch (e) {}
     }
+    // P2.34 : au passage dans l'app, si un de MES retours a reçu une réponse admin → toast.
+    let _fbRepliesTried = false;
+    async function checkFeedbackReplies() {
+      if (_fbRepliesTried || !myUserId) return; _fbRepliesTried = true;
+      try {
+        const { data, error } = await db.from("app_feedback").select("admin_reply,replied_at").eq("user_id", myUserId).not("replied_at", "is", null).order("replied_at", { ascending: false }).limit(1);
+        if (error || !data || !data.length) return;
+        const r = data[0]; const key = "sm_fb_seen_" + myUserId;
+        const seen = localStorage.getItem(key) || "";
+        if (r.replied_at && r.replied_at > seen) {
+          localStorage.setItem(key, r.replied_at);
+          if (typeof toast === "function") toast("✅", "Ton retour a été traité : « " + (r.admin_reply || "merci !").slice(0, 90) + " »");
+          if (window.SMSound) SMSound.play("notify");
+        }
+      } catch (e) {}
+    }
+
     // ===== BOOSTS (SunCoins, P2.17) : coups de pouce temporaires =====
     const BOOSTS = [
       { id: "spotlight", emoji: "🚀", name: "Coup de projecteur", desc: "Ton profil mis en avant 24 h dans Découvrir — plus de vues, plus de Mates ✨", cost: 120 },
