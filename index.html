@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=328"></script>
-  <script src="sunmates-icons.js?v=328"></script>
+  <script src="sunmates-badges.js?v=329"></script>
+  <script src="sunmates-icons.js?v=329"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // Mise à jour FORCÉE pour tous : dès qu'une nouvelle version du service worker
@@ -1377,6 +1377,22 @@
     .shop-item.buyable .shop-meta { color: #B5740E; font-weight: 800; } /* prix abordable = mis en avant */
     body.theme-dusk .shop-item.buyable .shop-meta { color: #ffd58a; }
     .shop-item.locked .shop-meta { color: var(--muted); } /* pas assez de coins → prix grisé (item reste teasé) */
+    /* Boosts (P2.17) */
+    .boost-card { display: flex; align-items: center; gap: .7rem; width: 100%; text-align: left; padding: .8rem .9rem; margin-bottom: .5rem;
+      border: 1.5px solid var(--line); border-radius: 16px; background: linear-gradient(180deg, var(--card), var(--cream)); cursor: pointer; box-shadow: var(--shadow-sm); }
+    .boost-card.buyable { border-color: rgba(255,126,95,.4); }
+    .boost-card.on { border-color: var(--accent); background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(255,126,95,.12)); cursor: default; }
+    .boost-card .boost-ic { width: 46px; height: 46px; min-width: 46px; border-radius: 12px; display: grid; place-items: center; font-size: 24px;
+      background: radial-gradient(circle at 50% 28%, rgba(255,255,255,.45), rgba(255,255,255,0) 55%), var(--accent-grad); box-shadow: 0 4px 12px rgba(255,90,77,.28); }
+    .boost-card .boost-txt { flex: 1; min-width: 0; }
+    .boost-card .boost-name { font-weight: 800; color: var(--ink); font-size: .92rem; }
+    .boost-card .boost-desc { color: var(--muted); font-size: .76rem; line-height: 1.3; margin-top: .1rem; }
+    .boost-card .boost-meta { flex-shrink: 0; font-weight: 800; color: #B5740E; font-size: .82rem; white-space: nowrap; align-self: flex-start; }
+    body.theme-dusk .boost-card .boost-meta { color: #ffd58a; }
+    /* « En vedette » (profil boosté) dans Découvrir */
+    .tcard-vedette { display: inline-flex; align-items: center; gap: .2rem; font-size: .68rem; font-weight: 800; color: #B5740E;
+      background: linear-gradient(135deg, rgba(255,201,60,.3), rgba(255,138,61,.22)); padding: .1rem .45rem; border-radius: 999px; margin-left: .35rem; }
+    body.theme-dusk .tcard-vedette { color: #ffd58a; background: rgba(255,201,60,.18); }
     /* Cadres d'avatar (appliqués à .avatar) */
     /* Cadres d'avatar (s'appliquent à l'avatar ET à l'aperçu boutique), distincts + glow */
     .avatar.frame-gold, .shop-frame-prev.frame-gold { box-shadow: 0 0 0 3px #f5c451, 0 0 12px rgba(245,196,81,.55); }
@@ -4358,6 +4374,9 @@
           <div class="section-head"><h3 style="margin:1rem 0 .2rem">🖼️ Cadres d'avatar</h3></div>
           <p class="muted" style="font-size:.78rem;margin:.1rem 0 .5rem">Encadre ta photo de profil.</p>
           <div id="shopFrames" class="shop-grid"></div>
+          <div class="section-head"><h3 style="margin:1rem 0 .2rem">⚡ Boosts</h3></div>
+          <p class="muted" style="font-size:.78rem;margin:.1rem 0 .5rem">Des coups de pouce temporaires pour ton aventure.</p>
+          <div id="shopBoosts"></div>
         </div>
 
       </div>
@@ -7599,6 +7618,8 @@
       list.sort((x, y) => travSortKey === "trust"
         ? (y.p.trust_score || 0) - (x.p.trust_score || 0)
         : y.pct - x.pct);
+      // P2.17 boost « Coup de projecteur » : les profils en vedette remontent en tête de Découvrir.
+      if (typeof _isSpotlighted === "function") list.sort((x, y) => (_isSpotlighted(y.p) ? 1 : 0) - (_isSpotlighted(x.p) ? 1 : 0));
       $("travelersList").innerHTML = list.length
         ? `<div class="trav-count">🌍 ${list.length} voyageur${list.length > 1 ? "s" : ""} ${q ? ("trouvé" + (list.length > 1 ? "s" : "")) : "à découvrir"}</div>` + list.map(({ p, pct, reasons }) => {
             const tg = [...(p.intent || []).slice(0, 1), ...(p.interests || []).slice(0, 3)];
@@ -7606,7 +7627,7 @@
               <div class="tcard-top">
                 ${avatarMarkup(p.username, p.avatar_url, "tcard-av", isActive(p))}
                 <div class="tcard-id">
-                  <div class="tcard-name">${escapeHtml(p.username || 'Voyageur')}${p.is_verified ? ' <span class="vchip" title="Vérifié">✓</span>' : ''}</div>
+                  <div class="tcard-name">${escapeHtml(p.username || 'Voyageur')}${p.is_verified ? ' <span class="vchip" title="Vérifié">✓</span>' : ''}${_isSpotlighted(p) ? ' <span class="tcard-vedette" title="Profil mis en avant">🚀 En vedette</span>' : ''}</div>
                   <div class="tcard-city">📍 ${escapeHtml(p.city || 'En voyage')}${isActive(p) ? ' · <span class="tcard-online">● en ligne</span>' : ''} · 🛡️ ${p.trust_score ?? 0}</div>
                 </div>
                 <div class="tcard-compat ${compatTier(pct)}"><span>❤️</span><b>${pct}%</b><small>match</small></div>
@@ -8408,7 +8429,45 @@
         if (typeof renderShop === "function" && !$("jeuxShop").classList.contains("hidden")) renderShop();
       } catch (e) {}
     }
+    // ===== BOOSTS (SunCoins, P2.17) : coups de pouce temporaires =====
+    const BOOSTS = [
+      { id: "spotlight", emoji: "🚀", name: "Coup de projecteur", desc: "Ton profil mis en avant 24 h dans Découvrir — plus de vues, plus de Mates ✨", cost: 120 },
+    ];
+    function isBoosted() { return !!(myProfile && myProfile.boosted_until && new Date(myProfile.boosted_until).getTime() > Date.now()); }
+    function boostHoursLeft() { return isBoosted() ? Math.max(1, Math.ceil((new Date(myProfile.boosted_until).getTime() - Date.now()) / 3600000)) : 0; }
+    function _isSpotlighted(p) { return !!(p && p.boosted_until && new Date(p.boosted_until).getTime() > Date.now()); }
+    async function buyBoost(id) {
+      const b = BOOSTS.find((x) => x.id === id); if (!b) return;
+      if (myCoins() < b.cost) { toast("🪙", "Encore " + (b.cost - myCoins()) + " SunCoins pour « " + b.name + " »"); return; }
+      await once("boost:" + id, async () => {
+        try {
+          const { data, error } = await db.rpc("sm_buy_boost", { p_boost: id, p_cost: b.cost });
+          const res = (data && data[0]) || data || {};
+          if (error || !res.ok) { toast("🪙", (res && res.message) || "Achat impossible — réessaie."); return; }
+          if (myProfile) { myProfile.coins = res.balance; if (id === "spotlight") myProfile.boosted_until = new Date(Date.now() + 24 * 3600 * 1000).toISOString(); }
+          if (window.SMSound) SMSound.play("levelup");
+          if (typeof celebrate === "function") celebrate();
+          toast("🚀", "Coup de projecteur activé — tu es en vedette 24 h ✨");
+          renderShop();
+        } catch (e) { toast("🪙", "Achat impossible — réessaie."); }
+      });
+    }
+    function renderBoosts() {
+      const box = $("shopBoosts"); if (!box) return;
+      const coins = myCoins();
+      box.innerHTML = BOOSTS.map((b) => {
+        const active = b.id === "spotlight" && isBoosted();
+        const can = coins >= b.cost;
+        const meta = active ? ("✨ Actif · encore ~" + boostHoursLeft() + " h") : ("🪙 " + b.cost);
+        return `<button class="boost-card${active ? " on" : ""}${(!active && can) ? " buyable" : ""}" data-boost="${b.id}"${active ? " disabled" : ""}>
+          <div class="boost-ic">${b.emoji}</div>
+          <div class="boost-txt"><div class="boost-name">${escapeHtml(b.name)}</div><div class="boost-desc">${escapeHtml(b.desc)}</div></div>
+          <div class="boost-meta">${meta}</div></button>`;
+      }).join("");
+      box.querySelectorAll("[data-boost]").forEach((el) => el.addEventListener("click", () => { if (!el.disabled) buyBoost(el.dataset.boost); }));
+    }
     function renderShop() {
+      renderBoosts();
       const coins = myCoins();
       const xb = $("shopXpBanner");
       if (xb) {
