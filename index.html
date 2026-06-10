@@ -14610,4 +14610,251 @@
       // P2.38 : on transporte l'onglet cible dans data → le clic ouvre le bon onglet.
       const opts = { body: body, icon: "icon-192.png", badge: "icon-192.png", tag: "sunmates", renotify: false, data: { tab: tab || "" } };
       try {
-        if (navigator.serviceWor
+        if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+          navigator.serviceWorker.ready
+            .then((reg) => reg.showNotification(title, opts))
+            .catch(() => { try { new Notification(title, opts); } catch (_) {} });
+        } else { new Notification(title, opts); }
+      } catch (e) {}
+    }
+
+    // P2.38 : routage des notifications → bon onglet.
+    // (a) app déjà ouverte : le SW envoie un message au clic → on va sur l'onglet.
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener("message", (e) => {
+        if (e.data && e.data.type === "sm-nav" && e.data.tab && typeof goToTab === "function") goToTab(e.data.tab);
+      });
+    }
+    // (b) app ouverte via la notif (nouvelle fenêtre) : on lit ?tab= au démarrage.
+    (function navFromNotifQuery() {
+      try {
+        const t = new URLSearchParams(location.search).get("tab");
+        if (!t) return;
+        setTimeout(() => { const app = $("appView"); if (app && !app.classList.contains("hidden") && typeof goToTab === "function") goToTab(t); }, 900);
+      } catch (e) {}
+    })();
+
+    // Bandeau d'état réseau : prévient quand on est hors-ligne (Supabase devient injoignable).
+    (function netStatus() {
+      const b = $("netBanner"); if (!b) return;
+      const update = () => b.classList.toggle("show", !navigator.onLine);
+      window.addEventListener("online", update);
+      window.addEventListener("offline", update);
+      update();
+    })();
+
+    // Bouton « effacer » (✕) dans chaque champ de recherche + touche Échap pour vider.
+    document.querySelectorAll(".search").forEach((wrap) => {
+      const input = wrap.querySelector("input");
+      if (!input || wrap.querySelector(".search-clear")) return;
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.className = "search-clear"; btn.textContent = "✕";
+      btn.setAttribute("aria-label", "Effacer la recherche");
+      btn.style.display = "none";
+      wrap.appendChild(btn);
+      const sync = () => { btn.style.display = input.value ? "grid" : "none"; };
+      const clear = () => { input.value = ""; input.dispatchEvent(new Event("input", { bubbles: true })); input.focus(); sync(); };
+      input.addEventListener("input", sync);
+      input.addEventListener("keydown", (e) => { if (e.key === "Escape" && input.value) clear(); });
+      btn.addEventListener("click", clear);
+      sync();
+    });
+
+    // Textareas qui grandissent avec le contenu (au lieu d'une poignée d'étirement infinie).
+    function autoGrowTextarea(t) {
+      if (!t) return;
+      t.style.height = "auto";
+      const max = Math.round(window.innerHeight * 0.45);
+      const h = Math.min(t.scrollHeight + 2, max);
+      t.style.height = h + "px";
+      t.style.overflowY = (t.scrollHeight + 2 > max) ? "auto" : "hidden"; // scrollbar seulement si on atteint le plafond
+    }
+    document.querySelectorAll("textarea").forEach((t) => {
+      t.addEventListener("input", () => autoGrowTextarea(t));
+      autoGrowTextarea(t);
+    });
+
+    // Compteurs de caractères (éléments .char-count avec data-for / data-max).
+    document.querySelectorAll(".char-count[data-for]").forEach((el) => {
+      const input = $(el.dataset.for); if (!input) return;
+      const max = parseInt(el.dataset.max, 10) || 0;
+      const upd = () => { const n = (input.value || "").length; el.textContent = n + "/" + max; el.classList.toggle("over", max > 0 && n > max); };
+      input.addEventListener("input", upd);
+      upd();
+    });
+
+    // Tuiles de catégories de l'onglet Lieux → déclenchent les filtres (logique existante réutilisée).
+    // Rangée Lieux = UN SEUL sélecteur (filtre OU tri) : une seule tuile active à la fois.
+    // Choisir un tri remet le filtre sur « Tous », et inversement → fini les 2 tuiles allumées.
+    document.querySelectorAll("#lieuxCats .cat-tile").forEach((t) => t.addEventListener("click", () => {
+      if (t.classList.contains("active")) return; // déjà sélectionnée → rien à faire
+      document.querySelectorAll("#lieuxCats .cat-tile").forEach((x) => x.classList.toggle("active", x === t));
+      if (t.dataset.catcf) {
+        cafeSortKey = "default"; // un filtre annule le tri en cours
+        const chip = document.querySelector('#cafeFilters [data-cf="' + t.dataset.catcf + '"]');
+        if (chip) chip.click();              // gère la géoloc (« near ») + renderCafesList
+        else { cafeFilter.mode = t.dataset.catcf; renderCafesList(); }
+      } else if (t.dataset.catsort) {
+        cafeFilter.mode = "all";             // un tri repart de tous les lieux
+        if (typeof setCafeChipActive === "function") setCafeChipActive("all");
+        cafeSortKey = t.dataset.catsort;
+        renderCafesList();
+      }
+      // Redirige direct vers les résultats filtrés (sinon on ne voit pas l'effet).
+      setTimeout(() => { const lst = $("cafesList"); if (lst) lst.scrollIntoView({ behavior: "smooth", block: "start" }); }, 120);
+    }));
+
+    // Tuiles de navigation rapide de l'onglet Jeux (Quêtes / Jeux / Badges / Coupons).
+    function openJeuxSheet(kind) {
+      const isGames = kind === "games";
+      $("jeuxSheetTitle").textContent = isGames ? "🎮 Jeux populaires" : "🎯 Quêtes du jour";
+      { const h = $("jeuxSheetHint"); if (h) h.textContent = isGames ? "Touche un jeu pour le découvrir et y jouer." : "Touche une quête, accomplis-la dans la vraie vie, puis valide-la pour gagner XP + badge (3 par jour max)."; }
+      show($("jeuxSheetQuests"), !isGames);
+      show($("jeuxSheetGames"), isGames);
+      { const t = $("questSheetTools"); if (t) t.style.display = isGames ? "none" : "flex"; } // recherche/tri : quêtes uniquement
+      $("jeuxSheet").classList.remove("hidden");
+      if (!isGames) filterQuestSheet();
+    }
+    // Recherche + tri « près de moi » de la feuille Quêtes (réduit le listing énorme).
+    let _questSheetNear = false;
+    function filterQuestSheet() {
+      const list = $("questsList"); if (!list) return;
+      const q = (($("questSheetSearch") && $("questSheetSearch").value) || "").trim().toLowerCase();
+      const rows = [...list.querySelectorAll(".qrow")];
+      rows.forEach((r) => { const txt = r.textContent.toLowerCase(); r.style.display = (!q || txt.includes(q)) ? "" : "none"; });
+      // Tri par distance si activé et position connue
+      if (_questSheetNear && typeof lastKnownGeo !== "undefined" && lastKnownGeo) {
+        const dist = (r) => {
+          const k = r.dataset.qkey; const o = k && typeof questByKey === "function" ? questByKey(k) : null;
+          if (!o || o.lat == null || o.lng == null || typeof haversineKm !== "function") return Infinity;
+          return haversineKm(lastKnownGeo, { lat: o.lat, lng: o.lng });
+        };
+        rows.filter((r) => r.dataset.qkey).sort((a, b) => dist(a) - dist(b)).forEach((r) => list.appendChild(r));
+      }
+    }
+    { const s = $("questSheetSearch"); if (s) s.addEventListener("input", filterQuestSheet); }
+    { const n = $("questSheetNear"); if (n) n.addEventListener("click", () => {
+      _questSheetNear = !_questSheetNear; n.classList.toggle("active", _questSheetNear);
+      if (_questSheetNear && (typeof lastKnownGeo === "undefined" || !lastKnownGeo) && typeof getGeo === "function") {
+        getGeo(() => filterQuestSheet(), () => { if (typeof toast === "function") toast("⚠️", "Position indisponible"); });
+      } else filterQuestSheet();
+    }); }
+    { const c = $("jeuxSheetClose"); if (c) c.addEventListener("click", () => $("jeuxSheet").classList.add("hidden")); }
+    { const m = $("jeuxSheet"); if (m) m.addEventListener("click", (e) => { if (e.target.id === "jeuxSheet") m.classList.add("hidden"); }); }
+    document.querySelectorAll("[data-jeuxopen]").forEach((t) => t.addEventListener("click", () => openJeuxSheet(t.dataset.jeuxopen)));
+    document.querySelectorAll("#jeuxNav [data-jeuxnav]").forEach((t) => t.addEventListener("click", () => {
+      const k = t.dataset.jeuxnav;
+      if (k === "badges") { showJeuxView("jeuxBadges"); return; }
+      if (k === "coupons") { showJeuxView("jeuxCoupons"); return; }
+      if (k === "rank") { showJeuxView("jeuxRank"); if (typeof renderLeaderboard === "function") renderLeaderboard(); return; }
+      if (k === "shop") { showJeuxView("jeuxShop"); if (typeof renderShop === "function") renderShop(); return; }
+      openJeuxSheet(k); // quests | games -> feuille overlay
+    }));
+
+    // Boutons d'action des états vides (« Découvrir des Mates », « Voir les lieux »…)
+    document.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-empty-act]"); if (!b) return;
+      const a = b.dataset.emptyAct;
+      if (a === "discover") {
+        goToTab("connexions");
+        if (typeof showMatesView === "function") showMatesView("matesHome");
+        if (typeof showMatesSegment === "function") showMatesSegment("discover");
+      } else if (a === "lieux") { goToTab("lieux"); }
+      else if (a === "jeux") { goToTab("jeux"); }
+    });
+
+    // ====================== INSTALLATION DE L'APP (PWA) ======================
+    // Propose d'installer SunMates sur l'écran d'accueil, via une bannière maison
+    // (le menu natif du navigateur est trop caché). Gère Android/Chrome (événement
+    // beforeinstallprompt) ET iPhone/iPad (pas d'événement → on explique le geste).
+    (function setupInstallBanner() {
+      const banner = $("pwaBanner"); if (!banner) return;
+      const sub = $("pwaSub"), installBtn = $("pwaInstall"), closeBtn = $("pwaClose");
+      const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+      let deferredPrompt = null;
+      // P2.37 : dès qu'on détecte l'app comme installée UNE fois (standalone ou event appinstalled),
+      // on s'en souvient → la bannière ne réapparaît plus jamais (même ouverte ensuite en onglet),
+      // sauf re-déclenchement manuel depuis les Réglages.
+      const markInstalled = () => { try { localStorage.setItem("sm_pwa_installed", "1"); } catch (e) {} };
+      const isInstalled = () => { try { return localStorage.getItem("sm_pwa_installed") === "1"; } catch (e) { return false; } };
+      if (isStandalone()) markInstalled();
+
+      // « Fermer » ne masque plus la bannière POUR TOUJOURS : on la met en veille 5 jours,
+      // puis elle revient tant que l'app n'est pas installée. Re-déclenchable depuis les Réglages.
+      const SNOOZE_MS = 5 * 24 * 3600 * 1000;
+      const isSnoozed = () => Date.now() < (+localStorage.getItem("sm_pwa_snooze") || 0);
+      const snooze = () => { try { localStorage.setItem("sm_pwa_snooze", String(Date.now() + SNOOZE_MS)); } catch (e) {} };
+
+      // Instructions manuelles selon la plateforme (toujours dispo, même sans invite native).
+      const manualHint = () => isIOS
+        ? "Appuie sur Partager ⬆️ puis « Sur l'écran d'accueil »."
+        : "Menu ⋮ du navigateur → « Installer l'application » / « Ajouter à l'écran d'accueil ».";
+
+      const hideBanner = () => banner.classList.remove("show");
+      // force = ignore la mise en veille (re-déclenchement manuel)
+      const showBanner = (force) => {
+        if (isStandalone()) { markInstalled(); return; }
+        if (!force && (isSnoozed() || isInstalled())) return;
+        installBtn.style.display = deferredPrompt ? "" : "none"; // pas de bouton 1-clic sans invite native (ex. iOS)
+        sub.textContent = deferredPrompt ? "Accès direct depuis ton écran d'accueil, comme une vraie app." : manualHint();
+        banner.classList.add("show");
+      };
+
+      closeBtn.addEventListener("click", () => { hideBanner(); snooze(); });
+
+      // Android / Chrome / Edge : on intercepte l'invite native pour la déclencher nous-mêmes.
+      window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; showBanner(); });
+      window.addEventListener("appinstalled", () => { track("pwa_installed"); markInstalled(); hideBanner(); try { localStorage.removeItem("sm_pwa_snooze"); } catch (e) {} });
+
+      installBtn.addEventListener("click", () => once("pwa-install", async () => {
+        if (!deferredPrompt) { sub.textContent = manualHint(); return; }
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch (e) {}
+        deferredPrompt = null;
+        hideBanner();
+      }));
+
+      // Re-déclenchement manuel (Réglages) : carte explicative + bouton d'installation.
+      const isAndroidChrome = /android/i.test(navigator.userAgent);
+      function fillInstallSteps() {
+        const steps = $("installSteps"), note = $("installNote"), btn = $("installNowBtn"); if (!steps) return;
+        if (deferredPrompt) {
+          steps.innerHTML = "<li>Touche <b>« Installer maintenant »</b> ci-dessous.</li><li>Confirme dans la fenêtre du navigateur.</li><li>SunMates apparaît sur ton écran d'accueil 🎉</li>";
+          btn.style.display = ""; note.textContent = "";
+        } else if (isIOS) {
+          steps.innerHTML = "<li>Touche le bouton <b>Partager</b> ⬆️ (en bas de Safari).</li><li>Choisis <b>« Sur l'écran d'accueil »</b>.</li><li>Touche <b>Ajouter</b> ✓</li>";
+          btn.style.display = "none"; note.textContent = "Sur iPhone/iPad, l'installation se fait via le menu Partager de Safari.";
+        } else {
+          steps.innerHTML = "<li>Ouvre le menu <b>⋮</b> du navigateur (en haut à droite).</li><li>Choisis <b>« Installer l'application »</b> ou <b>« Ajouter à l'écran d'accueil »</b>.</li><li>Valide 🎉</li>";
+          btn.style.display = isAndroidChrome ? "" : "none"; note.textContent = isAndroidChrome ? "Si le bouton ne fait rien, utilise le menu ⋮." : "";
+        }
+      }
+      function openInstallModal() {
+        const m = $("installModal"); if (!m) return;
+        fillInstallSteps(); m.classList.remove("hidden");
+      }
+      function closeInstallModal() { const m = $("installModal"); if (m) m.classList.add("hidden"); }
+      { const c = $("installModalClose"); if (c) c.addEventListener("click", closeInstallModal); }
+      { const m = $("installModal"); if (m) m.addEventListener("click", (e) => { if (e.target === m) closeInstallModal(); }); }
+      { const nb = $("installNowBtn"); if (nb) nb.addEventListener("click", () => once("pwa-install-modal", async () => {
+        if (!deferredPrompt) { fillInstallSteps(); return; }
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch (e) {}
+        deferredPrompt = null; closeInstallModal(); hideBanner();
+      })); }
+      window.openInstallHelp = () => {
+        if (isStandalone()) { if (typeof toast === "function") toast("✅", "SunMates est déjà installée sur cet appareil 🎉"); return; }
+        openInstallModal();
+      };
+
+      // Au démarrage : si pas installée et pas en veille, on affiche la bannière (invite native
+      // si dispo, sinon instructions manuelles). Elle reste affichée jusqu'à fermeture/installation.
+      if (!isStandalone() && !isSnoozed() && !isInstalled()) setTimeout(() => showBanner(), 1800);
+    })();
+
+    // Au chargement : vérifie s'il y a déjà une session
+    db.auth.getSession().then(({ data }) => render(data.session));
+  </script>
+</body>
+</html>
