@@ -100,8 +100,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=387"></script>
-  <script src="sunmates-icons.js?v=387"></script>
+  <script src="sunmates-badges.js?v=388"></script>
+  <script src="sunmates-icons.js?v=388"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -507,6 +507,8 @@
     .pcard .pcard-chips-l { position: absolute; top: .6rem; left: .6rem; z-index: 2; display: flex; gap: .3rem; flex-wrap: wrap; }
     .pcard .pcard-rate, .pcard .pcard-new { position: absolute; top: .6rem; right: .6rem; z-index: 2; }
     .pcard-eco { background: linear-gradient(135deg,#4ED8B8,#179E8C); color: #fff; } /* DA : turquoise bijou (pas de vert émeraude vif) */
+    /* « Sois le·la 1er·ère à checker ! » = vrai bouton (lance le check-in), plus un texte gris décoratif */
+    .pcard-firstck { border: 0; background: none; padding: 0; font: inherit; font-weight: 800; color: var(--accent); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
     .pcard-top { background: linear-gradient(135deg,#FFC93C,#FF8A3D); color: #fff; }
     .pcard-rate { background: rgba(255,255,255,.96); color: #B5740E; }
     .pcard-rate b { opacity: .6; font-weight: 700; }
@@ -3689,13 +3691,20 @@
           <div class="msg" id="spotMsg" style="text-align:center"></div>
         </details>
         <div class="search" style="margin-top:.2rem"><span class="ico">🔍</span><input id="cafeSearch" type="text" placeholder="Rechercher un lieu ou une ville…" data-i18n-ph="places.searchph" /></div>
-        <!-- Filtres + tris en tuiles colorées (dans la DA) -->
-        <div class="cat-row" id="lieuxCats">
-          <div class="cat-tile active" data-catcf="all"><div class="cic c-sun" data-smicon="coffee" data-smicon-size="36">☕</div><div class="clbl">Tous</div></div>
-          <div class="cat-tile" data-catcf="eco"><div class="cic c-green" data-smicon="eco" data-smicon-size="36">🌱</div><div class="clbl">Éco</div></div>
-          <div class="cat-tile" data-catcf="near"><div class="cic c-blue" data-smicon="near" data-smicon-size="36">📍</div><div class="clbl">Près de moi</div></div>
-          <div class="cat-tile" data-catsort="rating"><div class="cic c-gold" data-smicon="rating" data-smicon-size="36">⭐</div><div class="clbl">Top notés</div></div>
-          <div class="cat-tile" data-catsort="checkins"><div class="cic c-purp" data-smicon="popular" data-smicon-size="36">🔥</div><div class="clbl">Populaires</div></div>
+        <!-- Filtres et tris SÉPARÉS visuellement (mêmes tuiles, même câblage #lieuxCats .cat-tile :
+             un tri repart de « Tous », un filtre annule le tri → une seule tuile active, voulu) -->
+        <div id="lieuxCats">
+          <div class="jnav-cap" style="margin-top:.4rem">🗂️ Filtrer</div>
+          <div class="cat-row" style="margin-top:0">
+            <div class="cat-tile active" data-catcf="all"><div class="cic c-sun" data-smicon="coffee" data-smicon-size="36">☕</div><div class="clbl">Tous</div></div>
+            <div class="cat-tile" data-catcf="eco"><div class="cic c-green" data-smicon="eco" data-smicon-size="36">🌱</div><div class="clbl">Éco</div></div>
+            <div class="cat-tile" data-catcf="near"><div class="cic c-blue" data-smicon="near" data-smicon-size="36">📍</div><div class="clbl">Près de moi</div></div>
+          </div>
+          <div class="jnav-cap">↕️ Trier</div>
+          <div class="cat-row" style="margin-top:0">
+            <div class="cat-tile" data-catsort="rating"><div class="cic c-gold" data-smicon="rating" data-smicon-size="36">⭐</div><div class="clbl">Top notés</div></div>
+            <div class="cat-tile" data-catsort="checkins"><div class="cic c-purp" data-smicon="popular" data-smicon-size="36">🔥</div><div class="clbl">Populaires</div></div>
+          </div>
         </div>
         <!-- Moteur de filtrage (piloté par les cat-tiles ci-dessus ; masqué visuellement) -->
         <div class="chips wrap" id="cafeFilters" style="display:none">
@@ -4327,6 +4336,10 @@
               <input id="apAddr" placeholder="Rua Augusta 100, Lisbonne" />
               <label>Photo <span class="muted" style="font-weight:400">(URL, optionnel, vide = photo de la ville)</span></label>
               <input id="apImg" placeholder="https://…" />
+              <label>Horaires <span class="muted" style="font-weight:400">(optionnel, affiché sur la fiche)</span></label>
+              <input id="apHours" maxlength="80" placeholder="Lun–Sam 8h–19h" />
+              <label>Prix <span class="muted" style="font-weight:400">(optionnel, ex : € / €€ / café ~3€)</span></label>
+              <input id="apPrice" maxlength="40" placeholder="€€" />
               <input id="apLat" type="hidden" /><input id="apLng" type="hidden" />
               <div class="row">
                 <button class="btn-primary" id="apSave">Enregistrer le lieu</button>
@@ -6262,6 +6275,8 @@
         "<div style='font-size:.84rem;color:var(--muted);margin-bottom:.5rem'>" + escapeHtml(c.category || "Lieu sûr") + " · " + escapeHtml(c.city || "") + (km != null ? " · 📍 à " + _fmtDist(km) : "") + "</div>" +
         "<div style='font-size:.88rem;line-height:1.7'>" +
           (c.is_eco ? "🌱 Éco-responsable<br>" : "") +
+          (c.hours ? "🕐 " + escapeHtml(c.hours) + "<br>" : "") +
+          (c.price_range ? "💶 " + escapeHtml(c.price_range) + "<br>" : "") +
           "✅ <b>" + nCk + "</b> check-in" + (nCk > 1 ? "s" : "") + (rate && rate.cnt ? " &nbsp;·&nbsp; ⭐ " + rate.avg.toFixed(1) + " (" + rate.cnt + " avis)" : "") +
           (c.safety_note ? "<br>🛟 " + escapeHtml(c.safety_note) : "") +
         "</div>" +
@@ -6350,7 +6365,7 @@
           </div>
           <div class="pcard-body">
             <div class="pcard-stats">
-              <span>${nCk ? `✅ ${nCk} check-in${nCk > 1 ? 's' : ''}` : '✨ Sois le·la 1er·ère à checker !'}</span>
+              <span>${nCk ? `✅ ${nCk} check-in${nCk > 1 ? 's' : ''}` : `<button class="pcard-firstck" data-checkin="${c.id}" data-name="${escapeHtml(c.name)}">✨ Sois le·la 1er·ère à checker !</button>`}</span>
               ${dist}
             </div>
             ${c.safety_note ? `<div class="pcard-note">🛟 ${escapeHtml(c.safety_note)}</div>` : ''}
@@ -6361,7 +6376,9 @@
             </div>
           </div>
         </div>`;
-      }).join("") : '<p class="muted">Aucun lieu ne correspond. Essaie un autre filtre.</p>');
+      }).join("") : ('<p class="muted">' + (cafeFilter.mode === "near"
+        ? "Aucun lieu géolocalisé près de toi pour l'instant 📍 — repasse sur « Tous » ou explore une autre ville ✨"
+        : "Aucun lieu ne correspond. Essaie un autre filtre.") + "</p>"));
       list.querySelectorAll("[data-checkin]").forEach((b) =>
         b.addEventListener("click", () => checkIn(Number(b.dataset.checkin), b.dataset.name)));
       // Clic sur la tuile (hors boutons) → FICHE du lieu qui présente mieux (photo, infos, actions).
@@ -7414,6 +7431,7 @@
         $("apNote").value = c.safety_note || ""; $("apEco").value = c.is_eco ? "true" : "false"; $("apLat").value = c.lat ?? ""; $("apLng").value = c.lng ?? "";
         $("apCode").value = codeMap[c.id] || ""; // ← on PRÉ-REMPLIT le vrai code (au lieu de le cacher)
         $("apAddr").value = c.address || ""; $("apImg").value = c.image_url || "";
+        if ($("apHours")) $("apHours").value = c.hours || ""; if ($("apPrice")) $("apPrice").value = c.price_range || "";
         $("apMsg").style.color = "var(--muted)"; $("apMsg").textContent = "Édition de « " + (c.name || "") + " », le code actuel est affiché, modifie-le si besoin.";
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
       }));
@@ -7443,11 +7461,19 @@
       const row = { name, city: $("apCity").value.trim() || null, category: $("apCat").value.trim() || null,
         safety_note: $("apNote").value.trim() || null, is_eco: $("apEco").value === "true",
         address: addr || null, image_url: $("apImg").value.trim() || null,
+        hours: ($("apHours") && $("apHours").value.trim()) || null, price_range: ($("apPrice") && $("apPrice").value.trim()) || null,
         lat: isNaN(lat) ? null : lat, lng: isNaN(lng) ? null : lng };
       let cafeId = $("apId").value ? Number($("apId").value) : null;
-      const res = cafeId
-        ? await db.from("partner_cafes").update(row).eq("id", cafeId).select().maybeSingle()
-        : await db.from("partner_cafes").insert(row).select().maybeSingle();
+      const doSave = (r) => cafeId
+        ? db.from("partner_cafes").update(r).eq("id", cafeId).select().maybeSingle()
+        : db.from("partner_cafes").insert(r).select().maybeSingle();
+      let res = await doSave(row);
+      // Repli si la migration cafe_infos n'est pas encore lancée (colonnes hours/price_range absentes)
+      if (res.error && /hours|price_range/.test(res.error.message || "")) {
+        console.warn("[SunMates] colonnes hours/price_range absentes — lance supabase_migration_cafe_infos.sql");
+        const { hours, price_range, ...lite } = row;
+        res = await doSave(lite);
+      }
       if (res.error) { m.style.color = "var(--danger)"; m.textContent = "Erreur : " + res.error.message; return; }
       cafeId = (res.data && res.data.id) || cafeId;
       const code = $("apCode").value.trim();
@@ -7456,7 +7482,7 @@
       adminResetPlace(); loadAdminPlaces(); loadCafes();
     }
     function adminResetPlace() {
-      ["apId", "apName", "apCity", "apCat", "apNote", "apLat", "apLng", "apCode", "apAddr", "apImg"].forEach((id) => { if ($(id)) $(id).value = ""; });
+      ["apId", "apName", "apCity", "apCat", "apNote", "apLat", "apLng", "apCode", "apAddr", "apImg", "apHours", "apPrice"].forEach((id) => { if ($(id)) $(id).value = ""; });
       if ($("apEco")) $("apEco").value = "false";
       if ($("apMsg")) $("apMsg").textContent = "";
     }
@@ -14312,7 +14338,10 @@
       "Randos et marchés locaux 🥾": "Hiking & Local Markets 🥾",
       "Voyageuse solo, team apéro 🍷": "Solo traveller, aperitif team 🍷",
       " ici récemment": "here recently",
-      "✨ Sois le·la 1er·ère à checker !": "✨ Bethe 1st to check!",
+      "✨ Sois le·la 1er·ère à checker !": "✨ Be the 1st to check in!",
+      "Aucun lieu géolocalisé près de toi pour l'instant 📍 — repasse sur « Tous » ou explore une autre ville ✨": "No geolocated place near you yet 📍 — switch back to \"All\" or explore another city ✨",
+      "🗂️ Filtrer": "🗂️ Filter",
+      "↕️ Trier": "↕️ Sort",
       " · 🌱 éco": "ECO ",
       "☕ Café découverte": "Discovery ☕ coffee",
       "🌅 Lever de soleil ensemble": "🌅 Sunrise together",
