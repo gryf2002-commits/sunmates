@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=362"></script>
-  <script src="sunmates-icons.js?v=362"></script>
+  <script src="sunmates-badges.js?v=363"></script>
+  <script src="sunmates-icons.js?v=363"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -2924,7 +2924,7 @@
     .sm-selsheet-ov { position: fixed; inset: 0; z-index: 100010; background: rgba(20,8,30,.5); backdrop-filter: blur(2px);
       display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .18s; }
     .sm-selsheet-ov.show { opacity: 1; pointer-events: auto; }
-    .sm-selsheet { width: 100%; max-width: 480px; background: var(--paper); border-radius: 22px 22px 0 0; max-height: 56vh;
+    .sm-selsheet { width: 100%; max-width: 480px; background: var(--paper); border-radius: 22px 22px 0 0; max-height: 46vh;
       display: flex; flex-direction: column; transform: translateY(14px); transition: transform .2s; box-shadow: 0 -14px 44px rgba(0,0,0,.28);
       padding-bottom: env(safe-area-inset-bottom, 0px); }
     .sm-selsheet-ov.show .sm-selsheet { transform: translateY(0); }
@@ -4527,9 +4527,8 @@
           <div class="section-head"><h3 style="margin:1rem 0 .2rem">🖼️ Cadres d'avatar</h3></div>
           <p class="muted" style="font-size:.78rem;margin:.1rem 0 .5rem">Encadre ta photo de profil.</p>
           <div id="shopFrames" class="shop-grid"></div>
-          <div class="section-head"><h3 style="margin:1rem 0 .2rem">⚡ Boosts</h3></div>
-          <p class="muted" style="font-size:.78rem;margin:.1rem 0 .5rem">Des coups de pouce temporaires pour ton aventure.</p>
-          <div id="shopBoosts"></div>
+          <!-- #14 : boosts retirés (« pay to win » : profil mis en avant payant) — décision produit. -->
+          <div id="shopBoosts" style="display:none"></div>
         </div>
 
       </div>
@@ -4750,6 +4749,8 @@
     $("tabSignup").addEventListener("click", () => setAuthMode("signup"));
 
     function setAuthMode(mode) {
+      // #4 : on ne garde pas le brouillon du message Pro d'un onglet à l'autre.
+      if (mode !== "pro") { const bn = $("b2bNeed"); if (bn) bn.value = ""; }
       authMode = mode;
       $("tabLogin").classList.toggle("active", mode === "login");
       $("tabSignup").classList.toggle("active", mode === "signup");
@@ -10443,7 +10444,7 @@
       if (tm && (tm.style.display === "none" || el.offsetParent === null)) return;
       ensureIaPersonas();
       if (!homeLeaf) {
-        homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.5, wheelPxPerZoomLevel: 120, zoomControl: true,
+        homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.5, wheelPxPerZoomLevel: 120, zoomControl: false,
           preferCanvas: true, tap: false, zoomAnimation: true, fadeAnimation: true, inertiaDeceleration: 2600 }).setView([46.6, 2.3], 4);
         // Tuiles : buffer plus large + mises à jour pendant le pan → déplacement bien plus fluide.
         // (Le service worker les met en cache → instantanées au retour.)
@@ -14280,10 +14281,20 @@
     // (avant : seule la liste se masquait, le composer restait = « une tuile masquable, pas l'autre »).
     if (localStorage.getItem("sm_feed_hidden") === "1") { $("homeFeed").classList.add("hidden"); { const fc = $("feedComposer"); if (fc) fc.classList.add("hidden"); } $("feedToggle").textContent = "Afficher"; }
     $("feedToggle").addEventListener("click", () => {
-      const hidden = $("homeFeed").classList.toggle("hidden");
-      { const fc = $("feedComposer"); if (fc) fc.classList.toggle("hidden", hidden); }
-      localStorage.setItem("sm_feed_hidden", hidden ? "1" : "0");
-      $("feedToggle").textContent = hidden ? "Afficher" : "Masquer";
+      // #10 : fondu doux au lieu d'une disparition brusque (display:none instantané).
+      const list = $("homeFeed"), comp = $("feedComposer");
+      const willHide = !list.classList.contains("hidden");
+      const els = [list, comp].filter(Boolean);
+      if (willHide) {
+        els.forEach((el) => { el.style.transition = "opacity .22s ease"; el.style.opacity = "0"; });
+        setTimeout(() => { els.forEach((el) => { el.classList.add("hidden"); el.style.opacity = ""; el.style.transition = ""; }); }, 220);
+      } else {
+        els.forEach((el) => { el.classList.remove("hidden"); el.style.opacity = "0"; el.style.transition = "opacity .22s ease"; });
+        requestAnimationFrame(() => els.forEach((el) => { el.style.opacity = "1"; }));
+        setTimeout(() => els.forEach((el) => { el.style.opacity = ""; el.style.transition = ""; }), 240);
+      }
+      localStorage.setItem("sm_feed_hidden", willHide ? "1" : "0");
+      $("feedToggle").textContent = willHide ? "Afficher" : "Masquer";
     });
 
     // ---- Notifications système (quand l'app tourne mais n'est pas au premier plan) ----
