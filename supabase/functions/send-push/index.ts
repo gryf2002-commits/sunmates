@@ -8,17 +8,28 @@
 //   3) UPDATE sur `matches_connections` → notifie un match quand status passe à "accepted" (user_a)
 //
 // Secrets à définir (Dashboard > Edge Functions > send-push > Secrets) :
-//   VAPID_PUBLIC, VAPID_PRIVATE
+//   VAPID_PUBLIC, VAPID_PRIVATE, WEBHOOK_SECRET
 // (SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY sont fournis automatiquement.)
 //
 // IMPORTANT : désactive "Verify JWT" pour cette fonction (les webhooks l'appellent
 // sans jeton utilisateur).
+//
+// 🔐 SÉCURITÉ (audit 10/06/2026) : comme "Verify JWT" est désactivé, N'IMPORTE QUI
+// pouvait appeler cette URL avec un faux payload et pousser des notifications
+// arbitraires à n'importe quel utilisateur. La fonction exige désormais un secret
+// partagé : chaque webhook doit envoyer le header  x-webhook-secret: <WEBHOOK_SECRET>.
+//   1. Génère un secret (longue chaîne aléatoire), ajoute-le dans les Secrets de la
+//      fonction sous le nom WEBHOOK_SECRET.
+//   2. Dans Database > Webhooks, édite les 3 webhooks → HTTP Headers →
+//      ajoute  x-webhook-secret = <le même secret>.
+//   3. Redéploie :  supabase functions deploy send-push --no-verify-jwt
 
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC")!;
 const VAPID_PRIVATE = Deno.env.get("VAPID_PRIVATE")!;
+const WEBHOOK_SECRET = Deno.env.get("WEBHOOK_SECRET") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -96,6 +107,11 @@ async function buildNote(payload: Record<string, any>): Promise<Built> {
 }
 
 Deno.serve(async (req) => {
+  // Anti-usurpation : seuls les webhooks Supabase (porteurs du secret) sont acceptés.
+  // Si WEBHOOK_SECRET n'est pas configuré, on refuse TOUT (sécurité par défaut).
+  if (!WEBHOOK_SECRET || req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
+    return new Response("forbidden", { status: 403 });
+  }
   try {
     const payload = await req.json();
     const built = await buildNote(payload);
