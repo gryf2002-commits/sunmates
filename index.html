@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=360"></script>
-  <script src="sunmates-icons.js?v=360"></script>
+  <script src="sunmates-badges.js?v=361"></script>
+  <script src="sunmates-icons.js?v=361"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -2766,7 +2766,10 @@
     .place-photo { height: 132px; background-size: cover; background-position: center; border-radius: 14px; margin-bottom: .6rem; background-color: var(--cream); }
 
     /* Écran de connexion réchauffé : photo de vacances + dégradé soleil */
-    .auth-hero { background: linear-gradient(150deg, rgba(255,201,60,.72), rgba(255,79,109,.80) 62%, rgba(178,92,201,.84)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=60') center/cover !important; }
+    /* #8 : image Unsplash externe (non cachee, peu fiable) -> Picsum determinste (cache par le SW,
+       comme la nuit) + degrade plus opaque + base solide sunset : le fond ne « deraille » plus
+       meme si l image tarde/echoue (l onglet Pro plus haut rendait le defaut visible). */
+    .auth-hero { background: linear-gradient(150deg, rgba(255,201,60,.82), rgba(255,79,109,.88) 60%, rgba(178,92,201,.9)), url('https://picsum.photos/seed/sunmates-day/820/740') center/cover, var(--sunset-grad) !important; }
     /* Disque clair derrière le soleil pour le faire ressortir */
     .auth-hero .logo-badge { background: rgba(255,255,255,.94) !important; box-shadow: 0 12px 30px rgba(0,0,0,.18), 0 0 0 6px rgba(255,255,255,.25) !important; display: grid; place-items: center; }
 
