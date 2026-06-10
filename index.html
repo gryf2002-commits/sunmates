@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=349"></script>
-  <script src="sunmates-icons.js?v=349"></script>
+  <script src="sunmates-badges.js?v=350"></script>
+  <script src="sunmates-icons.js?v=350"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -2675,7 +2675,10 @@
        =================================================================== */
     :root {
       --bg:        #FFF4E6;
-      --bg-grad:   linear-gradient(168deg, #FFE6B0 0%, #FFCBA6 26%, #FFB8CE 54%, #B7E9EE 100%);
+      /* Dégradé de FOND (body) : reste 100% sunset/DA. Avant il finissait en rose #FFB8CE +
+         teal #B7E9EE → au rebond de scroll (overscroll) sur une page longue (ex : Admin), ce
+         teal/rose apparaissait = « tout l'écran change de couleur ». Désormais : que du chaud. */
+      --bg-grad:   linear-gradient(168deg, #FFE9C4 0%, #FFD3A6 45%, #FFC0A0 100%);
       --card:      #FFFFFF; --paper: #FFFDF8; --cream: #FFF1E0;
       --accent:    #FF5A4D;            /* corail soleil, signature */
       --accent-2:  #FF8A3D;            /* mangue */
