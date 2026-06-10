@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=353"></script>
-  <script src="sunmates-icons.js?v=353"></script>
+  <script src="sunmates-badges.js?v=354"></script>
+  <script src="sunmates-icons.js?v=354"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -592,10 +592,12 @@
     .spot-ring { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5.5px var(--accent) !important; }
     .spot-compose { display: flex; gap: .5rem; align-items: center; }
     .spot-compose input[type="text"] { flex: 1; }
-    .spot-emoji-pick { display: flex; gap: .3rem; flex-wrap: nowrap; overflow-x: auto; margin: .5rem 0; padding-bottom: .15rem; scrollbar-width: none; }
-    .spot-emoji-pick::-webkit-scrollbar { display: none; }
-    .spot-emoji-pick button { flex: 0 0 auto; background: var(--accent-soft); border: 1.5px solid transparent; border-radius: 10px; padding: .25rem .45rem; font-size: 1.05rem; cursor: pointer; }
-    .spot-emoji-pick button.active { border-color: var(--accent); background: #fff; }
+    /* #4/#6 : emoji du spot en GRILLE nette (tout visible d'un coup, fini le scroll à droite). */
+    .spot-emoji-pick { display: grid; grid-template-columns: repeat(6, 1fr); gap: .4rem; margin: .4rem 0 .2rem; }
+    .spot-emoji-pick button { background: var(--accent-soft); border: 1.5px solid transparent; border-radius: 12px; padding: .5rem 0; font-size: 1.3rem; line-height: 1; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
+    .spot-emoji-pick button:active { transform: scale(.94); }
+    .spot-emoji-pick button.active { border-color: var(--accent); background: #fff; box-shadow: 0 5px 14px rgba(255,90,77,.22); transform: translateY(-1px); }
+    .spot-step { font-size: .72rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; margin: .55rem 0 .1rem; }
     /* Spot du jour : suggestions rapides */
     .spot-quick { display: flex; flex-wrap: wrap; gap: .4rem; margin: .1rem 0 .7rem; }
     .spot-quick button { font-size: .78rem; font-weight: 700; padding: .4rem .7rem; border-radius: 999px; border: 0; background: linear-gradient(135deg, rgba(255,201,60,.22), rgba(255,138,61,.2)); color: var(--ink); cursor: pointer; transition: transform .12s ease; }
@@ -3533,8 +3535,10 @@
           <summary><span data-i18n="spot.title">☀️ Mon spot du jour</span><span class="sp-right"><span class="sp-sum" id="spotSummary"></span><span class="sp-chev">▸</span></span></summary>
           <p class="muted" style="font-size:.8rem;margin:.5rem 0" data-i18n="spot.sub">Dis où tu traînes aujourd'hui : tes Mates te voient sur la carte et peuvent venir te rejoindre. Visible 24 h, façon story.</p>
           <div id="spotCurrent" style="display:none;margin-bottom:.5rem"></div>
+          <div class="spot-step">1 · Ton emoji</div>
           <div class="spot-emoji-pick" id="spotEmojiPick"></div>
           <!-- Suggestions en 1 tap (plus pratique) -->
+          <div class="spot-step">2 · Une idée en 1 tap</div>
           <div class="spot-quick" id="spotQuick">
             <button type="button" data-spotq="Café cosy ☕">☕ Café</button>
             <button type="button" data-spotq="En terrasse 🍹">🍹 Terrasse</button>
@@ -3543,6 +3547,7 @@
             <button type="button" data-spotq="Spot coucher de soleil 🌇">🌇 Sunset</button>
             <button type="button" data-spotq="Musée / expo 🖼️">🖼️ Culture</button>
           </div>
+          <div class="spot-step">3 · Décris &amp; publie</div>
           <div class="spot-compose">
             <input id="spotInput" type="text" maxlength="60" placeholder="Ex : Café cosy à Lisbonne ☕" data-i18n-ph="spot.ph" />
             <button class="btn-primary" id="spotSave" data-i18n="spot.save">Publier</button>
