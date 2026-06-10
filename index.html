@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=343"></script>
-  <script src="sunmates-icons.js?v=343"></script>
+  <script src="sunmates-badges.js?v=344"></script>
+  <script src="sunmates-icons.js?v=344"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -1165,7 +1165,7 @@
     /* Cartes de jeux */
     .gcard { background: var(--card); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform .1s; }
     .gcard:active { transform: scale(.98); }
-    .gcard .ghead { height: 92px; background: var(--accent-grad); position: relative; background-size: cover; background-position: center; }
+    .gcard .ghead { height: 84px; background: var(--accent-grad); position: relative; background-size: cover; background-position: center; display: grid; place-items: center; }
     .gcard .ghead::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.35)); } /* lisibilité photo */
     .gcard .ghead.green { background: linear-gradient(135deg,#8fe6a6,#34c77b); }
     .gcard .ghead.blue  { background: linear-gradient(135deg,#8ed0ff,#3aa0f0); }
@@ -1177,7 +1177,9 @@
     .gcard .ghead.gh-coral  { background: linear-gradient(135deg,#FFB37A,#FF6F3D); }
     .gcard .ghead.gh-purp   { background: linear-gradient(135deg,#C77DFF,#8A4FE0); }
     .gcard .ghead.gh-rose   { background: linear-gradient(135deg,#FF9CC2,#F0568F); }
-    .gcard.gcard-play .ghead::after { background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.12)); }
+    /* Cartes jeux/quêtes (pas de photo) : on retire le voile SOMBRE (qui ternissait/floutait
+       l'emoji) → juste un léger reflet clair en haut pour le volume « gemme ». */
+    .gcard.gcard-play .ghead::after { background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0) 58%); }
     /* Emoji des jeux jouables : en COIN (bas-gauche) comme les autres, plus « au milieu » qui flottait. */
     .gcard.gcard-play .gemoji { font-size: 42px; }
     /* Libellé de type (Mini-jeu / Quête) pour bien distinguer (item 23). */
@@ -1224,13 +1226,23 @@
     body.theme-dusk .xp-banner { background: linear-gradient(135deg,rgba(255,201,60,.14),rgba(255,138,61,.12)); }
     body.theme-dusk .xp-banner b { color: #ffce8a; }
     /* Emoji = grand, centré, intégré dans l'en-tête (plus de carré blanc qui « flotte au milieu »). */
-    .gcard .gemoji { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 38px; line-height: 1; filter: drop-shadow(0 4px 9px rgba(0,0,0,.42)); z-index: 1; pointer-events: none; }
+    .gcard .gemoji { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 40px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.22)); z-index: 1; pointer-events: none; }
     .gcard .grate { position: absolute; top: .5rem; right: .5rem; background: #fff; color: var(--accent); font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 999px; z-index: 2; }
     .gcard .gdone { position: absolute; top: .5rem; left: .5rem; background: rgba(255,177,60,.95); color: #6b4a00; font-size: .68rem; font-weight: 800; padding: .12rem .45rem; border-radius: 999px; z-index: 2; }
     .gcard .gbody { padding: .7rem .8rem; }
     .gcard .gname { font-weight: 700; color: var(--ink); font-size: .9rem; line-height: 1.2; }
     .gcard .gcity { color: var(--muted); font-size: .76rem; margin-top: .15rem; }
     .gcard .gdesc { color: var(--muted); font-size: .75rem; margin-top: .2rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    /* Refonte cartes Jeux populaires : tag + pastille d'action DANS le corps (fini les chips
+       qui se chevauchaient/débordaient sur le header). Tons DA (corail/doré), pas de flou. */
+    .gcard .gtag { display: inline-block; font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; padding: .15rem .5rem; border-radius: 999px; }
+    .gcard .gtag-mini { background: rgba(0,0,0,.06); color: var(--muted); }
+    .gcard .gtag-quest { background: var(--accent-soft); color: var(--accent); }
+    .gcard .gtag-done { background: rgba(255,177,60,.24); color: #6b4a00; }
+    .gcard .gbody .gname { margin-top: .35rem; }
+    .gcard .gplay { display: inline-flex; align-items: center; gap: .25rem; margin-top: .5rem; font-size: .76rem; font-weight: 800; color: #fff; background: var(--accent-grad); padding: .32rem .8rem; border-radius: 999px; box-shadow: 0 3px 9px rgba(255,90,77,.28); }
+    .gcard .gplay-xp { background: linear-gradient(135deg,#FFD15C,#F4A11E); color: #6b4a00; box-shadow: 0 3px 9px rgba(240,169,58,.3); }
+    body.theme-dusk .gcard .gtag-mini { background: rgba(255,255,255,.12); color: #d8cfe8; }
 
     /* Lignes de quêtes */
     .qrow { display: flex; align-items: center; gap: .8rem; padding: .85rem 0; border-bottom: 1px solid var(--line); cursor: pointer; }
@@ -2419,12 +2431,13 @@
        (avant : 2 libellés texte flottant dans un bandeau beige = « pas scindé / moche »). */
     #profSegNav { background: transparent !important; border: 0 !important; padding: 0 !important; gap: .55rem; margin: .7rem 0 .2rem; }
     #profSegNav button { flex: 1; border-radius: 13px; padding: .62rem .5rem; font-size: .82rem; font-weight: 800; border: 1.5px solid var(--line); background: var(--card); box-shadow: var(--shadow-sm); }
-    #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#FFF1D2,#FFE0A6); border-color: rgba(240,169,58,.45); color: #8a5500; }
-    #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#ECEAFF,#DCD7FF); border-color: rgba(122,92,255,.4); color: #4f3fc4; }
+    /* Premium = doré (spécial) ; Admin = terracotta sunset sobre (outil) → 2 tons DA distincts, zéro indigo hors-DA. */
+    #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#FFE7B0,#F7C463); border-color: rgba(240,169,58,.5); color: #7a4f00; }
+    #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#FBE3D4,#EFB89A); border-color: rgba(208,108,72,.5); color: #8a3b1c; }
     #profSegNav button.active { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent !important; box-shadow: 0 6px 16px rgba(255,90,77,.28); }
-    body.theme-dusk #profSegNav button { background: #2a2140; border-color: rgba(255,255,255,.1); color: #e8e2ff; }
+    body.theme-dusk #profSegNav button { background: #2a2140; border-color: rgba(255,255,255,.1); color: #f3e7d8; }
     body.theme-dusk #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#4a3a1a,#5a4520); border-color: rgba(240,169,58,.4); color: #ffd98a; }
-    body.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#2e2a55,#3a3470); border-color: rgba(122,92,255,.45); color: #cfc6ff; }
+    body.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#4a2a1c,#5e3825); border-color: rgba(208,108,72,.5); color: #ffc8a8; }
     /* Nav admin : emoji + libellé → chips qui s'adaptent au texte et passent à la ligne proprement */
     .aseg-nav button { flex: 0 1 auto; padding: .5rem .7rem; white-space: nowrap; }
     /* Liste membres admin : en-tête comptes actifs/suspendus + filtre */
@@ -4315,10 +4328,11 @@
               <div class="cat-tile" data-jeuxnav="games"><div class="cic c-purp" data-smicon="games" data-smicon-size="36">🎮</div><div class="clbl">Jeux</div></div>
             </div>
             <div class="jnav-cap">🏆 Progresser &amp; récompenses</div>
+            <!-- Ordre pensé pour éviter 2 couleurs identiques côte à côte : or → rose → bleu → rose. -->
             <div class="cat-row jnav-secondary">
               <div class="cat-tile" data-jeuxnav="badges"><div class="cic c-gold" data-smicon="medal" data-smicon-size="36">🏅</div><div class="clbl">Badges</div></div>
-              <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue" data-smicon="rank" data-smicon-size="36">🏆</div><div class="clbl">Classement</div></div>
               <div class="cat-tile" data-jeuxnav="coupons"><div class="cic c-green" data-smicon="coupon" data-smicon-size="36">🎟️</div><div class="clbl">Coupons</div></div>
+              <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue" data-smicon="rank" data-smicon-size="36">🏆</div><div class="clbl">Classement</div></div>
               <div class="cat-tile" data-jeuxnav="shop"><div class="cic c-pink" data-smicon="shop" data-smicon-size="36">🛍️</div><div class="clbl">Boutique</div></div>
             </div>
           </div>
@@ -8293,23 +8307,25 @@
       // Mini-jeux intégrés : libellé « Mini-jeu » + « ▶ Jouer » (rapides, sans XP).
       const clientCards = CLIENT_GAMES.map((g) => `
         <div class="gcard gcard-play" data-playgame="${g.key}">
-          <div class="ghead gh-${g.color}">
-            <span class="gtype">🎮 Mini-jeu</span>
-            <span class="gemoji">${g.emoji}</span>
-            <span class="grate">▶ Jouer</span>
+          <div class="ghead gh-${g.color}"><span class="gemoji">${g.emoji}</span></div>
+          <div class="gbody">
+            <span class="gtag gtag-mini">🎮 Mini-jeu</span>
+            <div class="gname">${escapeHtml(g.name)}</div>
+            <div class="gdesc">${escapeHtml(g.desc)}</div>
+            <span class="gplay">▶ Jouer</span>
           </div>
-          <div class="gbody"><div class="gname">${escapeHtml(g.name)}</div><div class="gdesc">${escapeHtml(g.desc)}</div></div>
         </div>`).join("");
       // Quêtes BDD : libellé « Quête » (vraies quêtes qui rapportent de l'XP) → distinction nette (item 23).
       const ghCol = ["gh-gold", "gh-teal", "gh-indigo", "gh-coral", "gh-purp", "gh-rose"];
       const dbCards = games.map((g, i) => `
         <div class="gcard gcard-play" data-qkey="${g.key}">
-          <div class="ghead ${ghCol[i % ghCol.length]}">
-            ${myQuestStatus[g.key] === "completed" ? '<span class="gdone">✅ Fait</span>' : '<span class="gtype gt-quest">🧭 Quête</span>'}
-            <span class="gemoji">${g.emoji || "🎮"}</span>
-            <span class="grate">+${g.points || 0} XP</span>
+          <div class="ghead ${ghCol[i % ghCol.length]}"><span class="gemoji">${g.emoji || "🎮"}</span></div>
+          <div class="gbody">
+            ${myQuestStatus[g.key] === "completed" ? '<span class="gtag gtag-done">✅ Fait</span>' : '<span class="gtag gtag-quest">🧭 Quête</span>'}
+            <div class="gname">${escapeHtml(g.title)}</div>
+            <div class="gdesc">${escapeHtml((g.description || g.city || "").slice(0, 70))}</div>
+            <span class="gplay gplay-xp">+${g.points || 0} XP</span>
           </div>
-          <div class="gbody"><div class="gname">${escapeHtml(g.title)}</div><div class="gdesc">${escapeHtml((g.description || g.city || "").slice(0, 70))}</div></div>
         </div>`).join("");
       $("gamesGrid").innerHTML = clientCards + dbCards;
       $("gamesGrid").querySelectorAll("[data-playgame]").forEach((el) => el.addEventListener("click", () => playGame(el.dataset.playgame)));
