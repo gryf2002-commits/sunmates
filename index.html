@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=357"></script>
-  <script src="sunmates-icons.js?v=357"></script>
+  <script src="sunmates-badges.js?v=358"></script>
+  <script src="sunmates-icons.js?v=358"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -168,14 +168,16 @@
     html, body { height: 100%; }
     /* Barre de défilement thémée DA (fini le blanc système). Firefox + WebKit/Blink.
        Les conteneurs en scrollbar-width:none (chips, etc.) restent masqués (specificité de classe). */
-    * { scrollbar-width: thin; scrollbar-color: rgba(255,90,77,.4) transparent; }
+    /* #7 : JOUR = barre neutre chaude discrète (le corail vif était trop agressif en clair) ;
+       NUIT = corail (rouge), comme demandé. Même couleur partout par thème. */
+    * { scrollbar-width: thin; scrollbar-color: rgba(176,142,116,.42) transparent; }
     ::-webkit-scrollbar { width: 9px; height: 9px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,90,77,.38); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,90,77,.6); background-clip: padding-box; }
-    body.theme-dusk * { scrollbar-color: rgba(255,255,255,.24) transparent; }
-    body.theme-dusk ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); background-clip: padding-box; }
-    body.theme-dusk ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.34); background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb { background: rgba(176,142,116,.4); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(176,142,116,.62); background-clip: padding-box; }
+    body.theme-dusk * { scrollbar-color: rgba(255,90,77,.5) transparent; }
+    body.theme-dusk ::-webkit-scrollbar-thumb { background: rgba(255,90,77,.45); background-clip: padding-box; }
+    body.theme-dusk ::-webkit-scrollbar-thumb:hover { background: rgba(255,90,77,.65); background-clip: padding-box; }
     body {
       font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
       margin: 0; background: var(--bg); color: var(--text);
@@ -2914,7 +2916,7 @@
     .sm-selsheet-ov { position: fixed; inset: 0; z-index: 100010; background: rgba(20,8,30,.5); backdrop-filter: blur(2px);
       display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .18s; }
     .sm-selsheet-ov.show { opacity: 1; pointer-events: auto; }
-    .sm-selsheet { width: 100%; max-width: 480px; background: var(--paper); border-radius: 22px 22px 0 0; max-height: 74vh;
+    .sm-selsheet { width: 100%; max-width: 480px; background: var(--paper); border-radius: 22px 22px 0 0; max-height: 56vh;
       display: flex; flex-direction: column; transform: translateY(14px); transition: transform .2s; box-shadow: 0 -14px 44px rgba(0,0,0,.28);
       padding-bottom: env(safe-area-inset-bottom, 0px); }
     .sm-selsheet-ov.show .sm-selsheet { transform: translateY(0); }
@@ -3436,7 +3438,7 @@
           <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button></div>
           <!-- Chips colorés + emojis (l'âme SunMates) : couleur = type de marqueur sur la carte -->
           <div class="chips wrap homemap-filters as-btn" id="homeMapFilters">
-            <button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Calques <span class="hlb-cnt" id="hmLayersCnt">5</span></button>
+            <button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Filtres <span class="hlb-cnt" id="hmLayersCnt">5</span></button>
             <button class="chip active cl-places" data-layer="places">📍 Lieux <b data-cnt></b></button>
             <button class="chip active cl-mates" data-layer="mates">🧑 Mates <b data-cnt></b></button>
             <button class="chip active cl-acts" data-layer="activities">🎉 Activités <b data-cnt></b></button>
@@ -3522,7 +3524,7 @@
           <div class="tile" data-goto="jeux"><div class="thumb gold">🎮</div><div class="t-name">Jeux &amp; Quêtes</div><div class="t-meta" id="qaJeux">XP &amp; badges</div></div>
           <div class="tile" data-goto="jeux" data-jeuxview="jeuxRank"><div class="thumb blue">🏆</div><div class="t-name">Classement</div><div class="t-meta">Grimpe le top</div></div>
           <div class="tile" data-goto="jeux" data-jeuxview="jeuxCoupons"><div class="thumb teal">🎟️</div><div class="t-name">Coupons</div><div class="t-meta" id="qaCoupons">Tes récompenses</div></div>
-          <div class="tile tile-soon" aria-disabled="true" title="Bientôt disponible"><div class="thumb gold-soon">👑</div><div class="t-name">Gold <span class="soon-badge">Bientôt</span></div><div class="t-meta">Avantages premium</div></div>
+          <div class="tile" id="goldTile" style="cursor:pointer"><div class="thumb gold-soon">👑</div><div class="t-name">Gold</div><div class="t-meta">Avantages premium</div></div>
           <div class="tile" data-goto="profil"><div class="thumb gold">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Score de confiance</div></div>
         </div>
       </div>
@@ -3760,7 +3762,7 @@
           <div class="chat-input">
             <button class="iconbtn chat-poc" id="chatPoc" title="Envoyer un poc 🔥">🔥</button>
             <button class="iconbtn chat-mic" id="chatMic" title="Note vocale (30 s max)">🎤</button>
-            <input id="chatInput" type="text" placeholder="Envoyer un message…" />
+            <input id="chatInput" type="text" maxlength="1000" placeholder="Envoyer un message…" />
             <button class="btn-primary" id="chatSend">➤</button>
           </div>
         </div>
@@ -4982,6 +4984,8 @@
         }
       });
     });
+    // #6 : tuile Gold de nouveau CLIQUABLE → ouvre le panneau Premium (avantages + « me prévenir »).
+    { const gt = $("goldTile"); if (gt) gt.addEventListener("click", () => { goToTab("profil"); if (typeof showProfileSegment === "function") showProfileSegment("premium"); }); }
 
     let __lastTab = null;
     function goToTab(target) {
@@ -4990,6 +4994,10 @@
       if (changed) {
         const hs = $("homeSearch"); if (hs && hs.value) { hs.value = ""; const sr = $("searchResults"); if (sr) sr.innerHTML = ""; }
         const ts = $("travSearch"); if (ts && ts.value) { ts.value = ""; if (typeof renderTravelers === "function") renderTravelers(""); }
+        // #2 : on quitte un onglet → on vide les composers éphémères (feed + spot) pour ne pas
+        // trimballer un brouillon d'une page à l'autre.
+        const fi = $("feedInput"); if (fi && fi.value) { fi.value = ""; fi.style.height = "auto"; const fc = $("feedCount"); if (fc) { fc.textContent = "0/280"; fc.style.color = ""; } }
+        const si = $("spotInput"); if (si && si.value) si.value = "";
       }
       if (typeof toggleHomeFull === "function" && document.querySelector(".homemap-card.fs")) toggleHomeFull(false); // sort du plein écran seulement si actif
       document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle("active", b.dataset.tab === target));
@@ -9171,12 +9179,11 @@
 
     // Heure (et date si autre jour) d'un message
     function msgTime(iso) {
+      // #12 : on n'affiche QUE l'heure au slide (pas la date → fini la superposition dans la
+      // petite pastille). Les dates sont portées par les séparateurs de jour du chat (chatDayLabel).
       if (!iso) return "";
       const d = new Date(iso); if (isNaN(d)) return "";
-      const now = new Date();
-      const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-      if (d.toDateString() === now.toDateString()) return time;
-      return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" }) + " · " + time;
+      return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
     }
     const QUEST_MSG_PREFIX = "🎯 Je te propose la quête : ";
     const PLACE_MSG_PREFIX = "📍 Je te recommande ce lieu : ";
@@ -9392,10 +9399,13 @@
       currentChatUserId = otherUserId;
       if (typeof unhideConv === "function") unhideConv(otherUserId); // rouvrir = ré-afficher dans la liste
       const p = travelerMap[otherUserId] || {};
-      // « Traduire » seulement si le Mate ne parle pas déjà ta langue (anti pollution visuelle)
+      // « Traduire » UNIQUEMENT si on SAIT que le Mate ne parle pas ta langue (FR/EN).
+      // Avant : si ses langues étaient inconnues (pl vide, cas fréquent), le bouton s'affichait
+      // quand même → pollution. Maintenant : pas de langues connues OU langue commune → pas de bouton.
       { const myLang = (localStorage.getItem("sm_lang") || "fr"); const syn = ({ fr: ["fran", "french"], en: ["engl", "anglais"] })[myLang] || [];
         const pl = (p.languages || []).map((l) => String(l).toLowerCase());
-        _chatTranslatable = !(pl.length && syn.some((s) => pl.some((l) => l.includes(s)))); }
+        const sharesMyLang = syn.some((s) => pl.some((l) => l.includes(s)));
+        _chatTranslatable = pl.length > 0 && !sharesMyLang; }
       const name = p.username || "Voyageur";
       $("chatName").textContent = name + ((p.is_demo || String(otherUserId).startsWith("ia-")) ? " 🤖" : "");
       setAvatarEl($("chatAvatar"), p.avatar_url, name[0] || "?");
@@ -9460,7 +9470,7 @@
           const a = b.dataset.cmenu, id = currentChatUserId;
           if (a === "profile") { if (id && travelerMap[id]) openTravelerProfile(travelerMap[id]); }
           else if (a === "delete") { deleteConversation(); }
-          else if (a === "flame") { const f = _flameGet(id); showInfo("🔥 Flammes", '<p style="line-height:1.6;text-align:center;padding:.3rem">Envoie un <b>poc 🔥</b> à ' + escapeHtml((travelerMap[id] || {}).username || "ce Mate") + ' chaque jour pour entretenir votre <b>flamme</b>.<br><br>Flamme actuelle : <b>🔥 ' + (f.active ? f.count : 0) + '</b><br><span class="muted" style="font-size:.82rem">Reviens chaque jour (sous <b>24 h</b>) pour la garder !</span></p>'); }
+          else if (a === "flame") { const f = _flameGet(id); showInfo("🔥 Flammes", '<p style="line-height:1.6;text-align:center;padding:.3rem">Envoie un <b>poc 🔥</b> à ' + escapeHtml((travelerMap[id] || {}).username || "ce Mate") + ' chaque jour pour entretenir votre <b>flamme</b>.<br><br>Flamme actuelle : <b>🔥 ' + (f.active ? f.count : 0) + '</b><br><span class="muted" style="font-size:.82rem">Reviens <b>chaque jour</b> pour la garder ! (rate un jour entier = flamme perdue)</span></p>'); }
           else if (a === "notif") { const on = (localStorage.getItem("sm_chatnotif_" + id) !== "0"); localStorage.setItem("sm_chatnotif_" + id, on ? "0" : "1"); const it = $("chatNotifItem"); if (it) it.textContent = on ? "🔕 Notifications : coupées" : "🔔 Notifications : activées"; toast(on ? "🔕" : "🔔", on ? "Notifications coupées pour cette conv" : "Notifications activées"); }
           else if (a === "block") { goToTab("connexions"); if (id && travelerMap[id]) openTravelerProfile(travelerMap[id]); toast("🚫", "Bloquer / signaler depuis le profil"); }
         }));
@@ -9469,7 +9479,14 @@
     // ===== Flammes (poc) : streak quotidien entre toi et ce Mate (léger, local) =====
     function _flameKey(id) { return "sm_flame_" + (myUserId || "x") + "_" + id; }
     function _flameGet(id) {
-      try { const o = JSON.parse(localStorage.getItem(_flameKey(id)) || "{}"); const active = o.last && (Date.now() - o.last) < 35 * 3600 * 1000; return { count: o.count || 0, last: o.last || 0, active: !!active }; } catch (e) { return { count: 0, last: 0, active: false }; }
+      // #11 : flamme basée sur le JOUR CALENDAIRE (honnête), fini le flou « 35 h affiché 24 h ».
+      // Active si le dernier poc date d'AUJOURD'HUI ou d'HIER ; un jour entier manqué = flamme perdue.
+      try {
+        const o = JSON.parse(localStorage.getItem(_flameKey(id)) || "{}");
+        let active = false;
+        if (o.last) { const startToday = new Date(); startToday.setHours(0, 0, 0, 0); active = o.last >= startToday.getTime() - 86400000; }
+        return { count: o.count || 0, last: o.last || 0, active: !!active };
+      } catch (e) { return { count: 0, last: 0, active: false }; }
     }
     function _pocSentToday(f) { return f.last && new Date(f.last).toDateString() === new Date().toDateString(); }
     function renderChatFlame(id) {
@@ -9478,9 +9495,8 @@
       const done = _pocSentToday(f);
       if (f.active && f.count > 0) {
         el.classList.remove("hidden"); n.textContent = f.count;
-        // Countdown : heures restantes avant de perdre la flamme (fenêtre 35 h, affichée façon ~24 h).
-        const hLeft = Math.max(0, Math.round((35 * 3600 * 1000 - (Date.now() - f.last)) / 3600000));
-        el.title = done ? ("Flamme x" + f.count + " · poc envoyé aujourd'hui ✓ · reviens demain") : ("Flamme x" + f.count + " · plus que ~" + hLeft + " h pour la garder 🔥");
+        // Honnête : pas de compte à rebours en heures (source de confusion 24 h/35 h) → on parle en jours.
+        el.title = done ? ("Flamme x" + f.count + " · poc envoyé aujourd'hui ✓ · reviens demain") : ("Flamme x" + f.count + " · poce aujourd'hui pour la garder 🔥");
         el.classList.toggle("flame-done", done); // visuel "déjà fait aujourd'hui"
       } else el.classList.add("hidden");
       // Bouton poc : VERROUILLÉ visiblement quand déjà envoyé aujourd'hui (1 poc / jour) + countdown jusqu'à minuit.
@@ -9505,8 +9521,9 @@
         if (typeof toast === "function") toast("🔥", "Poc déjà envoyé aujourd'hui ! Reviens dans ~" + hLeft + " h pour faire grandir ta flamme 🔥" + f.count);
         return;
       }
-      // Jour consécutif (dans la fenêtre 35 h) → la flamme grandit ; sinon (perdue/première) → redémarre à 1.
-      const count = (f.last && (now - f.last) < 35 * 3600 * 1000) ? f.count + 1 : 1;
+      // Jour consécutif (la flamme était encore active = poc d'hier) → elle grandit ; sinon (jour
+      // manqué / première) → redémarre à 1. Aligné sur la logique calendaire de _flameGet (#11).
+      const count = (f.active && f.count > 0) ? f.count + 1 : 1;
       try { localStorage.setItem(_flameKey(id), JSON.stringify({ count, last: now })); } catch (e) {}
       renderChatFlame(id);
       const inp = $("chatInput"); if (inp) inp.value = "🔥 Poc !";
@@ -10923,7 +10940,7 @@
       let ov = $("hmLayersOv");
       if (!ov) {
         ov = document.createElement("div"); ov.id = "hmLayersOv"; ov.className = "sm-selsheet-ov";
-        ov.innerHTML = '<div class="sm-selsheet" role="dialog" aria-modal="true"><div class="sm-selsheet-grip"></div><div class="sm-selsheet-head"><h4>🗂️ Calques de la carte</h4><button type="button" aria-label="Fermer">✕</button></div><div class="sm-selsheet-list" id="hmLayersList"></div></div>';
+        ov.innerHTML = '<div class="sm-selsheet" role="dialog" aria-modal="true"><div class="sm-selsheet-grip"></div><div class="sm-selsheet-head"><h4>🗂️ Filtres de la carte</h4><button type="button" aria-label="Fermer">✕</button></div><div class="sm-selsheet-list" id="hmLayersList"></div></div>';
         document.body.appendChild(ov);
         ov.addEventListener("click", (e) => { if (e.target === ov) ov.classList.remove("show"); });
         ov.querySelector(".sm-selsheet-head button").addEventListener("click", () => ov.classList.remove("show"));
