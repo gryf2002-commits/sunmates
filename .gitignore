@@ -26,5 +26,9 @@ package-lock.json
 _shot.js
 _home_top.png
 
+# Artefacts de TEST (captures/screenshots/previews générés par les scripts de diag)
+# — préfixe « _ » réservé aux outils de dev, jamais publié.
 _*.js
 _*.json
+_*.png
+_*.html
