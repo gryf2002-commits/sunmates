@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=359"></script>
-  <script src="sunmates-icons.js?v=359"></script>
+  <script src="sunmates-badges.js?v=360"></script>
+  <script src="sunmates-icons.js?v=360"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3861,6 +3861,8 @@
             <div class="tile" data-help="lieux"><div class="thumb lime" data-smicon="near" data-smicon-size="30">🛟</div><div class="t-name">Lieux publics sûrs</div><div class="t-meta">Validés</div></div>
             <div class="tile" data-help="mate"><div class="thumb purp" data-smicon="users" data-smicon-size="30">🤝</div><div class="t-name">Trouver un Mate sûr·e</div><div class="t-meta">Cercle de confiance</div></div>
             <div class="tile" data-help="numeros"><div class="thumb gold" data-smicon="phone" data-smicon-size="30">📞</div><div class="t-name">Numéros d'urgence</div><div class="t-meta">Par pays 🌍</div></div>
+            <!-- #5 : Support en tuile carrée, juste à côté de « Numéros d'urgence » (plus de tuile horizontale). -->
+            <div class="tile" data-help="support"><div class="thumb teal" data-smicon="chat" data-smicon-size="30">💬</div><div class="t-name">Support SunMates</div><div class="t-meta">Écris-nous</div></div>
           </div>
 
           <div class="card" style="margin-top:1.4rem">
@@ -3878,15 +3880,6 @@
           <div class="card">
             <h3 style="margin-top:0">Préférences</h3>
             <div class="qrow" data-secu="contact"><div class="qico" data-smicon="contact" data-smicon-size="27">📢</div><div class="qname">Qui peut me contacter</div><div class="qarrow" id="contactPrefVal">›</div></div>
-          </div>
-
-          <!-- Support SunMates : vrai canal de contact (écrit à l'équipe → réponse dans l'app) -->
-          <div class="card">
-            <div class="qrow" data-help="support" style="cursor:pointer">
-              <div class="qico">💬</div>
-              <div class="qname">Support SunMates<div class="meta muted" style="font-size:.76rem">Une question, un souci ? Écris-nous, on te répond.</div></div>
-              <div class="qarrow">›</div>
-            </div>
           </div>
 
           <div class="msg" id="helpMsg" style="text-align:center"></div>
@@ -8734,7 +8727,10 @@
         const seen = localStorage.getItem(key) || "";
         if (r.replied_at && r.replied_at > seen) {
           localStorage.setItem(key, r.replied_at);
-          if (typeof toast === "function") toast("✅", "Ton retour a été traité : « " + (r.admin_reply || "merci !").slice(0, 90) + " »");
+          // #5 : réponse PERSISTANTE (modale qui reste jusqu'à fermeture) + texte complet,
+          // fini le bandeau toast de quelques secondes.
+          if (typeof showInfo === "function") showInfo("✅ Réponse de l'équipe SunMates", '<div style="line-height:1.6"><p class="muted" style="font-size:.82rem;margin:0 0 .6rem">Ton message au support a été traité 💛</p><div style="background:var(--accent-soft);border-radius:12px;padding:.75rem .85rem;color:var(--ink);font-size:.92rem">« ' + escapeHtml(r.admin_reply || "Merci pour ton retour !") + ' »</div></div>');
+          else if (typeof toast === "function") toast("✅", "Ton retour a été traité 💛");
           if (window.SMSound) SMSound.play("notify");
         }
       } catch (e) {}
