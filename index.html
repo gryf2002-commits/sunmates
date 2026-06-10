@@ -100,8 +100,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=391"></script>
-  <script src="sunmates-icons.js?v=391"></script>
+  <script src="sunmates-badges.js?v=392"></script>
+  <script src="sunmates-icons.js?v=392"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3054,6 +3054,13 @@
     .hm-layer-row.on .hlr-sw { background: var(--accent); }
     .hm-layer-row.on .hlr-sw::after { transform: translateX(18px); }
 
+    /* Réglages > Aide & support : cartes chaudes (les btn-ghost étaient ternes pour de l'aide).
+       En fin de feuille pour passer devant .btn-ghost et ses variantes de thème. */
+    .help-cta { display: flex; align-items: center; gap: .6rem; text-align: left; justify-content: flex-start;
+      background: linear-gradient(135deg, #FFF6E9, #FFE7DA); border: 1px solid rgba(255,122,89,.28); border-left: 4px solid var(--accent);
+      border-radius: 16px; padding: .8rem .9rem; font-weight: 700; color: var(--ink); box-shadow: var(--shadow-sm); }
+    .help-cta:active { transform: scale(.99); }
+    body.theme-dusk .help-cta { background: linear-gradient(135deg, #2c2140, #241b35); color: #f3e9f3; border-color: rgba(255,170,130,.22); border-left-color: var(--accent); }
   </style>
 </head>
 <body>
@@ -4452,9 +4459,9 @@
           <!-- Aide & support : FAQ retirée (revient quand la démo guidée sera finie) ;
                contact = bientôt dispo (pas d'email perso affiché). -->
           <div class="set-grouptitle">Aide &amp; support</div>
-          <button class="btn-ghost btn-block" data-secu="aide">❓ <span>Centre d'aide · FAQ</span></button>
-          <button class="btn-ghost btn-block" data-secu="contactus" style="margin-top:.5rem">✉️ Nous contacter</button>
-          <button class="btn-ghost btn-block" id="betaFeedbackBtn" style="margin-top:.5rem">🧪 App en bêta · donne ton avis</button>
+          <button class="btn-ghost btn-block help-cta" data-secu="aide">❓ <span>Centre d'aide · FAQ</span></button>
+          <button class="btn-ghost btn-block help-cta" data-secu="contactus" style="margin-top:.5rem">✉️ Nous contacter</button>
+          <button class="btn-ghost btn-block help-cta" id="betaFeedbackBtn" style="margin-top:.5rem">🧪 App en bêta · donne ton avis</button>
 
           <!-- Application -->
           <div class="set-grouptitle">Application</div>
@@ -7699,6 +7706,26 @@
       _safeTimerInt = setInterval(tick, 1000);
     }
     { const b = $("safeArrivedBtn"); if (b) b.addEventListener("click", confirmSafeArrival); }
+    // Minuteur expiré PENDANT que l'app était fermée : au retour, 30 s de grâce (« Tout va
+    // bien ? ») au lieu d'alerter aussitôt — souvent on a juste oublié de confirmer. Sans
+    // réponse, l'alerte part quand même : l'esprit du dispositif est préservé (fermer la
+    // modale sans répondre ne l'annule PAS).
+    function _safeGraceCheck() {
+      const st = _safeState();
+      if (!st || !st.deadline || st.deadline > Date.now()) return false;
+      let left = 30;
+      const fire = setTimeout(() => { if (typeof closePopInfo === "function") closePopInfo(); _triggerSafeAlert(); }, left * 1000);
+      popInfo("⏱️", i18nT("Tout va bien ?"),
+        '<p style="text-align:center">' + i18nT("Ton minuteur de rentrée s'est terminé pendant que l'app était fermée. Sans réponse de ta part, ta position sera diffusée à ton cercle de confiance 🛟") + "</p>" +
+        '<button class="btn-primary btn-block" id="sgOkBtn" style="margin-top:.6rem">' + i18nT("✅ Je vais bien") + " (30)</button>");
+      const cnt = setInterval(() => { left--; const b = $("sgOkBtn"); if (b && left > 0) b.textContent = i18nT("✅ Je vais bien") + " (" + left + ")"; if (left <= 0) clearInterval(cnt); }, 1000);
+      setTimeout(() => { const b = $("sgOkBtn"); if (b) b.addEventListener("click", () => {
+        clearTimeout(fire); clearInterval(cnt);
+        confirmSafeArrival();
+        if (typeof closePopInfo === "function") closePopInfo();
+      }); }, 30);
+      return true;
+    }
 
     // Positions partagées par mon cercle de confiance (RLS : seules les connexions
     // acceptées peuvent lire mes positions, et inversement).
@@ -7713,7 +7740,11 @@
       const nameOf = (id) => (profiles || []).find((p) => p.id === id)?.username || "Voyageur";
       // Les alertes/positions partagées EXPIRENT après 24 h (on ne montre pas de vieilles alertes).
       const cutoff = Date.now() - 24 * 3600 * 1000;
+      // On ne garde que la DERNIÈRE position de chaque personne : un « je vais bien »
+      // (position non urgente plus récente) remplace ainsi son alerte dans la liste.
+      const seen = new Set();
       const circle = (locs || []).filter((l) => l.user_id !== myUserId && new Date(l.created_at).getTime() > cutoff)
+        .filter((l) => (seen.has(l.user_id) ? false : (seen.add(l.user_id), true)))
         .sort((a, b) => (b.is_emergency - a.is_emergency)); // urgences d'abord
       $("circleLocList").innerHTML = circle.length
         ? circle.map((l) => `<div class="place${l.is_emergency ? ' place-sos' : ''}">
@@ -7722,7 +7753,7 @@
             <div class="meta">${timeAgo(l.created_at)} · ${new Date(l.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
             <a href="https://www.google.com/maps?q=${l.lat},${l.lng}" target="_blank" rel="noopener" style="color:var(--accent);font-size:.85rem;font-weight:600">${i18nT("Voir sur la carte 📍")}</a>
           </div>`).join("")
-        : '<p class="muted">' + i18nT("Personne de ton cercle n'a partagé de position dans les dernières 24 h.") + "</p>";
+        : emptyState("🛟", i18nT("Aucune position partagée"), i18nT("Personne de ton cercle n'a partagé de position dans les dernières 24 h."), i18nT("📍 Partager ma position"), "shareloc");
     }
 
     // Feedback pendant le rafraîchissement (avant : bouton inerte → re-clics dans le vide)
@@ -7744,7 +7775,11 @@
     function setAlertActive(on) { try { localStorage.setItem("sm_alert_active", on ? "1" : "0"); } catch (e) {} updateSafetyBadge(); }
     function markSafetyOk(silent) {
       setAlertActive(false);
-      if (!silent && typeof toast === "function") toast("✅", i18nT("Ton cercle est rassuré, content de te savoir en sécurité 🌞"));
+      if (silent) return;
+      // Le cercle VOIT le « je vais bien » : on partage une position fraîche NON urgente,
+      // qui remplace l'alerte dans sa liste (dernière position par personne).
+      if (typeof sendLocation === "function") sendLocation(false, $("emergencyMsg") || document.createElement("div"), i18nT("Ton cercle est rassuré, content de te savoir en sécurité 🌞"));
+      else if (typeof toast === "function") toast("✅", i18nT("Ton cercle est rassuré, content de te savoir en sécurité 🌞"));
     }
     { const ag = $("allGoodBtn"); if (ag) ag.addEventListener("click", () => markSafetyOk(false)); }
     { const sl = $("sosLogo"); if (sl) sl.addEventListener("click", () => showSecuView("secuHelp")); }
@@ -7760,7 +7795,7 @@
             <a href="tel:${encodeURIComponent(c.phone)}" class="ice-call"><span class="ice-ic">📞</span><div class="ice-info"><div class="ice-name">${escapeHtml(c.name)}</div><div class="ice-num muted">${escapeHtml(c.phone)}</div></div></a>
             <button class="ice-del" data-ice="${i}" aria-label="Supprimer">✕</button>
           </div>`).join("")
-        : '<p class="muted" style="font-size:.82rem">' + i18nT("Aucun contact. Ajoute un proche à prévenir en cas de besoin.") + "</p>";
+        : emptyState("📇", i18nT("Aucun contact d'urgence"), i18nT("Ajoute un proche à prévenir d'un geste en cas de besoin."));
       el.querySelectorAll("[data-ice]").forEach((b) => b.addEventListener("click", () => { const a = loadIce(); a.splice(Number(b.dataset.ice), 1); saveIce(a); renderIce(); toast("🗑️", i18nT("Contact supprimé")); }));
       // 3 contacts max : bouton gardé VISIBLE et grisé avec l'explication (avant : il
       // disparaissait sans raison apparente → incompréhensible)
@@ -10437,7 +10472,7 @@
         const { data, error } = await db.rpc("my_reports");
         if (error) { showInfo(i18nT("Mes signalements"), '<p class="muted" style="text-align:center;padding:1rem">' + i18nT("Indisponible pour l'instant.") + "</p>"); return; }
         const rows = data || [];
-        if (!rows.length) { showInfo(i18nT("Mes signalements"), '<p class="muted" style="text-align:center;padding:1rem">' + i18nT("Tu n'as signalé personne. 👍") + "</p>"); return; }
+        if (!rows.length) { showInfo(i18nT("Mes signalements"), emptyState("🛡️", i18nT("Aucun signalement"), i18nT("Tu n'as signalé personne. La communauté te dit merci 💛"))); return; }
         const _dloc = (typeof currentLang !== "undefined" && currentLang === "en") ? "en-GB" : "fr-FR";
         const statusLabel = (s, h) => h ? '<span class="badge ok">' + i18nT("✅ Traité") + "</span>" : '<span class="badge warn">' + i18nT("🕒 En attente") + "</span>";
         showInfo(i18nT("Mes signalements"), rows.map((r) => `<div class="qrow" style="cursor:default">
@@ -10446,7 +10481,7 @@
             ${statusLabel(r.status, r.handled)}
           </div>`).join(""));
       } else if (action === "historique") {
-        if (!connHistory.length) { showInfo(i18nT("Historique des rencontres"), '<p class="muted" style="text-align:center;padding:1rem">' + i18nT("Aucune rencontre pour l'instant. Connecte-toi avec des voyageurs !") + "</p>"); return; }
+        if (!connHistory.length) { showInfo(i18nT("Historique des rencontres"), emptyState("🤝", i18nT("Aucune rencontre pour l'instant"), i18nT("Tes connexions acceptées apparaîtront ici, avec leur date de rencontre."), i18nT("Découvrir des Mates"), "discover")); return; }
         const _dloc = (typeof currentLang !== "undefined" && currentLang === "en") ? "en-GB" : "fr-FR";
         const rows = connHistory.slice().sort((a, b) => (b.since || "").localeCompare(a.since || "")).map((h) => {
           const p = travelerMap[h.uid] || {};
@@ -14322,6 +14357,17 @@
       "Connecté·e le {d} · {n} message échangé": "Connected on {d} · {n} message exchanged",
       "connexions seulement ✓": "connections only ✓",
       "tout le monde ✓": "everyone ✓",
+      "Aucune position partagée": "No location shared",
+      "📍 Partager ma position": "📍 Share my location",
+      "Aucun contact d'urgence": "No emergency contact",
+      "Ajoute un proche à prévenir d'un geste en cas de besoin.": "Add a loved one you can alert in one tap if needed.",
+      "Aucun signalement": "No reports",
+      "Tu n'as signalé personne. La communauté te dit merci 💛": "You haven't reported anyone. The community thanks you 💛",
+      "Aucune rencontre pour l'instant": "No meetings yet",
+      "Tes connexions acceptées apparaîtront ici, avec leur date de rencontre.": "Your accepted connections will appear here, with the date you met.",
+      "Tout va bien ?": "Everything okay?",
+      "Ton minuteur de rentrée s'est terminé pendant que l'app était fermée. Sans réponse de ta part, ta position sera diffusée à ton cercle de confiance 🛟": "Your safe-arrival timer ended while the app was closed. If you don't answer, your location will be shared with your trust circle 🛟",
+      "✅ Je vais bien": "✅ I'm fine",
       "Aucune connexion pour l'instant": "No failed logins yet.",
       "Toucher pour discuter 💬": "Tap to chat 💬",
       "Pas encore de conversation": "No conversation yet!",
@@ -15065,7 +15111,8 @@
       _smSessUid = uid;
       startPresence();
       subscribeMatches();
-      if (typeof _safeRender === "function") _safeRender(); // reprend le minuteur « rentrée en sécurité » s'il était actif
+      // Minuteur « rentrée en sécurité » : expiré pendant la fermeture → 30 s de grâce ; sinon reprise normale
+      if (!(typeof _safeGraceCheck === "function" && _safeGraceCheck()) && typeof _safeRender === "function") _safeRender();
       startBadgeWatch(); // filet anti-délai des pastilles de notif (item 20)
       loadMyVouchCount();
       renderSpotComposer();
@@ -15299,6 +15346,9 @@
     document.addEventListener("click", (e) => {
       const b = e.target.closest("[data-empty-act]"); if (!b) return;
       const a = b.dataset.emptyAct;
+      // CTA dans un panneau showInfo (ex : historique sécurité vide) → on referme le panneau d'abord
+      if (b.closest("#pickerOverlay") && typeof closePicker === "function") closePicker();
+      if (a === "shareloc") { const sb = $("shareLocBtn"); if (sb) { goToTab("securite"); sb.click(); } return; }
       if (a === "discover") {
         goToTab("connexions");
         if (typeof showMatesView === "function") showMatesView("matesHome");
