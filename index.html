@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=339"></script>
-  <script src="sunmates-icons.js?v=339"></script>
+  <script src="sunmates-badges.js?v=340"></script>
+  <script src="sunmates-icons.js?v=340"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -5030,7 +5030,7 @@
     async function renderTrips() {
       const box = $("myTrips"); if (!box || !myUserId) return;
       const trips = await loadMyTrips();
-      if (trips === null) { box.innerHTML = '<div class="trip-empty">Lance <code>supabase_migration_trips.sql</code> pour activer tes voyages ✈️</div>'; const bn = $("tripMatchBanner"); if (bn) bn.innerHTML = ""; return; }
+      if (trips === null) { console.warn("[SunMates] table trips absente — lance supabase_migration_trips.sql"); box.innerHTML = '<div class="trip-empty">Tes voyages arrivent très vite ✈️</div>'; const bn = $("tripMatchBanner"); if (bn) bn.innerHTML = ""; return; }
       const matches = await loadTripMatches();
       // Profils des voyageurs qui chevauchent (1 requête)
       const ids = [...new Set(matches.map((m) => m.user_id))];
@@ -11601,7 +11601,7 @@
         const box = $("fcmtList"); if (!box) return;
         let rows = null;
         try { const { data, error } = await db.from("feed_comments").select("id,body,user_id,created_at").eq("post_id", postId).order("created_at", { ascending: true }).limit(100); if (!error) rows = data || []; } catch (e) {}
-        if (rows === null) { box.innerHTML = '<p class="muted" style="font-size:.82rem">Commentaires bientôt disponibles (lance <code>supabase_migration_feed_comments.sql</code>).</p>'; return; }
+        if (rows === null) { console.warn("[SunMates] table feed_comments absente — lance supabase_migration_feed_comments.sql"); box.innerHTML = '<p class="muted" style="font-size:.82rem">Les commentaires arrivent très vite 💬</p>'; return; }
         if (!rows.length) { box.innerHTML = '<p class="muted" style="font-size:.84rem;text-align:center;padding:.6rem">Aucun commentaire. Sois le premier ✨</p>'; return; }
         // Pseudos/avatars depuis le cache (sinon « Voyageur »).
         box.innerHTML = rows.map((c) => {
@@ -11633,7 +11633,7 @@
     // Rend un sondage : barres de votes, % et mon choix surligné. Touche une option = voter.
     function _renderPollBox(postId, options, countMap, myChoice) {
       const box = document.querySelector('[data-pollbox="' + postId + '"]'); if (!box) return;
-      if (!options || !options.length) { box.innerHTML = '<p class="muted" style="font-size:.8rem;margin:.4rem 0 0">Sondage indisponible (lance <code>supabase_migration_polls.sql</code>).</p>'; return; }
+      if (!options || !options.length) { console.warn("[SunMates] table polls absente — lance supabase_migration_polls.sql"); box.innerHTML = '<p class="muted" style="font-size:.8rem;margin:.4rem 0 0">Ce sondage n\'est pas disponible pour l\'instant 🙂</p>'; return; }
       const total = Object.values(countMap || {}).reduce((a, b) => a + Number(b), 0);
       const voted = myChoice != null;
       box.innerHTML = options.map((opt, i) => {
