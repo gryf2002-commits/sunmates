@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=342"></script>
-  <script src="sunmates-icons.js?v=342"></script>
+  <script src="sunmates-badges.js?v=343"></script>
+  <script src="sunmates-icons.js?v=343"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -306,6 +306,16 @@
     .cic.c-purp { background: linear-gradient(135deg,#b9a6ff,#7c5cff); }
     .cic.c-gold { background: linear-gradient(135deg,#FFD15C,#F4A11E); }
     .cic.c-pink { background: linear-gradient(135deg,#ffa7d1,#ff5e9f); }
+    /* Hiérarchie de l'onglet Jeux : 2 groupes (Jouer / Progresser) + 2 tuiles PRIMAIRES plus grandes.
+       #jeuxNav était une grille 3-col (l.292) → on repasse en bloc pour empiler les groupes. */
+    #jeuxNav { display: block; }
+    .jnav-cap { font-size: .72rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: .55rem .15rem .2rem; }
+    .cat-row.jnav-primary { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+    .cat-row.jnav-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: .45rem; }
+    .jnav-primary .cat-tile, .jnav-secondary .cat-tile { min-width: 0; }
+    .jnav-primary .cat-tile { padding: .75rem .5rem; }
+    .jnav-primary .cat-tile .cic { width: 50px; height: 50px; font-size: 1.55rem; border-radius: 14px; }
+    .jnav-primary .cat-tile .clbl { font-size: .82rem; }
 
     /* ---- Carte « N éléments au même endroit » (>6 marqueurs co-localisés) ---- */
     .coloc-card { min-width: 180px; }
@@ -935,6 +945,11 @@
     .leaflet-control-zoom a:hover { background: var(--cream) !important; color: var(--accent) !important; }
     .leaflet-popup-content-wrapper { border-radius: 14px !important; box-shadow: 0 14px 34px rgba(0,0,0,.2) !important; }
     .leaflet-popup-content { margin: 12px 14px !important; font-size: .82rem; line-height: 1.45; }
+    /* Carte d'accueil COURTE (200-240px) + overflow:hidden : un popup haut (quête : titre +
+       description + récompense + bouton « Jouer ») était ROGNÉ → le bouton devenait inatteignable
+       hors plein écran. On borne la hauteur du contenu (scroll interne) pour qu'il tienne toujours
+       dans la carte. En plein écran (.fs) il y a la place → pas de bornage. */
+    .homemap-card:not(.fs) .leaflet-popup-content { max-height: 148px; overflow-y: auto; overscroll-behavior: contain; }
     body.theme-dusk .leaflet-control-attribution { background: rgba(36,27,53,.7) !important; color: #a99fbe !important; }
     body.theme-dusk .leaflet-control-zoom a { background: #241b35 !important; color: #ede6f2 !important; }
 
@@ -1453,7 +1468,11 @@
     .cic[data-smicon], .jo-ic[data-smicon] { position: relative; isolation: isolate; overflow: hidden; border: none;
       background: radial-gradient(120% 90% at 28% 22%, rgba(255,255,255,.42), rgba(255,255,255,0) 42%), linear-gradient(135deg, var(--c1,#FF8A3D), var(--c2,#FF5A4D));
       box-shadow: 0 7px 15px -4px rgba(255,90,77,.5), 0 2px 4px rgba(180,60,40,.3), inset 0 1px 1px rgba(255,246,236,.85), inset 0 -2px 3px rgba(150,45,30,.32); }
-    .cic[data-smicon]::after, .jo-ic[data-smicon]::after { content:""; position:absolute; left:8%; right:8%; top:6%; height:42%; border-radius:50% 50% 60% 60%/70% 70% 100% 100%; background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.04)); pointer-events:none; z-index:0; }
+    /* Reflet TOP plus léger (avant : blanc .5 sur 42% → givrait/floutait le glyphe). */
+    .cic[data-smicon]::after, .jo-ic[data-smicon]::after { content:""; position:absolute; left:8%; right:8%; top:6%; height:34%; border-radius:50% 50% 60% 60%/70% 70% 100% 100%; background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.02)); pointer-events:none; z-index:0; }
+    /* Les icônes joaillerie ont déjà leur propre reflet (::after + gloss interne au SVG) →
+       on SUPPRIME le voile ::before générique de .cat-tile (l'empilement rendait le glyphe flou). */
+    .cat-tile .cic[data-smicon]::before, .jo-ic[data-smicon]::before { display:none; }
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg { display:block; position:relative; z-index:1; }
     .cat-tile.active .cic[data-smicon] { box-shadow: 0 10px 22px -4px rgba(255,90,77,.6), 0 2px 4px rgba(180,60,40,.32), inset 0 1px 1px rgba(255,246,236,.9), inset 0 -2px 3px rgba(150,45,30,.32); }
     /* Palette par tuile : un spectre DA distinct par catégorie (anti-uniformité) */
@@ -2396,6 +2415,16 @@
     .mseg button.active { background: var(--accent-grad); color: #fff; }
     .mseg .segb { position: absolute; top: 2px; right: 5px; background: var(--accent); color: #fff; font-size: .56rem; min-width: 15px; height: 15px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
     .mseg button.active .segb { background: #fff; color: var(--accent); }
+    /* #profSegNav (Premium / Admin) : 2 vrais boutons-cartes DISTINCTS et bien séparés
+       (avant : 2 libellés texte flottant dans un bandeau beige = « pas scindé / moche »). */
+    #profSegNav { background: transparent !important; border: 0 !important; padding: 0 !important; gap: .55rem; margin: .7rem 0 .2rem; }
+    #profSegNav button { flex: 1; border-radius: 13px; padding: .62rem .5rem; font-size: .82rem; font-weight: 800; border: 1.5px solid var(--line); background: var(--card); box-shadow: var(--shadow-sm); }
+    #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#FFF1D2,#FFE0A6); border-color: rgba(240,169,58,.45); color: #8a5500; }
+    #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#ECEAFF,#DCD7FF); border-color: rgba(122,92,255,.4); color: #4f3fc4; }
+    #profSegNav button.active { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent !important; box-shadow: 0 6px 16px rgba(255,90,77,.28); }
+    body.theme-dusk #profSegNav button { background: #2a2140; border-color: rgba(255,255,255,.1); color: #e8e2ff; }
+    body.theme-dusk #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#4a3a1a,#5a4520); border-color: rgba(240,169,58,.4); color: #ffd98a; }
+    body.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#2e2a55,#3a3470); border-color: rgba(122,92,255,.45); color: #cfc6ff; }
     /* Nav admin : emoji + libellé → chips qui s'adaptent au texte et passent à la ligne proprement */
     .aseg-nav button { flex: 0 1 auto; padding: .5rem .7rem; white-space: nowrap; }
     /* Liste membres admin : en-tête comptes actifs/suspendus + filtre */
@@ -4276,14 +4305,22 @@
             <span class="cap-go">Explorer ›</span>
           </button>
           <div class="xp-banner" id="xpBanner"></div>
-          <!-- Navigation rapide en tuiles colorées -->
-          <div class="cat-row" id="jeuxNav">
-            <div class="cat-tile" data-jeuxnav="quests"><div class="cic c-sun" data-smicon="quest" data-smicon-size="36">🎯</div><div class="clbl">Quêtes</div></div>
-            <div class="cat-tile" data-jeuxnav="games"><div class="cic c-purp" data-smicon="games" data-smicon-size="36">🎮</div><div class="clbl">Jeux</div></div>
-            <div class="cat-tile" data-jeuxnav="badges"><div class="cic c-gold" data-smicon="medal" data-smicon-size="36">🏅</div><div class="clbl">Badges</div></div>
-            <div class="cat-tile" data-jeuxnav="coupons"><div class="cic c-green" data-smicon="coupon" data-smicon-size="36">🎟️</div><div class="clbl">Coupons</div></div>
-            <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue" data-smicon="rank" data-smicon-size="36">🏆</div><div class="clbl">Classement</div></div>
-            <div class="cat-tile" data-jeuxnav="shop"><div class="cic c-pink" data-smicon="shop" data-smicon-size="36">🛍️</div><div class="clbl">Boutique</div></div>
+          <!-- Navigation HIÉRARCHISÉE : « Jouer » (2 tuiles primaires, mises en avant) puis
+               « Progresser & récompenses » (les 4 secondaires). Garde id=jeuxNav (ancêtre des
+               tuiles → CSS + handlers [data-jeuxnav] inchangés). -->
+          <div id="jeuxNav">
+            <div class="jnav-cap">🎮 Jouer</div>
+            <div class="cat-row jnav-primary">
+              <div class="cat-tile" data-jeuxnav="quests"><div class="cic c-sun" data-smicon="quest" data-smicon-size="36">🎯</div><div class="clbl">Quêtes</div></div>
+              <div class="cat-tile" data-jeuxnav="games"><div class="cic c-purp" data-smicon="games" data-smicon-size="36">🎮</div><div class="clbl">Jeux</div></div>
+            </div>
+            <div class="jnav-cap">🏆 Progresser &amp; récompenses</div>
+            <div class="cat-row jnav-secondary">
+              <div class="cat-tile" data-jeuxnav="badges"><div class="cic c-gold" data-smicon="medal" data-smicon-size="36">🏅</div><div class="clbl">Badges</div></div>
+              <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue" data-smicon="rank" data-smicon-size="36">🏆</div><div class="clbl">Classement</div></div>
+              <div class="cat-tile" data-jeuxnav="coupons"><div class="cic c-green" data-smicon="coupon" data-smicon-size="36">🎟️</div><div class="clbl">Coupons</div></div>
+              <div class="cat-tile" data-jeuxnav="shop"><div class="cic c-pink" data-smicon="shop" data-smicon-size="36">🛍️</div><div class="clbl">Boutique</div></div>
+            </div>
           </div>
           <div class="gold-only-note">👑 Gratuit : 1 quête + 1 activité par jour. Gold : illimité + <b>coupons exclusifs</b> bien plus avantageux.</div>
 
