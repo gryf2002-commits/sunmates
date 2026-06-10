@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=351"></script>
-  <script src="sunmates-icons.js?v=351"></script>
+  <script src="sunmates-badges.js?v=352"></script>
+  <script src="sunmates-icons.js?v=352"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -2927,6 +2927,20 @@
     .sm-selopt .sm-selopt-check { color: var(--accent); opacity: 0; font-weight: 900; }
     .sm-selopt.sel .sm-selopt-check { opacity: 1; }
 
+    /* Filtres carte = bouton « Calques » → panneau de toggles (fini le scroll horizontal des chips). */
+    .hm-layers-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .42rem .8rem; border-radius: 999px; border: 1.5px solid var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: .82rem; cursor: pointer; white-space: nowrap; }
+    .hm-layers-btn .hlb-cnt { background: var(--accent); color: #fff; border-radius: 999px; min-width: 18px; height: 18px; display: inline-grid; place-items: center; font-size: .68rem; padding: 0 5px; }
+    #homeMapFilters.as-btn { flex-wrap: nowrap !important; overflow: visible; }
+    #homeMapFilters.as-btn .chip { display: none !important; }   /* chips gardées (logique) mais masquées */
+    .hm-layer-row { display: flex; align-items: center; gap: .7rem; width: 100%; padding: .72rem .8rem; border-radius: 12px; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: .92rem; cursor: pointer; text-align: left; }
+    .hm-layer-row .hlr-ic { font-size: 1.2rem; }
+    .hm-layer-row .hlr-name { flex: 1; font-weight: 700; }
+    .hm-layer-row .hlr-cnt { color: var(--muted); font-size: .8rem; font-weight: 700; }
+    .hm-layer-row .hlr-sw { width: 42px; height: 24px; border-radius: 999px; background: var(--line); position: relative; transition: background .15s; flex-shrink: 0; }
+    .hm-layer-row .hlr-sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+    .hm-layer-row.on .hlr-sw { background: var(--accent); }
+    .hm-layer-row.on .hlr-sw::after { transform: translateX(18px); }
+
   </style>
 </head>
 <body>
@@ -3418,7 +3432,8 @@
           <!-- Sélecteur de ville (menu déroulant) : concentre la carte sur une ville de jeu -->
           <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button></div>
           <!-- Chips colorés + emojis (l'âme SunMates) : couleur = type de marqueur sur la carte -->
-          <div class="chips wrap homemap-filters" id="homeMapFilters">
+          <div class="chips wrap homemap-filters as-btn" id="homeMapFilters">
+            <button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Calques <span class="hlb-cnt" id="hmLayersCnt">5</span></button>
             <button class="chip active cl-places" data-layer="places">📍 Lieux <b data-cnt></b></button>
             <button class="chip active cl-mates" data-layer="mates">🧑 Mates <b data-cnt></b></button>
             <button class="chip active cl-acts" data-layer="activities">🎉 Activités <b data-cnt></b></button>
@@ -10895,9 +10910,37 @@
         .map(([c, l]) => `<span><i style="background:${c}"></i>${l}</span>`).join("");
     }
 
+    // Calques de la carte : bouton → panneau DA de toggles (remplace le scroll horizontal des chips).
+    const HM_LAYERS = [["places", "📍", "Lieux"], ["mates", "🧑", "Mates"], ["activities", "🎉", "Activités"], ["checkins", "✅", "Check-ins"], ["quests", "🎯", "Quêtes"]];
+    function updateLayersBtn() { const c = $("hmLayersCnt"); if (c) c.textContent = Object.values(homeLayerOn).filter(Boolean).length; }
+    function openLayersSheet() {
+      let ov = $("hmLayersOv");
+      if (!ov) {
+        ov = document.createElement("div"); ov.id = "hmLayersOv"; ov.className = "sm-selsheet-ov";
+        ov.innerHTML = '<div class="sm-selsheet" role="dialog" aria-modal="true"><div class="sm-selsheet-grip"></div><div class="sm-selsheet-head"><h4>🗂️ Calques de la carte</h4><button type="button" aria-label="Fermer">✕</button></div><div class="sm-selsheet-list" id="hmLayersList"></div></div>';
+        document.body.appendChild(ov);
+        ov.addEventListener("click", (e) => { if (e.target === ov) ov.classList.remove("show"); });
+        ov.querySelector(".sm-selsheet-head button").addEventListener("click", () => ov.classList.remove("show"));
+      }
+      const list = $("hmLayersList");
+      const render = () => {
+        list.innerHTML = HM_LAYERS.map(([k, ic, name]) => {
+          const on = homeLayerOn[k]; const cnt = (homeMarkersByType[k] || []).length;
+          return `<button type="button" class="hm-layer-row${on ? " on" : ""}" data-l="${k}"><span class="hlr-ic">${ic}</span><span class="hlr-name">${name}</span><span class="hlr-cnt">${cnt}</span><span class="hlr-sw"></span></button>`;
+        }).join("");
+        list.querySelectorAll(".hm-layer-row").forEach((b) => b.addEventListener("click", () => {
+          const k = b.dataset.l; const chip = document.querySelector(`#homeMapFilters .chip[data-layer="${k}"]`);
+          if (chip) chip.click(); else { homeLayerOn[k] = !homeLayerOn[k]; applyHomeLayers(); }
+          render(); updateLayersBtn();
+          if (window.SMSound) { try { SMSound.play("tap"); } catch (e) {} }
+        }));
+      };
+      render(); ov.classList.add("show");
+    }
     // Filtres (afficher/masquer une couche au clic)
     (function () {
       const f = $("homeMapFilters"); if (!f) return;
+      { const lb = $("hmLayersBtn"); if (lb) lb.addEventListener("click", openLayersSheet); updateLayersBtn(); }
       f.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", () => {
         const k = b.dataset.layer; homeLayerOn[k] = !homeLayerOn[k];
         b.classList.toggle("active", homeLayerOn[k]); applyHomeLayers();
