@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=367"></script>
-  <script src="sunmates-icons.js?v=367"></script>
+  <script src="sunmates-badges.js?v=368"></script>
+  <script src="sunmates-icons.js?v=368"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -318,6 +318,21 @@
     .jnav-primary .cat-tile { padding: .75rem .5rem; }
     .jnav-primary .cat-tile .cic { width: 50px; height: 50px; font-size: 1.55rem; border-radius: 14px; }
     .jnav-primary .cat-tile .clbl { font-size: .82rem; }
+    /* #13 : widgets de progression en TUILES CARRÉES (+ 1 tuile scindée en 2 : quête proche | ville). */
+    .prog-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; margin-bottom: .5rem; }
+    .prog-split { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: .5rem; }
+    .prog-tile, .prog-half { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem; text-align: center;
+      cursor: pointer; padding: .95rem .5rem; color: var(--ink); font: inherit; min-height: 86px; transition: transform .12s ease; }
+    .prog-tile { border: 1.5px solid var(--line); border-radius: 16px; background: var(--card); }
+    .prog-half { border: 0; }
+    .prog-tile:active, .prog-half:active { transform: scale(.97); }
+    .prog-tile .pt-ic, .prog-half .pt-ic { font-size: 1.65rem; line-height: 1; }
+    .prog-tile .pt-lbl, .prog-half .pt-lbl { font-size: .78rem; font-weight: 700; line-height: 1.18; }
+    .pt-obj  { background: linear-gradient(135deg, rgba(255,201,60,.18), rgba(255,138,61,.12)) !important; border-color: rgba(240,169,58,.4) !important; }
+    .pt-coll { background: linear-gradient(135deg, rgba(122,92,255,.14), rgba(98,56,214,.10)) !important; border-color: rgba(122,92,255,.32) !important; }
+    .ps-quest { background: linear-gradient(135deg, rgba(255,90,77,.14), rgba(255,138,61,.10)); }
+    .ps-city  { background: linear-gradient(135deg, rgba(255,201,60,.26), rgba(255,138,61,.2)); } /* ville à l'honneur : couleur chaude gardée (dénote un peu, voulu) */
+    body.theme-dusk .prog-tile { background: #2a2140; }
 
     /* ---- Carte « N éléments au même endroit » (>6 marqueurs co-localisés) ---- */
     .coloc-card { min-width: 180px; }
@@ -4396,32 +4411,42 @@
           </div>
           <div class="gold-only-note">👑 Gratuit : 1 quête + 1 activité par jour. Gold : illimité + <b>coupons exclusifs</b> bien plus avantageux.</div>
 
-          <!-- Widgets de PROGRESSION (sous la navigation) : objectifs, quête proche, collection, ville à l'honneur. -->
-          <!-- Objectifs de la semaine -->
-          <div id="weeklyGoals"></div>
-          <!-- Radar : la quête géolocalisée la plus proche de toi (Paris) -->
-          <div class="card nq-card" id="nearQuestCard" style="display:none">
-            <div class="nq-emblem" id="nqEmblem">🎯</div>
-            <div class="nq-body">
-              <div class="nq-lbl">🎯 Quête la plus proche</div>
-              <div class="nq-title" id="nqTitle">—</div>
-              <div class="nq-meta muted" id="nqMeta"></div>
+          <!-- #13 : progression en TUILES CARRÉES (clic = détail). Quête proche + Ville à l'honneur =
+               UNE tuile scindée en 2 moitiés. Les widgets d'origine sont gardés MASQUÉS (#progSources) :
+               renderWeeklyGoals/renderQuestCollection/renderNearestQuest/renderCapitaleDuJour les
+               remplissent toujours ; les tuiles lisent/ouvrent leur contenu. Fonctionnement inchangé. -->
+          <div class="jnav-cap">🎯 Ta progression</div>
+          <div class="prog-tiles">
+            <button type="button" class="prog-tile pt-obj" data-prog="goals"><span class="pt-ic">🎯</span><span class="pt-lbl">Objectifs<br>de la semaine</span></button>
+            <button type="button" class="prog-tile pt-coll" data-prog="collection"><span class="pt-ic">🗺️</span><span class="pt-lbl">Collection<br>de quêtes</span></button>
+          </div>
+          <div class="prog-split">
+            <button type="button" class="prog-half ps-quest" data-prog="nearquest"><span class="pt-ic">📍</span><span class="pt-lbl">Quête<br>la plus proche</span></button>
+            <button type="button" class="prog-half ps-city" data-prog="capitale"><span class="pt-ic">🏙️</span><span class="pt-lbl">Ville<br>à l'honneur</span></button>
+          </div>
+          <div id="progSources" style="display:none">
+            <div id="weeklyGoals"></div>
+            <div class="card nq-card" id="nearQuestCard" style="display:none">
+              <div class="nq-emblem" id="nqEmblem">🎯</div>
+              <div class="nq-body">
+                <div class="nq-lbl">🎯 Quête la plus proche</div>
+                <div class="nq-title" id="nqTitle">—</div>
+                <div class="nq-meta muted" id="nqMeta"></div>
+              </div>
+              <button class="btn-accent nq-go" id="nqGo">📍 Carte</button>
             </div>
-            <button class="btn-accent nq-go" id="nqGo">📍 Carte</button>
+            <div class="qcoll" id="questCollection" style="display:none">
+              <div class="qcoll-head"><span>🗺️ Collection de quêtes</span><b id="qcollCount">0/0</b></div>
+              <div class="qcoll-bar"><span id="qcollFill" style="width:0%"></span></div>
+              <div class="qcoll-head" id="cityProgress" style="display:none;margin-top:.5rem"><span>🏙️ Villes explorées</span><b id="cityCount">0/0</b></div>
+              <div class="qcoll-bar" id="cityBarWrap" style="display:none"><span id="cityFill" style="width:0%"></span></div>
+            </div>
+            <button class="capitale" id="capitaleDuJour" style="display:none">
+              <span class="cap-ic">🏙️</span>
+              <span class="cap-txt"><b id="capName">—</b><span>Ville à l'honneur du jour · explore ses quêtes (ou repère-les pour ton prochain voyage)</span></span>
+              <span class="cap-go">Explorer ›</span>
+            </button>
           </div>
-          <!-- Collection de quêtes : progression visuelle (objectif clair) -->
-          <div class="qcoll" id="questCollection" style="display:none">
-            <div class="qcoll-head"><span>🗺️ Collection de quêtes</span><b id="qcollCount">0/0</b></div>
-            <div class="qcoll-bar"><span id="qcollFill" style="width:0%"></span></div>
-            <div class="qcoll-head" id="cityProgress" style="display:none;margin-top:.5rem"><span>🏙️ Villes explorées</span><b id="cityCount">0/0</b></div>
-            <div class="qcoll-bar" id="cityBarWrap" style="display:none"><span id="cityFill" style="width:0%"></span></div>
-          </div>
-          <!-- Capitale du jour : une ville à l'honneur chaque jour -->
-          <button class="capitale" id="capitaleDuJour" style="display:none">
-            <span class="cap-ic">🏙️</span>
-            <span class="cap-txt"><b id="capName">—</b><span>Ville à l'honneur du jour · explore ses quêtes (ou repère-les pour ton prochain voyage)</span></span>
-            <span class="cap-go">Explorer ›</span>
-          </button>
           <div class="xp-banner" id="xpBanner"></div>
 
           <div class="card sugg-card" id="suggestionsSection" style="display:none">
@@ -6418,6 +6443,8 @@
 
     // ====================== ADMIN, back-office ======================
     function showAdminSegment(seg) {
+      // #11 : aucun panneau/chargement admin si pas admin (les loadAdmin* ne partent jamais pour un non-admin).
+      if (!(myProfile && myProfile.is_admin)) return;
       document.querySelectorAll("[data-aseg]").forEach((b) => b.classList.toggle("active", b.dataset.aseg === seg));
       document.querySelectorAll("[data-asegpanel]").forEach((p) => show(p, p.dataset.asegpanel === seg));
       if (seg === "demo") renderDemoScript();
@@ -11221,6 +11248,9 @@
 
     // ---- Sous-onglets de la page Profil (Mon profil / Check-ins) ----
     function showProfileSegment(seg) {
+      // #11 : le segment ADMIN n'est ouvrable QUE par un admin (defense en profondeur : avant, un
+      // non-admin pouvait appeler showProfileSegment("admin") depuis la console et afficher le back-office).
+      if (seg === "admin" && !(myProfile && myProfile.is_admin)) return;
       document.querySelectorAll("[data-pseg]").forEach((b) => b.classList.toggle("active", b.dataset.pseg === seg));
       document.querySelectorAll("[data-psegpanel]").forEach((p) => show(p, p.dataset.psegpanel === seg));
       if (seg === "admin" && typeof showAdminSegment === "function") showAdminSegment("demo");
@@ -12145,6 +12175,15 @@
     }
 
     function renderGameHub() { try { renderPlayerHero(); renderQuestSpotlight(); renderBadgeRail(); renderNearestQuest(); renderQuestCollection(); renderCapitaleDuJour(); } catch (e) {} }
+    // #13 : les tuiles de progression ouvrent le contenu du widget correspondant (sources masquées).
+    document.querySelectorAll("[data-prog]").forEach((b) => b.addEventListener("click", () => {
+      const k = b.dataset.prog;
+      if (k === "goals") { const w = $("weeklyGoals"); const has = w && w.innerHTML.trim(); showInfo("🎯 Objectifs de la semaine", has ? '<div style="text-align:left">' + w.innerHTML + '</div>' : '<p class="muted" style="text-align:center;padding:1rem">Pas d\'objectif cette semaine — reviens bientôt ✨</p>'); }
+      else if (k === "collection") { const w = $("questCollection"); const has = w && w.innerHTML.trim() && w.style.display !== "none"; showInfo("🗺️ Collection de quêtes", has ? '<div style="text-align:left">' + w.innerHTML + '</div>' : '<p class="muted" style="text-align:center;padding:1rem">Aucune quête géolocalisée pour l\'instant — joue une quête sur la carte 📍</p>'); }
+      else if (k === "nearquest") { if (typeof showNearestQuests === "function") showNearestQuests(); }
+      else if (k === "capitale") { const c = $("capitaleDuJour"); if (c && c.onclick) c.onclick(); else showInfo("🏙️ Ville à l'honneur", '<p class="muted" style="text-align:center;padding:1rem">Pas de ville à l\'honneur pour l\'instant (il faut des quêtes dans plusieurs villes).</p>'); }
+      if (window.SMSound) { try { SMSound.play("tap"); } catch (e) {} }
+    }));
 
     // Vignette de niveau cliquable → explique les niveaux, ce qu'ils débloquent, + lien classement.
     function showLevelInfo() {
