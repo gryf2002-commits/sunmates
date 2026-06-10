@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=346"></script>
-  <script src="sunmates-icons.js?v=346"></script>
+  <script src="sunmates-badges.js?v=347"></script>
+  <script src="sunmates-icons.js?v=347"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -4311,7 +4311,30 @@
               <div class="ph-xp-next"><span class="ph-next-ic">🚀</span><span class="ph-next-txt" id="phXpNext">Accomplis une quête pour gagner ton premier niveau</span></div>
             </div>
           </section>
-          <!-- Objectifs de la semaine : remontés ici (sous le niveau) → moins de scroll -->
+          <!-- RÉAGENCEMENT (#1) : la NAVIGATION (6 tuiles) remonte JUSTE sous le niveau (accès direct,
+               fini le scroll « niveau → obj → quête → collection → ville → enfin les tuiles »). Les
+               widgets de progression (obj semaine, quête proche, collection, ville) passent EN DESSOUS.
+               Tout est déplacé par bloc (IDs préservés → JS/handlers inchangés). -->
+          <!-- Navigation HIÉRARCHISÉE : « Jouer » (2 tuiles primaires) puis « Progresser & récompenses ». -->
+          <div id="jeuxNav">
+            <div class="jnav-cap">🎮 Jouer</div>
+            <div class="cat-row jnav-primary">
+              <div class="cat-tile" data-jeuxnav="quests"><div class="cic c-sun" data-smicon="quest" data-smicon-size="36">🎯</div><div class="clbl">Quêtes</div></div>
+              <div class="cat-tile" data-jeuxnav="games"><div class="cic c-purp" data-smicon="games" data-smicon-size="36">🎮</div><div class="clbl">Jeux</div></div>
+            </div>
+            <div class="jnav-cap">🏆 Progresser &amp; récompenses</div>
+            <!-- Ordre pensé pour éviter 2 couleurs identiques côte à côte : or → rose → bleu → rose. -->
+            <div class="cat-row jnav-secondary">
+              <div class="cat-tile" data-jeuxnav="badges"><div class="cic c-gold" data-smicon="medal" data-smicon-size="36">🏅</div><div class="clbl">Badges</div></div>
+              <div class="cat-tile" data-jeuxnav="coupons"><div class="cic c-green" data-smicon="coupon" data-smicon-size="36">🎟️</div><div class="clbl">Coupons</div></div>
+              <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue" data-smicon="rank" data-smicon-size="36">🏆</div><div class="clbl">Classement</div></div>
+              <div class="cat-tile" data-jeuxnav="shop"><div class="cic c-pink" data-smicon="shop" data-smicon-size="36">🛍️</div><div class="clbl">Boutique</div></div>
+            </div>
+          </div>
+          <div class="gold-only-note">👑 Gratuit : 1 quête + 1 activité par jour. Gold : illimité + <b>coupons exclusifs</b> bien plus avantageux.</div>
+
+          <!-- Widgets de PROGRESSION (sous la navigation) : objectifs, quête proche, collection, ville à l'honneur. -->
+          <!-- Objectifs de la semaine -->
           <div id="weeklyGoals"></div>
           <!-- Radar : la quête géolocalisée la plus proche de toi (Paris) -->
           <div class="card nq-card" id="nearQuestCard" style="display:none">
@@ -4337,25 +4360,6 @@
             <span class="cap-go">Explorer ›</span>
           </button>
           <div class="xp-banner" id="xpBanner"></div>
-          <!-- Navigation HIÉRARCHISÉE : « Jouer » (2 tuiles primaires, mises en avant) puis
-               « Progresser & récompenses » (les 4 secondaires). Garde id=jeuxNav (ancêtre des
-               tuiles → CSS + handlers [data-jeuxnav] inchangés). -->
-          <div id="jeuxNav">
-            <div class="jnav-cap">🎮 Jouer</div>
-            <div class="cat-row jnav-primary">
-              <div class="cat-tile" data-jeuxnav="quests"><div class="cic c-sun" data-smicon="quest" data-smicon-size="36">🎯</div><div class="clbl">Quêtes</div></div>
-              <div class="cat-tile" data-jeuxnav="games"><div class="cic c-purp" data-smicon="games" data-smicon-size="36">🎮</div><div class="clbl">Jeux</div></div>
-            </div>
-            <div class="jnav-cap">🏆 Progresser &amp; récompenses</div>
-            <!-- Ordre pensé pour éviter 2 couleurs identiques côte à côte : or → rose → bleu → rose. -->
-            <div class="cat-row jnav-secondary">
-              <div class="cat-tile" data-jeuxnav="badges"><div class="cic c-gold" data-smicon="medal" data-smicon-size="36">🏅</div><div class="clbl">Badges</div></div>
-              <div class="cat-tile" data-jeuxnav="coupons"><div class="cic c-green" data-smicon="coupon" data-smicon-size="36">🎟️</div><div class="clbl">Coupons</div></div>
-              <div class="cat-tile" data-jeuxnav="rank"><div class="cic c-blue" data-smicon="rank" data-smicon-size="36">🏆</div><div class="clbl">Classement</div></div>
-              <div class="cat-tile" data-jeuxnav="shop"><div class="cic c-pink" data-smicon="shop" data-smicon-size="36">🛍️</div><div class="clbl">Boutique</div></div>
-            </div>
-          </div>
-          <div class="gold-only-note">👑 Gratuit : 1 quête + 1 activité par jour. Gold : illimité + <b>coupons exclusifs</b> bien plus avantageux.</div>
 
           <div class="card sugg-card" id="suggestionsSection" style="display:none">
             <h3 style="margin-top:0;display:flex;align-items:center;gap:.4rem">🎯 Défis reçus <span class="sugg-count" id="suggCount"></span></h3>
