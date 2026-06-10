@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=352"></script>
-  <script src="sunmates-icons.js?v=352"></script>
+  <script src="sunmates-badges.js?v=353"></script>
+  <script src="sunmates-icons.js?v=353"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -11915,21 +11915,38 @@
     // Tuiles de sélection rapides : humeur (ressenti) ou spot (lieu) → pré-remplissent le champ.
     const FEED_MOODS = ["😎 Au top", "🥳 En vadrouille", "😌 Zen", "🤩 Inspiré·e", "🫶 Reconnaissant·e", "😴 Crevé·e mais content·e", "🌍 Envie d'ailleurs"];
     const FEED_SPOTS = ["☕ Café cosy", "🍹 En terrasse", "🏖️ À la plage", "🌳 Au parc", "🏛️ Musée / expo", "🌇 Spot sunset", "🍜 Bonne adresse"];
+    // Humeurs/spots du feed : bouton → panneau de choix DA (fini le scroll horizontal des chips).
+    function feedPrefill(base) {
+      const ta = $("feedInput"); if (!ta) return;
+      const city = (myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : "";
+      ta.value = (_feedKind === "spot" && city) ? base + " à " + city : base;
+      ta.dispatchEvent(new Event("input")); // pas de .focus() → on n'ouvre pas le clavier de force
+    }
+    function openFeedPickSheet() {
+      const items = _feedKind === "spot" ? FEED_SPOTS : FEED_MOODS;
+      let ov = $("feedPickOv");
+      if (!ov) {
+        ov = document.createElement("div"); ov.id = "feedPickOv"; ov.className = "sm-selsheet-ov";
+        ov.innerHTML = '<div class="sm-selsheet" role="dialog" aria-modal="true"><div class="sm-selsheet-grip"></div><div class="sm-selsheet-head"><h4></h4><button type="button" aria-label="Fermer">✕</button></div><div class="sm-selsheet-list" id="feedPickList"></div></div>';
+        document.body.appendChild(ov);
+        ov.addEventListener("click", (e) => { if (e.target === ov) ov.classList.remove("show"); });
+        ov.querySelector(".sm-selsheet-head button").addEventListener("click", () => ov.classList.remove("show"));
+      }
+      ov.querySelector("h4").textContent = _feedKind === "spot" ? "📍 Ton spot du moment" : "✨ Ton humeur du jour";
+      const list = $("feedPickList");
+      list.innerHTML = items.map((t) => `<button type="button" class="sm-selopt" data-fpick="${escapeHtml(t)}"><span>${escapeHtml(t)}</span><span class="sm-selopt-check" style="opacity:.4">›</span></button>`).join("");
+      list.querySelectorAll("[data-fpick]").forEach((c) => c.addEventListener("click", () => {
+        feedPrefill(c.dataset.fpick); ov.classList.remove("show");
+        if (window.SMSound) { try { SMSound.play("tap"); } catch (e) {} }
+      }));
+      ov.classList.add("show");
+    }
     function renderFeedChips() {
       const box = $("feedChips"); if (!box) return;
-      const items = _feedKind === "spot" ? FEED_SPOTS : FEED_MOODS;
-      const hint = $("feedChipsHint"); if (hint) hint.textContent = _feedKind === "spot" ? "👇 Touche ton spot, puis personnalise" : "👇 Touche une humeur, puis personnalise";
-      box.innerHTML = items.map((t) => `<button type="button" class="fc-chip" data-fchip="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join("");
-      box.querySelectorAll("[data-fchip]").forEach((c) => c.addEventListener("click", () => {
-        const ta = $("feedInput"); if (!ta) return;
-        const base = c.dataset.fchip;
-        // Surbrillance du chip choisi (retour visuel = plus intuitif).
-        box.querySelectorAll("[data-fchip]").forEach((x) => x.classList.toggle("on", x === c));
-        // Spot = on suffixe la ville si connue ; humeur = on pose le ressenti, prêt à compléter.
-        const city = (myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : "";
-        ta.value = (_feedKind === "spot" && city) ? base + " à " + city : base;
-        ta.dispatchEvent(new Event("input")); // pas de .focus() → on n'ouvre pas le clavier de force
-      }));
+      const hint = $("feedChipsHint"); if (hint) hint.textContent = _feedKind === "spot" ? "Choisis ton spot, puis personnalise ✍️" : "Choisis une humeur, puis personnalise ✍️";
+      const lbl = _feedKind === "spot" ? "📍 Choisir un spot" : "✨ Choisir une humeur";
+      box.innerHTML = `<button type="button" class="hm-layers-btn" id="feedPickBtn">${lbl}</button>`;
+      const pb = $("feedPickBtn"); if (pb) pb.addEventListener("click", openFeedPickSheet);
     }
     // UI des options de sondage (2 à 4 options, ajout dynamique).
     function renderPollOptionsUIWith(vals) {
