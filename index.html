@@ -72,8 +72,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=368"></script>
-  <script src="sunmates-icons.js?v=368"></script>
+  <script src="sunmates-badges.js?v=369"></script>
+  <script src="sunmates-icons.js?v=369"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -6857,13 +6857,13 @@
       { title: "📰 Le fil : humeur ou spot", text: "Publie en un geste : touche une tuile d'humeur ou de spot, le champ se pré-remplit.", ms: 6000,
         run: () => { adCleanup(); A(() => goToTab("accueil")); A(() => { if (typeof setHomeMode === "function") setHomeMode("travel"); }); adInto("#feedComposer", 350); } },
       { title: "🏙️ La capitale du jour", text: "Une ville mise à l'honneur chaque jour : un teaser de ses quêtes avant d'explorer.", ms: 6000,
-        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => adInto("#capitaleDuJour", 250), 400); } },
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => adInto('[data-prog="capitale"]', 250), 400); } },
       { title: "🎯 Le radar : quête la plus proche", text: "Géolocalisé : la quête la plus proche de toi, avec la distance. Touche pour la liste complète.", ms: 6000,
-        run: () => { A(() => goToTab("jeux")); adInto("#nearQuestCard", 300); } },
+        run: () => { A(() => goToTab("jeux")); adInto('[data-prog="nearquest"]', 300); } },
       { title: "🗺️ Ma collection", text: "Toutes tes quêtes accomplies / à faire, par ville, + tes villes explorées.", ms: 5500,
         run: () => { A(() => goToTab("jeux")); setTimeout(() => { if (typeof showCollectionSheet === "function") showCollectionSheet(); }, 500); } },
       { title: "🗓️ Les objectifs de la semaine", text: "3 mini-objectifs qui changent chaque semaine pour garder le rythme.", ms: 5500,
-        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { const d = document.querySelector(".wg-card"); if (d) d.open = true; adInto("#weeklyGoals", 250); }, 450); } },
+        run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => adInto('[data-prog="goals"]', 250), 450); } },
       { title: "⭐ Ton niveau & tes titres", text: "Gagne de l'XP, monte en niveau, débloque des titres… et quelques surprises aux paliers élevés 😏", ms: 6000,
         run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showLevelInfo === "function") showLevelInfo(); }, 500); } },
       { title: "🎮 Les jeux populaires", text: "6 mini-jeux intégrés, jouables tout de suite, en solo ou avec un Mate.", ms: 6000,
@@ -11146,7 +11146,7 @@
         { tab: "accueil", sel: "#feedComposer", emoji: "📰", title: "Le fil", text: "Publie une humeur ou un spot, et like les posts de la communauté." },
         { tab: "accueil", sel: ".grid2", emoji: "⚡", title: "Accès rapides", text: "Tes raccourcis vers Mates, Sécurité, Lieux, Jeux, Classement, Coupons, Boutique et Profil." },
         { tab: "lieux", sel: "#lieuxCats", emoji: "📍", title: "Lieux sûrs", text: "Cafés et spots validés : filtre (éco, près de toi, top notés), fais un check-in pour gagner des points, et publie ton « spot du jour »." },
-        { tab: "jeux", view: "jeuxHome", sel: "#playerHero", emoji: "⭐", title: "Ton niveau", text: "Gagne de l'XP en accomplissant des quêtes. Touche la carte pour voir tes récompenses et le classement." },
+        { tab: "jeux", view: "jeuxHome", sel: "#playerBadge", emoji: "⭐", title: "Ton niveau", text: "Gagne de l'XP en accomplissant des quêtes. Touche ce badge pour voir ta progression, tes titres et ta série." },
         { tab: "jeux", sel: "#jeuxNav", emoji: "🎯", title: "Quêtes & jeux", text: "Quêtes, jeux, badges, coupons, classement, boutique : tout est ici." },
         { tab: "connexions", sel: "#inviteFriendsBtn", emoji: "✨", title: "Inviter des amis", text: "Fais venir tes amis : un coupon « 1er verre offert » pour vous deux 🍹" },
         { tab: "connexions", sel: ".mseg", emoji: "🤝", title: "Tes Mates", text: "Messages, Découvrir de nouveaux voyageurs, et Demandes de connexion." },
