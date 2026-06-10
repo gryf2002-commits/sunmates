@@ -100,8 +100,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=379"></script>
-  <script src="sunmates-icons.js?v=379"></script>
+  <script src="sunmates-badges.js?v=380"></script>
+  <script src="sunmates-icons.js?v=380"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3456,8 +3456,22 @@
               <div class="sp-stat stat-click" data-spstat="rit" role="button" tabindex="0"><b id="spRit">0/3</b><span>Rituels du jour</span></div>
               <div class="sp-stat stat-click" data-spstat="xp" role="button" tabindex="0"><b id="spXp">0</b><span>XP gagné</span></div>
             </div>
+            <!-- Mini-jauge : combien il manque pour le prochain niveau (motivation immédiate avant les défis) -->
+            <div class="sp-next"><div class="sp-track"><span id="spFill" style="width:0%"></span></div><span class="sp-next-lbl" id="spNextLbl"></span></div>
           </section>
 
+          <!-- (styles vague A accueil : jauge niveau + états vides joyeux + tout-cocher) -->
+          <style>
+            .sp-next { display: flex; align-items: center; gap: .55rem; margin-top: .6rem; position: relative; z-index: 1; }
+            .sp-track { flex: 1; height: 8px; border-radius: 999px; background: rgba(120,40,10,.14); overflow: hidden; }
+            .sp-track span { display: block; height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width .4s ease; }
+            .sp-next-lbl { font-size: .72rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
+            body.theme-dusk .sp-track { background: rgba(255,255,255,.12); }
+            .solo-alldone { grid-column: 1 / -1; text-align: center; font-size: .82rem; font-weight: 700; color: var(--ink);
+              background: linear-gradient(135deg, rgba(255,201,60,.18), rgba(255,138,61,.12)); border: 1px dashed rgba(232,150,31,.45);
+              border-radius: 14px; padding: .65rem .8rem; margin-top: .15rem; }
+            .rit-row.rit-all .rit-name { color: var(--accent); font-weight: 800; }
+          </style>
           <!-- HomeMates : tes souvenirs d'aventure + tes Mates, gardés même de retour à la maison -->
           <section class="card hm-souv" id="homeMates" style="display:none">
             <div class="qm-head"><h3>🏡 Tes souvenirs SunMates</h3><a class="qm-all" id="hmSouvShare" role="button" tabindex="0">📤 Partager</a></div>
@@ -9912,7 +9926,7 @@
             if (window.SMSound) SMSound.play("notify"); // ping signature SunMates
             toast("💬", `<b>${escapeHtml(nameById(m.sender_id))}</b> t'a envoyé un message`,
               () => { goToTab("connexions"); openChat(m.sender_id); markMsgsSeen(); });
-            sysNotify("Nouveau message 💬", nameById(m.sender_id) + " t'a écrit sur SunMates", "connexions");
+            if (!window._pushOn) sysNotify("Nouveau message 💬", nameById(m.sender_id) + " t'a écrit sur SunMates", "connexions"); // sinon le push serveur s'en charge (anti-doublon)
             _refreshConnsSoon(); // débounce : pas un rechargement complet par message
           }
       };
@@ -12573,12 +12587,19 @@
       const sr = $("spRit"); if (sr) sr.textContent = ritDone + "/" + (typeof _allRituals === "function" ? _allRituals().length : SOLO_RITUALS.length);
       const sx = $("spXp"); if (sx) sx.textContent = xp;
       try { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("spStreakN").textContent = st.count || 1; } catch (e) {}
+      // Mini-jauge vers le prochain niveau (même barème que Jeux : 100 XP / niveau)
+      const lvl = Math.floor(xp / 100) + 1, inLvl = xp % 100;
+      const f = $("spFill"); if (f) f.style.width = inLvl + "%";
+      const nl = $("spNextLbl"); if (nl) nl.textContent = i18nT("Niv. {n} · encore {x} XP", { n: lvl, x: 100 - inLvl });
     }
     function renderSoloChallenges() {
       const grid = $("scGrid"); if (!grid) return;
       const city = (myProfile && myProfile.city) || "ta ville"; const sc = $("scCity"); if (sc) sc.textContent = city;
       const s = _soloState(), done = s.ch || {};
-      grid.innerHTML = _soloPick(s.seed || 0).map((c) => '<button class="sc-card sc-' + c.tone + (done[c.key] ? " is-done" : "") + '" data-solo="' + c.key + '"><span class="sc-ic">' + c.emoji + '</span><span class="sc-body"><span class="sc-name">' + escapeHtml(c.title) + '</span><span class="sc-desc">' + escapeHtml(c.desc.replace("{ville}", city)) + '</span></span><span class="sc-xp">+' + c.xp + '</span><span class="sc-check">✓</span></button>').join("");
+      const picked = _soloPick(s.seed || 0);
+      grid.innerHTML = picked.map((c) => '<button class="sc-card sc-' + c.tone + (done[c.key] ? " is-done" : "") + '" data-solo="' + c.key + '"><span class="sc-ic">' + c.emoji + '</span><span class="sc-body"><span class="sc-name">' + escapeHtml(c.title) + '</span><span class="sc-desc">' + escapeHtml(c.desc.replace("{ville}", city)) + '</span></span><span class="sc-xp">+' + c.xp + '</span><span class="sc-check">✓</span></button>').join("")
+        // État « tout bouclé » joyeux (au lieu d'une grille éteinte qui a l'air cassée)
+        + (picked.every((c) => done[c.key]) ? '<div class="solo-alldone">' + i18nT("🌟 Tous les défis du jour relevés — chapeau ! Reviens demain, ou 🎲 mélange pour en piocher d'autres.") + "</div>" : "");
       grid.querySelectorAll("[data-solo]").forEach((b) => b.addEventListener("click", () => completeSolo(b.dataset.solo)));
     }
     // Un défi ne se valide plus en 1 clic : on doit POSTER une photo preuve (anti-triche).
@@ -12601,8 +12622,11 @@
     function editCustomRitual() {
       const cur = _customRit() || {};
       const emos = ["⭐", "💧", "🧘", "📓", "🏃", "🥗", "📵", "🌙", "📞", "🙏"];
+      // Suggestions 1-tap : partir d'une page blanche fait abandonner — on propose, l'utilisateur ajuste.
+      const suggs = [["💧", "Boire 2 L d'eau"], ["🏃", "Bouger 30 minutes"], ["📞", "Appeler un proche"], ["📖", "Lire 10 pages"]];
       popInfo("✍️", "Mon rituel à moi",
         "<p style='font-size:.84rem;margin:0 0 .6rem'>Crée <b>ta</b> routine quotidienne — ce qui compte pour toi.</p>" +
+        "<div style='display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;margin-bottom:.6rem'>" + suggs.map((sg, i) => "<button type='button' class='cre-sugg' data-si='" + i + "' style='font-size:.76rem;font-weight:700;padding:.35rem .6rem;border:1px solid var(--line);border-radius:999px;background:var(--cream);cursor:pointer'>" + sg[0] + " " + escapeHtml(i18nT(sg[1])) + "</button>").join("") + "</div>" +
         "<input id='custRitTitle' type='text' maxlength='40' placeholder='Ex : Boire 1,5 L d'eau' value=\"" + (cur.title ? escapeHtml(cur.title).replace(/"/g, "&quot;") : "") + "\" style='width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin-bottom:.6rem'>" +
         "<div id='custRitEmos' style='display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center'>" + emos.map((e) => "<button type='button' class='cre-emo' data-e='" + e + "' style='font-size:1.3rem;padding:.25rem .4rem;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer'>" + e + "</button>").join("") + "</div>" +
         "<button class='btn-primary btn-block' id='custRitSave' style='margin-top:.9rem'>Enregistrer mon rituel</button>" +
@@ -12612,6 +12636,11 @@
         const mark = () => document.querySelectorAll(".cre-emo").forEach((b) => b.style.borderColor = (b.dataset.e === chosen) ? "var(--accent)" : "var(--line)");
         mark();
         document.querySelectorAll(".cre-emo").forEach((b) => b.onclick = () => { chosen = b.dataset.e; mark(); });
+        document.querySelectorAll(".cre-sugg").forEach((b) => b.onclick = () => {
+          const sg = suggs[parseInt(b.dataset.si, 10)]; if (!sg) return;
+          const inp = $("custRitTitle"); if (inp) inp.value = i18nT(sg[1]);
+          chosen = sg[0]; mark();
+        });
         const sv = $("custRitSave"); if (sv) sv.onclick = () => {
           const t = (($("custRitTitle") && $("custRitTitle").value) || "").trim();
           if (!t) { return; }
@@ -12631,7 +12660,12 @@
       const s = _soloState(), done = s.rit || {};
       const rits = _allRituals();
       const hasCustom = rits.some((r) => r.custom);
+      const todo = rits.filter((r) => !done[r.key]);
       list.innerHTML = rits.map((r) => '<button class="rit-row' + (done[r.key] ? " is-done" : "") + (r.custom ? " rit-custom" : "") + '" data-rit="' + r.key + '"><span class="rit-ic">' + r.emoji + '</span><span class="rit-name">' + escapeHtml(r.title) + (r.custom ? ' <span style="font-size:.66rem;color:var(--accent);font-weight:800">· ma routine ✎</span>' : "") + '</span><span class="rit-box">✓</span></button>').join("")
+        // Matin motivé : tout cocher d'un geste (au lieu de 3-4 taps)
+        + (todo.length >= 2 ? '<button class="rit-row rit-all" id="ritAllBtn"><span class="rit-ic">✨</span><span class="rit-name">' + i18nT("Tout cocher d'un coup") + '</span><span class="rit-box">✓✓</span></button>' : "")
+        // Tout est coché → petit mot chaleureux (pas une liste éteinte)
+        + (!todo.length ? '<div class="solo-alldone">' + i18nT("🎉 Rituels bouclés pour aujourd'hui — prends soin de toi ✨") + "</div>" : "")
         + '<button class="rit-row rit-add" id="ritAddBtn"><span class="rit-ic">➕</span><span class="rit-name">' + (hasCustom ? "Modifier mon rituel" : "Créer mon rituel") + '</span></button>';
       const cnt = $("ritCnt"); if (cnt) cnt.textContent = Object.keys(done).length + "/" + rits.length;
       list.querySelectorAll("[data-rit]").forEach((b) => b.addEventListener("click", (e) => {
@@ -12639,6 +12673,20 @@
         toggleRitual(b.dataset.rit);
       }));
       const add = $("ritAddBtn"); if (add) add.addEventListener("click", editCustomRitual);
+      const all = $("ritAllBtn"); if (all) all.addEventListener("click", () => once("rit:all", completeAllRituals));
+    }
+    // « Tout cocher » : valide chaque rituel restant (mêmes crédits/garde-fous que les taps un à un).
+    async function completeAllRituals() {
+      const s0 = _soloState(); const todo = _allRituals().filter((r) => !((s0.rit || {})[r.key]));
+      let creditedAll = true;
+      for (const r of todo) {
+        const res = await grantSoloXp(r.key, r.xp);
+        if (!res.ok) { creditedAll = false; if (typeof toast === "function") toast("🌙", res.message || "Limite atteinte"); break; }
+        const s = _soloState(); s.rit = s.rit || {}; s.rit[r.key] = true; _soloSave(s);
+      }
+      renderSoloProgress(); renderRituals();
+      if (typeof renderGameHub === "function") renderGameHub();
+      if (creditedAll && todo.length) { if (typeof toast === "function") toast("✨", i18nT("Rituels du jour cochés — belle journée ☀️")); if (window.SMSound) SMSound.play("success"); }
     }
     async function toggleRitual(key) {
       const r = _allRituals().find((x) => x.key === key); if (!r) return;
@@ -12682,8 +12730,11 @@
         row.innerHTML = mates.slice(0, 12).map((p) => { const bg = _safeImgUrl(p.avatar_url); return '<div class="hm-mate" data-hmmate="' + escapeHtml(p.id) + '"><div class="avatar"' + (bg ? " style=\"background-image:url('" + bg + "')\"" : "") + ">" + (bg ? "" : escapeHtml((p.username || "?")[0].toUpperCase())) + '</div><div class="hm-mate-n">' + escapeHtml(p.username || "Mate") + "</div></div>"; }).join("");
         row.querySelectorAll("[data-hmmate]").forEach((el) => el.addEventListener("click", () => { goToTab("connexions"); if (typeof openChat === "function") openChat(el.dataset.hmmate); }));
       } else { if (lbl) lbl.textContent = ""; row.innerHTML = '<p class="muted" style="font-size:.8rem">Pas encore de Mate — pars à la rencontre sur la carte ✨</p>'; }
+      // Teaser : on montre un bout du 1er souvenir SUR le résumé fermé → donne envie d'ouvrir l'album.
+      const firstNoted = cities.find((c) => _souvGet(c));
+      const teaser = firstNoted ? ' <span style="font-weight:500;color:var(--muted);font-size:.78rem">— ' + escapeHtml(firstNoted) + ' : « ' + escapeHtml(_souvGet(firstNoted).slice(0, 42)) + (_souvGet(firstNoted).length > 42 ? "…" : "") + ' »</span>' : "";
       $("hmCities").innerHTML = cities.length
-        ? '<details class="hm-album"><summary>📖 Album souvenir par ville (' + cities.length + ')</summary>' + cities.slice(0, 8).map((c) => {
+        ? '<details class="hm-album"><summary>📖 Album souvenir par ville (' + cities.length + ')' + teaser + '</summary>' + cities.slice(0, 8).map((c) => {
             const note = _souvGet(c);
             return '<div class="hm-city-row" data-souvcity="' + escapeHtml(c) + '" style="cursor:pointer">'
               + '<span>📍</span><span class="hc-name">' + escapeHtml(c) + (note ? ' <span style="font-weight:500;color:var(--text)">— « ' + escapeHtml(note) + ' »</span>' : "") + '</span>'
@@ -13012,7 +13063,7 @@
           if (payload.eventType === "INSERT" && row.user_b === myUserId && notifyOnce("conn-new:" + row.id)) {
             if (window.SMSound) SMSound.play("notify");
             toast("📨", `<b>${escapeHtml(nameById(row.user_a))}</b> souhaite se connecter`, () => goToTab("connexions"));
-            sysNotify(i18nT("Nouvelle demande 📨"), i18nT("{n} souhaite se connecter", { n: nameById(row.user_a) }), "connexions");
+            if (!window._pushOn) sysNotify(i18nT("Nouvelle demande 📨"), i18nT("{n} souhaite se connecter", { n: nameById(row.user_a) }), "connexions"); // anti-doublon : couvert par le push serveur
           }
           if (payload.eventType === "UPDATE" && row.status === "accepted" && (row.user_a === myUserId || row.user_b === myUserId) && notifyOnce("conn-acc:" + row.id)) {
             const other = row.user_a === myUserId ? row.user_b : row.user_a;
@@ -13653,6 +13704,15 @@
       "Complète la carte, ville après ville": "Fill the map, city by city",
       "Une nouvelle ville chaque jour": "A new city every day",
       "Aujourd'hui : {c}": "Today: {c}",
+      "Niv. {n} · encore {x} XP": "Lvl {n} · {x} XP to go",
+      "🌟 Tous les défis du jour relevés — chapeau ! Reviens demain, ou 🎲 mélange pour en piocher d'autres.": "🌟 All of today's challenges done — hats off! Come back tomorrow, or 🎲 shuffle for new ones.",
+      "🎉 Rituels bouclés pour aujourd'hui — prends soin de toi ✨": "🎉 Rituals all done for today — take care of yourself ✨",
+      "Tout cocher d'un coup": "Check them all at once",
+      "Rituels du jour cochés — belle journée ☀️": "Today's rituals checked — have a lovely day ☀️",
+      "Boire 2 L d'eau": "Drink 2 L of water",
+      "Bouger 30 minutes": "Move for 30 minutes",
+      "Appeler un proche": "Call someone you love",
+      "Lire 10 pages": "Read 10 pages",
       "tramways jaunes, fado et couchers de soleil sur le Tage": "yellow trams, fado and sunsets on the Tagus",
       "temples zen, ruelles de geishas et érables flamboyants": "zen temples, geisha lanes and flamboyant maples",
       "souks colorés, riads et désert à perte de vue": "colourful souks, riads and desert as far as the eye can see",
@@ -14722,6 +14782,9 @@
           { user_id: myUserId, endpoint: sub.endpoint, subscription: sub.toJSON() },
           { onConflict: "endpoint" }
         );
+        // Cet appareil reçoit le push SERVEUR (messages + connexions) → on coupera la notif
+        // LOCALE équivalente, sinon DOUBLE notif système (générique + contenu).
+        window._pushOn = true;
       } catch (e) { /* push indisponible (file://, iOS non installé, refus…), silencieux */ }
     }
     function sysNotify(title, body, tab) {
