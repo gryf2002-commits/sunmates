@@ -111,8 +111,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=407"></script>
-  <script src="sunmates-icons.js?v=407"></script>
+  <script src="sunmates-badges.js?v=408"></script>
+  <script src="sunmates-icons.js?v=408"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -11107,10 +11107,14 @@
           if (ly.type === "fill") {
             if (/water|ocean|river|lake/.test(id)) set(ly.id, "fill-color", P.water);
             else if (/ice|glacier/.test(id)) set(ly.id, "fill-color", P.ice);
-            else if (/park|wood|forest|grass|green/.test(id)) set(ly.id, "fill-color", /wood|forest/.test(id) ? P.wood : P.park);
+            else if (/park|wood|forest|grass|green|garden|pitch|playground|cemetery/.test(id)) set(ly.id, "fill-color", /wood|forest/.test(id) ? P.wood : P.park);
             else if (/sand|beach/.test(id)) set(ly.id, "fill-color", P.sand);
-            else if (/building/.test(id)) set(ly.id, "fill-color", P.building);
+            else if (/building/.test(id)) set(ly.id, "fill-color", P.building),
+              set(ly.id, "fill-outline-color", P.casing);
             else if (/aeroway|airport/.test(id)) set(ly.id, "fill-color", P.aeroway);
+            else if (/hospital|school|stadium|university|college/.test(id)) set(ly.id, "fill-color", P.sand);
+            else if (/industrial|commercial|construction|quarry|railway/.test(id)) set(ly.id, "fill-color", P.residential),
+              set(ly.id, "fill-opacity", 0.6);
             else if (/residential|landuse|landcover/.test(id)) set(ly.id, "fill-color", P.residential);
             return;
           }
@@ -11141,7 +11145,16 @@
         } catch (e) { return false; }
       })();
       if (glOk) {
-        const lyr = L.maplibreGL({ style: "https://tiles.openfreemap.org/styles/positron", attribution: "© OpenStreetMap · OpenFreeMap", attributionControl: false });
+        const lyr = L.maplibreGL({
+          // « bright » (et plus « positron ») : style COMPLET — POIs, commerces, parcs nommés,
+          // numéros… positron était trop minimaliste (« il n'y a plus que les noms de rues »).
+          style: "https://tiles.openfreemap.org/styles/bright",
+          attribution: "© OpenStreetMap · OpenFreeMap",
+          attributionControl: false,
+          padding: 0.3,             // rend une marge autour de l'écran → pan sans zones vides
+          fadeDuration: 0,          // étiquettes immédiates (pas de fondu coûteux)
+          pixelRatio: Math.min(window.devicePixelRatio || 1, 2), // cap rétina : ÉNORME gain GPU sur mobile
+        });
         // Recoloration SunMates une fois le style chargé (idempotent, best-effort),
         // + enregistrement pour re-teinter au changement de thème (jour/nuit/saisons).
         setTimeout(() => {
@@ -11170,6 +11183,9 @@
         leafMap = L.map(el, { scrollWheelZoom: false, maxZoom: 19 }).setView([46.6, 2.3], 4);
         smBaseLayer().addTo(leafMap); // fond vectoriel SunMates (repli raster auto)
         leafMap.attributionControl.setPrefix(false).setPosition("bottomleft");
+        // Mention LÉGALE obligatoire (licence OSM), ajoutée explicitement : le calque GL ne la
+        // remontait pas tout seul au contrôle Leaflet.
+        try { leafMap.attributionControl.addAttribution("© OpenStreetMap · OpenFreeMap"); } catch (e) {}
         // Même correctif définitif que la carte d'accueil : resync sur la taille réelle.
         if (typeof ResizeObserver === "function") {
           let _raf = 0;
@@ -11393,6 +11409,7 @@
         // recoloré dans la DA. Le service worker met style/glyphes/tuiles en cache → offline OK.
         smBaseLayer().addTo(homeLeaf);
         homeLeaf.attributionControl.setPrefix(false).setPosition("bottomleft"); // retire le logo Leaflet, déplace à gauche
+        try { homeLeaf.attributionControl.addAttribution("© OpenStreetMap · OpenFreeMap"); } catch (e) {} // mention légale OSM garantie
         try { if (homeLeaf.zoomControl) homeLeaf.zoomControl.setPosition("bottomright"); } catch (e) {} // libère le haut-gauche pour les outils en plein écran
         // ★ Correctif plein écran DÉFINITIF : un ResizeObserver resynchronise Leaflet avec la
         // taille RÉELLE du conteneur à chaque changement (plein écran, rotation, clavier).
