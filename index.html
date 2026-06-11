@@ -111,8 +111,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=419"></script>
-  <script src="sunmates-icons.js?v=419"></script>
+  <script src="sunmates-badges.js?v=420"></script>
+  <script src="sunmates-icons.js?v=420"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -874,6 +874,36 @@
     .prof-trust b { font-size: 1rem; color: var(--accent); }
     .prof-trust .pt-info { opacity: .7; font-size: .8rem; }
     .prof-trust:active { transform: scale(.97); }
+    /* #12 : 1re tuile profil en 2 colonnes (photo | infos), bandeau sunset discret en tête */
+    .prof-head { overflow: hidden; }
+    .prof-head::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 54px; pointer-events: none;
+      background: linear-gradient(135deg, rgba(255,201,60,.26), rgba(255,122,77,.18) 55%, rgba(255,90,77,.08)); }
+    body.theme-dusk .prof-head::before { background: linear-gradient(135deg, rgba(255,201,60,.14), rgba(255,122,77,.10) 55%, rgba(255,90,77,.05)); }
+    .ph-row { position: relative; display: flex; align-items: center; gap: .95rem; text-align: left; }
+    .ph-row .prof-photo { width: 96px; height: 96px; margin: 0; flex-shrink: 0; border: 3px solid rgba(255,247,238,.92); }
+    body.theme-dusk .ph-row .prof-photo { border-color: rgba(255,255,255,.16); }
+    .ph-info { flex: 1; min-width: 0; }
+    .ph-info .prof-name { justify-content: flex-start; }
+    .ph-info .prof-trust { margin: .55rem 0 0; }
+    /* #12 : « Mes badges » en jolies pilules dorées (au lieu de mini-ronds anonymes) */
+    .prof-badges .pb-pill { display: inline-flex; align-items: center; gap: .32rem; padding: .26rem .58rem .26rem .3rem; border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,209,92,.20), rgba(255,154,61,.10)); border: 1px solid rgba(232,150,31,.30);
+      font-size: .74rem; font-weight: 800; color: var(--ink); }
+    body.theme-dusk .prof-badges .pb-pill { background: rgba(255,209,92,.10); border-color: rgba(255,209,92,.22); }
+    /* #13 : stats du parcours cliquables (chacune ouvre sa section) */
+    .pc-stat[data-pc] { cursor: pointer; transition: transform .1s ease; }
+    .pc-stat[data-pc]:active { transform: scale(.95); }
+    /* #13 : conversation BFF épinglée (case dorée en tête des messages) */
+    .conv-bff { background: linear-gradient(135deg, rgba(255,209,92,.16), rgba(255,154,61,.08)); border: 1px solid rgba(232,150,31,.32) !important; border-radius: 14px; }
+    .conv-bff .conv-pin { font-size: .64rem; font-weight: 800; color: #B5740E; background: rgba(255,209,92,.32); border-radius: 999px; padding: .08rem .45rem; vertical-align: 1px; }
+    body.theme-dusk .conv-bff { background: linear-gradient(135deg, rgba(255,209,92,.12), rgba(255,154,61,.05)); border-color: rgba(255,209,92,.22) !important; }
+    body.theme-dusk .conv-bff .conv-pin { color: #FFD79A; background: rgba(255,209,92,.16); }
+    /* #11 : badges à l'honneur en tête de la fiche voyageur */
+    .tp-star-badges { display: flex; flex-wrap: wrap; gap: .4rem; margin: -.2rem 0 .8rem; }
+    .tp-star-badges .tsb-pill { display: inline-flex; align-items: center; gap: .32rem; padding: .3rem .62rem .3rem .32rem; border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,209,92,.22), rgba(255,154,61,.12)); border: 1px solid rgba(232,150,31,.32);
+      font-size: .76rem; font-weight: 800; color: var(--ink); box-shadow: var(--shadow-sm); }
+    body.theme-dusk .tp-star-badges .tsb-pill { background: rgba(255,209,92,.12); border-color: rgba(255,209,92,.24); }
     .stat-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .5rem; }
     /* popInfo : tuile explicative qui pop au centre (DA sunset) */
     .popinfo-ov { position: fixed; inset: 0; z-index: var(--z-popinfo); display: grid; place-items: center; padding: 1.2rem; background: rgba(20,8,30,.55); backdrop-filter: blur(3px); animation: popinfoFade .18s ease; }
@@ -4170,6 +4200,8 @@
           </div>
           <div id="tpDemoBanner" class="demo-banner" style="display:none">🤖 Profil de <b>démonstration</b> (compte IA), pour découvrir l'app, ce n'est pas un vrai voyageur.</div>
           <div id="tpSpot" style="margin:-.2rem 0 .8rem;display:none"></div>
+          <!-- #11 : badges à l'HONNEUR (épinglés pour soi, les plus récents pour les autres) -->
+          <div class="tp-star-badges" id="tpStarBadges" style="display:none"></div>
           <div class="dstats" style="margin-bottom:.8rem">
             <div class="dstat stat-click" id="tpCompatStat" role="button" tabindex="0"><b id="tpCompat">—</b><span>Compatibilité ❤️ ⓘ</span></div>
             <div class="dstat"><b id="tpMates">0</b><span>Mates 🛡️</span></div>
@@ -4378,16 +4410,21 @@
         </div>
         <!-- Carte d'arrivée SCINDÉE en 3 (avant : un seul bloc photo+stats+complétion+
              Premium/Admin+parcours+BFF+bouton = « tuile énorme qui fait peur »). -->
-        <div class="card prof-head" style="position:relative;text-align:center">
+        <!-- #12 : mise en page RICHE (photo à gauche, infos alignées à gauche, bandeau sunset)
+             — fini la colonne centrée qui gâchait la place. Tous les IDs sont conservés. -->
+        <div class="card prof-head" style="position:relative">
           <button class="iconbtn" id="profileSettingsBtn" title="Paramètres du compte" aria-label="Paramètres du compte" style="position:absolute;top:.7rem;right:.7rem">⚙️</button>
-          <!-- Photo ENTIÈRE (non rognée), centrée -->
-          <div class="prof-photo" id="profileAvatar">😎</div>
-          <div class="name prof-name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
-          <div class="profile-title prof-title" id="profileTitle"></div>
-          <div class="meta prof-city" id="profileCity"></div>
-          <!-- Score de confiance MINIMISÉ (compact, cliquable) -->
-          <div class="prof-trust stat-click" data-stat="trust" role="button" tabindex="0">
-            <span>🛟 Confiance</span> <b id="trustScore">0</b> <span class="pt-info">ⓘ</span>
+          <div class="ph-row">
+            <div class="prof-photo" id="profileAvatar">😎</div>
+            <div class="ph-info">
+              <div class="name prof-name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
+              <div class="profile-title prof-title" id="profileTitle"></div>
+              <div class="meta prof-city" id="profileCity"></div>
+              <!-- Score de confiance MINIMISÉ (compact, cliquable) -->
+              <div class="prof-trust stat-click" data-stat="trust" role="button" tabindex="0">
+                <span>🛟 Confiance</span> <b id="trustScore">0</b> <span class="pt-info">ⓘ</span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="card" style="text-align:center">
@@ -4411,11 +4448,11 @@
         </div>
         <div class="card">
           <div class="parcours-card" id="parcoursCard">
-            <div class="pc-head"><b>🧭 Mon parcours</b><button class="btn-accent pc-share" id="shareParcoursBtn">📤 Partager</button></div>
+            <div class="pc-head"><b>🧭 Mon parcours</b><button class="btn-ghost pc-share" id="shareParcoursBtn">📤 Partager</button></div>
             <div class="pc-stats" id="parcoursStatsRow"></div>
             <div id="parcoursToday" class="pc-today muted"></div>
           </div>
-          <div id="bffCard" style="display:none;margin-top:.6rem"></div>
+          <!-- #13 : le BFF a déménagé → conversation ÉPINGLÉE dorée en tête des messages (Mates). -->
         </div>
 
         <div class="prof-seg hidden" data-psegpanel="edit">
@@ -7471,7 +7508,7 @@
       // 🥚 Easter eggs : zone marquée « admin » → JAMAIS dans le livre blanc ni le catalogue
       // public (filtre _isAdminZone). Aucune mention de ces surprises côté utilisateur.
       ["🥚 Easter eggs (réservé admin · ne pas divulguer)", [
-        ["❄️", "Modes saison hiver / tropiques", "Appui long 10 s sur le bouton thème (puis 1 clic = ❄️↔🌴) ; auto météo : <0 °C hiver, >30 °C tropiques."],
+        ["❄️", "Modes saison hiver / tropiques", "Appui long 10 s sur le bouton thème = cycle normal → ❄️ hiver → 🌴 tropiques ; le clic reste jour/nuit (nuit d'hiver et nuit tropicale incluses) ; auto météo : <0 °C hiver, >30 °C tropiques."],
         ["❓", "Badges secrets", "Invisibles tant que pas débloqués ; conditions révélées à l'admin dans la fiche badge."],
         ["🌟", "Badge « Légende de SunMates »", "Le badge secret ultime, palier endgame."],
         ["🌅", "Golden Hour", "7 taps sur le logo soleil → toute l'app se dore pendant 1 h + badge « Chercheur d'or »."],
@@ -8707,16 +8744,19 @@
 
       // « Mes conversations » = connexions acceptées (hors supprimées), triées par dernier message
       const convIds = [...connectedIds].filter((id) => !hiddenConvs.has(id));
+      convIds.sort((a, b) => (lastByPeer[b]?.created_at || "").localeCompare(lastByPeer[a]?.created_at || ""));
+      // #13 : le BFF du moment vit ICI — conversation ÉPINGLÉE en tête, case dorée.
+      if (myBffId && convIds.includes(myBffId)) { convIds.splice(convIds.indexOf(myBffId), 1); convIds.unshift(myBffId); }
       $("convList").innerHTML = convIds.length
         ? convIds
-            .sort((a, b) => (lastByPeer[b]?.created_at || "").localeCompare(lastByPeer[a]?.created_at || ""))
             .map((other) => {
               const lm = lastByPeer[other];
               const preview = lm ? ((lm.sender_id === myId ? "Toi : " : "") + lm.content) : "Toucher pour discuter 💬";
               const t = lm ? timeAgo(lm.created_at) : "";
-              return `<div class="person conv-open" data-chat="${other}" style="cursor:pointer">
+              const isBff = other === myBffId;
+              return `<div class="person conv-open${isBff ? " conv-bff" : ""}" data-chat="${other}" style="cursor:pointer">
                 ${avatarMarkup(nameOf(other), avatarOf(other), null, isActive(travelerMap[other]))}
-                <div class="info"><div class="name">${escapeHtml(nameOf(other))}</div><div class="conv-preview">${escapeHtml(preview)}</div></div>
+                <div class="info"><div class="name">${escapeHtml(nameOf(other))}${isBff ? ' <span class="conv-pin">📌 ⭐ BFF</span>' : ""}</div><div class="conv-preview">${escapeHtml(preview)}</div></div>
                 <div style="text-align:right;white-space:nowrap"><div class="muted" style="font-size:.7rem">${t}</div><div class="qarrow">›</div></div></div>`;
             }).join("")
         : emptyState("💬", "Pas encore de conversation", "Connecte-toi avec des voyageurs pour commencer à discuter en sécurité.", "Découvrir des Mates", "discover");
@@ -9125,9 +9165,18 @@
       const row = $("parcoursStatsRow");
       if (row) {
         const s = parcoursStats();
-        const cells = [["📍", s.ck, "check-ins"], ["🎯", s.q, "quêtes"], ["🏅", s.b, "badges"], ["⭐", s.xp, "XP"]];
-        if (s.trips > 0) cells.push(["🧳", s.trips, s.trips > 1 ? "voyages" : "voyage"]);
-        row.innerHTML = cells.map(([e, n, l]) => `<div class="pc-stat"><div class="pc-n">${e} ${n}</div><div class="pc-l">${l}</div></div>`).join("");
+        // #13 : chaque stat est CLIQUABLE et ouvre sa section (le parcours devient un vrai hub).
+        const cells = [["📍", s.ck, "check-ins", "checkins"], ["🎯", s.q, "quêtes", "quests"], ["🏅", s.b, "badges", "badges"], ["⭐", s.xp, "XP", "xp"]];
+        if (s.trips > 0) cells.push(["🧳", s.trips, s.trips > 1 ? "voyages" : "voyage", "trips"]);
+        row.innerHTML = cells.map(([e, n, l, k]) => `<div class="pc-stat" data-pc="${k}" role="button" tabindex="0"><div class="pc-n">${e} ${n}</div><div class="pc-l">${l}</div></div>`).join("");
+        row.querySelectorAll("[data-pc]").forEach((el) => el.addEventListener("click", () => {
+          const k = el.dataset.pc;
+          if (k === "checkins" || k === "xp") { const b = document.querySelector(`[data-stat="${k}"]`); if (b) b.click(); }
+          else if (k === "badges") { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); }
+          else if (k === "quests") { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxHome"); setTimeout(() => { const q = $("questsList"); if (q) q.scrollIntoView({ behavior: "smooth", block: "start" }); }, 350); }
+          else if (k === "trips") { const t = $("tripsCard") || $("tripsList"); if (t) t.scrollIntoView({ behavior: "smooth", block: "center" }); }
+          if (window.SMSound) { try { SMSound.play("tap"); } catch (e) {} }
+        }));
       }
       const ckToday = myCheckinsRaw.filter((c) => _isToday(c.created_at)).length;
       const qToday = myQuestRows.filter((r) => r.status === "completed" && _isToday(r.completed_at)).length;
@@ -9480,7 +9529,9 @@
           let shown = myBadges.filter((b) => pins.includes(b.badge_key));
           if (!shown.length) shown = myBadges.slice(0, 3); // par défaut, les 3 premiers
           pb.style.display = "flex";
-          pb.innerHTML = '<span class="pb-lbl">Mes badges :</span>' + shown.slice(0, 3).map((b) => `<span title="${escapeHtml(b.name || '')}">${renderBadge(b.badge_key, "mini", { emoji: b.emoji })}</span>`).join("")
+          // #12 : pilules dorées badge + nom (au lieu de mini-ronds sans étiquette)
+          const pbName = (n) => { n = n || ""; return n.length > 16 ? n.slice(0, 15) + "…" : n; };
+          pb.innerHTML = '<span class="pb-lbl">🎖️ Mes badges</span>' + shown.slice(0, 3).map((b) => `<span class="pb-pill" title="${escapeHtml(b.name || '')}">${renderBadge(b.badge_key, "mini", { emoji: b.emoji })}<b>${escapeHtml(pbName(b.name))}</b></span>`).join("")
             + '<span class="pb-edit">choisir ›</span>';
           pb.onclick = () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); };
         } else { pb.style.display = "none"; }
@@ -10944,7 +10995,9 @@
         const chips = [];
         if (p.id !== myUserId) chips.push(`<span class="tph-chip tph-match">❤️ ${pctHero}%</span>`);
         if (p.is_verified) chips.push('<span class="tph-chip tph-verif"><span class="vchip" style="width:14px;height:14px;font-size:9px;vertical-align:-1px">✓</span> Vérifié</span>');
-        if (isActive(p)) chips.push('<span class="tph-chip tph-online">● En ligne</span>');
+        // #11 : en APERÇU de son propre profil, on est forcément en ligne (l'aperçu passe par un
+        // profil reconstruit sans last_seen_at → la pastille « En ligne » manquait à tort).
+        if (isActive(p) || p.id === myUserId) chips.push('<span class="tph-chip tph-online">● En ligne</span>');
         if (p.available_until && new Date(p.available_until).getTime() > Date.now()) chips.push('<span class="avail-badge">☕ Dispo maintenant</span>');
         hb.innerHTML = chips.join("");
       } }
@@ -11036,14 +11089,25 @@
       _tpSyncConnState(p);
       $("tpMsg").textContent = "";
       $("tpBadgesCard").style.display = "none"; $("tpBadges").innerHTML = "";
+      { const st = $("tpStarBadges"); if (st) { st.style.display = "none"; st.innerHTML = ""; } }
       if (typeof renderTravelerExtras === "function") renderTravelerExtras(p);
       showMatesView("matesProfile");
       // Badges du voyageur (chargés en arrière-plan)
-      const { data: badges } = await db.from("user_badges").select("badge_key,name,emoji").eq("user_id", p.id);
-      if (badges && badges.length) {
+      const { data: badges } = await db.from("user_badges").select("badge_key,name,emoji,earned_at").eq("user_id", p.id);
+      if (badges && badges.length && currentTravelerId === p.id) {
         $("tpBadgesCard").style.display = "";
         $("tpBadges").innerHTML = badges.map((b) =>
           `<div class="bitem"><div class="smbadge-wrap">${renderBadge(b.badge_key, "grid", { emoji: b.emoji })}</div><div class="bname">${escapeHtml(b.name || "")}</div><div class="bprog">✅</div></div>`).join("");
+        // #11 : badges à l'HONNEUR sous le hero — les épinglés (pour soi), sinon les 3 plus récents.
+        const star = $("tpStarBadges");
+        if (star) {
+          let top = [];
+          if (p.id === myUserId && typeof loadPinnedBadges === "function") { const pins = loadPinnedBadges(); top = badges.filter((b) => pins.includes(b.badge_key)); }
+          if (!top.length) top = badges.slice().sort((a, b) => String(b.earned_at || "").localeCompare(String(a.earned_at || ""))).slice(0, 3);
+          star.innerHTML = top.slice(0, 3).map((b) =>
+            `<span class="tsb-pill" title="${escapeHtml(b.name || "")}">${renderBadge(b.badge_key, "mini", { emoji: b.emoji })}<b>${escapeHtml(b.name || "")}</b></span>`).join("");
+          star.style.display = "";
+        }
       }
     }
     // État des boutons Connexion + BFF de la fiche voyageur, selon connectedIds.
@@ -12533,7 +12597,7 @@
         { tab: "connexions", sel: "#inviteFriendsBtn", emoji: "✨", title: "Inviter des amis", text: "Fais venir tes amis sur SunMates : plus on est, plus c'est sûr & fun 🌍" },
         { tab: "connexions", sel: ".mseg", emoji: "🤝", title: "Tes Mates", text: "Messages, Découvrir de nouveaux voyageurs, et Demandes de connexion." },
         { tab: "securite", sel: '[data-tab="securite"]', emoji: "🛡️", title: "Sécurité", text: "SOS, faux appel, partage de position au cercle, contacts d'urgence · pour voyager serein·e." },
-        { tab: "profil", sel: "#editProfileBtn", emoji: "👤", title: "Ton profil", text: "Complète-le pour de meilleurs matchs. Mon parcours et ton BFF sont dans la carte juste en dessous." },
+        { tab: "profil", sel: "#editProfileBtn", emoji: "👤", title: "Ton profil", text: "Complète-le pour de meilleurs matchs. Mon parcours est dans la carte juste en dessous · ton BFF brille en tête de tes messages 📌⭐." },
       ],
     };
     // FUSION tuto pas-à-pas + démo auto : un SEUL moteur = AUTO_DEMO (auto + Précédent/Suivant).
@@ -14967,8 +15031,9 @@
     // Dès qu'il touche le bouton thème, son choix (sm_theme) prime et l'auto est désactivé.
     { const saved = localStorage.getItem("sm_theme"); const h = new Date().getHours(); const auto = (h >= 19 || h < 7) ? "dusk" : "day"; applyTheme(saved || auto); }
     // ====== MODES SAISON (#26) : HIVER ❄️ / TROPIQUES 🌴 ======
-    // Appui LONG 10 s sur ce bouton → entre/sort du mode saison. En saison, un simple
-    // clic alterne hiver ↔ tropiques. Auto météo : <0 °C → hiver, >30 °C → tropiques.
+    // Appui LONG 10 s = cycle des mondes (normal → hiver → tropiques → normal).
+    // Clic simple = jour/nuit PARTOUT (la nuit coexiste avec les saisons, #9).
+    // Auto météo : <0 °C → hiver, >30 °C → tropiques.
     function seasonMode() { try { return localStorage.getItem("sm_season") || ""; } catch (e) { return ""; } }
     // #8 : transition de saison/thème SOIGNÉE — voile doux + pluie de flocons (hiver),
     // feuilles (tropiques) ou étoiles/rayons (nuit/jour). Légère, 1,5 s, auto-nettoyée.
