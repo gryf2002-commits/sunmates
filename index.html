@@ -104,8 +104,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=398"></script>
-  <script src="sunmates-icons.js?v=398"></script>
+  <script src="sunmates-badges.js?v=399"></script>
+  <script src="sunmates-icons.js?v=399"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3027,7 +3027,7 @@
        Chaque <select> natif est gardé (valeur + handlers change) mais masqué ;
        on affiche un déclencheur DA + un panneau de choix (bottom-sheet) 100% DA. */
     .sm-sel { position: relative; width: 100%; }
-    .sm-sel > select.sm-sel-native { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; margin: 0; padding: 0; border: 0; }
+    .sm-sel > select.sm-sel-native, .sm-sel > input.sm-sel-native { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; margin: 0; padding: 0; border: 0; }
     .sm-sel-trigger { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: .6rem;
       padding: .8rem .9rem; border-radius: var(--radius-sm); border: 1.5px solid var(--line); background: var(--card); color: var(--ink);
       font: inherit; font-weight: 600; cursor: pointer; text-align: left; transition: border-color .15s, box-shadow .15s; }
@@ -3101,6 +3101,12 @@
     /* Collection de quêtes : quêtes en grille 2 colonnes (fini le listing interminable) */
     .coll-list { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem .45rem; }
     .coll-list .coll-row { font-size: .78rem; }
+
+    /* Sélecteur de date maison (3 colonnes jour/mois/année dans la feuille DA) */
+    .sm-date-cols { display: flex; gap: .4rem; }
+    .sm-date-col { flex: 1; max-height: 36vh; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; padding: .25rem; }
+    .sm-date-col .sm-selopt { padding: .5rem .4rem; justify-content: center; text-align: center; }
+    body.theme-dusk .sm-date-col { border-color: rgba(255,255,255,.1); }
   </style>
 </head>
 <body>
@@ -3824,10 +3830,11 @@
                 <select id="fStyle"><option value="">Tous</option><option>Routard</option><option>Confort</option><option>Aventure</option><option>Slow travel</option><option>Fête</option><option>Nature</option></select>
                 <div class="row" style="margin-top:0">
                   <div style="flex:1"><label>Genre</label><select id="fGender"><option value="">Tous</option><option>Femme</option><option>Homme</option><option>Non-binaire</option><option>Autre</option></select></div>
-                  <div style="flex:1"><label>Orientation</label><select id="fOrient"><option value="">Toutes</option><option>Hétéro</option><option>Homo</option><option>Bi</option><option>Pansexuel·le</option><option>Asexuel·le</option><option>Queer</option></select></div>
+                  <!-- 29 : critères « app de rencontre » retirés de l'UI (SunMates = amitié/voyage). Champs gardés en DOM (code de sauvegarde inchangé). -->
+                  <div style="flex:1;display:none"><label>Orientation</label><select id="fOrient"><option value="">Toutes</option></select></div>
                 </div>
                 <div class="row" style="margin-top:0">
-                  <div style="flex:1"><label>Statut</label><select id="fRel"><option value="">Tous</option><option>Célibataire</option><option>En couple</option><option>C'est compliqué</option></select></div>
+                  <div style="flex:1;display:none"><label>Statut</label><select id="fRel"><option value="">Tous</option></select></div>
                   <div style="flex:1"><label>Sport</label><select id="fFit"><option value="">Tous</option><option>Jamais</option><option>Parfois</option><option>Souvent</option><option>Tous les jours</option></select></div>
                 </div>
                 <div class="row" style="margin-top:0">
@@ -4196,7 +4203,8 @@
                 <div style="flex:1"><label>Pronoms</label>
                   <select id="pPronouns"><option value="">—</option><option>elle</option><option>il</option><option>iel</option><option>elle/iel</option><option>il/iel</option></select></div>
               </div>
-              <div class="row" style="margin-top:0">
+              <!-- 29 : orientation + statut amoureux retirés de l'UI (pas une app de rencontre) ; selects gardés en DOM pour le code de chargement/sauvegarde -->
+              <div class="row" style="margin-top:0;display:none">
                 <div style="flex:1"><label>Orientation</label>
                   <select id="pOrientation"><option value="">—</option><option>Hétéro</option><option>Homo</option><option>Bi</option><option>Pansexuel·le</option><option>Asexuel·le</option><option>Queer</option><option>Je préfère ne pas dire</option></select></div>
                 <div style="flex:1"><label>Statut</label>
@@ -4950,6 +4958,91 @@
       }
       if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
       window.smEnhanceSelects = enhanceAll;
+    })();
+
+    // ---- Sélecteur de DATE maison (DA) : remplace le calendrier natif hors-charte (#18).
+    //      Même recette que le sélecteur custom : input natif gardé (masqué) → la valeur et les
+    //      listeners existants (change/input) continuent de marcher tels quels. ----
+    (function () {
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+      let _ov = null, _cur = null, _sel = { d: 1, m: 0, y: 2026 };
+      function fmt(v) { if (!v) return ""; const p = v.split("-"); return (+p[2]) + " " + MONTHS[+p[1] - 1] + " " + p[0]; }
+      function syncTrigger(inp) {
+        const t = inp._smDateTrigger; if (!t) return;
+        const val = t.querySelector(".sm-sel-val");
+        val.textContent = inp.value ? fmt(inp.value) : "Choisir une date";
+        val.classList.toggle("placeholder", !inp.value);
+      }
+      function yearsFor(inp) {
+        const thisY = new Date().getFullYear();
+        if (inp.id === "pBirthdate") return [thisY - 100, thisY - 13];
+        if (inp.min) { const y = +inp.min.split("-")[0]; return [y, y + 5]; }
+        return [thisY - 1, thisY + 5];
+      }
+      function ensureOv() {
+        if (_ov) return _ov;
+        _ov = document.createElement("div"); _ov.className = "sm-selsheet-ov"; _ov.id = "smDateOv";
+        _ov.innerHTML = '<div class="sm-selsheet" role="dialog" aria-modal="true"><div class="sm-selsheet-grip"></div><div class="sm-selsheet-head"><h4>📅 Choisir une date</h4><button type="button" aria-label="Fermer">✕</button></div>'
+          + '<div class="sm-date-cols"><div class="sm-date-col" data-dcol="d"></div><div class="sm-date-col" data-dcol="m"></div><div class="sm-date-col" data-dcol="y"></div></div>'
+          + '<button class="btn-primary btn-block" id="smDateOk" style="margin-top:.7rem">Valider</button></div>';
+        document.body.appendChild(_ov);
+        _ov.addEventListener("click", (e) => { if (e.target === _ov) _ov.classList.remove("show"); });
+        _ov.querySelector(".sm-selsheet-head button").addEventListener("click", () => _ov.classList.remove("show"));
+        _ov.querySelector("#smDateOk").addEventListener("click", () => {
+          if (!_cur) return;
+          const dim = new Date(_sel.y, _sel.m + 1, 0).getDate();
+          const d = Math.min(_sel.d, dim);
+          _cur.value = _sel.y + "-" + String(_sel.m + 1).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+          syncTrigger(_cur);
+          _cur.dispatchEvent(new Event("input", { bubbles: true }));
+          _cur.dispatchEvent(new Event("change", { bubbles: true }));
+          _ov.classList.remove("show");
+          if (window.SMSound) { try { SMSound.play("tap"); } catch (e) {} }
+        });
+        return _ov;
+      }
+      function fillCol(col, items, cur, key) {
+        col.innerHTML = items.map((it) => `<button type="button" class="sm-selopt${it.v === cur ? " sel" : ""}" data-dv="${it.v}"><span>${esc(it.l)}</span></button>`).join("");
+        col.querySelectorAll("[data-dv]").forEach((b) => b.addEventListener("click", () => {
+          _sel[key] = +b.dataset.dv;
+          col.querySelectorAll(".sm-selopt").forEach((x) => x.classList.toggle("sel", x === b));
+        }));
+        const c = col.querySelector(".sm-selopt.sel"); if (c) setTimeout(() => { try { c.scrollIntoView({ block: "center" }); } catch (e) {} }, 40);
+      }
+      function openSheet(inp) {
+        const ov = ensureOv(); _cur = inp;
+        const base = inp.value ? inp.value.split("-").map(Number) : null;
+        const today = new Date();
+        _sel = base ? { y: base[0], m: base[1] - 1, d: base[2] } : { y: today.getFullYear(), m: today.getMonth(), d: today.getDate() };
+        const [y0, y1] = yearsFor(inp);
+        if (_sel.y < y0) _sel.y = y0; if (_sel.y > y1) _sel.y = y1;
+        fillCol(ov.querySelector('[data-dcol="d"]'), Array.from({ length: 31 }, (_, i) => ({ v: i + 1, l: String(i + 1) })), _sel.d, "d");
+        fillCol(ov.querySelector('[data-dcol="m"]'), MONTHS.map((m, i) => ({ v: i, l: m })), _sel.m, "m");
+        const years = []; for (let y = y1; y >= y0; y--) years.push({ v: y, l: String(y) });
+        fillCol(ov.querySelector('[data-dcol="y"]'), years, _sel.y, "y");
+        ov.classList.add("show");
+      }
+      function enhance(inp) {
+        if (!inp || inp._smDateEnhanced) return;
+        inp._smDateEnhanced = true;
+        const wrap = document.createElement("div"); wrap.className = "sm-sel";
+        inp.parentNode.insertBefore(wrap, inp); wrap.appendChild(inp);
+        inp.classList.add("sm-sel-native"); inp.setAttribute("tabindex", "-1");
+        const trigger = document.createElement("button");
+        trigger.type = "button"; trigger.className = "sm-sel-trigger";
+        trigger.innerHTML = '<span class="sm-sel-val"></span><span class="sm-sel-chev">📅</span>';
+        wrap.appendChild(trigger); inp._smDateTrigger = trigger; syncTrigger(inp);
+        trigger.addEventListener("click", () => openSheet(inp));
+        inp.addEventListener("change", () => syncTrigger(inp));
+      }
+      function enhanceAll(root) { try { (root || document).querySelectorAll('input[type="date"]').forEach(enhance); } catch (e) {} }
+      function init() {
+        enhanceAll();
+        try { new MutationObserver((muts) => { for (const m of muts) for (const n of m.addedNodes) { if (n.nodeType !== 1) continue; if (n.tagName === "INPUT" && n.type === "date") enhance(n); else if (n.querySelectorAll) n.querySelectorAll('input[type="date"]').forEach(enhance); } }).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
+      }
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+      window.smEnhanceDates = enhanceAll;
     })();
 
     // --- Skeletons de chargement ---
@@ -5893,28 +5986,41 @@
       if (typeof celebrate === "function") celebrate();
     }
     document.querySelectorAll("#homeModeSwitch button").forEach((b) => b.addEventListener("click", () => setHomeMode(b.dataset.mode)));
-    // Statut « hôte » (local) : 3 états · aucun / en attente de validation / actif.
-    // Devenir hôte n'est PAS instantané : on envoie une demande, validée ensuite (modération).
-    function hostState() { try { return localStorage.getItem("sm_host") || "none"; } catch (e) { return "none"; } } // "none" | "pending" | "1"
+    // Statut « hôte » : désormais SUR LE PROFIL (host_status : pending/approved/rejected) pour que
+    // l'admin voie et traite les demandes. Repli localStorage si la migration n'est pas lancée.
+    function hostState() {
+      const hs = myProfile && myProfile.host_status;
+      if (hs === "approved") return "1";
+      if (hs === "pending") return "pending";
+      if (hs === "rejected") return "rejected";
+      try { return localStorage.getItem("sm_host") || "none"; } catch (e) { return "none"; }
+    } // "none" | "pending" | "rejected" | "1"
     function isHost() { return hostState() === "1"; }
     function renderHost() {
       const st = hostState();
       const t = $("hostTitle"), d = $("hostDesc"), b = $("hostBtn");
-      if (t) t.textContent = st === "1" ? "🛟 Tu es hôte SunMates" : (st === "pending" ? "⏳ Demande d'hôte en cours" : "Deviens hôte SunMates");
+      if (t) t.textContent = st === "1" ? "🛟 Tu es hôte SunMates" : (st === "pending" ? "⏳ Demande d'hôte en cours" : (st === "rejected" ? "Demande d'hôte non retenue" : "Deviens hôte SunMates"));
       if (d) d.textContent = st === "1"
         ? "Merci ! Les voyageurs de passage savent qu'ils peuvent compter sur toi dans ta ville 💛"
         : (st === "pending"
           ? "On vérifie ton profil (compte vérifié, ancienneté, sérieux) avant d'activer ton statut d'hôte. Tu seras prévenu·e dès que c'est bon ✨"
-          : "Aide les voyageurs à se sentir en sécurité dans ta ville : conseils, bons spots, café d'accueil.");
-      if (b) { b.textContent = st === "1" ? "✓ Hôte actif" : (st === "pending" ? "⏳ Demande envoyée · voir le statut" : "Je veux aider"); b.disabled = false; b.style.opacity = ""; }
+          : (st === "rejected"
+            ? "Cette fois ce n'est pas passé (profil encore trop récent ?). Étoffe ton profil et retente quand tu veux 💛"
+            : "Aide les voyageurs à se sentir en sécurité dans ta ville : conseils, bons spots, café d'accueil."));
+      if (b) { b.textContent = st === "1" ? "✓ Hôte actif" : (st === "pending" ? "⏳ Demande envoyée · voir le statut" : (st === "rejected" ? "Retenter ma chance" : "Je veux aider")); b.disabled = false; b.style.opacity = ""; }
       const pb = $("profileHostBadge"); if (pb) show(pb, st === "1"); // badge profil seulement si validé
     }
     { const hb = $("hostBtn"); if (hb) hb.addEventListener("click", () => {
       const st = hostState();
       if (st === "1") { popInfo("🛟", "Tu es hôte SunMates", "Merci ! Les voyageurs de passage savent qu'ils peuvent compter sur toi dans ta ville 💛"); return; }
       if (st === "pending") { popInfo("⏳", "Demande en cours", "Ta demande d'hôte est <b>en cours de validation</b> (on vérifie ton profil : vérifié, ancienneté, sérieux). Tu seras prévenu·e dès que c'est bon ✨"); return; }
-      // Première demande
+      // Première demande (ou nouvelle tentative après refus) : envoyée AU BACKEND pour que
+      // l'admin la voie dans Membres ; repli local si la colonne n'existe pas encore.
       try { localStorage.setItem("sm_host", "pending"); } catch (e) {}
+      if (myUserId) db.from("profiles").update({ host_status: "pending" }).eq("id", myUserId).then(({ error }) => {
+        if (error) console.warn("[SunMates] colonne host_status absente · lance supabase_migration_hosts.sql");
+        else if (myProfile) { myProfile.host_status = "pending"; }
+      });
       renderHost();
       popInfo("🛟", "Devenir hôte SunMates",
         "<div style='text-align:left;line-height:1.6;font-size:.9rem'>" +
@@ -7389,7 +7495,11 @@
     let adminUsersCache = [];
     let _adminUserFilter = "active";  // active | banned | all
     async function loadAdminUsers() {
-      const { data } = await db.from("profiles").select("id,username,city,trust_score,is_verified,banned,ban_permanent,recovery_requested,is_admin,is_demo,is_gold,avatar_url").order("username");
+      // host_status demandé À PART (repli sans la colonne si la migration hosts n'est pas lancée)
+      let data = null;
+      { const r = await db.from("profiles").select("id,username,city,trust_score,is_verified,banned,ban_permanent,recovery_requested,is_admin,is_demo,is_gold,avatar_url,host_status").order("username");
+        if (!r.error) data = r.data;
+        else { console.warn("[SunMates] colonne host_status absente · lance supabase_migration_hosts.sql"); const r2 = await db.from("profiles").select("id,username,city,trust_score,is_verified,banned,ban_permanent,recovery_requested,is_admin,is_demo,is_gold,avatar_url").order("username"); data = r2.data; } }
       // Les bannissements DÉFINITIFs disparaissent de la liste (compte « supprimé »).
       adminUsersCache = (data || []).filter((u) => !(u.banned && u.ban_permanent === true));
       renderAdminUsers($("adminUserSearch") ? $("adminUserSearch").value : "");
@@ -7403,14 +7513,24 @@
       const seg = (k, lbl) => `<button class="au-fbtn${_adminUserFilter === k ? " active" : ""}" data-aufilter="${k}">${lbl}</button>`;
       const header = `<div class="au-head"><div class="au-counts">👥 <b>${nActive}</b> actifs · 🚫 <b>${nBanned}</b> suspendus</div>
         <div class="au-filters">${seg("active", "Actifs")}${seg("banned", "Suspendus")}${seg("all", "Tous")}</div></div>`;
+      // 🛟 Demandes d'hôte en attente : bloc dédié en tête (accepter / refuser)
+      const hostReqs = adminUsersCache.filter((u) => u.host_status === "pending");
+      const hostBlock = hostReqs.length
+        ? `<div class="card" style="border-left:4px solid var(--accent);margin-bottom:.6rem;padding:.7rem .8rem"><b style="font-size:.88rem">🛟 Demandes d'hôte (${hostReqs.length})</b>`
+          + hostReqs.map((u) => `<div class="qrow" style="gap:.4rem;flex-wrap:wrap">
+              <div class="qname" style="flex:1;min-width:110px;cursor:pointer" data-au-open="${u.id}">${escapeHtml(u.username || "Voyageur")} ${u.is_verified ? "✅" : ""}<div class="meta muted" style="font-size:.72rem">${escapeHtml(u.city || "")} · score ${u.trust_score ?? 0} · voir ›</div></div>
+              <button class="btn-primary" data-au-hostok="${u.id}" style="padding:.3rem .6rem;font-size:.72rem">✓ Accepter</button>
+              <button class="btn-ghost" data-au-hostno="${u.id}" style="padding:.3rem .6rem;font-size:.72rem">Refuser</button>
+            </div>`).join("") + "</div>"
+        : "";
       const list = adminUsersCache
         .filter((u) => _adminUserFilter === "all" ? true : (_adminUserFilter === "banned" ? u.banned : !u.banned))
         .filter((u) => !q || (u.username || "").toLowerCase().includes(q));
       const upd = async (id, patch) => { const r = await db.from("profiles").update(patch).eq("id", id); if (r.error) toast("⚠️", escapeHtml(r.error.message)); await loadAdminUsers(); };
-      wrap.innerHTML = header + (list.length ? list.map((u) => `
+      wrap.innerHTML = hostBlock + header + (list.length ? list.map((u) => `
         <div class="qrow" style="align-items:flex-start;flex-wrap:wrap;gap:.4rem;cursor:pointer;${u.banned ? "opacity:.55" : ""}" data-au-row="${u.id}">
           <div class="qico">${u.is_admin ? "🛡️" : (u.is_demo ? "🤖" : "🧑")}</div>
-          <div class="qname" style="flex:1;min-width:110px;cursor:pointer" data-au-open="${u.id}">${escapeHtml(u.username || "Voyageur")} ${u.is_verified ? "✅" : ""}${u.is_gold ? " 👑" : ""}${u.recovery_requested ? " 📨" : ""}
+          <div class="qname" style="flex:1;min-width:110px;cursor:pointer" data-au-open="${u.id}">${escapeHtml(u.username || "Voyageur")} ${u.is_verified ? "✅" : ""}${u.is_gold ? " 👑" : ""}${u.host_status === "approved" ? " 🛟" : ""}${u.recovery_requested ? " 📨" : ""}
             <div class="meta muted" style="font-size:.74rem">${escapeHtml(u.city || "")} · score ${u.trust_score ?? 0}${u.banned ? " · SUSPENDU" : ""}${u.recovery_requested ? " · révision demandée" : ""} · voir ›</div></div>
           <div style="display:flex;gap:.3rem;flex-wrap:wrap">
             <button class="btn-ghost" data-au-verify="${u.id}" style="padding:.3rem .5rem;font-size:.7rem">${u.is_verified ? "Dévérifier" : "Vérifier"}</button>
@@ -7422,6 +7542,9 @@
       wrap.querySelectorAll("[data-au-verify]").forEach((b) => b.addEventListener("click", () => { const u = adminUsersCache.find((x) => x.id === b.dataset.auVerify); upd(b.dataset.auVerify, { is_verified: !u.is_verified }); }));
       wrap.querySelectorAll("[data-au-ban]").forEach((b) => b.addEventListener("click", () => { const u = adminUsersCache.find((x) => x.id === b.dataset.auBan); if (typeof banChooser === "function") banChooser(u, upd); }));
       wrap.querySelectorAll("[data-au-admin]").forEach((b) => b.addEventListener("click", () => { const u = adminUsersCache.find((x) => x.id === b.dataset.auAdmin); upd(b.dataset.auAdmin, { is_admin: !u.is_admin }); }));
+      // Demandes d'hôte : accepter / refuser (le membre voit son statut changer à sa prochaine ouverture)
+      wrap.querySelectorAll("[data-au-hostok]").forEach((b) => b.addEventListener("click", () => once("hostok:" + b.dataset.auHostok, () => { upd(b.dataset.auHostok, { host_status: "approved" }); toast("🛟", "Hôte validé ✅"); })));
+      wrap.querySelectorAll("[data-au-hostno]").forEach((b) => b.addEventListener("click", () => once("hostno:" + b.dataset.auHostno, () => { upd(b.dataset.auHostno, { host_status: "rejected" }); toast("🛟", "Demande refusée (le membre pourra retenter)"); })));
       // Toute la ligne ouvre la fiche (sauf clic sur un bouton d'action) → tuile bien cliquable.
       wrap.querySelectorAll("[data-au-row]").forEach((r) => r.addEventListener("click", (e) => { if (e.target.closest("button")) return; openAdminUser(r.dataset.auRow); }));
     }
@@ -8697,11 +8820,16 @@
       const kw = (q && QUEST_CITY[q.key]) || ((q && q.city) ? q.city.split(",")[0] : "travel");
       return flickrImg(kw, q && q.key);
     }
-    // Photo d'un lieu : URL fournie par l'admin sinon photo de la ville
+    // Photo d'un lieu : URL fournie par l'admin (la VRAIE photo du lieu, champ « Image » du
+    // formulaire Lieux) sinon photo de la banque triée, ANCRÉE par id de lieu : l'id étant
+    // séquentiel, deux lieux voisins n'ont JAMAIS la même photo (le hash d'avant créait des
+    // collisions → « photos similaires » sur les check-ins) et elle ne change plus jamais.
     function cafeImage(c) {
       if (c.image_url) return c.image_url;
-      const city = ((c.city || "travel").split(",")[0]).trim();
-      return flickrImg(city + ",city", c.name);
+      const POOL = [1, 45, 56, 155, 210, 221, 232, 265, 320, 331, 342, 397, 419, 430, 441, 639, 672, 694, 815, 826, 859, 936, 947, 1013];
+      let n = Number(c.id);
+      if (!isFinite(n)) { const s = String(c.name || c.id || ""); n = 0; for (let i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) >>> 0; }
+      return `https://picsum.photos/id/${POOL[n % POOL.length]}/640/320`;
     }
 
     // ---- JEUX POPULAIRES : mini-jeux INTÉGRÉS, jouables tout de suite (indépendants de la BDD) ----
@@ -10341,7 +10469,7 @@
       const cells = [
         tpCell("Âge", age ? age + " ans" : "", "🎂"),
         tpCell("Genre", [p.gender, p.pronouns].filter(Boolean).join(" · "), "🧑"),
-        tpCell("Orientation", p.orientation, "🌈"),
+        tpCell("Hôte SunMates", p.host_status === "approved" ? "🛟 Accueil validé" : "", "🛟"),
         tpCell("Recherche", (p.intent || []).join(", "), "🎯"),
         tpCell("Métier", [p.job_title, p.company].filter(Boolean).join(" · "), "💼"),
         tpCell("Études", [p.education_level, p.school].filter(Boolean).join(" · "), "🎓"),
@@ -11827,7 +11955,7 @@
       { e: "🔓", t: "Sécurité complète", d: "Partage de position, alerte d'urgence et cercle de confiance, pas seulement le 112." },
       { e: "♾️", t: "Check-ins illimités", d: "Aucune limite quotidienne + bonus de points de confiance." },
       { e: "🎯", t: "Quêtes illimitées", d: "Toutes les quêtes et activités chaque jour, sans restriction." },
-      { e: "🔎", t: "Filtres avancés", d: "Filtre par âge, orientation, statut, mode de vie, signe astro…" },
+      { e: "🔎", t: "Filtres avancés", d: "Filtre par âge, langues, mode de vie, signe astro…" },
       { e: "⭐", t: "BFF du moment", d: "Mets en avant ton meilleur Mate sur ton profil." },
       { e: "🎟️", t: "Coupons exclusifs", d: "Offres partenaires premium, bien plus avantageuses." },
       { e: "🥂", t: "Quêtes & lieux exclusifs", d: "Accès aux événements et lieux réservés Gold." },
