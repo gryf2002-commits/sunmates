@@ -3,7 +3,7 @@
 // cache à la volée les libs CDN et les images (avatars, tuiles de carte) en
 // "stale-while-revalidate" (on sert le cache tout de suite, on rafraîchit en fond).
 // Les écritures Supabase (POST/PATCH…) ne sont jamais touchées.
-const VER = "v433";
+const VER = "v434";
 const SHELL_CACHE = "sunmates-shell-" + VER;   // coquille (versionnée → purge à chaque déploiement)
 const RUNTIME = "sunmates-rt-" + VER;          // libs CDN/fonts (regénéré par version, re-précaché à l'install)
 // #15/#8 : cache MÉDIA STABLE (NON versionné) → avatars, photos (quêtes/check-ins), tuiles de carte.
@@ -91,7 +91,10 @@ self.addEventListener("fetch", (e) => {
       fetch(req, { cache: "no-store" }).then((res) => {
         if (res && res.ok) { const c = res.clone(); caches.open(SHELL_CACHE).then((cc) => cc.put(req, c)).catch(() => {}); }
         return res;
-      }).catch(() => caches.match(req).then((c) => c || caches.match("./index.html")))
+      // FIX OFFLINE (#35) : ignoreSearch ! La coquille précache « sunmates-badges.js » SANS
+      // query, mais la page le demande avec « ?v=NNN » → match raté hors-ligne, et le repli
+      // index.html renvoyait du HTML à la place du JS = écran mort en mode avion.
+      }).catch(() => caches.match(req, { ignoreSearch: true }).then((c) => c || caches.match("./index.html")))
     );
     return;
   }

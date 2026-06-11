@@ -114,8 +114,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=433"></script>
-  <script src="sunmates-icons.js?v=433"></script>
+  <script src="sunmates-badges.js?v=434"></script>
+  <script src="sunmates-icons.js?v=434"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -292,7 +292,8 @@
     /* Arrondi explicite : ces classes servent aussi sur des <a> (ex. bouton 112) qui
        n'héritent PAS du border-radius du sélecteur button -> on l'impose ici pour une DA cohérente. */
     .btn-primary, .btn-accent, .btn-ghost, .btn-danger { border-radius: var(--radius-sm); }
-    .btn-primary { background: var(--accent-grad); color: #fff; box-shadow: 0 6px 16px rgba(255,90,77,.35); }
+    /* #5 : halo DÉRIVÉ de l'accent du thème (plus de lueur rouge figée dans tous les modes) + adouci */
+    .btn-primary { background: var(--accent-grad); color: #fff; box-shadow: 0 5px 12px color-mix(in oklab, var(--accent, #FF5A4D) 30%, transparent); }
     .btn-primary:hover { filter: brightness(1.04); }
     .btn-accent  { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
     .btn-ghost   { background: #fff; color: var(--text); border: 1.5px solid var(--line); }
@@ -1736,9 +1737,13 @@
     .nq-meta{ font-size:.8rem; }
     .nq-go{ flex-shrink:0; padding:.45rem .7rem; font-size:.82rem; white-space:nowrap; }
     /* Bannière « inviter des amis » (croissance) */
-    .invite-banner{ display:flex; align-items:center; gap:.7rem; width:100%; text-align:left; margin:.6rem 0 .2rem; padding:.7rem .85rem; border:0; border-radius:var(--radius); cursor:pointer;
-      background:radial-gradient(120% 130% at 15% -10%, rgba(255,255,255,.28), rgba(255,255,255,0) 46%), var(--accent-grad); color:#fff; box-shadow:var(--shadow-pop); }
-    .invite-banner .inv-ic{ font-size:26px; flex-shrink:0; filter:var(--relief); }
+    /* #10 : bannière DÉGONFLÉE (elle écrasait la page Mates) — pilule fine, même rôle */
+    .invite-banner{ display:flex; align-items:center; gap:.55rem; width:100%; text-align:left; margin:.5rem 0 .2rem; padding:.48rem .7rem; border:0; border-radius:14px; cursor:pointer;
+      background:radial-gradient(120% 130% at 15% -10%, rgba(255,255,255,.28), rgba(255,255,255,0) 46%), var(--accent-grad); color:#fff; box-shadow:0 4px 10px color-mix(in oklab, var(--accent, #FF5A4D) 26%, transparent); }
+    .invite-banner .inv-ic{ font-size:18px; flex-shrink:0; filter:var(--relief); }
+    .invite-banner .inv-txt b{ font-size:.84rem; }
+    .invite-banner .inv-txt span{ font-size:.68rem; opacity:.9; }
+    .invite-banner .inv-go{ font-size:.72rem; padding:.24rem .5rem; }
     .invite-banner .inv-txt{ flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2; }
     .invite-banner .inv-txt b{ font-weight:800; }
     .invite-banner .inv-txt span{ font-size:.78rem; opacity:.95; }
@@ -3275,25 +3280,41 @@
     .adm-live .al-cell span { font-size: .68rem; color: var(--muted); }
 
     /* ====== Plaque de NIVEAU façon jeu (en-tête Jeux & Quêtes) — remplace le rond-photo ====== */
+    /* #7 : la plaque de niveau est CLAIRE le jour (crème/or) et sombre seulement la nuit —
+       déclinée dans les 6 combinaisons jour/nuit × normal/hiver/tropiques. */
     .player-badge.player-hud { width: auto; height: auto; border-radius: 999px; overflow: visible;
       display: flex; align-items: center; gap: .55rem; padding: .3rem .8rem .3rem .32rem;
-      background: linear-gradient(135deg, #2A1E0E, #44310F); border: 1.5px solid rgba(255,209,92,.55);
-      /* halo ADOUCI (retour Maxime « halo moche ») : assise discrète, plus de lueur orange baveuse */
-      box-shadow: 0 4px 12px rgba(90,50,15,.22), inset 0 1px 0 rgba(255,233,176,.18); }
-    body.theme-dusk .player-badge.player-hud { box-shadow: 0 4px 12px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,233,176,.14); }
-    /* …et la plaque se DÉCLINE par mode (retour : « pas adaptée à tous les modes ») */
-    body.theme-winter .player-badge.player-hud { background: linear-gradient(135deg, #1D3A5C, #0F2741); border-color: rgba(140,196,242,.55); box-shadow: 0 4px 12px rgba(40,80,130,.25), inset 0 1px 0 rgba(191,226,248,.18); }
-    body.theme-winter .player-badge.player-hud .hud-lvl { color: #BFE2F8; }
-    body.theme-winter .player-badge.player-hud .hud-xp { color: rgba(191,226,248,.85); }
-    body.theme-winter .player-badge.player-hud .hud-bar { background: rgba(191,226,248,.2); }
+      background: linear-gradient(135deg, #FFF6E0, #FFE7BC); border: 1.5px solid rgba(232,150,31,.5);
+      box-shadow: 0 4px 12px rgba(200,130,40,.18), inset 0 1px 0 rgba(255,255,255,.7); }
+    .player-badge.player-hud .hud-lvl { color: #B5740E; }
+    .player-badge.player-hud .hud-xp { color: rgba(140,90,20,.85); }
+    .player-badge.player-hud .hud-bar { background: rgba(181,116,14,.18); }
+    body.theme-dusk .player-badge.player-hud { background: linear-gradient(135deg, #2A1E0E, #44310F); border-color: rgba(255,209,92,.55); box-shadow: 0 4px 12px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,233,176,.14); }
+    body.theme-dusk .player-badge.player-hud .hud-lvl { color: #FFD98A; }
+    body.theme-dusk .player-badge.player-hud .hud-xp { color: rgba(255,233,176,.82); }
+    body.theme-dusk .player-badge.player-hud .hud-bar { background: rgba(255,233,176,.18); }
+    body.theme-winter .player-badge.player-hud { background: linear-gradient(135deg, #F2F9FF, #DCEBFA); border-color: rgba(110,160,210,.5); box-shadow: 0 4px 12px rgba(80,130,180,.16), inset 0 1px 0 rgba(255,255,255,.8); }
+    body.theme-winter .player-badge.player-hud .hud-lvl { color: #2C6AA0; }
+    body.theme-winter .player-badge.player-hud .hud-xp { color: rgba(44,106,160,.85); }
+    body.theme-winter .player-badge.player-hud .hud-bar { background: rgba(58,143,217,.18); }
     body.theme-winter .player-badge.player-hud .hud-bar i { background: linear-gradient(90deg, #8CC4F2, #3A8FD9); }
-    body.theme-winter .player-badge.player-hud .pb-av { box-shadow: 0 0 0 2px #8CC4F2, 0 0 10px rgba(111,180,232,.4); background-color: #16314E; }
-    body.theme-tropic .player-badge.player-hud { background: linear-gradient(135deg, #0E4D3C, #072B21); border-color: rgba(92,216,168,.5); box-shadow: 0 4px 12px rgba(15,120,90,.25), inset 0 1px 0 rgba(154,219,190,.16); }
-    body.theme-tropic .player-badge.player-hud .hud-lvl { color: #FFE3A0; }
-    body.theme-tropic .player-badge.player-hud .hud-xp { color: rgba(154,219,190,.9); }
-    body.theme-tropic .player-badge.player-hud .hud-bar { background: rgba(154,219,190,.2); }
+    body.theme-winter .player-badge.player-hud .pb-av { box-shadow: 0 0 0 2px #8CC4F2, 0 0 10px rgba(111,180,232,.35); background-color: #DCEBFA; }
+    body.theme-winter.theme-dusk .player-badge.player-hud { background: linear-gradient(135deg, #1D3A5C, #0F2741); border-color: rgba(140,196,242,.55); box-shadow: 0 4px 12px rgba(0,0,0,.4), inset 0 1px 0 rgba(191,226,248,.16); }
+    body.theme-winter.theme-dusk .player-badge.player-hud .hud-lvl { color: #BFE2F8; }
+    body.theme-winter.theme-dusk .player-badge.player-hud .hud-xp { color: rgba(191,226,248,.85); }
+    body.theme-winter.theme-dusk .player-badge.player-hud .hud-bar { background: rgba(191,226,248,.2); }
+    body.theme-winter.theme-dusk .player-badge.player-hud .pb-av { background-color: #16314E; }
+    body.theme-tropic .player-badge.player-hud { background: linear-gradient(135deg, #F4FBEA, #DFF2D2); border-color: rgba(15,163,124,.45); box-shadow: 0 4px 12px rgba(15,140,100,.15), inset 0 1px 0 rgba(255,255,255,.8); }
+    body.theme-tropic .player-badge.player-hud .hud-lvl { color: #0C7E5E; }
+    body.theme-tropic .player-badge.player-hud .hud-xp { color: rgba(12,126,94,.85); }
+    body.theme-tropic .player-badge.player-hud .hud-bar { background: rgba(15,163,124,.18); }
     body.theme-tropic .player-badge.player-hud .hud-bar i { background: linear-gradient(90deg, #FFC23D, #2BC48A); }
-    body.theme-tropic .player-badge.player-hud .pb-av { box-shadow: 0 0 0 2px #FFC23D, 0 0 10px rgba(43,196,138,.4); background-color: #143427; }
+    body.theme-tropic .player-badge.player-hud .pb-av { box-shadow: 0 0 0 2px #FFC23D, 0 0 10px rgba(43,196,138,.35); background-color: #DFF2D2; }
+    body.theme-tropic.theme-dusk .player-badge.player-hud { background: linear-gradient(135deg, #0E4D3C, #072B21); border-color: rgba(92,216,168,.5); box-shadow: 0 4px 12px rgba(0,0,0,.4), inset 0 1px 0 rgba(154,219,190,.14); }
+    body.theme-tropic.theme-dusk .player-badge.player-hud .hud-lvl { color: #FFE3A0; }
+    body.theme-tropic.theme-dusk .player-badge.player-hud .hud-xp { color: rgba(154,219,190,.9); }
+    body.theme-tropic.theme-dusk .player-badge.player-hud .hud-bar { background: rgba(154,219,190,.2); }
+    body.theme-tropic.theme-dusk .player-badge.player-hud .pb-av { background-color: #143427; }
     .player-badge.player-hud .pb-av { position: relative; inset: auto; width: 42px; height: 42px; border-radius: 50%;
       display: grid; place-items: center; font-size: 1.25rem; background-size: cover; background-position: center;
       box-shadow: 0 0 0 2px #FFD15C, 0 0 12px rgba(255,201,60,.45); background-color: #5a4520; }
@@ -3376,6 +3397,10 @@
     .egg-plane .egp-trail path { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 2.2 3.2; stroke-linecap: round; opacity: .55; animation: egpTrail 2.8s linear forwards; }
     @keyframes egpTrail { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
     .egg-plane .egp-plane { position: absolute; left: 0; top: 0; offset-rotate: auto; will-change: offset-distance; filter: drop-shadow(0 4px 8px rgba(120,60,20,.3)); }
+    .egg-plane .egp-emo { display: block; font-size: 30px; line-height: 1; } /* ✈️ Android pointe à droite = sens du vol (offset-rotate fait le reste) */
+    .tm-emo { display: inline-block; transition: opacity .3s ease; }
+    .tm-emo.tm-away { opacity: 0; } /* l'avion est PARTI : la tuile garde sa place vide */
+    .tm-emo.tm-back { animation: efhBack .7s cubic-bezier(.34,1.56,.64,1); }
     .bottom-nav button.egp-land { animation: egpLand .8s cubic-bezier(.3,1.6,.4,1); }
     @keyframes egpLand { 0% { transform: translateY(0); } 30% { transform: translateY(-7px) scale(1.1); } 100% { transform: translateY(0); } }
 
@@ -3626,6 +3651,18 @@
     #seasonFx .sfx-p { position: absolute; top: -10%; animation: sfxFall 1.5s cubic-bezier(.3,.4,.6,1) forwards; will-change: transform; }
     #seasonFx .sfx-p svg { display: block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.18)); }
     @keyframes sfxFall { to { transform: translateY(125vh) rotate(240deg); } }
+
+    /* #29 : les sous-onglets Mates (Messages / Découvrir / Demandes) glissent en douceur */
+    .mates-seg:not(.hidden) { animation: viewIn .24s cubic-bezier(.2,.8,.3,1); }
+    /* #43 : tuiles Badges/Coupons/Classement/Boutique alignées (rangées d'égale hauteur) */
+    .jnav-secondary { grid-auto-rows: 1fr; align-items: stretch; }
+    .jnav-secondary .cat-tile { display: flex; flex-direction: column; justify-content: flex-start; }
+    /* #8 : « Quête du jour » lisible en mode sombre (textes explicites, plus d'encre sur encre) */
+    body.theme-dusk .quest-spotlight, body.theme-dusk .quest-spotlight .qs-title { color: #f3e9f3; }
+    body.theme-dusk .quest-spotlight .qs-desc, body.theme-dusk .quest-spotlight .qs-meta { color: #c9bedb; }
+    body.theme-dusk .qs-mode-btn { background: var(--dcard, #2a2140); color: #eee; border-color: rgba(255,255,255,.14); }
+    body.theme-dusk .qs-mode-btn.active { background: var(--accent-grad); color: #fff; border-color: transparent; }
+    body.theme-dusk .qs-xp, body.theme-dusk .qs-badge { color: #FFD79A; }
 
     /* ============ PASSE FLUIDITÉ / RÉACTIVITÉ ============ */
     /* 1) Tap immédiat : `touch-action: manipulation` supprime l'hésitation du navigateur
@@ -4048,7 +4085,8 @@
 
         <!-- Bascule Voyage / Maison : l'app s'adapte à ta situation -->
         <div class="mode-switch" id="homeModeSwitch">
-          <button data-mode="travel" class="active">✈️ En voyage</button>
+          <!-- #2 : l'émoji ✈️ est isolé dans un span → l'easter egg le fait VRAIMENT décoller de la tuile -->
+          <button data-mode="travel" class="active"><span class="tm-emo">✈️</span> En voyage</button>
           <button data-mode="home">🏠 À la maison</button>
         </div>
 
@@ -4280,7 +4318,8 @@
             </div>
             <button class="btn-primary fc-send" id="feedPostBtn" type="button">Publier</button>
           </div>
-          <div class="muted" style="font-size:.72rem;margin-top:.4rem;display:flex;align-items:center;gap:.3rem">🌍 Visible par <b>toute la communauté</b> SunMates.<span id="feedCount" style="margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700">0/280</span></div>
+          <!-- #5 : redescendue (le halo du bouton Publier la chevauchait) -->
+          <div class="muted" style="font-size:.72rem;margin-top:.75rem;display:flex;align-items:center;gap:.3rem">🌍 Visible par <b>toute la communauté</b> SunMates.<span id="feedCount" style="margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700">0/280</span></div>
           <div class="msg" id="feedComposerMsg" style="text-align:center"></div>
         </div>
         <div id="homeFeed"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div></div>
@@ -4557,7 +4596,7 @@
             <button class="btn-primary" id="voiceStop" style="padding:.3rem .7rem">Envoyer ➤</button>
           </div>
           <div class="chat-input">
-            <button class="iconbtn chat-poc" id="chatPoc" title="Envoyer un poc 🔥">🔥</button>
+            <button class="iconbtn chat-poc" id="chatPoc" title="Envoyer une flamme 🔥">🔥</button>
             <button class="iconbtn chat-mic" id="chatMic" title="Note vocale (30 s max)">🎤</button>
             <input id="chatInput" type="text" maxlength="1000" placeholder="Envoyer un message…" />
             <button class="btn-primary" id="chatSend">➤</button>
@@ -4654,7 +4693,8 @@
           <div class="grid2">
             <div class="tile" data-help="police"><div class="thumb indigo" data-smicon="shieldsafe" data-smicon-size="30">🚓</div><div class="t-name">Trouver un commissariat</div><div class="t-meta">À proximité</div></div>
             <div class="tile" data-help="hopital"><div class="thumb rose" data-smicon="aid" data-smicon-size="30">🏥</div><div class="t-name">Trouver un hôpital</div><div class="t-meta">À proximité</div></div>
-            <div class="tile" data-help="lieux"><div class="thumb lime" data-smicon="near" data-smicon-size="30">🛟</div><div class="t-name">Lieux publics sûrs</div><div class="t-meta">Validés</div></div>
+            <!-- #11 : lime (ambre) était la MÊME couleur que « Numéros d'urgence » (gold) juste à côté → lagon -->
+            <div class="tile" data-help="lieux"><div class="thumb green" data-smicon="near" data-smicon-size="30">🛟</div><div class="t-name">Lieux publics sûrs</div><div class="t-meta">Validés</div></div>
             <div class="tile" data-help="mate"><div class="thumb purp" data-smicon="users" data-smicon-size="30">🤝</div><div class="t-name">Trouver un Mate sûr·e</div><div class="t-meta">Cercle de confiance</div></div>
             <div class="tile" data-help="numeros"><div class="thumb gold" data-smicon="phone" data-smicon-size="30">📞</div><div class="t-name">Numéros d'urgence</div><div class="t-meta">Par pays 🌍</div></div>
             <!-- #5 : Support en tuile carrée, juste à côté de « Numéros d'urgence » (plus de tuile horizontale). -->
@@ -5152,7 +5192,7 @@
           <label style="margin-top:.8rem">Nouveau mot de passe</label>
           <!-- autocomplete="new-password" : sans lui, Chrome proposait « enregistrer ce mot de
                passe ? » au clic sur n'importe quelle tuile après un passage dans les Réglages -->
-          <input id="setPassword" type="password" placeholder="Au moins 6 caractères" autocomplete="new-password" />
+          <input id="setPassword" type="password" placeholder="Au moins 8 caractères" autocomplete="new-password" />
           <button class="btn-accent btn-block" id="savePasswordBtn" style="margin-top:.4rem">Changer le mot de passe</button>
           <div class="msg" id="settingsMsg"></div>
 
@@ -7778,7 +7818,7 @@
         ["🧊", "Brise-glace", "Suggestions de 1er message (intérêts/ville du Mate) quand la conversation est vide."],
         ["👥", "Conversations de groupe", "Crée un groupe avec tes Mates connectés (sortie/event à plusieurs) : chat partagé en temps réel, nom de l'auteur sur chaque bulle, quitter quand tu veux."],
         ["🎤", "Notes vocales", "Enregistre une note vocale (30 s) dans le chat, lecture en 1 tap."],
-        ["🔥", "Flammes (poc)", "Envoie un « poc » chaque jour pour entretenir une flamme avec ton Mate."],
+        ["🔥", "Flammes", "Envoie une « flamme » chaque jour pour entretenir une flamme avec ton Mate."],
         ["⚙️", "Menu conversation", "3 points en haut : profil, flammes, notifs, bloquer, supprimer."],
         ["📨", "Demandes", "Connexions à accepter/refuser, confettis au match."],
         ["👍", "Recommandations (vouch)", "Des Mates se portent garants."],
@@ -11056,7 +11096,7 @@
           const a = b.dataset.cmenu, id = currentChatUserId;
           if (a === "profile") { if (id && travelerMap[id]) openTravelerProfile(travelerMap[id]); }
           else if (a === "delete") { deleteConversation(); }
-          else if (a === "flame") { const f = _flameGet(id); showInfo("🔥 Flammes", '<p style="line-height:1.6;text-align:center;padding:.3rem">Envoie un <b>poc 🔥</b> à ' + escapeHtml((travelerMap[id] || {}).username || "ce Mate") + ' chaque jour pour entretenir votre <b>flamme</b>.<br><br>Flamme actuelle : <b>🔥 ' + (f.active ? f.count : 0) + '</b><br><span class="muted" style="font-size:.82rem">Reviens <b>chaque jour</b> pour la garder ! (rate un jour entier = flamme perdue)</span></p>'); }
+          else if (a === "flame") { const f = _flameGet(id); showInfo("🔥 Flammes", '<p style="line-height:1.6;text-align:center;padding:.3rem">Envoie une <b>flamme 🔥</b> à ' + escapeHtml((travelerMap[id] || {}).username || "ce Mate") + ' chaque jour pour entretenir votre <b>flamme</b>.<br><br>Flamme actuelle : <b>🔥 ' + (f.active ? f.count : 0) + '</b><br><span class="muted" style="font-size:.82rem">Reviens <b>chaque jour</b> pour la garder ! (rate un jour entier = flamme perdue)</span></p>'); }
           else if (a === "notif") { const on = (localStorage.getItem("sm_chatnotif_" + id) !== "0"); localStorage.setItem("sm_chatnotif_" + id, on ? "0" : "1"); const it = $("chatNotifItem"); if (it) it.textContent = on ? "🔕 Notifications : coupées" : "🔔 Notifications : activées"; toast(on ? "🔕" : "🔔", on ? "Notifications coupées pour cette conv" : "Notifications activées"); }
           else if (a === "block") {
             // Sécurité d'abord : on bloque DIRECTEMENT depuis le chat (avant : renvoi vers le profil
@@ -11086,7 +11126,7 @@
       if (f.active && f.count > 0) {
         el.classList.remove("hidden"); n.textContent = f.count;
         // Honnête : pas de compte à rebours en heures (source de confusion 24 h/35 h) → on parle en jours.
-        el.title = done ? ("Flamme x" + f.count + " · poc envoyé aujourd'hui ✓ · reviens demain") : ("Flamme x" + f.count + " · poce aujourd'hui pour la garder 🔥");
+        el.title = done ? ("Flamme x" + f.count + " · flamme envoyée aujourd'hui ✓ · reviens demain") : ("Flamme x" + f.count + " · poce aujourd'hui pour la garder 🔥");
         el.classList.toggle("flame-done", done); // visuel "déjà fait aujourd'hui"
       } else el.classList.add("hidden");
       // Bouton poc : VERROUILLÉ visiblement quand déjà envoyé aujourd'hui (1 poc / jour) + countdown jusqu'à minuit.
@@ -11095,9 +11135,9 @@
         if (done) {
           const tmr = new Date(); tmr.setHours(24, 0, 0, 0);
           const hToMidnight = Math.max(1, Math.ceil((tmr - Date.now()) / 3600000));
-          pc.disabled = true; pc.textContent = "✓"; pc.title = "Poc envoyé aujourd'hui · reviens dans ~" + hToMidnight + " h 🔥";
+          pc.disabled = true; pc.textContent = "✓"; pc.title = "Flamme envoyée aujourd'hui · reviens dans ~" + hToMidnight + " h 🔥";
         } else {
-          pc.disabled = false; pc.textContent = "🔥"; pc.title = "Envoyer un poc 🔥 (1 / jour, fait grandir ta flamme)";
+          pc.disabled = false; pc.textContent = "🔥"; pc.title = "Envoyer une flamme 🔥 (1 / jour, fait grandir ta série)";
         }
       }
     }
@@ -11108,7 +11148,7 @@
       if (_pocSentToday(f)) {
         const tmr = new Date(now); tmr.setHours(24, 0, 0, 0);
         const hLeft = Math.ceil((tmr - now) / 3600000);
-        if (typeof toast === "function") toast("🔥", i18nT("Poc déjà envoyé aujourd'hui ! Reviens dans ~{h} h pour faire grandir ta flamme 🔥", { h: hLeft }));
+        if (typeof toast === "function") toast("🔥", i18nT("Flamme déjà envoyée aujourd'hui ! Reviens dans ~{h} h pour faire grandir ta flamme 🔥", { h: hLeft }));
         return;
       }
       // Jour consécutif (la flamme était encore active = poc d'hier) → elle grandit ; sinon (jour
@@ -11116,11 +11156,11 @@
       const count = (f.active && f.count > 0) ? f.count + 1 : 1;
       try { localStorage.setItem(_flameKey(id), JSON.stringify({ count, last: now })); } catch (e) {}
       renderChatFlame(id);
-      const inp = $("chatInput"); if (inp) inp.value = "🔥 Poc !";
+      const inp = $("chatInput"); if (inp) inp.value = "🔥 Flamme !";
       if (typeof sendChatMessage === "function") sendChatMessage();
       if (window.SMSound) SMSound.play("pop");
       if (typeof celebrate === "function" && count >= 2) {} // (pas de confettis, on reste sobre)
-      if (typeof toast === "function") toast("🔥", count > 1 ? i18nT("Poc ! Ta flamme grandit : x{n} 🔥", { n: count }) : i18nT("Poc envoyé ! Flamme allumée 🔥"));
+      if (typeof toast === "function") toast("🔥", count > 1 ? i18nT("Et hop ! Ta flamme grandit : x{n} 🔥", { n: count }) : i18nT("Flamme envoyée ! 🔥"));
     }
     { const pc = $("chatPoc"); if (pc) pc.addEventListener("click", sendPoc); }
 
@@ -13614,7 +13654,7 @@
     });
     $("savePasswordBtn").addEventListener("click", async () => {
       const m = $("settingsMsg"); const password = $("setPassword").value;
-      if (!password || password.length < 6) { m.style.color = "var(--danger)"; m.textContent = "Mot de passe : au moins 6 caractères."; return; }
+      if (!password || password.length < 8) { m.style.color = "var(--danger)"; m.textContent = "Mot de passe : au moins 8 caractères."; return; }
       m.style.color = "var(--muted)"; m.textContent = "Mise à jour…";
       const { error } = await db.auth.updateUser({ password });
       m.textContent = "";
@@ -15141,34 +15181,30 @@
             // SILHOUETTES iconiques (refonte design) : profils noirs sur le couchant, façon
             // « crête de savane » — la beauté vient de la silhouette, pas du cartoon coloré.
             // Chaque personnage a DEUX jeux de pattes (.lgA/.lgB) alternés = vraie marche 2 temps.
+            // VRAI TRAIT DE CRAYON (retour Maxime) : UN SEUL contour courbe continu par
+            // personnage (plus d'empilement de ronds/carrés), pattes et queues en coups de
+            // pinceau arrondis. Les pattes restent en 2 jeux .lgA/.lgB (marche 2 temps).
             const F = "#2A1505";
-            const LION = `<svg viewBox="0 0 122 66" width="104" height="56"><g fill="${F}">`
-              + `<path d="M16 32C9 25 10 15 19 12" stroke="${F}" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="19" cy="11" r="5.4"/>`
-              + '<ellipse cx="52" cy="40" rx="31" ry="13"/><circle cx="77" cy="36" r="12"/>'
-              + '<circle cx="89" cy="27" r="16"/><circle cx="77" cy="17" r="8"/><circle cx="99" cy="17" r="7"/><circle cx="102" cy="31" r="8"/><circle cx="88" cy="11" r="7"/><circle cx="74" cy="30" r="9"/>'
-              + '<circle cx="94" cy="25" r="9"/><path d="M101 20l15 5-2.5 6c-4 2.4-9 1.6-13-.6z"/>'
-              + '<path d="M85 9l4.5-7 5 5.5z"/><path d="M95 8l5-5 3.5 6z"/>'
-              + '<g class="lgA"><path d="M67 48l8 14 4.5-1.6-7-14z"/><path d="M79 48l-1 15h4.5l2.5-15z"/><path d="M33 48l-7 14 4.5 2 7-15z"/><path d="M45 48l1 15h4.5l.5-15z"/></g>'
-              + '<g class="lgB"><path d="M69 48l-2 15h4.5l3-15z"/><path d="M80 48l7 14 4-2-6-14z"/><path d="M36 48l1 15h4.5l1-15z"/><path d="M47 48l-6 14 4 2 7-14z"/></g>'
-              + "</g></svg>";
-            const PHACO = `<svg viewBox="0 0 94 58" width="70" height="43"><g fill="${F}">`
-              + `<path d="M20 26L12 7" stroke="${F}" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="11.5" cy="6" r="3.4"/>`
-              + '<ellipse cx="42" cy="34" rx="23" ry="13"/>'
-              + '<path d="M26 23q10-9 32-6l-3 8-28 4z"/>'
-              + '<circle cx="66" cy="30" r="10"/><path d="M71 26l16 3.5-1.2 8-14.5-.5z"/>'
-              + `<path d="M83 36q7-1 9-8" stroke="${F}" stroke-width="3" stroke-linecap="round" fill="none"/>`
-              + '<path d="M61 19l3-8 5.5 6.5z"/><path d="M70 18l5.5-6 3 8z"/>'
-              + '<g class="lgA"><path d="M52 44l5 12 4-1.4-4.5-12z"/><path d="M28 44l-5 12 4 1.6 5.5-12z"/></g>'
-              + '<g class="lgB"><path d="M54 44l-1.5 13h4.2l2.3-13z"/><path d="M31 44l.5 13h4.2l1-13z"/></g>'
-              + "</g></svg>";
-            const SURIC = `<svg viewBox="0 0 36 58" width="27" height="44"><g fill="${F}">`
-              + `<path d="M9 40Q1 35 4 24" stroke="${F}" stroke-width="3" stroke-linecap="round" fill="none"/>`
-              + '<ellipse cx="18" cy="32" rx="8.5" ry="13"/><circle cx="18" cy="13" r="7"/>'
-              + '<path d="M23 10l9 3.5-1.8 4.8-7.5-1.6z"/><path d="M12 7l2.5-5.5 4 4.4z"/>'
-              + '<path d="M13 26l-6.5 7 2.6 2.6 6.4-6.4z"/>'
-              + '<g class="lgA"><path d="M14 43l-3.5 12.5 4 1 3.5-12.5z"/><path d="M21 43l4.5 11.5 3.8-1.6-3.6-11.4z"/></g>'
-              + '<g class="lgB"><path d="M15 43l.6 13h4.2l.2-13z"/><path d="M22 43l-2.2 13h4.2l2.2-13z"/></g>'
-              + "</g></svg>";
+            const LION = `<svg viewBox="0 0 122 66" width="104" height="56">`
+              + `<path d="M26 52 C21 46 20 38 25 33 C28 28 37 27 46 28 C55 29 61 27 66 24 C68 16 74 10 81 9 C83 4 90 1 94 6 C99 3 106 6 105 12 C111 12 115 17 112 23 C117 26 117 32 112 34 L116 37 C118 39 117 42 113 43 C108 45 101 44 97 42 C94 47 90 50 84 51 C71 54 52 55 42 53 C36 52 30 53 26 52 Z" fill="${F}"/>`
+              + `<path d="M26 47 C16 44 12 34 17 26" stroke="${F}" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="17" cy="24" r="5" fill="${F}"/>`
+              + `<g class="lgA" stroke="${F}" stroke-width="5.5" fill="none" stroke-linecap="round"><path d="M78 50 C82 55 86 59 89 63"/><path d="M42 51 C40 56 37 60 33 63"/></g>`
+              + `<g class="lgB" stroke="${F}" stroke-width="5.5" fill="none" stroke-linecap="round"><path d="M80 50 C79 55 78 59 78 63"/><path d="M40 51 C41 56 42 60 43 63"/></g>`
+              + "</svg>";
+            const PHACO = `<svg viewBox="0 0 94 58" width="70" height="43">`
+              + `<path d="M14 50 C9 44 10 35 16 31 C18 23 26 18 34 18 C36 13 41 12 43 16 C45 11 50 11 52 16 C55 12 60 13 61 17 C66 14 73 14 77 18 C82 19 86 22 87 26 L92 28 C94 30 94 33 91 35 C88 37 84 36 81 35 C79 40 75 43 70 44 C63 48 54 50 46 49 C38 50 28 51 22 50 C19 51 16 51 14 50 Z" fill="${F}"/>`
+              + `<path d="M84 33 C88 32 90 29 90 25" stroke="${F}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
+              + `<path d="M17 33 C12 26 11 16 15 9" stroke="${F}" stroke-width="2.8" fill="none" stroke-linecap="round"/><circle cx="15" cy="8" r="3.2" fill="${F}"/>`
+              + `<g class="lgA" stroke="${F}" stroke-width="4.5" fill="none" stroke-linecap="round"><path d="M58 46 C61 50 64 53 66 56"/><path d="M27 47 C25 51 23 54 21 56"/></g>`
+              + `<g class="lgB" stroke="${F}" stroke-width="4.5" fill="none" stroke-linecap="round"><path d="M60 46 C59 50 59 53 59 56"/><path d="M26 47 C27 51 28 54 29 56"/></g>`
+              + "</svg>";
+            const SURIC = `<svg viewBox="0 0 36 58" width="27" height="44">`
+              + `<path d="M16 3 C21 2 25 6 24 11 L31 14 C33 16 32 19 29 19 C26 20 23 19 22 18 C25 23 26 29 25 34 C25 40 23 44 21 47 C17 49 12 48 11 45 C9 39 9 31 11 24 C12 17 12 9 13 6 C14 4 15 3 16 3 Z" fill="${F}"/>`
+              + `<path d="M14 27 C9 30 6 34 5 38" stroke="${F}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`
+              + `<path d="M10 41 C4 38 2 30 5 23" stroke="${F}" stroke-width="3" fill="none" stroke-linecap="round"/>`
+              + `<g class="lgA" stroke="${F}" stroke-width="3.6" fill="none" stroke-linecap="round"><path d="M15 46 C13 50 12 53 10 56"/><path d="M20 46 C22 50 23 53 25 55"/></g>`
+              + `<g class="lgB" stroke="${F}" stroke-width="3.6" fill="none" stroke-linecap="round"><path d="M16 46 C16 50 16 53 16 56"/><path d="M20 46 C20 50 20 53 21 56"/></g>`
+              + "</svg>";
             // Acacia en silhouette (dessiné main) : tronc fourchu + canopée plate
             const ACACIA = '<svg class="egs-acacia a1" viewBox="0 0 110 78" width="120" height="85">'
               + '<path d="M52 78V46l-10-13 7 3 6-11 6 11 7-3-10 13v32z" fill="#3E2210"/>'
@@ -15311,8 +15347,14 @@
           ghost.className = "egg-flyhome";
           ghost.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;`;
           ghost.innerHTML = '<div class="efh-cluster">' + _efhCluster() + "</div>";
+          // #3 : le clone perdait ses styles (tuile BLANCHE hors DA pendant l'envol) → on copie
+          // le rendu RÉEL de la tuile (fond, couleur, bordure, rayon) au pixel près.
+          const cs = getComputedStyle(btn);
           const clone = btn.cloneNode(true);
-          clone.style.cssText = "width:100%;height:100%;margin:0;pointer-events:none;";
+          clone.style.cssText = `width:100%;height:100%;margin:0;pointer-events:none;display:flex;align-items:center;justify-content:center;`
+            + `background-color:${cs.backgroundColor};background-image:${cs.backgroundImage};color:${cs.color};`
+            + `border-radius:${cs.borderRadius};border:${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor};`
+            + `font:${cs.font};box-shadow:${cs.boxShadow};`;
           ghost.appendChild(clone);
           document.body.appendChild(ghost);
           btn.style.visibility = "hidden"; // la tuile quitte VRAIMENT l'écran d'accueil
@@ -15348,14 +15390,14 @@
           const d = `M ${sx} ${sy} C ${sx + 70} ${sy - 56}, ${mx - 92} ${my + 42}, ${mx} ${my}`
             + ` a ${lr} ${lr} 0 1 1 -0.2 -0.2`
             + ` C ${mx + 84} ${my + 64}, ${ex + 56} ${ey - 130}, ${ex} ${ey}`;
+          // #2 : c'est l'ÉMOJI ✈️ DE LA TUILE qui décolle (il quitte vraiment la tuile et
+          // reviendra se poser 30 s plus tard) — plus de dessin à part.
+          const emo = btn.querySelector(".tm-emo");
           const ov = document.createElement("div"); ov.className = "egg-plane";
           ov.innerHTML = `<svg class="egp-trail" width="${innerWidth}" height="${innerHeight}" viewBox="0 0 ${innerWidth} ${innerHeight}"><path d="${d}" pathLength="100" fill="none"/></svg>`
-            + '<div class="egp-plane"><svg viewBox="0 0 42 32" width="38" height="29">'
-            + '<path d="M2 16 L40 2 L24 30 L18 19 Z" fill="#FFF3DC"/>'
-            + '<path d="M40 2 L18 19 L20 27 Z" fill="#F2D9B0"/>'
-            + '<path d="M40 2 L18 19" stroke="#E8963F" stroke-width="1.4"/>'
-            + '<path d="M2 16 L40 2" stroke="#E8963F" stroke-width="1.2" opacity=".5"/></svg></div>';
+            + '<div class="egp-plane"><span class="egp-emo">✈️</span></div>';
           document.body.appendChild(ov);
+          if (emo) emo.classList.add("tm-away"); // la place reste vide dans la tuile
           const plane = ov.querySelector(".egp-plane");
           plane.style.offsetPath = `path("${d}")`;
           const anim = plane.animate([{ offsetDistance: "0%" }, { offsetDistance: "100%" }], { duration: 2800, easing: "cubic-bezier(.45,.05,.35,1)", fill: "forwards" });
@@ -15378,6 +15420,8 @@
               awardSecretBadge("badge_paperplane");
             } catch (e) {}
             setTimeout(() => { try { ov.remove(); } catch (e) {} }, 900);
+            // #2 : l'émoji REVIENT se poser dans la tuile 30 s après le départ (petit pop).
+            setTimeout(() => { try { if (emo) { emo.classList.remove("tm-away"); emo.classList.add("tm-back"); setTimeout(() => emo.classList.remove("tm-back"), 800); if (typeof toast === "function") toast("✈️", i18nT("L'avion est rentré au hangar 🛬"), null, { low: true }); } } catch (e) {} }, 30000);
           };
         } catch (e) {}
       });
@@ -15792,7 +15836,7 @@
       document.body.classList.toggle("theme-dusk", dusk);
       const tt = $("themeToggle"); if (tt) tt.innerHTML = dusk
         ? '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><circle cx="12" cy="12" r="5" fill="#ffd15c"/><g stroke="#FF8A3D" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></g></svg>'
-        : '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><path d="M20 14.6A8 8 0 1 1 11 4.2a6.5 6.5 0 0 0 9 10.4z" fill="#ffd15c"/><circle cx="17.5" cy="6.5" r="1.2" fill="#FF8A3D"/></svg>';
+        : '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><path d="M20 14.6A8 8 0 1 1 11 4.2a6.5 6.5 0 0 0 9 10.4z" fill="#ffd15c"/></svg>'; // #19 : point orange retiré (il intriguait plus qu'il ne décorait)
       const st = $("setThemeToggle"); if (st) st.checked = dusk; // garde le toggle des Réglages synchro
       const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dusk ? "#171026" : "#fbeee9");
       if (typeof smRefreshMapTheme === "function") smRefreshMapTheme(); // la carte suit le thème
@@ -16082,7 +16126,7 @@
       "Centre d'aide ❓": "Help center ❓", "Nous contacter ✉️": "Contact us ✉️", "💡 L'XP & les niveaux": "💡 XP & levels", "⭐ L'XP & les niveaux": "⭐ XP & levels",
       "🗺️ Collection de quêtes": "🗺️ Quest collection", "🏙️ Villes explorées": "🏙️ Cities explored", "🎯 Quête la plus proche": "🎯 Nearest quest",
       "Invite tes amis sur SunMates": "Invite your friends to SunMates", "Plus on est, plus c'est sûr & fun 🌍": "More of us = safer & more fun 🌍", "Partager ›": "Share ›",
-      "Note vocale (30 s max)": "Voice note (30 s max)", "Envoyer un poc 🔥": "Send a flame 🔥", "Enregistrement…": "Recording…", "Envoyer ➤": "Send ➤", "Annuler": "Cancel",
+      "Note vocale (30 s max)": "Voice note (30 s max)", "Envoyer une flamme 🔥": "Send a flame 🔥", "Enregistrement…": "Recording…", "Envoyer ➤": "Send ➤", "Annuler": "Cancel",
       "🔥 Flammes (24 h)": "🔥 Flames (24 h)", "🔔 Notifications : activées": "🔔 Notifications: on", "🔕 Notifications : coupées": "🔕 Notifications: off", "🚫 Bloquer / signaler": "🚫 Block / report", "🗑️ Supprimer la conversation": "🗑️ Delete conversation",
       "Aide & support": "Help & support",
       "La visite guidée": "The guided tour",
@@ -16481,7 +16525,7 @@
       "Café partenaire": "Partner café",
       "Personnel formé, lieu passant…": "Trained staff, busy street…",
       "Rua Augusta 100, Lisbonne": "Rua Augusta 100, Lisbon",
-      "Au moins 6 caractères": "At least 6 characters",
+      "Au moins 8 caractères": "At least 8 characters",
       "Ex. Le Comptoir Solaire": "E.g. Le Comptoir Solaire",
       "Prénom Nom": "First name Last name",
       "Ville, type d'offre souhaitée, questions…": "City, type of offer you'd like, questions…",
@@ -16520,8 +16564,8 @@
       "{n} jours de série, tu es en feu ! Continue 🌟": "{n}-day streak · you're on fire! Keep it going 🌟",
       "🔥 Ta série": "🔥 Your streak",
       "De retour à {c}": "Back in {c}",
-      "Poc déjà envoyé aujourd'hui ! Reviens dans ~{h} h pour faire grandir ta flamme 🔥": "Poc already sent today! Come back in ~{h} h to grow your flame 🔥",
-      "Poc ! Ta flamme grandit : x{n} 🔥": "Poc! Your flame is growing: x{n} 🔥",
+      "Flamme déjà envoyée aujourd'hui ! Reviens dans ~{h} h pour faire grandir ta flamme 🔥": "Flame already sent today! Come back in ~{h} h to grow your flame 🔥",
+      "Et hop ! Ta flamme grandit : x{n} 🔥": "And pop! Your flame is growing: x{n} 🔥",
       "Poc envoyé ! Flamme allumée 🔥": "Poc sent · flame lit 🔥",
       "Tu n'es plus signalé·e comme dispo.": "You're no longer shown as available.",
       "Tu es <b>dispo</b> pour une rencontre (3 h) ☕ Tes Mates le voient.": "You're <b>up for meeting</b> (3 h) ☕ Your Mates can see it.",
@@ -17177,7 +17221,7 @@
       "Entre un nouvel email.": "Enter a new email.",
       "Mise à jour…": "Updating…",
       "Vérifie ta boîte mail pour confirmer le nouvel email": "Check your inbox to confirm the new email",
-      "Mot de passe : au moins 6 caractères.": "Password: at least 6 characters.",
+      "Mot de passe : au moins 8 caractères.": "Password: at least 8 characters.",
       "Défi refusé": "Challenge declined",
       "Marquer ce coupon comme utilisé ?": "Mark this coupon as used?",
       "Bloquer ce voyageur ? Il n'apparaîtra plus dans ta découverte ni tes messages.": "Block this traveller? They won't appear in your discovery or messages anymore.",
@@ -17591,7 +17635,7 @@
     }
     (function setupPTR() {
       let ptr = document.createElement("div"); ptr.className = "ptr"; ptr.innerHTML = '<div class="ptr-ring"></div>'; document.body.appendChild(ptr);
-      let startY = 0, pulling = false, dist = 0; const THRESH = 70, SHOW_AT = 24;
+      let startY = 0, pulling = false, dist = 0; const THRESH = 104, SHOW_AT = 42; // #4 : seuils relevés (il popait trop facilement)
       window.addEventListener("touchstart", (e) => {
         // #16 : on ne DÉCLENCHE que si on est PILE en haut de l'écran (sinon le spinner apparaissait
         // trop souvent en plein scroll). scrollY doit être 0 (pas une marge de 4px).
@@ -17599,6 +17643,8 @@
         if ($("appView") && $("appView").classList.contains("hidden")) { pulling = false; return; }
         // Pas de pull-to-refresh quand on scrolle une zone interne (chat, modals, listes déroulantes).
         if (e.target.closest(".chat-body, #chatView, .popinfo-card, .act-card, #pickerBody, .sm-selsheet, [data-noptr]")) { pulling = false; return; }
+        // #4 : un geste qui démarre dans la MOITIÉ BASSE de l'écran = du scroll, jamais un refresh.
+        if (e.touches[0].clientY > window.innerHeight * 0.45) { pulling = false; return; }
         startY = e.touches[0].clientY; pulling = true; dist = 0;
       }, { passive: true });
       window.addEventListener("touchmove", (e) => {
