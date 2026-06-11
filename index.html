@@ -104,6 +104,9 @@
        plugin officiel → les marqueurs/clusters/popups existants continuent de marcher tels quels.
        Tuiles : OpenFreeMap (gratuit, sans clé, sans limite). Repli raster auto si WebGL absent. -->
   <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
+  <!-- PERF : poignée de main TLS faite en avance pour les photos (quêtes/lieux) et avatars de démo -->
+  <link rel="preconnect" href="https://picsum.photos" />
+  <link rel="preconnect" href="https://i.pravatar.cc" />
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" />
   <script defer src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
   <script defer src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
@@ -111,8 +114,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=426"></script>
-  <script src="sunmates-icons.js?v=426"></script>
+  <script src="sunmates-badges.js?v=427"></script>
+  <script src="sunmates-icons.js?v=427"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3477,6 +3480,20 @@
     #seasonFx .sfx-p svg { display: block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.18)); }
     @keyframes sfxFall { to { transform: translateY(125vh) rotate(240deg); } }
 
+    /* ============ PASSE FLUIDITÉ / RÉACTIVITÉ ============ */
+    /* 1) Tap immédiat : `touch-action: manipulation` supprime l'hésitation du navigateur
+       (attente d'un éventuel double-tap zoom) sur TOUT ce qui se touche. */
+    button, a, input, select, textarea, label,
+    .tile, .cat-tile, .qrow, .person, .chip, .bitem, .coupon, .gcard, .pcard, .fpost,
+    .sm-sel-trigger, .sm-selopt, .conv-open, .trav-open, .stat-box, .pcell-jump, .pc-stat,
+    .bottom-nav button, .mseg button, .help-cta, .fc-gbtn, .fc-btn { touch-action: manipulation; }
+    /* 2) Listes longues EN FLUX : les cartes hors écran ne sont NI mises en page NI peintes
+       (content-visibility) → premier rendu et défilement bien plus légers.
+       ⚠️ PAS sur les items de GRILLE (.bitem/.gcard) : mesuré au banc, ça AGGRAVAIT le
+       dévoilement du panneau (recalculs en cascade dans la grille). */
+    .fpost, .pcard, .trav-open { content-visibility: auto; contain-intrinsic-size: auto 150px; }
+    .person { content-visibility: auto; contain-intrinsic-size: auto 76px; }
+
     /* A11y · réglage système « réduire les animations » respecté PARTOUT (ne concerne que
        les personnes qui l'ont demandé · le peps reste intact pour tout le monde d'autre) */
     @media (prefers-reduced-motion: reduce) {
@@ -5660,14 +5677,20 @@
         myUserId = session.user.id;
         myEmail = session.user.email; // email géré dans Réglages, plus affiché sous le pseudo
         await ensureAuthedSession(); // attend que le jeton soit rattaché (course au rechargement)
-        await ensureProfile(session.user);
-        await loadProfile();
+        // PERF (§17) : dès que le jeton est prêt, TOUT ce qui est indépendant part EN MÊME TEMPS
+        // (avant : profil → ban → 4 listes → jeu → non-lus, en file indienne = somme des allers-retours).
+        // Dépendances respectées : loadGameData attend connexions (travelerMap pour les noms des
+        // défis) ET profil (vue Gold) ; checkBanStatus attend le profil ; le reste est autonome
+        // (blockedIds/bannedIds sont chargés DANS loadConnections).
+        const pProfile = ensureProfile(session.user).then(() => loadProfile());
+        const pConn = loadConnections();
+        const pCafes = loadCafes(), pCheckins = loadCheckins(), pCircle = loadCircleLocations();
+        const pGame = Promise.all([pConn, pProfile]).then(() => loadGameData());
+        await pProfile;
         if (typeof checkBanStatus === "function" && await checkBanStatus()) { _renderedUserId = null; return; } // compte suspendu -> on arrête tout
-        await Promise.all([loadCafes(), loadCheckins(), loadConnections(), loadCircleLocations()]);
-        await loadGameData(); // après loadConnections : travelerMap dispo pour les noms des défis
+        await Promise.all([pCafes, pCheckins, pConn, pCircle, pGame]);
         if (typeof checkMilestoneBadges === "function") checkMilestoneBadges(); // badges-jalons (premier check-in, vérifié…)
-        await loadUnread();
-        buildHomeFeed();
+        await Promise.all([loadUnread(), Promise.resolve(buildHomeFeed())]); // non-lus + fil en parallèle (indépendants)
         if (typeof renderHomeMap === "function") setTimeout(renderHomeMap, 80);
         if (typeof updateSafetyBadge === "function") updateSafetyBadge();
         if (typeof maybeShowOnboarding === "function") maybeShowOnboarding();
@@ -5815,11 +5838,13 @@
       document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle("active", b.dataset.tab === target));
       document.querySelectorAll(".tab-panel").forEach((p) => show(p, p.dataset.panel === target));
       // Taper une tuile du bas revient TOUJOURS à l'écran principal de l'onglet (même si déjà dessus).
-      if (target === "jeux" && typeof showJeuxView === "function") { showJeuxView("jeuxHome"); if (changed && typeof loadGameData === "function" && myUserId) loadGameData(); }
+      // PERF : revenir sur Jeux ne re-télécharge PAS tout si les données ont <60 s (re-rendu
+      // des grilles évité = switch net) ; le pull-to-refresh et les actions de jeu rechargent, eux.
+      if (target === "jeux" && typeof showJeuxView === "function") { showJeuxView("jeuxHome"); if (changed && typeof loadGameData === "function" && myUserId && Date.now() - (window._gameLoadedAt || 0) > 60000) loadGameData(); }
       if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
       if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo(0, 0); // PERF : retour haut INSTANTANÉ (le scroll animé donnait une impression de lenteur au switch)
       if (target === "accueil" && typeof renderHomeMap === "function" && (typeof getHomeMode !== "function" || getHomeMode() !== "home")) setTimeout(renderHomeMap, 60);
       __lastTab = target;
     }
@@ -9493,6 +9518,7 @@
     // Charge toutes les données de jeu de l'utilisateur connecté.
     async function loadGameData() {
       if (!myUserId) return;
+      window._gameLoadedAt = Date.now(); // PERF : fenêtre de fraîcheur 60 s (cf. goToTab jeux)
       skelFirst("badgeGrid", skelCards(4));
       skelFirst("couponList", skelRows(2));
       const [qs, uq, ub, uc, sg, bc, gr] = await Promise.all([
@@ -9928,7 +9954,7 @@
     function showJeuxView(id) {
       { const sh = $("jeuxSheet"); if (sh) sh.classList.add("hidden"); } // ferme la feuille quêtes/jeux
       ["jeuxHome", "jeuxDetail", "jeuxBadges", "jeuxCoupons", "jeuxRank", "jeuxShop"].forEach((v) => show($(v), v === id));
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo(0, 0); // PERF : instantané (réactivité)
     }
 
     // ====================== BOUTIQUE SUNCOINS 🪙 (cosmétiques achetés, P2.17) ======================
@@ -10506,7 +10532,7 @@
 
     function showMatesView(id) {
       ["matesHome", "matesProfile", "matesChat"].forEach((v) => show($(v), v === id));
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo(0, 0); // PERF : instantané (réactivité)
       if (id !== "matesChat") closeChatRt(); // on quitte le chat → on ferme son canal temps réel
     }
 
@@ -11604,7 +11630,7 @@
       ["secuHome", "secuHelp"].forEach((v) => show($(v), v === id));
       if (id === "secuHome" && typeof renderSafetyTip === "function") renderSafetyTip();
       if (id === "secuHelp" && typeof renderIce === "function") renderIce();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo(0, 0); // PERF : instantané (réactivité)
     }
     renderSafetyTip();
     $("needHelpBtn").addEventListener("click", () => showSecuView("secuHelp"));
