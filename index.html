@@ -76,6 +76,10 @@
   <title>SunMates · pars solo, trouve ta bande</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Tuiles de carte : la connexion TLS est prête AVANT que Leaflet demande la 1ʳᵉ tuile (carte plus vive) -->
+  <link rel="preconnect" href="https://a.tile.openstreetmap.org" />
+  <link rel="preconnect" href="https://b.tile.openstreetmap.org" />
+  <link rel="preconnect" href="https://c.tile.openstreetmap.org" />
   <!-- Identité SunMates : Fraunces (titres éditoriaux) + Manrope (interface) -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- PWA : app installable sur le téléphone -->
@@ -100,8 +104,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=396"></script>
-  <script src="sunmates-icons.js?v=396"></script>
+  <script src="sunmates-badges.js?v=397"></script>
+  <script src="sunmates-icons.js?v=397"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -1148,10 +1152,11 @@
       background: linear-gradient(158deg, rgba(255,255,255,.62) 0%, rgba(255,255,255,.22) 15%, rgba(255,255,255,.03) 36%, rgba(255,255,255,0) 58%);
       box-shadow: inset 0 1.5px 0 rgba(255,255,255,.65), inset 0 -16px 26px rgba(0,0,0,.12);
       pointer-events: none; }
-    .tile .thumb.green { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#4ED8B8,#179E8C); box-shadow: 0 6px 16px rgba(23,169,155,.24); } /* DA : teal */
-    .tile .thumb.blue  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#8ed0ff,#3aa0f0); box-shadow: 0 6px 16px rgba(58,160,240,.24); }
-    .tile .thumb.purp  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#b9a6ff,#7c5cff); box-shadow: 0 6px 16px rgba(124,92,255,.24); }
-    .tile .thumb.gold  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.45), rgba(255,255,255,0) 55%), linear-gradient(135deg,#ffd98a,#f0a93a); box-shadow: 0 6px 16px rgba(240,169,58,.26); }
+    /* Palette BIJOU (alignée sur les .cic v378) : fini les tons pastel délavés */
+    .tile .thumb.green { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#4ED8B8,#179E8C); box-shadow: 0 6px 16px rgba(23,169,155,.24); } /* DA : teal bijou */
+    .tile .thumb.blue  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#6FA8FF,#2D6FE0); box-shadow: 0 6px 16px rgba(45,111,224,.26); } /* saphir */
+    .tile .thumb.purp  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#9D86FF,#5E3FE0); box-shadow: 0 6px 16px rgba(94,63,224,.26); } /* indigo nuit */
+    .tile .thumb.gold  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.45), rgba(255,255,255,0) 55%), linear-gradient(135deg,#FFD15C,#F4A11E); box-shadow: 0 6px 16px rgba(244,161,30,.28); } /* doré bijou */
     .tile .thumb.red   { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#ff8a6b,#e23b2e); box-shadow: 0 6px 16px rgba(226,59,46,.26); }
     .tile .thumb.teal  { background-image: radial-gradient(circle at 50% 22%, rgba(255,255,255,.4), rgba(255,255,255,0) 55%), linear-gradient(135deg,#7fe3d3,#17a99b); box-shadow: 0 6px 16px rgba(23,169,155,.24); }
     .tile .t-name { font-weight: 700; color: var(--ink); font-size: .92rem; }
@@ -1903,7 +1908,9 @@
     .chat-mic { font-size: 1.2rem; flex-shrink: 0; }
     /* Chips de type de feedback bêta */
     /* Chips de portée de recherche (Tout / Voyageurs / Lieux / Vérifiés) */
-    .search-scopes { display: flex; gap: .4rem; margin: .5rem 0 .2rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    /* Catégories de recherche : visibles seulement PENDANT la recherche (retour Maxime) */
+    .search-scopes { display: none; gap: .4rem; margin: .5rem 0 .2rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .search-scopes.live { display: flex; }
     .search-scopes::-webkit-scrollbar { display: none; }
     .sscope { flex: 0 0 auto; border: 1px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: .35rem .75rem; font-size: .78rem; font-weight: 700; cursor: pointer; transition: .12s; white-space: nowrap; }
     .sscope.on { background: var(--accent-grad); color: #fff; border-color: transparent; box-shadow: 0 2px 7px rgba(255,111,60,.28); }
@@ -2853,6 +2860,8 @@
     .chip.active { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent; }
     .badge.ok { background: rgba(255,177,60,.16); color: #B5740E; border-color: rgba(255,177,60,.45); }
     .tile, .gcard { background: var(--card) !important; border: 1px solid var(--line) !important; }
+    /* Mode nuit : contour NEUTRE (le --line chaud créait un liseré orange bizarre autour des tuiles) */
+    body.theme-dusk .tile, body.theme-dusk .gcard { border-color: rgba(255,255,255,.09) !important; }
     .thumb { background: var(--accent-grad); color: #fff; background-repeat: no-repeat; background-size: cover; overflow: hidden; }
     .thumb.green { background: linear-gradient(135deg,#22D3C5,#0E9E96) !important; }
     .thumb.blue  { background: linear-gradient(135deg,#5BC0FF,#2D8FE0) !important; }
@@ -3183,7 +3192,7 @@
     <div class="act-card" style="max-width:380px;max-height:86vh;display:flex;flex-direction:column">
       <div class="picker-head"><h3 style="margin:0">📞 Numéros d'urgence</h3><button id="numbersClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
       <p class="muted" style="font-size:.8rem;margin:.2rem 0 .5rem">Trouve les secours du pays où tu es. Touche un numéro pour appeler.</p>
-      <div class="search"><span class="ico">🔍</span><input id="numbersSearch" type="text" placeholder="Pays (ex : Thaïlande, Japon…)" /></div>
+      <div class="search"><span class="ico">🔍</span><input id="numbersSearch" type="text" maxlength="80" placeholder="Pays (ex : Thaïlande, Japon…)" /></div>
       <div id="numbersList" style="overflow-y:auto;flex:1;margin-top:.5rem"></div>
     </div>
   </div>
@@ -3444,7 +3453,7 @@
 
         <div class="search">
           <span class="ico">🔍</span>
-          <input id="homeSearch" type="text" placeholder="Rechercher un lieu ou un·e voyageur·se…" />
+          <input id="homeSearch" type="text" maxlength="80" placeholder="Rechercher un lieu ou un·e voyageur·se…" />
         </div>
         <div class="search-scopes" id="searchScopes">
           <button class="sscope on" data-scope="all">Tout</button>
@@ -3591,10 +3600,10 @@
         <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem;text-align:center">Touche une pastille pour voir un lieu, un Mate ou une activité autour de toi ✨</p>
         <div class="card homemap-card">
           <!-- Sélecteur de ville (menu déroulant) : concentre la carte sur une ville de jeu -->
-          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button></div>
-          <!-- Chips colorés + emojis (l'âme SunMates) : couleur = type de marqueur sur la carte -->
-          <div class="chips wrap homemap-filters as-btn" id="homeMapFilters">
-            <button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Filtres <span class="hlb-cnt" id="hmLayersCnt">5</span></button>
+          <!-- UNE seule rangée au-dessus de la carte : ville + À faire + Filtres (avant : 2 rangées éparpillées) -->
+          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button><button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Filtres <span class="hlb-cnt" id="hmLayersCnt">5</span></button></div>
+          <!-- Chips gardés en DOM (pilotés par le panneau Filtres) mais plus affichés ici -->
+          <div class="chips wrap homemap-filters as-btn" id="homeMapFilters" style="display:none">
             <button class="chip active cl-places" data-layer="places">📍 Lieux <b data-cnt></b></button>
             <button class="chip active cl-mates" data-layer="mates">🧑 Mates <b data-cnt></b></button>
             <button class="chip active cl-acts" data-layer="activities">🎉 Activités <b data-cnt></b></button>
@@ -3674,14 +3683,14 @@
 
         <div class="section-head"><h3>Accès rapides</h3></div>
         <div class="grid2">
-          <div class="tile" data-goto="connexions"><div class="thumb purp">🤝</div><div class="t-name">Mes Mates</div><div class="t-meta" id="qaMates">Rencontre &amp; discute</div></div>
-          <div class="tile" data-goto="securite"><div class="thumb red">🛟</div><div class="t-name">Sécurité</div><div class="t-meta">Position &amp; alerte</div></div>
-          <div class="tile" data-goto="lieux"><div class="thumb green">📍</div><div class="t-name">Lieux sûrs</div><div class="t-meta" id="qaLieux">Check-ins</div></div>
-          <div class="tile" data-goto="jeux"><div class="thumb gold">🎮</div><div class="t-name">Jeux &amp; Quêtes</div><div class="t-meta" id="qaJeux">XP &amp; badges</div></div>
-          <div class="tile" data-goto="jeux" data-jeuxview="jeuxRank"><div class="thumb blue">🏆</div><div class="t-name">Classement</div><div class="t-meta">Grimpe le top</div></div>
-          <div class="tile" data-goto="jeux" data-jeuxview="jeuxCoupons"><div class="thumb teal">🎟️</div><div class="t-name">Coupons</div><div class="t-meta" id="qaCoupons">Tes récompenses</div></div>
-          <div class="tile tile-soon" id="goldTile" aria-disabled="true" title="SunMates Gold · bientôt"><div class="thumb gold-soon">👑</div><div class="t-name">Gold</div><div class="t-meta">Avantages premium</div></div>
-          <div class="tile" data-goto="profil"><div class="thumb gold">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Score de confiance</div></div>
+          <div class="tile" data-goto="connexions"><div class="thumb purp">🤝</div><div class="t-name">Mes Mates</div><div class="t-meta" id="qaMates">Tes compagnons d'aventure</div></div>
+          <div class="tile" data-goto="securite"><div class="thumb red">🛟</div><div class="t-name">Sécurité</div><div class="t-meta">L'esprit tranquille</div></div>
+          <div class="tile" data-goto="lieux"><div class="thumb green">📍</div><div class="t-name">Lieux sûrs</div><div class="t-meta" id="qaLieux">Tes spots à explorer</div></div>
+          <div class="tile" data-goto="jeux"><div class="thumb gold">🎮</div><div class="t-name">Jeux &amp; Quêtes</div><div class="t-meta" id="qaJeux">Joue, gagne, brille ⭐</div></div>
+          <div class="tile" data-goto="jeux" data-jeuxview="jeuxRank"><div class="thumb blue">🏆</div><div class="t-name">Classement</div><div class="t-meta">Vise le sommet</div></div>
+          <div class="tile" data-goto="jeux" data-jeuxview="jeuxCoupons"><div class="thumb teal">🎟️</div><div class="t-name">Coupons</div><div class="t-meta" id="qaCoupons">Des cadeaux à débloquer</div></div>
+          <div class="tile tile-soon" id="goldTile" aria-disabled="true" title="SunMates Gold · bientôt"><div class="thumb gold-soon">👑</div><div class="t-name">Gold</div><div class="t-meta">Le meilleur, bientôt</div></div>
+          <div class="tile" data-goto="profil"><div class="thumb gold">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Ton aura voyageuse</div></div>
         </div>
       </div>
 
@@ -3714,7 +3723,7 @@
           <div style="text-align:right;margin-top:.4rem"><a id="spotClear" style="cursor:pointer;display:none;color:var(--accent);font-weight:600;font-size:.82rem" data-i18n="spot.clear">Effacer</a></div>
           <div class="msg" id="spotMsg" style="text-align:center"></div>
         </details>
-        <div class="search" style="margin-top:.2rem"><span class="ico">🔍</span><input id="cafeSearch" type="text" placeholder="Rechercher un lieu ou une ville…" data-i18n-ph="places.searchph" /></div>
+        <div class="search" style="margin-top:.2rem"><span class="ico">🔍</span><input id="cafeSearch" type="text" maxlength="80" placeholder="Rechercher un lieu ou une ville…" data-i18n-ph="places.searchph" /></div>
         <!-- Filtres et tris SÉPARÉS visuellement (mêmes tuiles, même câblage #lieuxCats .cat-tile :
              un tri repart de « Tous », un filtre annule le tri → une seule tuile active, voulu) -->
         <div id="lieuxCats">
@@ -3773,7 +3782,7 @@
           <div class="mates-seg hidden" data-msegpanel="discover">
             <div id="mateOfDay"></div>
             <div class="card">
-              <div class="search"><span class="ico">🔍</span><input id="travSearch" type="text" placeholder="Pseudo ou ville…" aria-label="Rechercher un voyageur par pseudo ou ville" /></div>
+              <div class="search"><span class="ico">🔍</span><input id="travSearch" type="text" maxlength="80" placeholder="Pseudo ou ville…" aria-label="Rechercher un voyageur par pseudo ou ville" /></div>
               <div class="chips wrap" id="travFilters" style="margin-bottom:.5rem">
                 <button class="chip" data-filter="verified" data-i18n="filter.verified">Vérifiés</button>
                 <button class="chip" data-filter="active" data-i18n="filter.active">● En ligne</button>
@@ -4123,14 +4132,14 @@
               <label>Pseudo</label>
               <input id="pUsername" placeholder="Chloé" maxlength="22" />
               <div class="row" style="margin-top:0">
-                <div style="flex:1"><label>Prénom</label><input id="pFirstName" placeholder="Chloé" /></div>
-                <div style="flex:1"><label>Nom</label><input id="pLastName" placeholder="Martin" /></div>
+                <div style="flex:1"><label>Prénom</label><input id="pFirstName" maxlength="40" placeholder="Chloé" /></div>
+                <div style="flex:1"><label>Nom</label><input id="pLastName" maxlength="40" placeholder="Martin" /></div>
               </div>
               <label>Téléphone <span class="muted" style="font-weight:400">(privé · jamais affiché)</span></label>
               <input id="pPhone" type="tel" placeholder="+33 6 12 34 56 78" />
               <div class="muted" style="font-size:.74rem;margin:.15rem 0 .2rem;line-height:1.4">Sert uniquement à l'<b>alerte d'urgence</b> et à la vérification de ton compte. Jamais visible par les autres voyageurs.</div>
               <label>Ville actuelle</label>
-              <input id="pCity" placeholder="Lisbonne" />
+              <input id="pCity" maxlength="60" placeholder="Lisbonne" />
               <label>Bio</label>
               <textarea id="pBio" rows="3" maxlength="300" placeholder="Exploratrice solo, fan de cafés calmes ☕"></textarea>
               <small class="char-count" id="pBioCount" data-for="pBio" data-max="300">0/300</small>
@@ -4173,7 +4182,7 @@
                   <select id="pRelationship"><option value="">—</option><option>Célibataire</option><option>En couple</option><option>C'est compliqué</option><option>Je préfère ne pas dire</option></select></div>
               </div>
               <label>Ville d'origine</label>
-              <input id="pHometown" placeholder="Nantes, France" />
+              <input id="pHometown" maxlength="60" placeholder="Nantes, France" />
             </div>
           </div>
 
@@ -4182,11 +4191,11 @@
             <div class="pf-head">💼 Travail &amp; études<span class="chev">›</span></div>
             <div class="pf-body">
               <div class="row" style="margin-top:0">
-                <div style="flex:1"><label>Métier</label><input id="pJob" placeholder="Photographe" /></div>
-                <div style="flex:1"><label>Entreprise</label><input id="pCompany" placeholder="Freelance" /></div>
+                <div style="flex:1"><label>Métier</label><input id="pJob" maxlength="60" placeholder="Photographe" /></div>
+                <div style="flex:1"><label>Entreprise</label><input id="pCompany" maxlength="60" placeholder="Freelance" /></div>
               </div>
               <label>École / université</label>
-              <input id="pSchool" placeholder="Université de Lisbonne" />
+              <input id="pSchool" maxlength="80" placeholder="Université de Lisbonne" />
               <label>Niveau d'études</label>
               <select id="pEducation"><option value="">—</option><option>Lycée</option><option>Bac+2/3</option><option>Master</option><option>Doctorat</option><option>Autre</option></select>
             </div>
@@ -4240,11 +4249,11 @@
             <div class="pf-head">✨ Plus sur moi<span class="chev">›</span></div>
             <div class="pf-body">
               <label>Destinations de rêve <span class="muted" style="font-weight:400">(séparées par des virgules)</span></label>
-              <input id="pFavPlaces" placeholder="Japon, Patagonie, Islande" />
+              <input id="pFavPlaces" maxlength="120" placeholder="Japon, Patagonie, Islande" />
               <label>Ma bucket list de voyage</label>
               <textarea id="pBucket" rows="2" maxlength="200" placeholder="Voir une aurore boréale, plonger à Bali…"></textarea>
               <label>Instagram <span class="muted" style="font-weight:400">(sans @)</span></label>
-              <input id="pInstagram" placeholder="chloe.travels" />
+              <input id="pInstagram" maxlength="40" placeholder="chloe.travels" />
             </div>
           </div>
 
@@ -4317,7 +4326,7 @@
             </div>
 
             <!-- Recherche UNIQUE : filtre la visite (chapitres) ET le catalogue d'un coup -->
-            <div class="search kb-search" style="margin:.6rem 0"><span class="ico">🔍</span><input id="kbSearch" type="text" placeholder="Rechercher une fonctionnalité, un écran, un chapitre…" /></div>
+            <div class="search kb-search" style="margin:.6rem 0"><span class="ico">🔍</span><input id="kbSearch" type="text" maxlength="80" placeholder="Rechercher une fonctionnalité, un écran, un chapitre…" /></div>
             <div class="section-head"><h3 style="margin:.4rem 0 .2rem">📚 Les chapitres de la visite</h3></div>
             <p class="muted" style="font-size:.8rem;margin:.1rem 0 .6rem">Touche « ▶ Jouer depuis ici » pour lancer la visite à un chapitre précis.</p>
             <div id="demoSteps"></div>
@@ -4338,7 +4347,7 @@
           <div class="aseg hidden" data-asegpanel="users">
             <div class="card">
               <h3 style="margin-top:0">👥 Membres</h3>
-              <div class="search"><span class="ico">🔍</span><input id="adminUserSearch" type="text" placeholder="Rechercher un pseudo…" /></div>
+              <div class="search"><span class="ico">🔍</span><input id="adminUserSearch" type="text" maxlength="80" placeholder="Rechercher un pseudo…" /></div>
               <div id="adminUsers"><p class="muted">Chargement…</p></div>
             </div>
           </div>
@@ -4351,20 +4360,20 @@
             <div class="card">
               <h3 style="margin-top:0">➕ Ajouter / modifier un lieu</h3>
               <input id="apId" type="hidden" />
-              <label>Nom</label><input id="apName" placeholder="Le Comptoir Solaire" />
+              <label>Nom</label><input id="apName" maxlength="80" placeholder="Le Comptoir Solaire" />
               <div class="row" style="margin-top:0">
-                <div style="flex:1"><label>Ville</label><input id="apCity" placeholder="Lisbonne" /></div>
-                <div style="flex:1"><label>Catégorie</label><input id="apCat" placeholder="Café partenaire" /></div>
+                <div style="flex:1"><label>Ville</label><input id="apCity" maxlength="60" placeholder="Lisbonne" /></div>
+                <div style="flex:1"><label>Catégorie</label><input id="apCat" maxlength="40" placeholder="Café partenaire" /></div>
               </div>
-              <label>Note de sécurité</label><input id="apNote" placeholder="Personnel formé, lieu passant…" />
+              <label>Note de sécurité</label><input id="apNote" maxlength="140" placeholder="Personnel formé, lieu passant…" />
               <div class="row" style="margin-top:0">
-                <div style="flex:1"><label>Code check-in</label><input id="apCode" placeholder="SOLEIL" /></div>
+                <div style="flex:1"><label>Code check-in</label><input id="apCode" maxlength="20" placeholder="SOLEIL" /></div>
                 <div style="flex:1"><label>Éco ?</label><select id="apEco"><option value="false">Non</option><option value="true">Oui 🌱</option></select></div>
               </div>
               <label>Adresse <span class="muted" style="font-weight:400">(pour la carte, géolocalisée automatiquement)</span></label>
-              <input id="apAddr" placeholder="Rua Augusta 100, Lisbonne" />
+              <input id="apAddr" maxlength="120" placeholder="Rua Augusta 100, Lisbonne" />
               <label>Photo <span class="muted" style="font-weight:400">(URL, optionnel, vide = photo de la ville)</span></label>
-              <input id="apImg" placeholder="https://…" />
+              <input id="apImg" maxlength="300" placeholder="https://…" />
               <label>Horaires <span class="muted" style="font-weight:400">(optionnel, affiché sur la fiche)</span></label>
               <input id="apHours" maxlength="80" placeholder="Lun–Sam 8h–19h" />
               <label>Prix <span class="muted" style="font-weight:400">(optionnel, ex : € / €€ / café ~3€)</span></label>
@@ -4633,7 +4642,7 @@
             <div class="picker-head"><h3 id="jeuxSheetTitle" style="margin:0">Quêtes</h3><button id="jeuxSheetClose" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
             <p class="muted" id="jeuxSheetHint" style="font-size:.82rem;margin:.3rem 0 .2rem">Touche une quête, accomplis-la dans la vraie vie, puis valide-la pour gagner <b>XP + badge</b> (3 par jour max).</p>
             <div id="questSheetTools" style="display:flex;gap:.5rem;margin-top:.4rem">
-              <div class="search" style="flex:1;margin:0"><span class="ico">🔍</span><input id="questSheetSearch" type="text" placeholder="Filtrer par nom ou ville…" /></div>
+              <div class="search" style="flex:1;margin:0"><span class="ico">🔍</span><input id="questSheetSearch" type="text" maxlength="80" placeholder="Filtrer par nom ou ville…" /></div>
               <button class="todo-toggle" id="questSheetNear" type="button" title="Trier par distance">📍 Près de moi</button>
             </div>
             <div style="overflow-y:auto;flex:1;margin-top:.4rem">
@@ -4666,7 +4675,7 @@
 
           <div class="card" id="detailCodeBox" style="display:none">
             <label>Code du lieu partenaire 🔒</label>
-            <input id="detailCode" placeholder="Demande-le sur place" />
+            <input id="detailCode" maxlength="20" placeholder="Demande-le sur place" />
             <p class="muted" style="font-size:.78rem;margin-bottom:0">Cette quête se valide avec le code affiché chez le partenaire.</p>
           </div>
 
@@ -4794,8 +4803,8 @@
         <h3 style="margin-top:0">Demande de référencement</h3>
         <label>Type d'établissement</label>
         <select id="b2bCategory"><option>Auberge / Hostel</option><option>Café</option><option>Restaurant</option><option>Musée</option><option>Co-living</option><option>Hôtel</option><option>Boutique</option><option>Autre</option></select>
-        <label>Nom de l'établissement</label><input id="b2bCompany" placeholder="Ex. Le Comptoir Solaire" />
-        <label>Nom du contact</label><input id="b2bName" placeholder="Prénom Nom" />
+        <label>Nom de l'établissement</label><input id="b2bCompany" maxlength="80" placeholder="Ex. Le Comptoir Solaire" />
+        <label>Nom du contact</label><input id="b2bName" maxlength="60" placeholder="Prénom Nom" />
         <label>Email professionnel</label><input id="b2bEmail" type="email" placeholder="contact@etablissement.com" />
         <label>Votre projet / message</label><textarea id="b2bNeed" rows="3" maxlength="500" placeholder="Ville, type d'offre souhaitée, questions…"></textarea>
         <button class="btn-primary btn-block" id="b2bSubmit" style="margin-top:.8rem">📩 Envoyer ma demande</button>
@@ -9425,7 +9434,7 @@
           el.addEventListener("click", () => { const it = items[Number(el.dataset.pickid)]; if (pickerCb) pickerCb(it); }));
       };
       $("pickerBody").innerHTML = (items.length > 5
-        ? '<div class="search" style="margin-bottom:.6rem"><span class="ico">🔍</span><input id="pickerSearch" type="text" placeholder="Rechercher un pseudo…" /></div>'
+        ? '<div class="search" style="margin-bottom:.6rem"><span class="ico">🔍</span><input id="pickerSearch" type="text" maxlength="80" placeholder="Rechercher un pseudo…" /></div>'
         : "") + '<div id="pickerList"></div>';
       const ps = $("pickerSearch"); if (ps) ps.addEventListener("input", (e) => renderList(e.target.value));
       renderList("");
@@ -10676,6 +10685,7 @@
     async function renderSearch(q) {
       q = (q || "").trim();
       const box = $("searchResults"); if (!box) return;
+      if (typeof window._syncSearchScopes === "function") window._syncSearchScopes(); // catégories visibles si recherche en cours
       if (!q) { box.innerHTML = ""; return; }
       const ql = q.toLowerCase();
       const qd = _deburr(q); // version sans accents (« jose » trouve « José »)
@@ -10710,6 +10720,12 @@
     // Debounce générique : évite de relancer un render lourd à CHAQUE frappe (anti-jank).
     function _debounce(fn, ms) { let t; return function () { const a = arguments, c = this; clearTimeout(t); t = setTimeout(() => fn.apply(c, a), ms || 250); }; }
     $("homeSearch").addEventListener("input", _debounce((e) => renderSearch(e.target.value), 250));
+    // Les catégories (Tout/Voyageurs/Lieux/Vérifiés) n'apparaissent que pendant la recherche
+    { const hs = $("homeSearch"), sc = $("searchScopes");
+      const syncScopes = () => { if (sc && hs) sc.classList.toggle("live", !!hs.value.trim() || document.activeElement === hs); };
+      if (hs && sc) { hs.addEventListener("input", syncScopes); hs.addEventListener("focus", syncScopes); hs.addEventListener("blur", () => setTimeout(syncScopes, 180)); }
+      window._syncSearchScopes = syncScopes; // appelé aussi par renderSearch (démo, remplissage programmatique)
+    }
     // Chips de portée : affinent la recherche (Tout / Voyageurs / Lieux / Vérifiés) → résultats précis (item 18).
     { const sc = $("searchScopes"); if (sc) sc.querySelectorAll(".sscope").forEach((b) => b.addEventListener("click", () => {
         _searchScope = b.dataset.scope;
@@ -11219,6 +11235,17 @@
       // Menu des villes = TOUTE la carte (quêtes + lieux sûrs), pas seulement les quêtes.
       _homeCityPts = allQuestPts.map((q) => ({ lat: q.lat, lng: q.lng, city: q.city || "" }))
         .concat(places.filter((c) => c.lat != null && c.lng != null && c.city).map((c) => ({ lat: c.lat, lng: c.lng, city: c.city })));
+      // + activités posées librement (pas de champ ville) : rattachées à la ville du lieu
+      //   connu le plus proche (<10 km) → le cadrage « ville » les inclut aussi.
+      try {
+        const cityAnchors = _homeCityPts.slice();
+        (userActs || []).forEach((a) => {
+          if (a.lat == null || a.lng == null || typeof haversineKm !== "function") return;
+          let best = null, bd = Infinity;
+          cityAnchors.forEach((p) => { const d = haversineKm({ lat: a.lat, lng: a.lng }, p); if (d < bd) { bd = d; best = p; } });
+          if (best && bd < 10) _homeCityPts.push({ lat: a.lat, lng: a.lng, city: best.city });
+        });
+      } catch (e) {}
       populateQuestCities(_homeCityPts);
       // Sélecteur de ville + filtre « à faire » : on restreint les quêtes affichées.
       let questPts = _questCity ? allQuestPts.filter((q) => _sameCity(q.city, _questCity)) : allQuestPts;
@@ -12293,7 +12320,7 @@
         if (reqs) parts.push(reqs + " demande" + (reqs > 1 ? "s" : ""));
         if (msgs) parts.push(msgs + " message" + (msgs > 1 ? "s" : ""));
         set("qaMates", parts.join(" · "));
-      } else set("qaMates", "Rencontre & discute");
+      } else set("qaMates", i18nT("Tes compagnons d'aventure"));
       if (myProfile) set("qaProfil", "Confiance : " + (myProfile.trust_score ?? 0) + (myProfile.is_verified ? " ✅" : ""));
       const nb = (myBadges || []).length;
       set("qaJeux", nb ? nb + " badge" + (nb > 1 ? "s" : "") + " 🏅" : "Gagne des badges");
@@ -13223,6 +13250,19 @@
     { const gn = $("goldNote"); if (gn) gn.addEventListener("click", () => popInfo("👑", "Gratuit vs Gold",
       "<div style='text-align:left;line-height:1.6;font-size:.88rem'><p style='margin:.2rem 0'><b>Gratuit</b> : 1 quête + 1 activité par jour, les jeux, les badges, le classement · et toute la <b>sécurité</b>, gratuite pour toujours 🛟</p><p style='margin:.2rem 0'><b>Gold 👑</b> : quêtes illimitées + <b>coupons exclusifs</b> chez les partenaires, bien plus avantageux.</p><p class='muted' style='margin:.4rem 0 0;font-size:.78rem'>Le détail des avantages est dans Profil → Premium.</p></div>")); }
     { const jn = $("jhNext"); if (jn) { jn.style.cursor = "pointer"; jn.setAttribute("role", "button"); jn.setAttribute("tabindex", "0"); jn.addEventListener("click", () => { const xi = $("xpInfoBtn"); if (xi && xi.onclick) xi.onclick(); }); } }
+    // « De retour à {ville} » : cliquable → changer sa ville en 2 secondes (personnalise accueil + carte)
+    { const hc = $("hmHomeCity"); if (hc) { hc.style.cursor = "pointer"; hc.setAttribute("role", "button"); hc.setAttribute("tabindex", "0"); hc.title = "Changer ma ville";
+      hc.addEventListener("click", async () => {
+        const v = await smPromptP("🏙️", i18nT("Ta ville ?"), i18nT("Elle personnalise ton accueil, ta carte et ton classement."), { placeholder: (myProfile && myProfile.city) || "Ex : Paris, France", maxlength: 60 });
+        if (!v || !myUserId) return;
+        const { error } = await db.from("profiles").update({ city: v }).eq("id", myUserId);
+        if (error) { toast("⚠️", "Erreur : " + escapeHtml(error.message)); return; }
+        if (myProfile) myProfile.city = v;
+        toast("🏙️", i18nT("Ville mise à jour ✅"));
+        hc.textContent = i18nT("De retour à {c}", { c: v });
+        const cn = $("hmCityName"); if (cn) cn.textContent = v;
+      });
+    } }
     // « Niv. X · encore Y XP » de la progression solo (Maison) : cliquable lui aussi → explication XP
     { const sn = document.querySelector("#soloProgress .sp-next"); if (sn) { sn.style.cursor = "pointer"; sn.setAttribute("role", "button"); sn.setAttribute("tabindex", "0"); sn.addEventListener("click", () => {
       const xi = $("xpInfoBtn");
@@ -14413,6 +14453,17 @@
       "classement": "leaderboard",
       "Profil public, tu apparais dans le classement": "Public profile: you appear in the leaderboard",
       "Profil privé, tu n'apparais plus dans le classement": "Private profile: you no longer appear in the leaderboard",
+      "Ta ville ?": "Your city?",
+      "Elle personnalise ton accueil, ta carte et ton classement.": "It personalises your home screen, your map and your leaderboard.",
+      "Ville mise à jour ✅": "City updated ✅",
+      "Tes compagnons d'aventure": "Your adventure buddies",
+      "L'esprit tranquille": "Peace of mind",
+      "Tes spots à explorer": "Your spots to explore",
+      "Joue, gagne, brille ⭐": "Play, win, shine ⭐",
+      "Vise le sommet": "Aim for the top",
+      "Des cadeaux à débloquer": "Gifts to unlock",
+      "Le meilleur, bientôt": "The best, coming soon",
+      "Ton aura voyageuse": "Your traveller aura",
       "Aucune connexion pour l'instant": "No failed logins yet.",
       "Toucher pour discuter 💬": "Tap to chat 💬",
       "Pas encore de conversation": "No conversation yet!",
