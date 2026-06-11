@@ -114,8 +114,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=427"></script>
-  <script src="sunmates-icons.js?v=427"></script>
+  <script src="sunmates-badges.js?v=428"></script>
+  <script src="sunmates-icons.js?v=428"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -878,17 +878,14 @@
     .prof-trust b { font-size: 1rem; color: var(--accent); }
     .prof-trust .pt-info { opacity: .7; font-size: .8rem; }
     .prof-trust:active { transform: scale(.97); }
-    /* #12 : 1re tuile profil en 2 colonnes (photo | infos), bandeau sunset discret en tête */
-    .prof-head { overflow: hidden; }
-    .prof-head::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 54px; pointer-events: none;
-      background: linear-gradient(135deg, rgba(255,201,60,.26), rgba(255,122,77,.18) 55%, rgba(255,90,77,.08)); }
-    body.theme-dusk .prof-head::before { background: linear-gradient(135deg, rgba(255,201,60,.14), rgba(255,122,77,.10) 55%, rgba(255,90,77,.05)); }
-    .ph-row { position: relative; display: flex; align-items: center; gap: .95rem; text-align: left; }
-    .ph-row .prof-photo { width: 96px; height: 96px; margin: 0; flex-shrink: 0; border: 3px solid rgba(255,247,238,.92); }
-    body.theme-dusk .ph-row .prof-photo { border-color: rgba(255,255,255,.16); }
-    .ph-info { flex: 1; min-width: 0; }
-    .ph-info .prof-name { justify-content: flex-start; }
-    .ph-info .prof-trust { margin: .55rem 0 0; }
+    /* (retour Maxime : la version « photo à gauche » est ABANDONNÉE — carte centrée d'origine) */
+    /* #13 : « Mon parcours » habillé DA — bandeau doré discret + stats en pilules joyau */
+    .parcours-card { position: relative; border-radius: 14px; padding: .15rem .1rem 0; }
+    .parcours-card .pc-head b { display: inline-flex; align-items: center; gap: .35rem; }
+    .pc-stat { background: linear-gradient(160deg, rgba(255,209,92,.16), rgba(255,154,61,.06)); border: 1px solid rgba(232,150,31,.26); }
+    body.theme-dusk .pc-stat { background: rgba(255,201,60,.10); border-color: rgba(255,209,92,.18); }
+    .pc-stat .pc-n { color: #B5740E; }
+    body.theme-dusk .pc-stat .pc-n { color: #FFD79A; }
     /* #12 : « Mes badges » en jolies pilules dorées (au lieu de mini-ronds anonymes) */
     .prof-badges .pb-pill { display: inline-flex; align-items: center; gap: .32rem; padding: .26rem .58rem .26rem .3rem; border-radius: 999px;
       background: linear-gradient(135deg, rgba(255,209,92,.20), rgba(255,154,61,.10)); border: 1px solid rgba(232,150,31,.30);
@@ -2934,13 +2931,21 @@
     /* Mode nuit : contour NEUTRE (le --line chaud créait un liseré orange bizarre autour des tuiles) */
     body.theme-dusk .tile, body.theme-dusk .gcard { border-color: rgba(255,255,255,.09) !important; }
     .thumb { background: var(--accent-grad); color: #fff; background-repeat: no-repeat; background-size: cover; overflow: hidden; }
-    .thumb.green { background: linear-gradient(135deg,#22D3C5,#0E9E96) !important; }
-    .thumb.blue  { background: linear-gradient(135deg,#5BC0FF,#2D8FE0) !important; }
-    .thumb.purp  { background: linear-gradient(135deg,#C77DFF,#8A4FE0) !important; }
-    .thumb.coral { background: linear-gradient(135deg,#FFB37A,#FF6F3D) !important; }
-    .thumb.lime  { background: linear-gradient(135deg,#FFD15C,#E8961F) !important; } /* ex-vert lime : ambre DA */
-    .thumb.indigo{ background: linear-gradient(135deg,#9FA8FF,#5B63E0) !important; }
-    .thumb.rose  { background: linear-gradient(135deg,#FF9CC2,#F0568F) !important; }
+    /* Retour Maxime (les VRAIES tuiles à thémer !) : faux appel, lampe torche, pin, sirène,
+       minuteur, bouée, police, hôpital… → couleurs en --c1/--c2, la couche « palette
+       malléable » (fin de feuille) les adapte à CHAQUE thème. */
+    .thumb.green { --c1:#22D3C5; --c2:#0E9E96; }
+    .thumb.blue  { --c1:#5BC0FF; --c2:#2D8FE0; }
+    .thumb.purp  { --c1:#C77DFF; --c2:#8A4FE0; }
+    .thumb.coral { --c1:#FFB37A; --c2:#FF6F3D; }
+    .thumb.lime  { --c1:#FFD15C; --c2:#E8961F; } /* ex-vert lime : ambre DA */
+    .thumb.indigo{ --c1:#9FA8FF; --c2:#5B63E0; }
+    .thumb.rose  { --c1:#FF9CC2; --c2:#F0568F; }
+    .thumb.gold  { --c1:#FFD15C; --c2:#F4A11E; }
+    .thumb.teal  { --c1:#7FE3D3; --c2:#17A99B; }
+    .thumb.red   { --c1:#FF8A6B; --c2:#E23B2E; }
+    .thumb.green, .thumb.blue, .thumb.purp, .thumb.coral, .thumb.lime, .thumb.indigo, .thumb.rose, .thumb.gold, .thumb.teal, .thumb.red {
+      background: linear-gradient(135deg, var(--ic1, var(--c1)), var(--ic2, var(--c2))) !important; }
 
     /* Navigation : icônes vives */
     .bottom-nav { background: #fff7f2; box-shadow: 0 -8px 28px rgba(255,90,77,.10); }
@@ -3113,6 +3118,7 @@
     .sm-sel-trigger:active { transform: scale(.99); }
     .sm-sel-trigger.open { border-color: var(--accent); box-shadow: var(--ring); }
     .sm-sel-trigger .sm-sel-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sm-sel { min-width: 0; max-width: 100%; } /* jamais plus large que sa colonne (cases Du/Au) */
     .sm-sel-trigger .sm-sel-val.placeholder { color: var(--muted); font-weight: 600; }
     .sm-sel-trigger .sm-sel-chev { flex-shrink: 0; width: 22px; height: 22px; border-radius: 8px; display: grid; place-items: center;
       background: var(--accent-soft); color: var(--accent); font-size: .68rem; font-weight: 900; }
@@ -3231,6 +3237,23 @@
     .adm-live .al-cell b { display: block; font-size: .95rem; color: var(--ink); }
     .adm-live .al-cell span { font-size: .68rem; color: var(--muted); }
 
+    /* ====== Plaque de NIVEAU façon jeu (en-tête Jeux & Quêtes) — remplace le rond-photo ====== */
+    .player-badge.player-hud { width: auto; height: auto; border-radius: 999px; overflow: visible;
+      display: flex; align-items: center; gap: .55rem; padding: .3rem .8rem .3rem .32rem;
+      background: linear-gradient(135deg, #2A1E0E, #44310F); border: 1.5px solid rgba(255,209,92,.55);
+      box-shadow: 0 6px 16px rgba(232,150,31,.32), inset 0 1px 0 rgba(255,233,176,.18); }
+    .player-badge.player-hud .pb-av { position: relative; inset: auto; width: 42px; height: 42px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 1.25rem; background-size: cover; background-position: center;
+      box-shadow: 0 0 0 2px #FFD15C, 0 0 12px rgba(255,201,60,.45); background-color: #5a4520; }
+    .player-badge.player-hud .hud-info { display: flex; flex-direction: column; gap: .16rem; min-width: 92px; text-align: left; }
+    .player-badge.player-hud .hud-lvl { font-size: .68rem; font-weight: 800; letter-spacing: .08em; color: #FFD98A; line-height: 1; }
+    .player-badge.player-hud .hud-bar { width: 92px; height: 7px; border-radius: 999px; background: rgba(255,233,176,.18); overflow: hidden; }
+    .player-badge.player-hud .hud-bar i { display: block; height: 100%; width: 0; border-radius: 999px;
+      background: linear-gradient(90deg, #FFC93C, #FF8A3D); transition: width .5s ease; }
+    .player-badge.player-hud .hud-xp { font-size: .6rem; font-weight: 700; color: rgba(255,233,176,.82); line-height: 1; }
+    .player-badge.player-hud .pb-lvl { all: unset; } /* l'ancien chip rond absolu ne s'applique plus (le n° vit dans NIV x) */
+    body.theme-dusk .player-badge.player-hud { border-color: rgba(255,209,92,.5); } /* le liseré reste OR la nuit */
+
     /* ============ #23 : écrin SunMates GOLD (panneau Premium) ============ */
     .gold-hero { position: relative; overflow: hidden; text-align: center; color: #FFE9B0;
       border: 1px solid rgba(232,150,31,.5) !important;
@@ -3347,22 +3370,34 @@
     /* ⚠️ PAS de filter sur .app-shell : un filtre crée un « containing block » qui DÉCOLLE
        tous les position:fixed enfants (la nav du bas partait au scroll). Les scanlines +
        la police machine + les pixels suffisent à l'ambiance CRT. */
-    /* 🦁 Hakuna matata : halo doré + les TROIS LOUSTICS SunMates qui trottinent en bas */
-    .egg-savane { position: fixed; inset: 0; z-index: 99998; pointer-events: none; overflow: hidden; animation: egsFade 7.2s ease forwards; }
-    @keyframes egsFade { 0% { opacity: 0; } 10% { opacity: 1; } 86% { opacity: 1; } 100% { opacity: 0; } }
-    .egg-savane .egs-glow { position: absolute; left: 0; right: 0; bottom: 0; height: 34vh;
-      background: linear-gradient(to top, rgba(255,160,70,.42), rgba(255,185,90,.18) 55%, rgba(255,200,110,0)); }
-    .egg-savane .egs-sun { position: absolute; left: 16%; bottom: 5vh; filter: drop-shadow(0 0 26px rgba(255,180,60,.9)); animation: egsSunSet 7.2s ease forwards; }
-    @keyframes egsSunSet { from { transform: translateY(0); } to { transform: translateY(42px); } }
-    /* La petite troupe : traversée + trottinement (rebond du corps) */
-    .egg-savane .egs-walk { position: absolute; left: -16%; bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+    /* 🦁 Hakuna matata — VRAIE scène de savane (retour Maxime « trop cheap ») :
+       ciel de coucher de soleil qui monte, SOLEIL GÉANT qui se couche DERRIÈRE le sol,
+       sol + herbes + acacias en silhouette, le trio marche sur la ligne d'horizon. */
+    .egg-savane { position: fixed; inset: 0; z-index: 99998; pointer-events: none; overflow: hidden; animation: egsFade 8.6s ease forwards; }
+    @keyframes egsFade { 0% { opacity: 0; } 8% { opacity: 1; } 88% { opacity: 1; } 100% { opacity: 0; } }
+    .egg-savane .egs-sky { position: absolute; left: 0; right: 0; bottom: 0; height: 52vh;
+      background: linear-gradient(to top, #FF9A3D 0%, #F2607E 38%, rgba(122,61,150,.5) 72%, rgba(122,61,150,0) 100%); opacity: .92; }
+    .egg-savane .egs-glow { position: absolute; left: 0; right: 0; bottom: 0; height: 40vh;
+      background: radial-gradient(120% 90% at 50% 100%, rgba(255,201,60,.5), rgba(255,160,70,.16) 55%, rgba(255,200,110,0)); }
+    .egg-savane .egs-sun { position: absolute; left: 50%; margin-left: -55px; bottom: calc(34px + env(safe-area-inset-bottom, 0px));
+      filter: drop-shadow(0 0 38px rgba(255,180,60,.95)); animation: egsSunSet 8.6s ease forwards; }
+    @keyframes egsSunSet { from { transform: translateY(-14px) scale(1); } to { transform: translateY(64px) scale(.94); } }
+    .egg-savane .egs-ground { position: absolute; left: 0; right: 0; bottom: 0; height: calc(72px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(to top, #3E2210 0%, #5C3414 62%, rgba(92,52,20,0) 100%); }
+    .egg-savane .egs-grass { position: absolute; left: 0; right: 0; bottom: calc(58px + env(safe-area-inset-bottom, 0px)); height: 18px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='18'%3E%3Cpath d='M4 18C5 10 7 6 8 4 9 8 9 12 8 18zM16 18c2-6 4-9 6-11-1 5-2 9-3 11zM30 18c0-7 2-11 3-13 1 5 1 9 0 13zM44 18c2-5 4-8 6-9-1 4-2 7-3 9zM54 18c1-6 2-9 3-10 0 4 0 7-1 10z' fill='%233E2210'/%3E%3C/svg%3E") repeat-x bottom; }
+    .egg-savane .egs-acacia { position: absolute; bottom: calc(54px + env(safe-area-inset-bottom, 0px)); opacity: .96; }
+    .egg-savane .egs-acacia.a1 { left: 6%; }
+    .egg-savane .egs-acacia.a2 { right: 8%; transform: scale(.62); transform-origin: bottom; }
+    /* La petite troupe : traversée sur la ligne d'horizon + trottinement (rebond du corps) */
+    .egg-savane .egs-walk { position: absolute; left: -16%; bottom: calc(46px + env(safe-area-inset-bottom, 0px));
       animation-name: egsCross; animation-timing-function: linear; animation-fill-mode: forwards;
-      filter: drop-shadow(0 4px 6px rgba(90,50,15,.3)); }
+      filter: drop-shadow(0 4px 6px rgba(40,20,5,.45)); }
     .egg-savane .egs-walk svg { animation: egsTrot .42s ease-in-out infinite alternate; }
     @keyframes egsCross { from { left: -16%; } to { left: 106%; } }
     @keyframes egsTrot { from { transform: translateY(0) rotate(-1.5deg); } to { transform: translateY(-4px) rotate(1.5deg); } }
-    .egg-savane .egs-bird { position: absolute; left: -8%; animation: egsBird 5.8s linear forwards; }
-    @keyframes egsBird { 0% { left: -8%; transform: translateY(0); } 30% { transform: translateY(-12px); } 60% { transform: translateY(4px); } 100% { left: 106%; transform: translateY(-8px); } }
+    .egg-savane .egs-bird { position: absolute; left: -8%; animation: egsBird 6.4s linear forwards; }
+    @keyframes egsBird { 0% { left: -8%; transform: translateY(0) scale(1); } 30% { transform: translateY(-14px) scale(.92); } 60% { transform: translateY(5px) scale(1.04); } 100% { left: 106%; transform: translateY(-10px) scale(.9); } }
     /* 🎈 Là-haut : la VRAIE tuile « À la maison » décolle, pendue à des ballons vectoriels */
     .egg-flyhome { position: fixed; z-index: 99998; pointer-events: none; animation: efhFly 5s ease-in forwards; }
     @keyframes efhFly {
@@ -3415,15 +3450,17 @@
        MARIE au thème actif via color-mix : une seule règle par thème au lieu de re-déclarer
        chaque famille. Jour = couleurs d'origine. Nuit = encre violette (tons bijou sur fond
        sombre). Hiver = givre (poudré + acier). Tropiques = jus (soleil + lagon). */
-    body.theme-dusk .cic, body.theme-dusk .qm-ic, body.theme-dusk .sc-ic, body.theme-dusk .hex, body.theme-dusk .jo-ic, body.theme-dusk .smgem {
-      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 74%, #322352);
-      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 78%, #1E1638); }
-    body.theme-winter .cic, body.theme-winter .qm-ic, body.theme-winter .sc-ic, body.theme-winter .hex, body.theme-winter .jo-ic, body.theme-winter .smgem {
-      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 66%, #DCEBF7);
-      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 72%, #4A6F96); }
-    body.theme-tropic .cic, body.theme-tropic .qm-ic, body.theme-tropic .sc-ic, body.theme-tropic .hex, body.theme-tropic .jo-ic, body.theme-tropic .smgem {
-      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 72%, #FFD66B);
-      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 76%, #14805F); }
+    /* (les pastilles .thumb des accès rapides/sécurité font partie du lot — retour Maxime ;
+       mix NUIT adouci : l'ancien 74/78 % rendait les tuiles « trop sombres ») */
+    body.theme-dusk .cic, body.theme-dusk .qm-ic, body.theme-dusk .sc-ic, body.theme-dusk .hex, body.theme-dusk .jo-ic, body.theme-dusk .smgem, body.theme-dusk .thumb {
+      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 86%, #43326B);
+      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 87%, #2B2052); }
+    body.theme-winter .cic, body.theme-winter .qm-ic, body.theme-winter .sc-ic, body.theme-winter .hex, body.theme-winter .jo-ic, body.theme-winter .smgem, body.theme-winter .thumb {
+      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 70%, #DCEBF7);
+      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 76%, #4A6F96); }
+    body.theme-tropic .cic, body.theme-tropic .qm-ic, body.theme-tropic .sc-ic, body.theme-tropic .hex, body.theme-tropic .jo-ic, body.theme-tropic .smgem, body.theme-tropic .thumb {
+      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 74%, #FFD66B);
+      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 78%, #14805F); }
 
     /* ============ #9 NUIT DES SAISONS : hiver et tropiques ont leur mode sombre ============
        theme-dusk peut désormais COEXISTER avec theme-winter/theme-tropic. Les surfaces nuit
@@ -3463,12 +3500,12 @@
     body.theme-tropic.theme-dusk #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#4a3a1a,#5a4520); border-color: rgba(240,169,58,.4); color:#ffd98a; }
     body.theme-tropic.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#143527,#1E4A38); border-color: rgba(92,216,168,.4); color:#9ADBBE; }
     /* Pastilles colorées : mix NUIT-saison (le mix jour-saison clair éblouirait sur fond sombre) */
-    body.theme-winter.theme-dusk .cic, body.theme-winter.theme-dusk .qm-ic, body.theme-winter.theme-dusk .sc-ic, body.theme-winter.theme-dusk .hex, body.theme-winter.theme-dusk .jo-ic, body.theme-winter.theme-dusk .smgem {
-      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 64%, #24395A);
-      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 70%, #142536); }
-    body.theme-tropic.theme-dusk .cic, body.theme-tropic.theme-dusk .qm-ic, body.theme-tropic.theme-dusk .sc-ic, body.theme-tropic.theme-dusk .hex, body.theme-tropic.theme-dusk .jo-ic, body.theme-tropic.theme-dusk .smgem {
-      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 66%, #1E4434);
-      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 70%, #102A20); }
+    body.theme-winter.theme-dusk .cic, body.theme-winter.theme-dusk .qm-ic, body.theme-winter.theme-dusk .sc-ic, body.theme-winter.theme-dusk .hex, body.theme-winter.theme-dusk .jo-ic, body.theme-winter.theme-dusk .smgem, body.theme-winter.theme-dusk .thumb {
+      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 80%, #2E4A74);
+      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 82%, #1A2F4A); }
+    body.theme-tropic.theme-dusk .cic, body.theme-tropic.theme-dusk .qm-ic, body.theme-tropic.theme-dusk .sc-ic, body.theme-tropic.theme-dusk .hex, body.theme-tropic.theme-dusk .jo-ic, body.theme-tropic.theme-dusk .smgem, body.theme-tropic.theme-dusk .thumb {
+      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 80%, #26573F);
+      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 82%, #143427); }
 
     /* ============ #8 TRANSITION DE SAISON : voile doux + pluie de flocons/feuilles ============ */
     #seasonFx { position: fixed; inset: 0; z-index: 8000; pointer-events: none; overflow: hidden; opacity: 1; transition: opacity .55s ease; }
@@ -4054,7 +4091,8 @@
         <div class="card homemap-card">
           <!-- Sélecteur de ville (menu déroulant) : concentre la carte sur une ville de jeu -->
           <!-- UNE seule rangée au-dessus de la carte : ville + À faire + Filtres (avant : 2 rangées éparpillées) -->
-          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"><option value="">Toutes les villes</option></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button><button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Filtres <span class="hlb-cnt" id="hmLayersCnt">5</span></button></div>
+          <!-- Retour Maxime : plus d'option « toutes les villes » sélectionnable (le bouton 🌍 Tout voir fait déjà ça) -->
+          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button><button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Filtres <span class="hlb-cnt" id="hmLayersCnt">5</span></button></div>
           <!-- Chips gardés en DOM (pilotés par le panneau Filtres) mais plus affichés ici -->
           <div class="chips wrap homemap-filters as-btn" id="homeMapFilters" style="display:none">
             <button class="chip active cl-places" data-layer="places">📍 Lieux <b data-cnt></b></button>
@@ -4544,21 +4582,18 @@
         </div>
         <!-- Carte d'arrivée SCINDÉE en 3 (avant : un seul bloc photo+stats+complétion+
              Premium/Admin+parcours+BFF+bouton = « tuile énorme qui fait peur »). -->
-        <!-- #12 : mise en page RICHE (photo à gauche, infos alignées à gauche, bandeau sunset)
-             — fini la colonne centrée qui gâchait la place. Tous les IDs sont conservés. -->
-        <div class="card prof-head" style="position:relative">
-          <button class="iconbtn" id="profileSettingsBtn" title="Paramètres du compte" aria-label="Paramètres du compte" style="position:absolute;top:.7rem;right:.7rem">⚙️</button>
-          <div class="ph-row">
-            <div class="prof-photo" id="profileAvatar">😎</div>
-            <div class="ph-info">
-              <div class="name prof-name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
-              <div class="profile-title prof-title" id="profileTitle"></div>
-              <div class="meta prof-city" id="profileCity"></div>
-              <!-- Score de confiance MINIMISÉ (compact, cliquable) -->
-              <div class="prof-trust stat-click" data-stat="trust" role="button" tabindex="0">
-                <span>🛟 Confiance</span> <b id="trustScore">0</b> <span class="pt-info">ⓘ</span>
-              </div>
-            </div>
+        <!-- Retour Maxime : la mise en page « photo à gauche » ne plaisait pas (et la roue ⚙️
+             devenait incliquable) → ON REMET la carte CENTRÉE d'origine. -->
+        <div class="card prof-head" style="position:relative;text-align:center">
+          <button class="iconbtn" id="profileSettingsBtn" title="Paramètres du compte" aria-label="Paramètres du compte" style="position:absolute;top:.7rem;right:.7rem;z-index:2">⚙️</button>
+          <!-- Photo ENTIÈRE (non rognée), centrée -->
+          <div class="prof-photo" id="profileAvatar">😎</div>
+          <div class="name prof-name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
+          <div class="profile-title prof-title" id="profileTitle"></div>
+          <div class="meta prof-city" id="profileCity"></div>
+          <!-- Score de confiance MINIMISÉ (compact, cliquable) -->
+          <div class="prof-trust stat-click" data-stat="trust" role="button" tabindex="0">
+            <span>🛟 Confiance</span> <b id="trustScore">0</b> <span class="pt-info">ⓘ</span>
           </div>
         </div>
         <div class="card" style="text-align:center">
@@ -5025,7 +5060,16 @@
           <!-- #12 : niveau = petit BADGE ROND cliquable en haut (fini la grosse tuile jaune) ; détails (XP, série) en modale au clic. -->
           <div class="jh-head">
             <h1 data-i18n="games.title" style="margin:0">Jeux &amp; Quêtes</h1>
-            <button id="playerBadge" class="player-badge" title="Ta progression" aria-label="Ta progression"><span class="pb-av" id="pbAv">🧭</span><span class="pb-lvl" id="pbLvl">1</span></button>
+            <!-- Retour Maxime : fini le simple rond-photo → VRAIE plaque de niveau façon jeu
+                 (avatar serti or + NIV + barre d'XP vivante). Mêmes IDs (visite guidée, eggs). -->
+            <button id="playerBadge" class="player-badge player-hud" title="Ta progression" aria-label="Ta progression">
+              <span class="pb-av" id="pbAv">🧭</span>
+              <span class="hud-info">
+                <b class="hud-lvl">NIV <span id="pbLvl">1</span></b>
+                <span class="hud-bar"><i id="hudFill"></i></span>
+                <span class="hud-xp" id="hudXp">0 / 100 XP</span>
+              </span>
+            </button>
           </div>
           <p class="muted" style="margin-top:.2rem">Relève des défis, gagne de l'XP et débloque des coupons.</p>
           <!-- Anticipation : combien il manque pour le prochain niveau, visible SANS ouvrir la modale -->
@@ -5400,7 +5444,7 @@
         ov.querySelector("h4").textContent = titleFor(sel) || "Choisir";
         const list = ov.querySelector(".sm-selsheet-list");
         const opts = Array.from(sel.options);
-        list.innerHTML = opts.map((o, i) => `<button type="button" class="sm-selopt${o.selected ? " sel" : ""}" data-i="${i}"${o.disabled ? " disabled" : ""}><span>${esc(o.textContent)}</span><span class="sm-selopt-check">✓</span></button>`).join("");
+        list.innerHTML = opts.map((o, i) => o.hidden ? "" : `<button type="button" class="sm-selopt${o.selected ? " sel" : ""}" data-i="${i}"${o.disabled ? " disabled" : ""}><span>${esc(o.textContent)}</span><span class="sm-selopt-check">✓</span></button>`).join("");
         list.querySelectorAll(".sm-selopt").forEach((b) => b.addEventListener("click", () => {
           sel.selectedIndex = +b.dataset.i;
           syncTrigger(sel);
@@ -6109,8 +6153,10 @@
         <label style="${_trLbl};margin-top:0">Ville</label>
         <input id="tripCity" type="text" placeholder="Ex : Lisbonne" maxlength="60" style="${_trIn}" />
         <div style="display:flex;gap:.5rem">
-          <div style="flex:1"><label style="${_trLbl}">Du</label><input id="tripStart" type="date" min="${t0}" style="${_trIn}" /></div>
-          <div style="flex:1"><label style="${_trLbl}">Au</label><input id="tripEnd" type="date" min="${t0}" style="${_trIn}" /></div>
+          <!-- min-width:0 : sans ça, le déclencheur « Choisir une date 📅 » impose sa largeur
+               mini et la colonne de DROITE déborde de la tuile (retour Maxime). -->
+          <div style="flex:1;min-width:0"><label style="${_trLbl}">Du</label><input id="tripStart" type="date" min="${t0}" style="${_trIn}" /></div>
+          <div style="flex:1;min-width:0"><label style="${_trLbl}">Au</label><input id="tripEnd" type="date" min="${t0}" style="${_trIn}" /></div>
         </div>
         <label style="${_trLbl}">Note (optionnel)</label>
         <input id="tripNote" type="text" maxlength="120" placeholder="Ce que tu cherches sur place…" style="${_trIn}" />
@@ -7664,7 +7710,7 @@
       // 🥚 Easter eggs : zone marquée « admin » → JAMAIS dans le livre blanc ni le catalogue
       // public (filtre _isAdminZone). Aucune mention de ces surprises côté utilisateur.
       ["🥚 Easter eggs (réservé admin · ne pas divulguer)", [
-        ["❄️", "Modes saison hiver / tropiques", "Appui long 10 s sur le bouton thème = cycle normal → ❄️ hiver → 🌴 tropiques ; le clic reste jour/nuit (nuit d'hiver et nuit tropicale incluses) ; auto météo : <0 °C hiver, >30 °C tropiques."],
+        ["❄️", "Modes saison hiver / tropiques", "Appui long 10 s sur le bouton thème = entrer/sortir du mode saison ; en saison, 1 clic = ❄️↔🌴 ; nuit d'hiver / nuit tropicale via Réglages → Mode nuit (ou bascule auto du soir) ; auto météo : <0 °C hiver, >30 °C tropiques."],
         ["❓", "Badges secrets", "Invisibles tant que pas débloqués ; conditions révélées à l'admin dans la fiche badge."],
         ["🌟", "Badge « Légende de SunMates »", "Le badge secret ultime, palier endgame."],
         ["🌅", "Golden Hour", "7 taps sur le logo soleil → un soleil se lève et S'ATTRAPE : pose-le sur la carte, l'endroit se dore 30 s (halo + écriture dorée) + badge « Chercheur d'or ». 1×/jour."],
@@ -8831,7 +8877,7 @@
           <div style="display:flex;gap:.4rem;margin:.3rem 0 .7rem">${FC_DELAYS.map(([s, l]) => `<button class="btn-ghost fc-delay${s === curDelay ? " active" : ""}" data-s="${s}" style="flex:1;padding:.42rem .2rem;font-size:.82rem${s === curDelay ? ";background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:800" : ""}">${l}</button>`).join("")}</div>
           <button class="btn-ghost btn-block" id="fcRingBtn" style="margin-bottom:.6rem">${ringTxt}</button>
           <button class="btn-primary btn-block" id="fcLaunch">📞 Lancer l'appel (dans ${_fcDelayTxt(curDelay)})</button>
-          <p class="muted" style="font-size:.74rem;text-align:center;margin:.5rem 0 0">Garde l'app ouverte (ou tout juste en arrière-plan) : le web ne peut pas faire sonner une app fermée 😉</p>
+          <p class="muted" style="font-size:.74rem;text-align:center;margin:.5rem 0 0">Range ton téléphone sans fermer l'app, et laisse la magie opérer 😉</p>
         </div>`);
       setTimeout(() => {
         document.querySelectorAll(".fc-pickname").forEach((bt) => bt.onclick = () => { const i = $("fcNameInput"); if (i) { i.value = bt.dataset.n; } });
@@ -11361,13 +11407,11 @@
       { const st = $("tpStarBadges"); if (st) { st.style.display = "none"; st.innerHTML = ""; } }
       if (typeof renderTravelerExtras === "function") renderTravelerExtras(p);
       showMatesView("matesProfile");
-      // Badges du voyageur (chargés en arrière-plan)
+      // Retour Maxime : on n'affiche PLUS la collection complète de badges sur le profil de
+      // quelqu'un — seulement les 3 à l'HONNEUR (épinglés pour soi, les plus récents pour les
+      // autres). Le BFF, lui, reste visible (cellule ⭐ de la grille d'infos).
       const { data: badges } = await db.from("user_badges").select("badge_key,name,emoji,earned_at").eq("user_id", p.id);
       if (badges && badges.length && currentTravelerId === p.id) {
-        $("tpBadgesCard").style.display = "";
-        $("tpBadges").innerHTML = badges.map((b) =>
-          `<div class="bitem"><div class="smbadge-wrap">${renderBadge(b.badge_key, "grid", { emoji: b.emoji })}</div><div class="bname">${escapeHtml(b.name || "")}</div><div class="bprog">✅</div></div>`).join("");
-        // #11 : badges à l'HONNEUR sous le hero — les épinglés (pour soi), sinon les 3 plus récents.
         const star = $("tpStarBadges");
         if (star) {
           let top = [];
@@ -11986,6 +12030,8 @@
             return;
           }
           if (ly.type === "line") {
+            // Retour Maxime : les trajectoires de FERRY étaient trop visibles → quasi filigrane.
+            if (/ferry|shipping|route/.test(id)) { set(ly.id, "line-color", P.waterLine); set(ly.id, "line-opacity", 0.22); set(ly.id, "line-width", 1); return; }
             if (/water|river|stream|canal/.test(id)) { set(ly.id, "line-color", P.waterLine); return; }
             if (/boundary|admin/.test(id)) { set(ly.id, "line-color", P.boundary); return; }
             if (/rail|transit/.test(id)) { set(ly.id, "line-color", P.rail); return; }
@@ -12234,7 +12280,9 @@
       const sig = cities.join("|");
       if (sig === _questCitiesSig) return; // pas de changement → on garde le menu (et la sélection)
       _questCitiesSig = sig;
-      sel.innerHTML = '<option value="">Toutes les villes</option>' + cities.map((c) => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c.replace(/, France$/, "")) + "</option>").join("");
+      // Retour Maxime : PLUS d'option « toutes les villes » SÉLECTIONNABLE (le bouton 🌍 Tout voir
+      // s'occupe du dézoom) → simple libellé d'invite (disabled), le menu ne sert qu'à choisir une ville.
+      sel.innerHTML = '<option value="" disabled hidden>Choisir une ville…</option>' + cities.map((c) => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c.replace(/, France$/, "")) + "</option>").join("");
       sel.value = (_questCity && cities.some((c) => _sameCity(c, _questCity))) ? (cities.find((c) => _sameCity(c, _questCity)) || "") : "";
     }
     { const cs = $("questCitySelect"); if (cs) cs.addEventListener("change", () => {
@@ -14074,9 +14122,11 @@
       };
       _setAv(av, url, "🧭");
       try { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("phStreakN").textContent = st.count || 1; } catch (e) {}
-      // #12 : badge rond d'en-tête (niveau + avatar).
+      // Plaque HUD d'en-tête : niveau + avatar + barre d'XP vivante.
       const pbLvl = $("pbLvl"); if (pbLvl) pbLvl.textContent = lvl;
       _setAv($("pbAv"), url, "🧭");
+      { const hf = $("hudFill"); if (hf) hf.style.width = inLvl + "%"; }
+      { const hx = $("hudXp"); if (hx) hx.textContent = inLvl + " / 100 XP"; }
       // Anticipation visible sur le hub : « 💫 Encore X XP pour le niveau N »
       const jn = $("jhNext"); if (jn) jn.textContent = i18nT("💫 Encore {x} XP pour le niveau {n}", { x: 100 - inLvl, n: lvl + 1 });
     }
@@ -14891,9 +14941,16 @@
         const m = (typeof window._homeGlMap === "function") ? window._homeGlMap() : null;
         if (!m || !m.queryRenderedFeatures || !(m.isStyleLoaded && m.isStyleLoaded())) return;
         const el = $("homeMap"); if (!el || !el.clientWidth) return;
-        const feats = m.queryRenderedFeatures([el.clientWidth / 2, el.clientHeight / 2]);
-        const f = (feats || []).find((x) => x.layer && x.layer.type === "fill");
-        if (!f || !/water/.test(((f.layer && f.layer.id) || "") + " " + (f.sourceLayer || ""))) return; // pas d'eau sous le centre
+        // Retour Maxime : la baleine doit se découvrir en PLEINE MER, pas sur la Seine ou un
+        // étang → on sonde 5 points (centre + 4 décalés à ±32 %) : TOUS doivent être de l'eau.
+        const W = el.clientWidth, H = el.clientHeight;
+        const pts = [[.5, .5], [.18, .5], [.82, .5], [.5, .18], [.5, .82]];
+        const isWater = ([fx, fy]) => {
+          const feats = m.queryRenderedFeatures([W * fx, H * fy]);
+          const f = (feats || []).find((x) => x.layer && x.layer.type === "fill");
+          return !!(f && /water/.test(((f.layer && f.layer.id) || "") + " " + (f.sourceLayer || "")));
+        };
+        if (!pts.every(isWater)) return; // une rive/île dans la vue → pas l'océan
         localStorage.setItem("sm_egg_whale_day", day);
         // Baleine VECTORIELLE : corps dessiné, jet d'eau animé, ondulations qui s'élargissent.
         const whaleHtml = '<div class="egg-whale-v">'
@@ -14980,16 +15037,23 @@
               + '<circle cx="12" cy="10" r="6" fill="#E3BC84"/>'
               + '<circle cx="9.8" cy="9" r="1.1" fill="#2E1A12"/><circle cx="14.4" cy="9" r="1.1" fill="#2E1A12"/><ellipse cx="12" cy="12.2" rx="1.3" ry="1" fill="#7A4E26"/>'
               + '<g fill="#A87B45"><ellipse cx="9" cy="37" rx="2.4" ry="1.9"/><ellipse cx="15" cy="37" rx="2.4" ry="1.9"/></g></svg>';
+            // Acacia en silhouette (dessiné main) : tronc fourchu + canopée plate
+            const ACACIA = '<svg class="egs-acacia a1" viewBox="0 0 110 78" width="120" height="85">'
+              + '<path d="M52 78V46l-10-13 7 3 6-11 6 11 7-3-10 13v32z" fill="#3E2210"/>'
+              + '<path d="M6 30C24 8 86 8 104 32c-14-5-28-7-49-7-21 0-35 2-49 5z" fill="#3E2210"/>'
+              + '<path d="M14 33c8-3 18-5 30-5M96 34c-8-3-18-5-30-5" stroke="#3E2210" stroke-width="3" stroke-linecap="round"/></svg>';
             const w = document.createElement("div"); w.className = "egg-savane";
-            w.innerHTML = '<div class="egs-glow"></div>'
-              + '<div class="egs-sun">' + EGG_SUN_SVG(88) + "</div>"
-              + `<span class="egs-walk" style="animation-duration:5.4s">${LION}</span>`
-              + `<span class="egs-walk" style="animation-duration:5.8s;animation-delay:.55s">${PHACO}</span>`
-              + `<span class="egs-walk" style="animation-duration:6.1s;animation-delay:1s">${SURIC}</span>`
-              + Array.from({ length: 2 }, (_, i) => `<svg class="egs-bird" style="top:${15 + i * 8}%;animation-delay:${(i * 0.6).toFixed(1)}s" viewBox="0 0 28 12" width="24" height="10"><path d="M2 9Q8 1 14 9Q20 1 26 9" stroke="#9A6A38" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`).join("");
+            w.innerHTML = '<div class="egs-sky"></div><div class="egs-glow"></div>'
+              + '<div class="egs-sun">' + EGG_SUN_SVG(110) + "</div>"
+              + ACACIA + ACACIA.replace('class="egs-acacia a1"', 'class="egs-acacia a2"')
+              + '<div class="egs-ground"></div><div class="egs-grass"></div>'
+              + `<span class="egs-walk" style="animation-duration:6.2s">${LION}</span>`
+              + `<span class="egs-walk" style="animation-duration:6.8s;animation-delay:.7s">${PHACO}</span>`
+              + `<span class="egs-walk" style="animation-duration:7.2s;animation-delay:1.3s">${SURIC}</span>`
+              + Array.from({ length: 3 }, (_, i) => `<svg class="egs-bird" style="top:${13 + i * 7}%;animation-delay:${(i * 0.7).toFixed(1)}s" viewBox="0 0 28 12" width="${24 - i * 4}" height="${10 - i}"><path d="M2 9Q8 1 14 9Q20 1 26 9" stroke="#5C3414" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`).join("");
             document.body.appendChild(w);
             if (typeof toast === "function") toast("🦁", i18nT("Hakuna matata · mais quelle phrase magnifique !"), null, { low: true });
-            setTimeout(() => w.remove(), 7400);
+            setTimeout(() => w.remove(), 8800);
             awardSecretBadge("badge_hakuna");
             return;
           }
@@ -15516,6 +15580,11 @@
     function _seasonFx(kind) {
       try {
         if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        // Retour Maxime : la pluie d'étoiles/flocons à CHAQUE bascule, c'est trop → l'effet ne
+        // joue qu'UNE fois par jour (toutes bascules confondues).
+        const day = new Date().toISOString().slice(0, 10);
+        if (localStorage.getItem("sm_seasonfx_day") === day) return;
+        localStorage.setItem("sm_seasonfx_day", day);
         const old = document.getElementById("seasonFx"); if (old) old.remove();
         const fx = document.createElement("div"); fx.id = "seasonFx";
         const FLAKE = (px) => `<svg viewBox="0 0 24 24" width="${px}" height="${px}"><g stroke="#BFE2F8" stroke-width="2" stroke-linecap="round" opacity=".9"><line x1="12" y1="2" x2="12" y2="22"/><line x1="3.4" y1="7" x2="20.6" y2="17"/><line x1="20.6" y1="7" x2="3.4" y2="17"/><path d="M9.4 3.8L12 6.4l2.6-2.6M9.4 20.2L12 17.6l2.6 2.6"/></g></svg>`;
@@ -15554,15 +15623,21 @@
       if (typeof smRefreshMapTheme === "function") smRefreshMapTheme(); // la carte suit la saison
     }
     let _seasonLpFired = false;
-    // #9 : clic = JOUR/NUIT PARTOUT (même en saison → nuit d'hiver, nuit tropicale).
-    // Le passage hiver ↔ tropiques se fait à l'appui long (cycle normal → hiver → tropiques).
+    // Retour Maxime : en SAISON, le clic re-bascule ❄️ hiver ↔ 🌴 tropiques (comme avant, accès
+    // direct aux tropiques). Hors saison, clic = jour/nuit. La NUIT DE SAISON reste accessible
+    // via Réglages → Mode nuit (et la bascule auto du soir) : les palettes combinées s'appliquent.
     $("themeToggle").addEventListener("click", () => {
       if (_seasonLpFired) { _seasonLpFired = false; return; } // le relâché de l'appui long ne doit pas re-basculer
+      const s = seasonMode();
+      if (s) {
+        const next = s === "winter" ? "tropic" : "winter";
+        applySeason(next, true); _seasonFx(next);
+        toast(next === "winter" ? "❄️" : "🌴", next === "winter" ? i18nT("Mode hiver ❄️") : i18nT("Mode tropiques 🌴"), null, { low: true });
+        return;
+      }
       const next = document.body.classList.contains("theme-dusk") ? "day" : "dusk";
       localStorage.setItem("sm_theme", next); applyTheme(next);
       _seasonFx(next === "dusk" ? "dusk" : "day");
-      const s = seasonMode();
-      if (s) { _seasonIcon(s); applySeason(s); } // l'icône saison reprend la main + meta/carte resynchro
     });
     { const tt = $("themeToggle"); let _lpT = null, _lpHint = null;
       const start = () => { clearTimeout(_lpT); clearTimeout(_lpHint);
@@ -15572,14 +15647,9 @@
         _lpHint = setTimeout(() => { const initie = seasonMode() || (myProfile && myProfile.is_admin); if (initie && typeof toast === "function") toast(seasonMode() ? "🌞" : "❄️", i18nT("Continue d'appuyer (10 s) pour changer de saison…"), null, { low: true }); }, 3000);
         _lpT = setTimeout(() => {
           _seasonLpFired = true;
-          // #9 : l'appui long CYCLE les mondes (normal → hiver → tropiques → normal).
-          // Le clic simple, lui, fait jour/nuit partout (y compris en saison).
-          const cur = seasonMode(); const next = cur === "" ? "winter" : (cur === "winter" ? "tropic" : "");
-          applySeason(next, true);
-          _seasonFx(next || (document.body.classList.contains("theme-dusk") ? "dusk" : "day"));
-          if (next === "winter") toast("❄️", i18nT("Mode hiver ! Re-appuie 10 s pour les tropiques · le clic fait toujours jour/nuit"), null, { low: true });
-          else if (next === "tropic") toast("🌴", i18nT("Mode tropiques ! Re-appuie 10 s pour revenir au mode normal"), null, { low: true });
-          else toast("🌞", i18nT("Retour au mode normal (jour / nuit)"), null, { low: true });
+          // Appui long = ENTRER/SORTIR du mode saison (en saison, le clic bascule ❄️↔🌴).
+          if (seasonMode()) { applySeason("", true); toast("🌞", i18nT("Retour au mode normal (jour / nuit)"), null, { low: true }); }
+          else { applySeason("winter", true); _seasonFx("winter"); toast("❄️", i18nT("Mode hiver activé ! Un clic sur ce bouton bascule ❄️ hiver / 🌴 tropiques."), null, { low: true }); }
           if (navigator.vibrate) { try { navigator.vibrate(80); } catch (e) {} }
         }, 10000);
       };
