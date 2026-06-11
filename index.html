@@ -111,8 +111,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=416"></script>
-  <script src="sunmates-icons.js?v=416"></script>
+  <script src="sunmates-badges.js?v=417"></script>
+  <script src="sunmates-icons.js?v=417"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -654,7 +654,7 @@
 
     /* ---- Pull-to-refresh ---- */
     /* #16 : spinner DA SunMates (anneau sunset), pas un « ↻ » générique. */
-    .ptr { position: fixed; top: 0; left: 50%; transform: translateX(-50%) translateY(-44px); z-index: var(--z-toast);
+    .ptr { position: fixed; top: env(safe-area-inset-top, 0px); left: 50%; transform: translateX(-50%) translateY(-44px); z-index: var(--z-toast);
       width: 40px; height: 40px; border-radius: 50%; background: var(--card); box-shadow: var(--shadow);
       display: grid; place-items: center; transition: transform .12s ease, opacity .2s ease; opacity: 0; pointer-events: none; }
     .ptr.show { opacity: 1; }
@@ -5246,6 +5246,9 @@
       }
       function openSheet(inp) {
         const ov = ensureOv(); _cur = inp;
+        // Clavier ouvert (on vient de taper la ville) → on le ferme, sinon il peut
+        // pousser le bas de la feuille (et son « Valider ») hors de l'écran visible.
+        try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {}
         const base = inp.value ? inp.value.split("-").map(Number) : null;
         const today = new Date();
         _sel = base ? { y: base[0], m: base[1] - 1, d: base[2] } : { y: today.getFullYear(), m: today.getMonth(), d: today.getDate() };
@@ -10924,6 +10927,22 @@
         tpCell("Bucket list", p.bucket_list, "🪣"),
       ].filter(Boolean).join("");
       $("tpGrid").innerHTML = cells || '<p class="muted">Profil encore peu rempli.</p>';
+      // ⭐ Le BFF du moment choisi par CE voyageur est visible par tout le monde (retour Maxime :
+      //    il n'apparaissait que sur SON propre profil). Cellule cliquable → ouvre la fiche du BFF.
+      (async () => {
+        try {
+          if (!p.bff_id || p.bff_id === p.id) return;
+          let b = travelerMap[p.bff_id] || profById[p.bff_id];
+          if (!b) { const { data } = await db.from("profiles").select("*").eq("id", p.bff_id).maybeSingle(); b = data; if (b) travelerMap[b.id] = b; }
+          if (!b || currentTravelerId !== p.id) return; // la fiche a changé entre temps
+          const grid = $("tpGrid"); if (!grid) return;
+          const cell = document.createElement("div");
+          cell.className = "pcell"; cell.style.cursor = "pointer";
+          cell.innerHTML = `<div class="k">⭐ ${escapeHtml(i18nT("BFF du moment"))}</div><div class="v">${escapeHtml(b.username || "Voyageur")} ›</div>`;
+          cell.addEventListener("click", () => openTravelerProfile(b));
+          grid.prepend(cell);
+        } catch (e) {}
+      })();
       // Prompts (seulement ceux qui ont une réponse)
       const prompts = [[p.prompt1_q, p.prompt1_a], [p.prompt2_q, p.prompt2_a], [p.prompt3_q, p.prompt3_a]].filter((x) => x[1]);
       $("tpPrompts").innerHTML = prompts.map((x) =>
@@ -12532,8 +12551,10 @@
       document.querySelectorAll("[data-psegpanel]").forEach((p) => show(p, p.dataset.psegpanel === seg));
       if (seg === "admin" && typeof showAdminSegment === "function") showAdminSegment("demo");
       // P2.28 : on amène le panneau à l'écran (sinon il s'ouvre plus bas, hors vue, après la carte profil).
-      const panel = document.querySelector('[data-psegpanel="' + seg + '"]');
-      if (panel) setTimeout(() => { try { panel.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }, 40);
+      // Retour Maxime : « je descends trop bas » — on s'aligne sur la rangée d'onglets
+      // Premium/Admin (le panneau s'ouvre juste en dessous), pas sur le panneau lui-même.
+      const anchor = document.getElementById("profSegNav") || document.querySelector('[data-psegpanel="' + seg + '"]');
+      if (anchor) setTimeout(() => { try { anchor.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }, 40);
     }
     document.querySelectorAll("[data-pseg]").forEach((b) => b.addEventListener("click", () => showProfileSegment(b.dataset.pseg)));
     // Chiffres du profil cliquables
@@ -16540,14 +16561,16 @@
     // Pull-to-refresh sur le défilement principal (mobile)
     function refreshCurrentTab() {
       const tab = (document.querySelector(".bottom-nav button.active") || {}).dataset && document.querySelector(".bottom-nav button.active").dataset.tab;
+      const jobs = []; // le PTR garde sa roulette TANT QUE le rafraîchissement tourne (preuve que ça actualise)
       try {
-        if (tab === "connexions" && typeof loadConnections === "function") loadConnections();
-        else if (tab === "lieux" && typeof loadCafes === "function") loadCafes();
-        else if (tab === "jeux" && typeof loadGameData === "function") loadGameData();
-        else if (tab === "profil" && typeof loadProfile === "function") loadProfile();
-        else { if (typeof loadConnections === "function") loadConnections(); if (typeof buildHomeFeed === "function") buildHomeFeed(); if (typeof loadCheckins === "function") loadCheckins(); }
+        if (tab === "connexions" && typeof loadConnections === "function") jobs.push(loadConnections());
+        else if (tab === "lieux" && typeof loadCafes === "function") jobs.push(loadCafes());
+        else if (tab === "jeux" && typeof loadGameData === "function") jobs.push(loadGameData());
+        else if (tab === "profil" && typeof loadProfile === "function") jobs.push(loadProfile());
+        else { if (typeof loadConnections === "function") jobs.push(loadConnections()); if (typeof buildHomeFeed === "function") jobs.push(buildHomeFeed()); if (typeof loadCheckins === "function") jobs.push(loadCheckins()); }
       } catch (e) {}
       vibrate(15);
+      return Promise.allSettled(jobs.filter((j) => j && j.then));
     }
     (function setupPTR() {
       let ptr = document.createElement("div"); ptr.className = "ptr"; ptr.innerHTML = '<div class="ptr-ring"></div>'; document.body.appendChild(ptr);
@@ -16566,14 +16589,24 @@
         dist = e.touches[0].clientY - startY;
         // #16 : on n'affiche le spinner qu'à partir d'un vrai geste de pull (SHOW_AT px), pas au moindre toucher.
         if (dist > SHOW_AT && window.scrollY <= 0) {
-          const d = Math.min(dist, 110);
+          // Retour Maxime : la roulette « ne descend pas assez bas » → elle SUIT le doigt
+          // (avec une légère résistance) jusqu'à ~72 px sous le haut de l'écran.
+          const d = Math.min(dist * .72, 116);
           ptr.classList.add("show");
-          ptr.style.transform = "translateX(-50%) translateY(" + (Math.min(d, THRESH) - 44) + "px)";
+          ptr.style.transform = "translateX(-50%) translateY(" + (d - 44) + "px)";
         } else if (dist <= SHOW_AT) { ptr.classList.remove("show"); }
       }, { passive: true });
       window.addEventListener("touchend", () => {
         if (!pulling) return; pulling = false;
-        if (dist > THRESH) { ptr.classList.add("spin"); ptr.style.transform = "translateX(-50%) translateY(14px)"; refreshCurrentTab(); setTimeout(() => { ptr.classList.remove("show", "spin"); ptr.style.transform = ""; }, 850); }
+        if (dist > THRESH) {
+          ptr.classList.add("spin"); ptr.style.transform = "translateX(-50%) translateY(58px)";
+          // La roulette tourne TANT QUE le rafraîchissement est en cours (mini 650 ms pour
+          // qu'on la voie, maxi 5 s en cas de réseau lent) → preuve visible que ça actualise.
+          const t0 = Date.now();
+          const done = () => { const wait = Math.max(0, 650 - (Date.now() - t0)); setTimeout(() => { ptr.classList.remove("show", "spin"); ptr.style.transform = ""; }, wait); };
+          const guard = setTimeout(done, 5000);
+          Promise.resolve(refreshCurrentTab()).then(() => { clearTimeout(guard); done(); }).catch(() => { clearTimeout(guard); done(); });
+        }
         else { ptr.classList.remove("show"); ptr.style.transform = ""; }
       });
     })();
