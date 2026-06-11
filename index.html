@@ -111,8 +111,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=418"></script>
-  <script src="sunmates-icons.js?v=418"></script>
+  <script src="sunmates-badges.js?v=419"></script>
+  <script src="sunmates-icons.js?v=419"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -397,7 +397,7 @@
     .prog-tile:active, .prog-half:active { transform: scale(.97); }
     .prog-tile .clbl, .prog-half .clbl { font-size: .76rem; font-weight: 700; color: var(--ink); white-space: normal; }
     .prog-tile .cic, .prog-half .cic { width: 44px; height: 44px; font-size: 1.4rem; border-radius: 13px; }
-    body.theme-dusk .prog-tile, body.theme-dusk .prog-half { background: #2a2140; }
+    body.theme-dusk .prog-tile, body.theme-dusk .prog-half { background: var(--dcard,#2a2140); }
     body.theme-dusk .prog-half.ps-city { background: linear-gradient(135deg, rgba(255,201,60,.14), rgba(255,138,61,.10)); }
 
     /* ---- Carte « N éléments au même endroit » (>6 marqueurs co-localisés) ---- */
@@ -412,25 +412,25 @@
     .feed-composer { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .85rem .9rem; margin-bottom: .8rem; box-shadow: var(--shadow-sm); overflow: hidden; }
     .feed-composer .fc-row { display: flex; gap: .6rem; align-items: center; min-width: 0; }
     .feed-composer .fc-av { font-size: 1.4rem; flex-shrink: 0; line-height: 1; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--cream); }
-    body.theme-dusk .feed-composer .fc-av { background: #2a2140; }
+    body.theme-dusk .feed-composer .fc-av { background: var(--dcard,#2a2140); }
     /* min-height 42px + padding .5rem .4rem : la ligne (≈21px) tient SANS être rognée et reste
        centrée face à l'avatar (P1.4/P1.14). overflow-y:auto seulement quand ça dépasse plusieurs lignes. */
     .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .5rem .4rem; min-height: 52px; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
     .feed-composer textarea:focus { outline: none; }
     .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
     .feed-composer .fc-kinds { display: flex; gap: .25rem; background: var(--cream); border-radius: 999px; padding: .2rem; }
-    body.theme-dusk .feed-composer .fc-kinds { background: #2a2140; }
+    body.theme-dusk .feed-composer .fc-kinds { background: var(--dcard,#2a2140); }
     .fc-chips { display: flex; gap: .35rem; overflow-x: auto; padding: .5rem 0 .2rem; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .fc-chips::-webkit-scrollbar { display: none; }
     .fc-chip { flex: 0 0 auto; font-size: .78rem; font-weight: 600; padding: .35rem .65rem; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); color: var(--ink); cursor: pointer; white-space: nowrap; }
     .fc-chip:active { transform: scale(.96); }
     .fc-chip.on { background: var(--accent-grad); color: #fff; border-color: transparent; box-shadow: 0 2px 7px rgba(255,90,77,.3); }
-    body.theme-dusk .fc-chip { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
+    body.theme-dusk .fc-chip { background: var(--dcard,#2a2140); color: #eee; border-color: rgba(255,255,255,.1); }
     .fc-hint { font-size: .72rem; color: var(--muted); font-weight: 600; margin-top: .35rem; }
     .fc-kind { font-size: .76rem; font-weight: 700; padding: .35rem .75rem; border-radius: 999px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
     .fc-kind.active { background: var(--accent-grad); color: #fff; box-shadow: 0 2px 8px rgba(255,90,77,.3); }
     .fc-send { padding: .45rem 1rem; font-size: .85rem; }
-    body.theme-dusk .fc-kind { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
+    body.theme-dusk .fc-kind { background: var(--dcard,#2a2140); color: #eee; border-color: rgba(255,255,255,.1); }
     /* Post : barre d'actions (like / supprimer) */
     .fpost-body { margin-top: .55rem; font-size: .92rem; color: var(--ink); line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
     .fpost-actions { display: flex; align-items: center; gap: 1rem; margin-top: .55rem; }
@@ -440,7 +440,7 @@
     .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: .4rem; }
     /* Séparation NETTE entre les posts (avant : cartes qui se fondaient, surtout en mode nuit) */
     .fpost { background: var(--card); border: 1.5px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .9rem; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease; }
-    body.theme-dusk .fpost { background: #241b35; border-color: rgba(255,255,255,.12); box-shadow: 0 10px 26px rgba(0,0,0,.4); }
+    body.theme-dusk .fpost { background: var(--dcard2,#241b35); border-color: rgba(255,255,255,.12); box-shadow: 0 10px 26px rgba(0,0,0,.4); }
     /* Chip « Dispo ? » : intention de rencontre. État actif = ambre/sunset (jamais vert vif, DA). */
     .avail-chip { flex-shrink: 0; border: 1px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: .3rem .6rem; font-size: .74rem; font-weight: 800; cursor: pointer; transition: .12s; }
     .avail-chip:active { transform: scale(.95); }
@@ -611,7 +611,7 @@
     /* Statut « en ligne » : ton SUNSET (ambre/doré) raccord DA, plus le vert criard. */
     .pdot { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%;
       background: #F5A623; border: 2px solid #fff; }
-    body.theme-dusk .pdot { border-color: #241b35; }
+    body.theme-dusk .pdot { border-color: var(--dcard2,#241b35); }
     .pdot.lg { width: 15px; height: 15px; border-width: 2.5px; }
     .presence-pill { display: inline-flex; align-items: center; gap: .28rem; font-size: .72rem; font-weight: 700;
       color: #B5740E; background: rgba(255,193,77,.18); padding: .08rem .45rem; border-radius: 999px; }
@@ -628,10 +628,10 @@
     .vouch-row:empty { display: none; }
     .vouch-row .avatar { width: 30px; height: 30px; font-size: .76rem; margin-left: -8px; border: 2px solid #fff; box-shadow: var(--shadow-sm); }
     .vouch-row .avatar:first-child { margin-left: 0; }
-    body.theme-dusk .vouch-row .avatar { border-color: #241b35; }
+    body.theme-dusk .vouch-row .avatar { border-color: var(--dcard2,#241b35); }
     .vouch-more { margin-left: -8px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
       display: grid; place-items: center; font-weight: 800; font-size: .74rem; border: 2px solid #fff; z-index: 1; }
-    body.theme-dusk .vouch-more { border-color: #241b35; }
+    body.theme-dusk .vouch-more { border-color: var(--dcard2,#241b35); }
     .te-row.te-vouch { cursor: default; }
 
     /* ---- Traduction d'un message (sous la bulle, style des méta) ---- */
@@ -652,8 +652,8 @@
     .match-avs .avatar { width: 68px; height: 68px; font-size: 1.5rem; border: 3px solid #fff; box-shadow: var(--shadow); }
     .match-avs .mlink { margin: 0 -10px; z-index: 2; font-size: 1.45rem; width: 38px; height: 38px; border-radius: 50%;
       background: #fff; display: grid; place-items: center; box-shadow: var(--shadow-sm); }
-    body.theme-dusk .match-avs .avatar { border-color: #241b35; }
-    body.theme-dusk .match-avs .mlink { background: #241b35; }
+    body.theme-dusk .match-avs .avatar { border-color: var(--dcard2,#241b35); }
+    body.theme-dusk .match-avs .mlink { background: var(--dcard2,#241b35); }
 
     /* ---- Pull-to-refresh ---- */
     /* #16 : spinner DA SunMates (anneau sunset), pas un « ↻ » générique. */
@@ -696,7 +696,7 @@
     .spot-quick button:active { transform: scale(.95); }
     body.theme-dusk .spot-quick button { background: rgba(255,138,61,.2); color: #ffe; }
     .spot-quick button:active { transform: scale(.96); }
-    body.theme-dusk .spot-quick button { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
+    body.theme-dusk .spot-quick button { background: var(--dcard,#2a2140); color: #eee; border-color: rgba(255,255,255,.1); }
     /* Carte « spot du jour » repliable pour ne pas encombrer le profil */
     .spot-card { padding: .8rem 1rem; }
     .spot-card > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-weight: 800; color: var(--ink); }
@@ -830,7 +830,7 @@
       background: linear-gradient(135deg, #2a1850, #160b2e); color: #fff; border-radius: 18px;
       padding: .85rem 1.05rem; box-shadow: 0 18px 44px rgba(0,0,0,.5); animation: adIn .35s ease; transition: opacity .35s ease; }
     /* La barre de démo SUIT le thème (texte clair gardé : fonds profonds dans les 4 cas) */
-    body.theme-dusk .ad-bar { background: linear-gradient(135deg, #352a52, #241b35); }
+    body.theme-dusk .ad-bar { background: linear-gradient(135deg, var(--dcard4,#352a52), var(--dcard2,#241b35)); }
     body.theme-winter .ad-bar { background: linear-gradient(135deg, #29486B, #1B344F); }
     body.theme-tropic .ad-bar { background: linear-gradient(135deg, #1F5C49, #123F33); }
     /* Auto-replié quand on ne touche pas : le texte et les boutons se rétractent en douceur
@@ -866,7 +866,7 @@
     /* Profil : photo grande & entière, nom/titre/ville centrés, confiance compacte */
     /* Allégée (132→112px) avec la scission de la carte d'arrivée : moins « qui fait peur » */
     .prof-photo { width: 112px; height: 112px; margin: .2rem auto .6rem; border-radius: 20px; background-color: var(--cream); background-size: cover; background-position: center; background-repeat: no-repeat; display: grid; place-items: center; font-size: 2.8rem; box-shadow: var(--shadow-sm); overflow: hidden; }
-    body.theme-dusk .prof-photo { background-color: #2a2140; }
+    body.theme-dusk .prof-photo { background-color: var(--dcard,#2a2140); }
     .prof-name { font-size: 1.25rem; font-weight: 800; justify-content: center; display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
     .prof-title { font-size: .95rem; color: var(--accent); font-weight: 700; margin-top: .15rem; }
     .prof-city { font-size: .9rem; margin-top: .15rem; }
@@ -890,9 +890,9 @@
     .xbtn svg { display: block; }
     .kb-search { position: relative; }
     .kb-search .kb-clear { position: absolute; right: .5rem; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--cream); color: var(--muted); cursor: pointer; }
-    body.theme-dusk .kb-search .kb-clear { background: #2a2140; }
+    body.theme-dusk .kb-search .kb-clear { background: var(--dcard,#2a2140); }
     .admin-only-cat > summary { list-style: none; } .admin-only-cat > summary::-webkit-details-marker { display: none; }
-    body.theme-dusk .popinfo-x { background: #2a2140; color: #ccc; }
+    body.theme-dusk .popinfo-x { background: var(--dcard,#2a2140); color: #ccc; }
     .popinfo-ic { width: 58px; height: 58px; margin: 0 auto .7rem; border-radius: 18px; display: grid; place-items: center; font-size: 1.9rem; background: var(--accent-grad); box-shadow: 0 8px 20px rgba(255,138,61,.32); }
     .popinfo-t { margin: 0 0 .5rem; font-size: 1.08rem; }
     .popinfo-b { font-size: .9rem; color: var(--muted); line-height: 1.5; }
@@ -904,7 +904,7 @@
     .spot-live-txt { font-weight: 800; line-height: 1.2; }
     .spot-live-meta { font-size: .74rem; opacity: .96; margin-top: .15rem; }
     .inspo-chip { font-size: .74rem; font-weight: 700; background: var(--cream); border: 1px solid var(--line); border-radius: 999px; padding: .2rem .55rem; color: var(--ink); }
-    body.theme-dusk .inspo-chip { background: #2a2140; }
+    body.theme-dusk .inspo-chip { background: var(--dcard,#2a2140); }
     @keyframes popinfoFade { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popinfoPop { from { opacity: 0; transform: translateY(10px) scale(.94); } to { opacity: 1; transform: none; } }
     /* Tuile « bientôt dispo » (Gold) : grisée, non cliquable */
@@ -920,7 +920,7 @@
     .coll-stat .cs-l { font-size: .72rem; color: var(--muted); font-weight: 700; margin-top: .1rem; }
     .coll-bar { height: 5px; border-radius: 999px; background: var(--cream); overflow: hidden; margin: 0 .6rem .3rem; }
     .coll-bar span { display: block; height: 100%; background: var(--accent-grad); }
-    body.theme-dusk .coll-bar { background: #2a2140; }
+    body.theme-dusk .coll-bar { background: var(--dcard,#2a2140); }
     .coll-city { border: 1px solid var(--line); border-radius: 12px; margin: .4rem 0; overflow: hidden; }
     .coll-city > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .6rem .7rem; font-weight: 700; font-size: .9rem; background: var(--cream); }
     .coll-city > summary::-webkit-details-marker { display: none; }
@@ -1056,7 +1056,7 @@
        dans la carte. En plein écran (.fs) il y a la place → pas de bornage. */
     .homemap-card:not(.fs) .leaflet-popup-content { max-height: 148px; overflow-y: auto; overscroll-behavior: contain; }
     body.theme-dusk .leaflet-control-attribution { background: rgba(36,27,53,.7) !important; color: #a99fbe !important; }
-    body.theme-dusk .leaflet-control-zoom a { background: #241b35 !important; color: #ede6f2 !important; }
+    body.theme-dusk .leaflet-control-zoom a { background: var(--dcard2,#241b35) !important; color: #ede6f2 !important; }
 
     /* --------------------- Onboarding « du futur » -------------------- */
     .onb { position: fixed; inset: 0; z-index: var(--z-onb); display: grid; place-items: center; padding: 1.2rem;
@@ -1300,7 +1300,7 @@
     .bingo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .4rem; }
     .bingo-cell { font-size: .64rem; font-weight: 700; line-height: 1.15; padding: .4rem .25rem; min-height: 64px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); cursor: pointer; display: grid; place-items: center; text-align: center; }
     .bingo-cell.on { background: var(--accent-grad); color: #fff; border-color: transparent; }
-    body.theme-dusk .bingo-cell { background: #241b35; color: #eee; }
+    body.theme-dusk .bingo-cell { background: var(--dcard2,#241b35); color: #eee; }
     /* Emoji en BADGE dans le coin (plus au milieu de la photo) */
     /* Bandeau XP (onglet Jeux) */
     /* Ligne XP DISCRÈTE (plus de gros bandeau) */
@@ -1516,7 +1516,7 @@
     .shop-ic-title { background: radial-gradient(circle at 50% 28%, rgba(255,255,255,.45), rgba(255,255,255,0) 55%), var(--accent-grad);
       box-shadow: 0 4px 12px rgba(255,90,77,.28); }
     .shop-ic-none { background: var(--cream); box-shadow: none; filter: grayscale(.4); }
-    body.theme-dusk .shop-ic-none { background: #2a2140; }
+    body.theme-dusk .shop-ic-none { background: var(--dcard,#2a2140); }
     .shop-name { font-size: .82rem; font-weight: 700; line-height: 1.2; }
     .shop-meta { font-size: .72rem; color: var(--muted); }
     .shop-item.on .shop-meta { color: var(--accent); font-weight: 700; }
@@ -1697,13 +1697,13 @@
     .city-pick-ic{ font-size:18px; flex-shrink:0; }
     .city-pick select{ flex:1; padding:.5rem 1.8rem .5rem 1.8rem; text-align:center; text-align-last:center; border-radius:12px; border:1px solid var(--line); background-color:var(--card); color:var(--ink); font-weight:700; font-size:.85rem; cursor:pointer; -webkit-appearance:none; appearance:none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23E8961F' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .7rem center; }
-    body.theme-dusk .city-pick select{ background-color:#2a2140; color:#fff; border-color:rgba(255,255,255,.12); }
+    body.theme-dusk .city-pick select{ background-color:var(--dcard,#2a2140); color:#fff; border-color:rgba(255,255,255,.12); }
     .todo-toggle{ flex-shrink:0; display:inline-flex; align-items:center; gap:.35rem; padding:.45rem .6rem; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--text); font-weight:700; font-size:.8rem; cursor:pointer; white-space:nowrap; }
     .todo-toggle .tt-ic{ line-height:1; }
     .todo-toggle .tt-state{ font-size:.62rem; font-weight:900; letter-spacing:.04em; padding:.08rem .35rem; border-radius:999px; background:rgba(0,0,0,.10); color:var(--muted); }
     .todo-toggle.active{ background:var(--accent-grad); color:#fff; border-color:transparent; }
     .todo-toggle.active .tt-state{ background:rgba(255,255,255,.28); color:#fff; }
-    body.theme-dusk .todo-toggle:not(.active){ background:#2a2140; color:#eee; border-color:rgba(255,255,255,.12); }
+    body.theme-dusk .todo-toggle:not(.active){ background:var(--dcard,#2a2140); color:#eee; border-color:rgba(255,255,255,.12); }
     /* HomeMates · souvenirs (mode Maison) */
     .hm-recap{ display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.6rem; }
     .hm-recap .hr-chip{ background:var(--cream); border-radius:12px; padding:.4rem .6rem; font-size:.8rem; font-weight:700; color:var(--ink); }
@@ -1745,7 +1745,7 @@
       background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow); isolation:isolate; }
     .quest-spotlight::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--accent-grad); }
     .qs-aura{ display:none; }
-    body.theme-dusk .quest-spotlight{ background:#241b35; border-color:rgba(255,255,255,.09); }
+    body.theme-dusk .quest-spotlight{ background:var(--dcard2,#241b35); border-color:rgba(255,255,255,.09); }
     .qs-head{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; margin-bottom:.7rem; padding-left:.4rem; }
     .qs-pill{ display:inline-flex; align-items:center; gap:.2rem; font-weight:800; font-size:.74rem; letter-spacing:.3px; color:#fff; padding:.3rem .65rem;
       border-radius:999px; background:var(--accent-grad); box-shadow:0 4px 12px rgba(255,90,77,.32); }
@@ -1791,7 +1791,7 @@
     .qm-teal .qm-ic, .qm-gold .qm-ic, .qm-violet .qm-ic{ background:radial-gradient(circle at 36% 28%, rgba(255,255,255,.5), rgba(255,255,255,0) 55%), linear-gradient(135deg, var(--ic1, var(--c1)), var(--ic2, var(--c2))); }
     .qm-name{ font-weight:800; font-size:.8rem; line-height:1.15; color:var(--ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
     .qm-xp{ margin-top:auto; font-weight:800; font-size:.74rem; color:#B5740E; background:rgba(255,209,92,.22); padding:.12rem .45rem; border-radius:999px; }
-    body.theme-dusk .qm-card{ background:#2a2140; border-color:rgba(255,255,255,.08); } body.theme-dusk .qm-xp{ color:#FFD79A; background:rgba(255,209,92,.14); }
+    body.theme-dusk .qm-card{ background:var(--dcard,#2a2140); border-color:rgba(255,255,255,.08); } body.theme-dusk .qm-xp{ color:#FFD79A; background:rgba(255,209,92,.14); }
     .br-item{ flex:0 0 auto; width:92px; display:flex; flex-direction:column; align-items:center; gap:.35rem; scroll-snap-align:start; cursor:pointer; } .br-item:active{ transform:scale(.96); }
     .br-medal{ width:64px; height:64px; display:grid; place-items:center; font-size:30px; }
     .br-item.locked .br-medal{ filter:grayscale(.9) opacity(.5); }
@@ -1846,7 +1846,7 @@
     .sc-card .sc-xp::after{ content:" XP"; font-size:.64rem; opacity:.8; }
     .sc-check{ position:absolute; top:.5rem; right:.6rem; width:24px; height:24px; display:none; place-items:center; font-size:.85rem; font-weight:900; color:#fff; border-radius:999px; background:linear-gradient(135deg,#34c98f,#1f9e8c); box-shadow:0 3px 8px rgba(31,158,140,.4); }
     .sc-card.is-done{ opacity:.62; } .sc-card.is-done .sc-check{ display:grid; } .sc-card.is-done .sc-xp{ display:none; } #scReroll{ cursor:pointer; user-select:none; }
-    body.theme-dusk .sc-card{ background:#2a2140; border-color:rgba(255,255,255,.08); } body.theme-dusk .sc-xp{ color:#FFD79A; background:rgba(255,209,92,.16); }
+    body.theme-dusk .sc-card{ background:var(--dcard,#2a2140); border-color:rgba(255,255,255,.08); } body.theme-dusk .sc-xp{ color:#FFD79A; background:rgba(255,209,92,.16); }
     .solo-rit{ margin:.2rem 0 1.1rem; }
     .rit-cnt{ flex-shrink:0; font-weight:800; font-size:.82rem; color:#B5740E; padding:.18rem .55rem; border-radius:999px; background:rgba(255,209,92,.22); }
     .rit-list{ display:flex; flex-direction:column; gap:.5rem; }
@@ -1859,7 +1859,7 @@
     .rit-row.is-done .rit-name{ text-decoration:line-through; opacity:.6; } .rit-row.is-done .rit-ic{ background:rgba(52,201,143,.18); }
     .rit-row.rit-add{ border-style:dashed; background:transparent; box-shadow:none; } .rit-row.rit-add .rit-ic{ background:var(--accent-soft); }
     .rit-row.rit-custom .rit-ic{ background:rgba(255,138,61,.18); }
-    body.theme-dusk .rit-row{ background:#2a2140; border-color:rgba(255,255,255,.08); } body.theme-dusk .rit-ic{ background:rgba(255,201,60,.12); }
+    body.theme-dusk .rit-row{ background:var(--dcard,#2a2140); border-color:rgba(255,255,255,.08); } body.theme-dusk .rit-ic{ background:rgba(255,201,60,.12); }
     body.theme-dusk .rit-cnt{ color:#FFD79A; background:rgba(255,209,92,.16); } body.theme-dusk .rit-box{ border-color:rgba(255,201,60,.4); }
     @media (prefers-reduced-motion: reduce){ .sp-bar span, .sc-card, .rit-row, .rit-box{ transition:none; } }
     /* Modal preuve de défi */
@@ -1891,7 +1891,7 @@
     .qstep.cur .qstep-n { border-color: var(--accent); color: var(--accent); }
     .qstep.done, .qstep.cur { color: var(--ink); }
     .qstep-line { flex: 1; height: 2px; background: var(--line); border-radius: 2px; }
-    body.theme-dusk .qstep .qstep-n { background: #2a2140; }
+    body.theme-dusk .qstep .qstep-n { background: var(--dcard,#2a2140); }
     .dstats { display: flex; gap: .6rem; margin-bottom: 1rem; }
     .dstat { flex: 1; background: var(--card); border-radius: var(--radius-sm); padding: .7rem .4rem; text-align: center; box-shadow: var(--shadow-sm); }
     .dstat b { display: block; color: var(--ink); font-size: 1rem; }
@@ -1929,7 +1929,7 @@
     .chat-menu { position: absolute; top: 110%; right: 0; z-index: 50; background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-pop); padding: .3rem; min-width: 210px; display: flex; flex-direction: column; }
     .chat-menu button { text-align: left; background: none; border: 0; padding: .6rem .7rem; border-radius: 10px; font-size: .85rem; color: var(--ink); cursor: pointer; }
     .chat-menu button:active { background: var(--accent-soft); }
-    body.theme-dusk .chat-menu { background: #241b35; } body.theme-dusk .chat-menu button { color: #f3e9f3; }
+    body.theme-dusk .chat-menu { background: var(--dcard2,#241b35); } body.theme-dusk .chat-menu button { color: #f3e9f3; }
     .chat-mic { font-size: 1.2rem; flex-shrink: 0; }
     /* Chips de type de feedback bêta */
     /* Chips de portée de recherche (Tout / Voyageurs / Lieux / Vérifiés) */
@@ -1972,7 +1972,7 @@
       cursor: pointer; box-shadow: var(--shadow-sm); transition: transform .12s ease, box-shadow .12s ease; }
     .ice-chip .ice-spark { flex-shrink: 0; font-size: .8rem; margin-top: .1rem; }
     .ice-chip:active { transform: scale(.98); box-shadow: none; }
-    body.theme-dusk .ice-chip { background: linear-gradient(135deg, #2c2140, #241b35); color: #f3e9f3; border-color: rgba(255,170,130,.22); border-left-color: var(--accent); }
+    body.theme-dusk .ice-chip { background: linear-gradient(135deg, var(--dcard3,#2c2140), var(--dcard2,#241b35)); color: #f3e9f3; border-color: rgba(255,170,130,.22); border-left-color: var(--accent); }
     .chat-input { display: flex; gap: .5rem; align-items: center; background: var(--bg); padding: .7rem 0 .3rem; flex-shrink: 0; }
     .chat-input input { flex: 1; box-shadow: var(--shadow-sm); border-color: #fff; }
     .chat-input button { padding: .75rem 1rem; flex-shrink: 0; }
@@ -2338,12 +2338,12 @@
     .prep-item { display: flex; align-items: center; gap: .6rem; padding: .55rem .6rem; cursor: pointer; border-radius: 12px; border: 1px solid var(--line); background: var(--card); margin: .3rem 0; transition: background .12s, transform .12s; }
     .prep-item:active { transform: scale(.99); }
     .prep-item.done { background: var(--cream); border-color: transparent; }
-    body.theme-dusk .prep-item { background: #241b35; } body.theme-dusk .prep-item.done { background: #2a2140; }
+    body.theme-dusk .prep-item { background: var(--dcard2,#241b35); } body.theme-dusk .prep-item.done { background: var(--dcard,#2a2140); }
     .prep-box { font-size: 1.1rem; flex-shrink: 0; }
     /* Barre de progression des préparatifs */
     .prep-bar { height: 7px; border-radius: 999px; background: var(--cream); overflow: hidden; margin: -.1rem 0 .6rem; }
     .prep-bar span { display: block; height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width .45s ease; }
-    body.theme-dusk .prep-bar { background: #2a2140; }
+    body.theme-dusk .prep-bar { background: var(--dcard,#2a2140); }
     /* Bouton fiche pays (must-know) */
     .prep-country { display: flex; align-items: center; gap: .7rem; width: 100%; text-align: left; padding: .7rem .8rem; margin: 0 0 .7rem; border: 0; border-radius: 14px; cursor: pointer; color: #fff;
       background: radial-gradient(120% 130% at 12% -10%, rgba(255,255,255,.22), rgba(255,255,255,0) 46%), linear-gradient(135deg,#6C4DE0,#FF7A4D); box-shadow: var(--shadow-pop); }
@@ -2587,7 +2587,7 @@
     #profSegNav button.active { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent !important; box-shadow: 0 6px 16px rgba(255,90,77,.28); }
     #profSegNav button[data-pseg="premium"].active { background: linear-gradient(135deg,#FFC93C,#E89A12) !important; color: #4a3200 !important; box-shadow: 0 6px 16px rgba(232,154,18,.35); }
     #profSegNav button[data-pseg="admin"].active { background: linear-gradient(135deg,#F2607E,#C92D55) !important; color: #fff !important; box-shadow: 0 6px 16px rgba(201,45,85,.32); }
-    body.theme-dusk #profSegNav button { background: #2a2140; border-color: rgba(255,255,255,.1); color: #f3e7d8; }
+    body.theme-dusk #profSegNav button { background: var(--dcard,#2a2140); border-color: rgba(255,255,255,.1); color: #f3e7d8; }
     body.theme-dusk #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#4a3a1a,#5a4520); border-color: rgba(240,169,58,.4); color: #ffd98a; }
     body.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#451b2a,#5a2438); border-color: rgba(244,121,143,.45); color: #ffb8c8; }
     body.theme-dusk #profSegNav button[data-pseg="premium"].active { background: linear-gradient(135deg,#D9A21B,#A87708) !important; color: #fff8e6 !important; }
@@ -2610,7 +2610,7 @@
     .au-filters { display: flex; gap: .3rem; }
     .au-fbtn { font-size: .74rem; font-weight: 700; padding: .3rem .6rem; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer; }
     .au-fbtn.active { background: var(--accent-grad); color: #fff; border-color: transparent; }
-    body.theme-dusk .au-fbtn { background: #2a2140; color: #eee; border-color: rgba(255,255,255,.1); }
+    body.theme-dusk .au-fbtn { background: var(--dcard,#2a2140); color: #eee; border-color: rgba(255,255,255,.1); }
     .mates-stat { display: flex; width: fit-content; align-items: center; gap: .5rem; margin: .3rem auto .8rem; background: var(--accent-soft); border: 1px solid rgba(255,90,77,.22); border-radius: 999px; padding: .4rem .95rem; cursor: pointer; transition: transform .1s; }
     .mates-stat:active { transform: scale(.97); }
     .mates-stat b { font-size: 1.35rem; color: var(--accent); line-height: 1; }
@@ -2678,7 +2678,10 @@
        Ciel violet-indigo + lueur de coucher de soleil. Activé par body.theme-dusk
        =================================================================== */
     body.theme-dusk {
-      --bg: #171026; --card: #221a33; --paper: #241b35; --cream: #2b2240;
+      /* #9 : les surfaces nuit passent par --dcard* → les modes « nuit d'hiver » et
+         « nuit tropicale » (fin de feuille) n'ont qu'à redéfinir ces 4 variables. */
+      --dcard: #2a2140; --dcard2: #241b35; --dcard3: #2c2140; --dcard4: #352a52; --dcard5: #1f1830;
+      --bg: #171026; --card: #221a33; --paper: var(--dcard2,#241b35); --cream: #2b2240;
       --accent: #ff7e72; --accent-2: #ff9a8d; --accent-3: #ffc07a;
       --accent-soft: rgba(255,126,114,.16);
       --accent-grad: linear-gradient(135deg, #ffc07a 0%, #ff9a8d 45%, #ff7e72 100%);
@@ -2688,14 +2691,14 @@
       background: radial-gradient(130% 80% at 50% -8%, #3b2550 0%, #2a1c3e 34%, #20182f 64%, #171026 100%);
     }
     body.theme-dusk .app-shell { background: radial-gradient(120% 55% at 50% -12%, rgba(255,150,110,.30) 0%, rgba(255,150,110,0) 58%), var(--bg) !important; }
-    body.theme-dusk .card { background: linear-gradient(180deg, #241b36 0%, #1f1830 100%) !important; border-color: rgba(255,255,255,.07) !important; box-shadow: 0 14px 34px rgba(0,0,0,.42) !important; }
+    body.theme-dusk .card { background: linear-gradient(180deg, var(--dcard2,#241b36) 0%, var(--dcard5,#1f1830) 100%) !important; border-color: rgba(255,255,255,.07) !important; box-shadow: 0 14px 34px rgba(0,0,0,.42) !important; }
     body.theme-dusk input, body.theme-dusk textarea, body.theme-dusk select,
     body.theme-dusk .search input { background: #2b2240 !important; color: #ede6f2; border-color: rgba(255,255,255,.13) !important; }
     body.theme-dusk .post, body.theme-dusk .pf-section { background: #221a34 !important; border-color: rgba(255,255,255,.07); }
     body.theme-dusk .post-body, body.theme-dusk .pcell, body.theme-dusk .pprompt,
     body.theme-dusk .feed-card, body.theme-dusk .coupon, body.theme-dusk .stat-box,
     body.theme-dusk .dstat, body.theme-dusk .tile, body.theme-dusk .gcard,
-    body.theme-dusk .mseg, body.theme-dusk .chip { background: #2a2140 !important; border-color: rgba(255,255,255,.08) !important; }
+    body.theme-dusk .mseg, body.theme-dusk .chip { background: var(--dcard,#2a2140) !important; border-color: rgba(255,255,255,.08) !important; }
     body.theme-dusk .chip.active, body.theme-dusk .mseg button.active { background: var(--accent-grad) !important; color: #fff !important; }
     body.theme-dusk .notif-card, body.theme-dusk .picker-card { background: #221a34; }
     body.theme-dusk .topbar { background: linear-gradient(rgba(23,16,38,.86), rgba(23,16,38,0)); }
@@ -2704,8 +2707,8 @@
     body.theme-dusk .bubble.them { background: #2c2342; color: #ede6f2; }
     body.theme-dusk .sresult:hover, body.theme-dusk .notif-item:hover, body.theme-dusk .matepick:hover,
     body.theme-dusk .qrow:hover, body.theme-dusk .person[style*="cursor"]:hover { background: rgba(255,255,255,.06); }
-    body.theme-dusk .badge.no { background: #2a2140; color: var(--muted); }
-    body.theme-dusk .leaflet-popup-content-wrapper, body.theme-dusk .leaflet-popup-tip { background: #241b35; color: #ede6f2; }
+    body.theme-dusk .badge.no { background: var(--dcard,#2a2140); color: var(--muted); }
+    body.theme-dusk .leaflet-popup-content-wrapper, body.theme-dusk .leaflet-popup-tip { background: var(--dcard2,#241b35); color: #ede6f2; }
 
     /* Le grain et les ombres restent désactivés pour « mouvement réduit »
        déjà géré plus haut ; rien d'animé n'est ajouté ici. */
@@ -3036,7 +3039,7 @@
     .ice-flbl { display: block; font-size: .72rem; font-weight: 800; color: var(--muted); margin: .55rem 0 .25rem; text-transform: uppercase; letter-spacing: .04em; }
     .ice-fin { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 12px; padding: .62rem .72rem; font-size: .95rem; color: var(--ink); background: var(--card); font-family: inherit; }
     .ice-fin:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-    body.theme-dusk .ice-fin { background: #241b35; color: #f3e9f3; border-color: rgba(255,255,255,.1); }
+    body.theme-dusk .ice-fin { background: var(--dcard2,#241b35); color: #f3e9f3; border-color: rgba(255,255,255,.1); }
     /* Signal lumineux d'aide (pulsation LENTE 1.6s = sans danger photosensible) */
     .signal-screen { position: fixed; inset: 0; z-index: var(--z-signal); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: signalPulse 1.6s ease-in-out infinite; }
     .signal-screen.hidden { display: none; }
@@ -3121,7 +3124,7 @@
     .help-cta .hc-txt { display: flex; flex-direction: column; gap: .12rem; min-width: 0; }
     .help-cta .hc-sub { font-weight: 500; font-size: .73rem; line-height: 1.35; color: var(--muted); white-space: normal; }
     /* Thèmes : la carte suit (la nuit ne redéfinit pas --card → il faut l'explicite) */
-    body.theme-dusk .help-cta { background: #241b35; border-color: rgba(255,255,255,.09); color: #f3e9f3; }
+    body.theme-dusk .help-cta { background: var(--dcard2,#241b35); border-color: rgba(255,255,255,.09); color: #f3e9f3; }
     body.theme-dusk .help-cta .hc-sub { color: #a99fbe; }
     body.theme-winter .help-cta { background: #fff; border-color: rgba(58,143,217,.20); }
     body.theme-tropic .help-cta { background: #fff; border-color: rgba(15,163,124,.20); }
@@ -3135,8 +3138,8 @@
     .hm-gal-open .hmg-av:first-child { margin-left: 0; }
     .hmg-more { font-size: .74rem; font-weight: 800; color: var(--accent); margin-left: .3rem; }
     .hmg-lbl { margin-left: auto; font-weight: 800; font-size: .82rem; color: var(--accent); white-space: nowrap; }
-    body.theme-dusk .hm-gal-open { background: linear-gradient(135deg, #2c2140, #241b35); border-color: rgba(255,170,130,.22); }
-    body.theme-dusk .hmg-av { border-color: #241b35; }
+    body.theme-dusk .hm-gal-open { background: linear-gradient(135deg, var(--dcard3,#2c2140), var(--dcard2,#241b35)); border-color: rgba(255,170,130,.22); }
+    body.theme-dusk .hmg-av { border-color: var(--dcard2,#241b35); }
     .hmg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .55rem; }
     .hmg-cell { display: flex; flex-direction: column; align-items: center; gap: .25rem; background: none; border: 0; cursor: pointer; padding: .2rem 0; }
     .hmg-av.big { width: 54px; height: 54px; margin-left: 0; font-size: 1.1rem; box-shadow: var(--shadow-sm); }
@@ -3158,7 +3161,7 @@
     .sm-date-preview { text-align: center; font-weight: 800; color: var(--accent); font-size: .95rem;
       padding: .45rem .6rem; margin: 0 0 .55rem; background: linear-gradient(135deg, #FFF6E9, #FFE7DA);
       border-radius: 12px; text-transform: capitalize; }
-    body.theme-dusk .sm-date-preview { background: linear-gradient(135deg, #2c2140, #241b35); color: #ffc8a8; }
+    body.theme-dusk .sm-date-preview { background: linear-gradient(135deg, var(--dcard3,#2c2140), var(--dcard2,#241b35)); color: #ffc8a8; }
     body.theme-winter .sm-date-preview { background: linear-gradient(135deg, #F4FAFF, #E4F0FB); }
     body.theme-tropic .sm-date-preview { background: linear-gradient(135deg, #FDFBE8, #EDF6DF); }
 
@@ -3300,6 +3303,61 @@
     body.theme-tropic .cic, body.theme-tropic .qm-ic, body.theme-tropic .sc-ic, body.theme-tropic .hex, body.theme-tropic .jo-ic, body.theme-tropic .smgem {
       --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 72%, #FFD66B);
       --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 76%, #14805F); }
+
+    /* ============ #9 NUIT DES SAISONS : hiver et tropiques ont leur mode sombre ============
+       theme-dusk peut désormais COEXISTER avec theme-winter/theme-tropic. Les surfaces nuit
+       passent par --dcard* (cf. bloc theme-dusk) → ici on redéfinit juste la palette. */
+    body.theme-winter.theme-dusk {
+      --bg:#0F1B2B; --bg-grad:radial-gradient(130% 80% at 50% -8%, #1C3149 0%, #14253A 40%, #0F1B2B 100%);
+      --card:#1A2B40; --paper:#16263A; --cream:#142233;
+      --ink:#EAF3FB; --ink-warm:#EFF6FC; --text:#C9DAEA; --muted:#7E96AC; --line:rgba(255,255,255,.09);
+      --accent:#5FA8E8; --accent-2:#8CC4F2; --accent-3:#BFD9F0; --accent-soft:rgba(95,168,232,.16);
+      --accent-grad:linear-gradient(135deg, #BFD9F0 0%, #8CC4F2 45%, #3A77B8 100%);
+      --dcard:#1B2C42; --dcard2:#152436; --dcard3:#1D3048; --dcard4:#243954; --dcard5:#12202F;
+      color: var(--text);
+      background: radial-gradient(130% 80% at 50% -8%, #1C3149 0%, #14253A 40%, #0F1B2B 100%);
+    }
+    body.theme-winter.theme-dusk .topbar { background:#0F1B2B; border-bottom-color:rgba(140,196,242,.14); }
+    body.theme-winter.theme-dusk #bgFx { background:radial-gradient(120% 50% at 50% -8%, rgba(95,168,232,.22) 0%, rgba(15,27,43,0) 58%), var(--bg); }
+    body.theme-winter.theme-dusk .app-shell { background: transparent !important; }
+    body.theme-winter.theme-dusk .help-cta { background: var(--dcard2); border-color: rgba(140,196,242,.16); color:#EAF3FB; }
+    body.theme-winter.theme-dusk .sm-date-preview { background: linear-gradient(135deg,#1D3048,#152436); color:#A8D0F0; }
+    body.theme-winter.theme-dusk #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#4a3a1a,#5a4520); border-color: rgba(240,169,58,.4); color:#ffd98a; }
+    body.theme-winter.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#16314E,#244770); border-color: rgba(140,196,242,.4); color:#BFD9F0; }
+    body.theme-tropic.theme-dusk {
+      --bg:#0C1D17; --bg-grad:radial-gradient(130% 80% at 50% -8%, #16352A 0%, #102A20 40%, #0C1D17 100%);
+      --card:#163027; --paper:#12281F; --cream:#10241C;
+      --ink:#E9F7EF; --ink-warm:#F0FAF3; --text:#CBE6D6; --muted:#7FA18E; --line:rgba(255,255,255,.09);
+      --accent:#2BC48A; --accent-2:#5CD8A8; --accent-3:#FFC23D; --accent-soft:rgba(43,196,138,.16);
+      --accent-grad:linear-gradient(135deg, #FFC23D 0%, #5CD8A8 50%, #1FA67A 100%);
+      --dcard:#17332A; --dcard2:#122A21; --dcard3:#1A3A2E; --dcard4:#21453A; --dcard5:#0F241C;
+      color: var(--text);
+      background: radial-gradient(130% 80% at 50% -8%, #16352A 0%, #102A20 40%, #0C1D17 100%);
+    }
+    body.theme-tropic.theme-dusk .topbar { background:#0C1D17; border-bottom-color:rgba(92,216,168,.14); }
+    body.theme-tropic.theme-dusk #bgFx { background:radial-gradient(120% 50% at 50% -8%, rgba(255,194,61,.16) 0%, rgba(12,29,23,0) 58%), var(--bg); }
+    body.theme-tropic.theme-dusk .app-shell { background: transparent !important; }
+    body.theme-tropic.theme-dusk .help-cta { background: var(--dcard2); border-color: rgba(92,216,168,.16); color:#E9F7EF; }
+    body.theme-tropic.theme-dusk .sm-date-preview { background: linear-gradient(135deg,#1A3A2E,#122A21); color:#9ADBBE; }
+    body.theme-tropic.theme-dusk #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#4a3a1a,#5a4520); border-color: rgba(240,169,58,.4); color:#ffd98a; }
+    body.theme-tropic.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#143527,#1E4A38); border-color: rgba(92,216,168,.4); color:#9ADBBE; }
+    /* Pastilles colorées : mix NUIT-saison (le mix jour-saison clair éblouirait sur fond sombre) */
+    body.theme-winter.theme-dusk .cic, body.theme-winter.theme-dusk .qm-ic, body.theme-winter.theme-dusk .sc-ic, body.theme-winter.theme-dusk .hex, body.theme-winter.theme-dusk .jo-ic, body.theme-winter.theme-dusk .smgem {
+      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 64%, #24395A);
+      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 70%, #142536); }
+    body.theme-tropic.theme-dusk .cic, body.theme-tropic.theme-dusk .qm-ic, body.theme-tropic.theme-dusk .sc-ic, body.theme-tropic.theme-dusk .hex, body.theme-tropic.theme-dusk .jo-ic, body.theme-tropic.theme-dusk .smgem {
+      --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 66%, #1E4434);
+      --ic2: color-mix(in oklab, var(--c2, #FF5A4D) 70%, #102A20); }
+
+    /* ============ #8 TRANSITION DE SAISON : voile doux + pluie de flocons/feuilles ============ */
+    #seasonFx { position: fixed; inset: 0; z-index: 8000; pointer-events: none; overflow: hidden; opacity: 1; transition: opacity .55s ease; }
+    #seasonFx.out { opacity: 0; }
+    #seasonFx::before { content: ""; position: absolute; inset: -20%; opacity: 0; background: radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.92), rgba(255,255,255,.35) 45%, rgba(255,255,255,0) 75%); animation: sfxWash 1.05s ease both; }
+    body.theme-dusk #seasonFx::before { background: radial-gradient(120% 100% at 50% 0%, rgba(30,22,56,.92), rgba(30,22,56,.4) 45%, rgba(30,22,56,0) 75%); }
+    @keyframes sfxWash { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
+    #seasonFx .sfx-p { position: absolute; top: -10%; animation: sfxFall 1.5s cubic-bezier(.3,.4,.6,1) forwards; will-change: transform; }
+    #seasonFx .sfx-p svg { display: block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.18)); }
+    @keyframes sfxFall { to { transform: translateY(125vh) rotate(240deg); } }
 
     /* A11y · réglage système « réduire les animations » respecté PARTOUT (ne concerne que
        les personnes qui l'ont demandé · le peps reste intact pour tout le monde d'autre) */
@@ -11385,9 +11443,11 @@
     };
     function smActiveMapPalette() {
       const b = document.body.classList;
+      // #9 : la NUIT prime — en « nuit d'hiver / nuit tropicale », la carte passe en palette
+      // nuit (sinon une carte claire éblouit sur l'app sombre).
+      if (b.contains("theme-dusk")) return SM_MAP_PALETTES.dusk;
       if (b.contains("theme-winter")) return SM_MAP_PALETTES.winter;
       if (b.contains("theme-tropic")) return SM_MAP_PALETTES.tropic;
-      if (b.contains("theme-dusk")) return SM_MAP_PALETTES.dusk;
       return SM_MAP_PALETTES.day;
     }
     const _smGlMaps = []; // cartes GL vivantes → re-teintées au changement de thème
@@ -14910,28 +14970,58 @@
     // Appui LONG 10 s sur ce bouton → entre/sort du mode saison. En saison, un simple
     // clic alterne hiver ↔ tropiques. Auto météo : <0 °C → hiver, >30 °C → tropiques.
     function seasonMode() { try { return localStorage.getItem("sm_season") || ""; } catch (e) { return ""; } }
+    // #8 : transition de saison/thème SOIGNÉE — voile doux + pluie de flocons (hiver),
+    // feuilles (tropiques) ou étoiles/rayons (nuit/jour). Légère, 1,5 s, auto-nettoyée.
+    function _seasonFx(kind) {
+      try {
+        if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const old = document.getElementById("seasonFx"); if (old) old.remove();
+        const fx = document.createElement("div"); fx.id = "seasonFx";
+        const FLAKE = (px) => `<svg viewBox="0 0 24 24" width="${px}" height="${px}"><g stroke="#BFE2F8" stroke-width="2" stroke-linecap="round" opacity=".9"><line x1="12" y1="2" x2="12" y2="22"/><line x1="3.4" y1="7" x2="20.6" y2="17"/><line x1="20.6" y1="7" x2="3.4" y2="17"/><path d="M9.4 3.8L12 6.4l2.6-2.6M9.4 20.2L12 17.6l2.6 2.6"/></g></svg>`;
+        const LEAF = (px) => `<svg viewBox="0 0 24 24" width="${px}" height="${px}"><path d="M4 20C6 10 12 4 21 3c-1 9-7 15-17 17z" fill="#36C495" opacity=".92"/><path d="M5.5 18.5C9 13 13.5 8.5 19 5.5" stroke="#0FA37C" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>`;
+        const STAR = (px) => `<svg viewBox="0 0 24 24" width="${px}" height="${px}"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z" fill="#FFD15C" opacity=".9"/></svg>`;
+        const RAY = (px) => `<svg viewBox="0 0 24 24" width="${px}" height="${px}"><circle cx="12" cy="12" r="5" fill="#FFC93C"/><g stroke="#FF9A3D" stroke-width="2" stroke-linecap="round"><path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3"/></g></svg>`;
+        const mk = (n, fn) => { let h = ""; for (let i = 0; i < n; i++) { const left = (7 + (i * 83) % 88), d = (i * 137) % 650, px = 16 + (i * 53) % 16; h += `<span class="sfx-p" style="left:${left}%;animation-delay:${d}ms">${fn(px)}</span>`; } return h; };
+        if (kind === "winter") fx.innerHTML = mk(12, FLAKE);
+        else if (kind === "tropic") fx.innerHTML = mk(10, LEAF);
+        else if (kind === "dusk") fx.innerHTML = mk(9, STAR);
+        else fx.innerHTML = mk(8, RAY);
+        document.body.appendChild(fx);
+        setTimeout(() => { try { fx.classList.add("out"); } catch (e) {} }, 1050);
+        setTimeout(() => { try { fx.remove(); } catch (e) {} }, 1700);
+      } catch (e) {}
+    }
+    // Icône du bouton thème : flocon/palmier en saison, sinon soleil/lune (posée par applyTheme).
+    function _seasonIcon(s) {
+      const tt = $("themeToggle"); if (!tt) return;
+      tt.dataset.season = s || "";
+      if (s === "winter") tt.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><g stroke="#3A8FD9" stroke-width="2" stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="4.2" y1="7.5" x2="19.8" y2="16.5"/><line x1="19.8" y1="7.5" x2="4.2" y2="16.5"/><path d="M9.6 4.6L12 7l2.4-2.4M9.6 19.4L12 17l2.4 2.4"/></g></svg>';
+      else if (s === "tropic") tt.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><path d="M10.6 20c.8-4.6.4-8-1.1-10.6" stroke="#0FA37C" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M9.5 9.4C7.2 7.2 4.6 6.8 2.6 7.9c2.6 0 4.7.7 6.9 1.5z" fill="#0FA37C"/><path d="M9.5 9.4c-.7-2.9.4-5.2 2.7-6.4-1.2 2.3-1.5 4.2-.7 6.4z" fill="#0FA37C"/><path d="M9.5 9.4c2.3-1.9 5-2.3 7.3-1.1-2.7.4-5 .9-7.3 1.1z" fill="#0FA37C"/><circle cx="18.4" cy="5.6" r="2.6" fill="#FFC93C"/></svg>';
+    }
     function applySeason(s, manual) {
       document.body.classList.toggle("theme-winter", s === "winter");
       document.body.classList.toggle("theme-tropic", s === "tropic");
-      if (s) document.body.classList.remove("theme-dusk"); // la saison remplace jour/nuit
-      else applyTheme(localStorage.getItem("sm_theme") || "day");
+      // #9 : la saison ne REMPLACE plus jour/nuit — les deux coexistent (nuit d'hiver,
+      // nuit tropicale). On ré-applique le thème choisi par-dessus la saison.
+      applyTheme(localStorage.getItem("sm_theme") || (document.body.classList.contains("theme-dusk") ? "dusk" : "day"));
       try { if (s) localStorage.setItem("sm_season", s); else localStorage.removeItem("sm_season"); if (manual) localStorage.setItem("sm_season_lock", "1"); } catch (e) {}
-      const tt = $("themeToggle"); if (tt) {
-        tt.dataset.season = s || "";
-        // Icône du bouton thème assortie à la saison (❄ flocon / 🌴 palmier dessinés main).
-        if (s === "winter") tt.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><g stroke="#3A8FD9" stroke-width="2" stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="4.2" y1="7.5" x2="19.8" y2="16.5"/><line x1="19.8" y1="7.5" x2="4.2" y2="16.5"/><path d="M9.6 4.6L12 7l2.4-2.4M9.6 19.4L12 17l2.4 2.4"/></g></svg>';
-        else if (s === "tropic") tt.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block"><path d="M10.6 20c.8-4.6.4-8-1.1-10.6" stroke="#0FA37C" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M9.5 9.4C7.2 7.2 4.6 6.8 2.6 7.9c2.6 0 4.7.7 6.9 1.5z" fill="#0FA37C"/><path d="M9.5 9.4c-.7-2.9.4-5.2 2.7-6.4-1.2 2.3-1.5 4.2-.7 6.4z" fill="#0FA37C"/><path d="M9.5 9.4c2.3-1.9 5-2.3 7.3-1.1-2.7.4-5 .9-7.3 1.1z" fill="#0FA37C"/><circle cx="18.4" cy="5.6" r="2.6" fill="#FFC93C"/></svg>';
+      _seasonIcon(s);
+      const meta = document.querySelector('meta[name="theme-color"]'); if (meta && s) {
+        const dusk = document.body.classList.contains("theme-dusk");
+        meta.setAttribute("content", s === "winter" ? (dusk ? "#0F1B2B" : "#EAF3FB") : (dusk ? "#0C1D17" : "#F7F9EC"));
       }
-      const meta = document.querySelector('meta[name="theme-color"]'); if (meta && s) meta.setAttribute("content", s === "winter" ? "#EAF3FB" : "#F7F9EC");
       if (typeof smRefreshMapTheme === "function") smRefreshMapTheme(); // la carte suit la saison
     }
     let _seasonLpFired = false;
+    // #9 : clic = JOUR/NUIT PARTOUT (même en saison → nuit d'hiver, nuit tropicale).
+    // Le passage hiver ↔ tropiques se fait à l'appui long (cycle normal → hiver → tropiques).
     $("themeToggle").addEventListener("click", () => {
       if (_seasonLpFired) { _seasonLpFired = false; return; } // le relâché de l'appui long ne doit pas re-basculer
-      const s = seasonMode();
-      if (s) { const next = s === "winter" ? "tropic" : "winter"; applySeason(next, true); toast(next === "winter" ? "❄️" : "🌴", next === "winter" ? i18nT("Mode hiver ❄️") : i18nT("Mode tropiques 🌴"), null, { low: true }); return; }
       const next = document.body.classList.contains("theme-dusk") ? "day" : "dusk";
       localStorage.setItem("sm_theme", next); applyTheme(next);
+      _seasonFx(next === "dusk" ? "dusk" : "day");
+      const s = seasonMode();
+      if (s) { _seasonIcon(s); applySeason(s); } // l'icône saison reprend la main + meta/carte resynchro
     });
     { const tt = $("themeToggle"); let _lpT = null, _lpHint = null;
       const start = () => { clearTimeout(_lpT); clearTimeout(_lpHint);
@@ -14941,8 +15031,14 @@
         _lpHint = setTimeout(() => { const initie = seasonMode() || (myProfile && myProfile.is_admin); if (initie && typeof toast === "function") toast(seasonMode() ? "🌞" : "❄️", i18nT("Continue d'appuyer (10 s) pour changer de saison…"), null, { low: true }); }, 3000);
         _lpT = setTimeout(() => {
           _seasonLpFired = true;
-          if (seasonMode()) { applySeason("", true); toast("🌞", i18nT("Retour au mode normal (jour / nuit)"), null, { low: true }); }
-          else { applySeason("winter", true); toast("❄️", i18nT("Mode hiver activé ! Un clic sur ce bouton bascule ❄️ hiver / 🌴 tropiques."), null, { low: true }); }
+          // #9 : l'appui long CYCLE les mondes (normal → hiver → tropiques → normal).
+          // Le clic simple, lui, fait jour/nuit partout (y compris en saison).
+          const cur = seasonMode(); const next = cur === "" ? "winter" : (cur === "winter" ? "tropic" : "");
+          applySeason(next, true);
+          _seasonFx(next || (document.body.classList.contains("theme-dusk") ? "dusk" : "day"));
+          if (next === "winter") toast("❄️", i18nT("Mode hiver ! Re-appuie 10 s pour les tropiques · le clic fait toujours jour/nuit"), null, { low: true });
+          else if (next === "tropic") toast("🌴", i18nT("Mode tropiques ! Re-appuie 10 s pour revenir au mode normal"), null, { low: true });
+          else toast("🌞", i18nT("Retour au mode normal (jour / nuit)"), null, { low: true });
           if (navigator.vibrate) { try { navigator.vibrate(80); } catch (e) {} }
         }, 10000);
       };
@@ -14973,6 +15069,8 @@
     { const st = $("setThemeToggle"); if (st) st.addEventListener("change", () => {
       const next = st.checked ? "dusk" : "day";
       localStorage.setItem("sm_theme", next); applyTheme(next);
+      _seasonFx(next === "dusk" ? "dusk" : "day");
+      const s = seasonMode(); if (s) { _seasonIcon(s); applySeason(s); } // garde l'icône/carte saison synchro
     }); }
 
     /* ====================================================================
@@ -15969,6 +16067,8 @@
       "Continue d'appuyer (10 s) pour changer de saison…": "Keep holding (10 s) to switch season…",
       "Retour au mode normal (jour / nuit)": "Back to normal mode (day / night)",
       "Mode hiver activé ! Un clic sur ce bouton bascule ❄️ hiver / 🌴 tropiques.": "Winter mode on! A single tap on this button switches ❄️ winter / 🌴 tropics.",
+      "Mode hiver ! Re-appuie 10 s pour les tropiques · le clic fait toujours jour/nuit": "Winter mode! Hold 10 s again for the tropics · a tap still switches day/night",
+      "Mode tropiques ! Re-appuie 10 s pour revenir au mode normal": "Tropics mode! Hold 10 s again to come back to normal",
       "{t} °C dehors : mode hiver ! (appui long 10 s sur le bouton thème pour en sortir)": "{t} °C outside: winter mode! (hold the theme button 10 s to exit)",
       "{t} °C dehors : mode tropiques ! (appui long 10 s pour en sortir)": "{t} °C outside: tropics mode! (hold 10 s to exit)",
       "Terminer ma journée · voir mon WRAPPED": "End my day · see my WRAPPED",
