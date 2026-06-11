@@ -111,8 +111,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=424"></script>
-  <script src="sunmates-icons.js?v=424"></script>
+  <script src="sunmates-badges.js?v=425"></script>
+  <script src="sunmates-icons.js?v=425"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3204,6 +3204,52 @@
     body.theme-winter .sm-date-preview { background: linear-gradient(135deg, #F4FAFF, #E4F0FB); }
     body.theme-tropic .sm-date-preview { background: linear-gradient(135deg, #FDFBE8, #EDF6DF); }
 
+    /* #6 : bannière « pas encore connectés » dans le chat (explication + CTA demande) */
+    .chat-conn-notice { margin: .8rem auto .4rem; max-width: 92%; text-align: center; font-size: .82rem; line-height: 1.5; color: var(--ink);
+      background: var(--accent-soft); border: 1px solid rgba(255,90,77,.25); border-radius: 14px; padding: .7rem .8rem; }
+    body.theme-dusk .chat-conn-notice { background: rgba(255,126,114,.12); border-color: rgba(255,126,114,.25); color: #f3e9f3; }
+
+    /* #26 : bandeau EN DIRECT du board admin (pastille verte qui pulse + mini-grille) */
+    .adm-live { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: .65rem .7rem; margin-bottom: .7rem; box-shadow: var(--shadow-sm); }
+    body.theme-dusk .adm-live { background: var(--dcard, #2a2140); border-color: rgba(255,255,255,.09); }
+    .adm-live .al-head { display: flex; align-items: center; gap: .4rem; font-size: .72rem; font-weight: 800; letter-spacing: .06em; color: var(--muted); }
+    .adm-live .al-dot { width: 9px; height: 9px; border-radius: 50%; background: #2BC48A; box-shadow: 0 0 0 0 rgba(43,196,138,.5); animation: alPulse 1.8s ease-out infinite; }
+    @keyframes alPulse { 0% { box-shadow: 0 0 0 0 rgba(43,196,138,.5); } 70% { box-shadow: 0 0 0 8px rgba(43,196,138,0); } 100% { box-shadow: 0 0 0 0 rgba(43,196,138,0); } }
+    .adm-live .al-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .35rem .5rem; margin-top: .45rem; }
+    .adm-live .al-cell b { display: block; font-size: .95rem; color: var(--ink); }
+    .adm-live .al-cell span { font-size: .68rem; color: var(--muted); }
+
+    /* ============ #23 : écrin SunMates GOLD (panneau Premium) ============ */
+    .gold-hero { position: relative; overflow: hidden; text-align: center; color: #FFE9B0;
+      border: 1px solid rgba(232,150,31,.5) !important;
+      background: linear-gradient(160deg, #2A1E0E 0%, #44310F 45%, #2A1C08 100%) !important; }
+    .gold-hero .gh-crown { font-size: 2.6rem; line-height: 1; filter: drop-shadow(0 4px 14px rgba(255,201,60,.55)); animation: ghFloat 3.4s ease-in-out infinite; }
+    @keyframes ghFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .gold-hero .gh-title { margin: .25rem 0 0; font-family: 'Fraunces', serif; font-size: 1.55rem; color: #FFF3CE; }
+    .gold-hero .gh-title span { background-image: linear-gradient(90deg, #B8771B, #FFD15C 30%, #FFF3C4 50%, #FFD15C 70%, #B8771B);
+      background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: eggGoldShine 3s linear infinite; }
+    .gold-hero .gh-tag { margin: .25rem 0 .6rem; font-size: .86rem; color: rgba(255,233,176,.85); }
+    .gold-hero .gh-price { font-family: 'Fraunces', serif; font-weight: 800; font-size: 1.3rem; color: #FFD15C; }
+    .gold-hero .gh-price small { font-size: .8rem; font-weight: 600; }
+    .gold-hero .gh-soon { display: inline-block; vertical-align: 3px; margin-left: .45rem; font-size: .62rem; font-weight: 800; letter-spacing: .04em;
+      background: rgba(255,209,92,.16); border: 1px solid rgba(255,209,92,.4); color: #FFD98A; padding: .16rem .5rem; border-radius: 999px; }
+    .gold-hero .gh-cta { margin-top: .9rem; background: linear-gradient(135deg, #FFC93C, #E8961F) !important; color: #4a3200 !important;
+      box-shadow: 0 10px 24px rgba(232,150,31,.4) !important; font-weight: 800; }
+    .gold-hero .gh-test { margin-top: .5rem; border-color: rgba(255,209,92,.4); color: #FFD98A; background: transparent; }
+    .gold-hero .msg { color: #FFE9B0; }
+    .gold-hero #goldTestNote { color: rgba(255,217,138,.75); }
+    .gold-hero .gh-shine { position: absolute; top: -30%; bottom: -30%; left: -20%; width: 64px; pointer-events: none;
+      background: linear-gradient(105deg, rgba(255,255,255,0), rgba(255,244,200,.16), rgba(255,255,255,0)); transform: skewX(-18deg); animation: ghSweep 4.4s ease-in-out infinite; }
+    @keyframes ghSweep { 0% { left: -20%; } 60%, 100% { left: 116%; } }
+    .gold-perks { display: grid; grid-template-columns: repeat(2, 1fr); gap: .55rem; margin: .7rem 0; }
+    .gp-tile { background: var(--card); border: 1px solid rgba(232,150,31,.3); border-radius: 14px; padding: .7rem .65rem;
+      display: flex; flex-direction: column; gap: .15rem; box-shadow: var(--shadow-sm); }
+    .gp-tile .gp-ic { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; font-size: 1.05rem;
+      background: linear-gradient(135deg, rgba(255,209,92,.28), rgba(255,154,61,.12)); margin-bottom: .2rem; }
+    .gp-tile b { font-size: .8rem; color: var(--ink); }
+    .gp-tile span:last-child { font-size: .7rem; color: var(--muted); line-height: 1.35; }
+    body.theme-dusk .gp-tile { background: var(--dcard, #2a2140); border-color: rgba(255,209,92,.2); }
+
     /* #25 : anti « écran noir » — tant que la photo n'est pas chargée, shimmer crème sunset
        (l'attribut data-lazybg disparaît au chargement → le shimmer aussi). */
     [data-lazybg] { background-color: #F6E3CE;
@@ -4663,23 +4709,34 @@
         </div><!-- /prof-seg checkins -->
 
         <div class="prof-seg hidden" data-psegpanel="premium">
-          <!-- Hiérarchie rééquilibrée : couronne/prix moins écrasants, bouton principal qui a
-               l'air ACTIF (avant : marron mat sans ombre = il semblait désactivé). -->
-          <div class="card" style="background:linear-gradient(145deg,#FFE8A3,#FFC23D 55%,#E89B2B);border:0;text-align:center">
-            <div style="font-size:2rem">👑</div>
-            <h2 style="margin:.25rem 0;font-size:1.3rem;color:#5a3d00;font-family:'Fraunces',serif">SunMates Gold</h2>
-            <div style="color:#5a3d00;font-weight:800;font-size:1.25rem;font-family:'Fraunces',serif">9,99 € <span style="font-size:.85rem;font-weight:600">/ mois</span></div>
-            <span class="badge" style="background:rgba(0,0,0,.14);color:#5a3d00;border:0;margin-top:.4rem">Bientôt disponible</span>
-            <button class="btn-primary btn-block" id="premiumBtn" style="margin-top:1rem;background:linear-gradient(135deg,#7a5410,#5a3d00) !important;box-shadow:0 6px 14px rgba(90,61,0,.35) !important">Me prévenir au lancement</button>
-            <button class="btn-ghost btn-block" id="goldToggleBtn" style="margin-top:.5rem;border-color:#5a3d00;color:#5a3d00;background:transparent">Activer Gold (aperçu)</button>
-            <div class="msg" id="premiumMsg" style="color:#4a3500"></div>
-            <p class="muted" id="goldTestNote" style="font-size:.72rem;margin:.4rem 0 0;color:#5a3d00;display:none">Mode test : active/désactive Gold pour voir ce qui se débloque dans l'app.</p>
+          <!-- #23 : refonte « beau et impactant » — écrin sombre serti d'or, éclat qui balaie,
+               couronne flottante, bénéfices en tuiles joyau. Tous les IDs sont conservés. -->
+          <div class="card gold-hero">
+            <div class="gh-shine"></div>
+            <div class="gh-crown">👑</div>
+            <h2 class="gh-title">SunMates <span>Gold</span></h2>
+            <p class="gh-tag">Voyage sans limites, brille sur la carte.</p>
+            <div class="gh-price">9,99 € <small>/ mois</small> <span class="gh-soon">Bientôt disponible</span></div>
+            <button class="btn-primary btn-block gh-cta" id="premiumBtn">🔔 Me prévenir au lancement</button>
+            <button class="btn-ghost btn-block gh-test" id="goldToggleBtn">Activer Gold (aperçu)</button>
+            <div class="msg" id="premiumMsg"></div>
+            <p id="goldTestNote" style="font-size:.72rem;margin:.4rem 0 0;display:none">Mode test : active/désactive Gold pour voir ce qui se débloque dans l'app.</p>
+          </div>
+
+          <div class="gold-perks">
+            <div class="gp-tile"><span class="gp-ic">♾️</span><b>Mates illimités</b><span>Connexions et check-ins sans aucune limite</span></div>
+            <div class="gp-tile"><span class="gp-ic">🔎</span><b>Filtres avancés</b><span>Trouve exactement les voyageurs qui te ressemblent</span></div>
+            <div class="gp-tile"><span class="gp-ic">⭐</span><b>BFF du moment</b><span>Mets ton meilleur Mate à l'honneur</span></div>
+            <div class="gp-tile"><span class="gp-ic">🗝️</span><b>Quêtes &amp; lieux exclusifs</b><span>Des expériences réservées aux membres Gold</span></div>
+            <div class="gp-tile"><span class="gp-ic">🕶️</span><b>Mode incognito</b><span>Explore sans apparaître en ligne</span></div>
+            <div class="gp-tile"><span class="gp-ic">🚀</span><b>Profil mis en avant</b><span>Brille en tête des suggestions</span></div>
           </div>
 
           <div class="card">
             <h3 style="margin-top:0">Gratuit vs Gold : l'avant / après</h3>
             <div id="goldCompare"></div>
           </div>
+          <p class="muted" style="font-size:.74rem;text-align:center;margin:.6rem 0 0">🛡️ La sécurité reste gratuite pour tout le monde, toujours.</p>
         </div><!-- /prof-seg premium -->
 
         <div class="prof-seg hidden" data-psegpanel="admin">
@@ -7881,17 +7938,31 @@
       ["pointerdown", "pointermove", "touchstart", "keydown"].forEach((ev) => document.addEventListener(ev, adWake, { passive: true }));
     });
 
+    let _admLiveT = null;
     async function loadAdminDash() {
       const el = $("adminDash"); if (!el) return;
-      const { data } = await db.rpc("admin_stats");
+      // #26 : stats EN DIRECT (RPC admin_live_stats, migration supabase_migration_admin_live.sql)
+      // chargées EN PARALLÈLE des stats globales.
+      const [statsRes, liveRes] = await Promise.all([db.rpc("admin_stats"), db.rpc("admin_live_stats")]);
+      const data = statsRes && statsRes.data;
       if (!data || !data.ok) { el.innerHTML = '<p class="muted">Accès refusé.</p>'; return; }
+      const lv = liveRes && liveRes.data && liveRes.data.ok ? liveRes.data : null;
+      const lcell = (e, v, l) => `<div class="al-cell"><b>${e} ${v ?? 0}</b><span>${l}</span></div>`;
+      const liveHtml = lv
+        ? `<div class="adm-live"><div class="al-head"><span class="al-dot"></span> EN DIRECT <button class="btn-ghost" id="admLiveR" style="margin-left:auto;padding:.18rem .55rem;font-size:.72rem">↻</button></div>
+            <div class="al-grid">${lcell("🟢", lv.active_now, "actifs maintenant")}${lcell("☀️", lv.active_today, "actifs aujourd'hui")}${lcell("💬", lv.messages_today, "messages aujourd'hui")}${lcell("📍", lv.checkins_today, "check-ins aujourd'hui")}${lcell("✨", lv.new_users_today, "inscrits aujourd'hui")}</div></div>`
+        : '<p class="muted" style="font-size:.74rem;margin:.1rem 0 .6rem">📡 Stats en direct indisponibles · lance <b>supabase_migration_admin_live.sql</b> dans Supabase.</p>';
       const cell = (k, v, jump) => `<div class="pcell${jump ? " pcell-jump" : ""}"${jump ? ` data-dashjump="${jump}" style="cursor:pointer"` : ""}><div class="k">${k}${jump ? " ›" : ""}</div><div class="v">${v ?? 0}</div></div>`;
-      el.innerHTML = cell("Membres actifs", data.users, "users") + cell("Vérifiés", data.verified, "users") + cell("Gold 👑", data.gold)
+      el.innerHTML = liveHtml + cell("Membres actifs", data.users, "users") + cell("Vérifiés", data.verified, "users") + cell("Gold 👑", data.gold)
         + cell("Admins 🛡️", data.admins) + cell("Suspendus 🚫", data.banned, "users") + cell("Connexions", data.connections) + cell("Demandes", data.pending_conn)
         + cell("Check-ins", data.checkins) + cell("Quêtes finies", data.quests_done) + cell("Messages", data.messages)
         + cell("Défis", data.suggestions) + cell("Badges", data.badges) + cell("Coupons", data.coupons)
         + cell("Parrainages 🍹", data.referrals) + cell("Lieux", data.places, "places") + cell("Signalements", data.reports_pending, "reports") + cell("Devis B2B", data.quotes, "quotes");
       el.querySelectorAll("[data-dashjump]").forEach((c) => c.addEventListener("click", () => showAdminSegment(c.dataset.dashjump)));
+      { const r = $("admLiveR"); if (r) r.addEventListener("click", () => loadAdminDash()); }
+      // Auto-rafraîchi toutes les 30 s TANT QUE le board est visible (sinon on s'arrête).
+      clearTimeout(_admLiveT);
+      if (lv) _admLiveT = setTimeout(() => { if (el.offsetParent !== null) loadAdminDash(); }, 30000);
     }
 
     // ---- Segment ADMIN « Données » : vue d'ensemble de la base + du contenu de jeu ----
@@ -10693,6 +10764,20 @@
       })); }
       if (!data.length) body.querySelectorAll("[data-ice-msg]").forEach((b) => b.addEventListener("click", () => { const i = $("chatInput"); if (i) { i.value = b.dataset.iceMsg; i.focus(); } if (window.SMSound) SMSound.play("tap"); }));
       if (data.length) loadReactions(data.map((m) => m.id));
+      // #6 : PAS ENCORE CONNECTÉS → on l'explique AVANT d'écrire (la base refuse l'envoi entre
+      // non-connectés, règle de sécurité) : bannière claire + CTA demande, champ désactivé.
+      { const ci = $("chatInput");
+        if (!connectedIds.has(otherUserId)) {
+          if (ci) { ci.disabled = true; ci.placeholder = i18nT("Connectez-vous d'abord pour discuter 🤝"); }
+          body.insertAdjacentHTML("beforeend", `<div class="chat-conn-notice">🔒 <b>${i18nT("Vous n'êtes pas encore connectés.")}</b><br>${i18nT("Par sécurité, les messages ne circulent qu'entre Mates connectés. Envoie une demande :")}<div><button class="btn-primary" id="chatConnBtn" style="margin-top:.55rem;padding:.45rem .9rem;font-size:.82rem">🤝 ${i18nT("Envoyer une demande")}</button></div></div>`);
+          const cb = $("chatConnBtn"); if (cb) cb.addEventListener("click", async () => {
+            cb.disabled = true; cb.textContent = i18nT("Envoi…");
+            const res = await sendConnection(otherUserId);
+            if (res && (res.ok || res.already)) { cb.textContent = "✅ " + i18nT("Demande envoyée"); toast("🤝", res.already === "accepted" ? i18nT("Vous êtes déjà connectés") : i18nT("Demande de connexion envoyée !")); }
+            else { cb.disabled = false; cb.textContent = "🤝 " + i18nT("Envoyer une demande"); toast("⚠️", i18nT("Erreur, réessaie.")); }
+          });
+        } else if (ci) { ci.disabled = false; ci.placeholder = i18nT("Envoyer un message…"); }
+      }
       scrollChatBottom();
       // Temps réel : « en train d'écrire » + accusés de lecture, et j'accuse réception (j'ai ouvert la conv).
       openChatRt(otherUserId);
@@ -10944,6 +11029,12 @@
         return;
       }
       const recipient = currentChatUserId;
+      // #6 : pas connectés → on N'ESSAIE même pas (la base refuserait en silence) et on explique.
+      if (!connectedIds.has(recipient)) {
+        input.value = text; // on ne perd pas ce qui a été tapé
+        toast("🔒", i18nT("Message non envoyé : vous n'êtes pas (ou plus) connectés. Envoie une demande 🤝"));
+        return;
+      }
       // Affichage OPTIMISTE : la bulle apparaît tout de suite (ressenti instantané),
       // marquée "pending". Le temps réel la remplacera proprement par la vraie (avec id).
       const tempId = "temp-" + (++_tempMsgSeq);
@@ -10968,10 +11059,20 @@
             const row = bubble.closest(".msg-row"); const t = row ? row.querySelector(".bubble-time") : null; if (t) t.textContent = "📡 " + i18nT("sera envoyé à la reconnexion");
           }
         } else if (bubble) {
-          // Échec d'envoi en ligne → bulle d'erreur (le message N'a PAS été envoyé).
+          // #6 : échec d'envoi en ligne → on EXPLIQUE pourquoi (règle de connexion vs réseau)
+          // et la bulle devient TOUCHABLE pour réessayer (le texte n'est jamais perdu).
           bubble.removeAttribute("data-pending");
           bubble.classList.add("msg-failed");
-          const row = bubble.closest(".msg-row"); const t = row ? row.querySelector(".bubble-time") : null; if (t) t.textContent = "⚠️ non envoyé";
+          const row = bubble.closest(".msg-row"); const t = row ? row.querySelector(".bubble-time") : null; if (t) t.textContent = "⚠️ " + i18nT("non envoyé · touche la bulle pour réessayer");
+          const rls = result.error && /policy|row.?level|violates|42501/i.test((result.error.message || "") + (result.error.code || ""));
+          toast(rls ? "🔒" : "⚠️", rls ? i18nT("La base a refusé l'envoi : vous n'êtes plus connectés tous les deux.") : i18nT("Message non envoyé (réseau ?) · touche la bulle rouge pour réessayer"));
+          bubble.style.cursor = "pointer";
+          bubble.addEventListener("click", () => {
+            const txt = (bubble.querySelector(".bubble-txt") || {}).textContent || "";
+            const r2 = bubble.closest(".msg-row"); if (r2) r2.remove();
+            const i2 = $("chatInput"); if (i2) { i2.value = txt; }
+            sendChatMessage();
+          }, { once: true });
         }
       } else if (bubble) {
         // Succès → on remplace "⏳ envoi…" par l'heure réelle (le temps réel finira le travail).
@@ -15809,6 +15910,15 @@
       "(démo MVP), la vraie vérification d'identité arrivera avec le backend.": "(MVP demo) — real identity verification will arrive with the backend.",
       "Bientôt disponible": "Coming soon",
       "Me prévenir au lancement": "Notify me at launch",
+      "🔔 Me prévenir au lancement": "🔔 Notify me at launch",
+      "Voyage sans limites, brille sur la carte.": "Travel without limits, shine on the map.",
+      "Connexions et check-ins sans aucune limite": "Connections and check-ins with no limit at all",
+      "Trouve exactement les voyageurs qui te ressemblent": "Find exactly the travellers who match you",
+      "Mets ton meilleur Mate à l'honneur": "Put your best Mate in the spotlight",
+      "Des expériences réservées aux membres Gold": "Experiences reserved for Gold members",
+      "Explore sans apparaître en ligne": "Explore without appearing online",
+      "Brille en tête des suggestions": "Shine at the top of suggestions",
+      "🛡️ La sécurité reste gratuite pour tout le monde, toujours.": "🛡️ Safety stays free for everyone, always.",
       "Activer Gold (aperçu)": "Enable Gold (preview)",
       "Mode test : active/désactive Gold pour voir ce qui se débloque dans l'app.": "Test mode: Turn Gold on/off to see what unlocks in the app.",
       "Gratuit vs Gold : l'avant / après": "Free vs Gold: before / after",
@@ -16445,6 +16555,16 @@
       "Aucune quête disponible (lance le script SQL).": "No quests available (run the SQL script).",
       "Quel défi proposer ?": "Which challenge do you suggest?",
       "Vous êtes déjà connectés": "You're already connected",
+      "Envoi…": "Sending…",
+      "Connectez-vous d'abord pour discuter 🤝": "Connect first to chat 🤝",
+      "Vous n'êtes pas encore connectés.": "You're not connected yet.",
+      "Par sécurité, les messages ne circulent qu'entre Mates connectés. Envoie une demande :": "For safety, messages only flow between connected Mates. Send a request:",
+      "Envoyer une demande": "Send a request",
+      "Demande envoyée": "Request sent",
+      "Message non envoyé : vous n'êtes pas (ou plus) connectés. Envoie une demande 🤝": "Message not sent: you two aren't connected (anymore). Send a request 🤝",
+      "non envoyé · touche la bulle pour réessayer": "not sent · tap the bubble to retry",
+      "La base a refusé l'envoi : vous n'êtes plus connectés tous les deux.": "The server refused it: you two are no longer connected.",
+      "Message non envoyé (réseau ?) · touche la bulle rouge pour réessayer": "Message not sent (network?) · tap the red bubble to retry",
       "Demande déjà envoyée": "Request already sent",
       "réessaie": "try again",
       "Partage ton itinéraire et l'adresse de ton logement avec un proche avant de partir.": "Share your itinerary and your accommodation address with someone close before you leave.",
