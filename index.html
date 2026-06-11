@@ -114,8 +114,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=431"></script>
-  <script src="sunmates-icons.js?v=431"></script>
+  <script src="sunmates-badges.js?v=432"></script>
+  <script src="sunmates-icons.js?v=432"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -599,11 +599,21 @@
     .bubble[data-pending="1"] { opacity: .66; }
     .bubble.msg-failed { background: #fde2e2 !important; color: #b91c1c !important; opacity: 1 !important; }
 
-    /* ---- Confettis (déblocage de badge) ---- */
+    /* ---- Confettis (déblocage de badge) — refonte « grand soir » : chute + FLOTTEMENT
+       (2 animations imbriquées : l'extérieur tombe, l'intérieur se balance) + starburst. ---- */
     .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: var(--z-confetti); overflow: hidden; }
-    .confetti-wrap i { position: absolute; top: -24px; border-radius: 2px; opacity: .95; animation: confettiFall linear forwards; filter: drop-shadow(0 2px 2px rgba(214,96,74,.25)); }
+    .confetti-wrap i { position: absolute; top: -24px; opacity: .95; animation: confettiFall linear forwards; filter: drop-shadow(0 2px 2px rgba(214,96,74,.25)); }
+    .confetti-wrap i b { display: block; width: 100%; height: 100%; animation: confettiSway ease-in-out infinite alternate; }
     .confetti-wrap i svg { width: 100%; height: 100%; display: block; }
-    @keyframes confettiFall { to { transform: translateY(108vh) rotate(600deg); opacity: .85; } }
+    @keyframes confettiFall { to { transform: translateY(108vh); opacity: .85; } }
+    @keyframes confettiSway { from { transform: translateX(-13px) rotate(-50deg); } to { transform: translateX(13px) rotate(50deg); } }
+    /* Starburst central : flash doré + anneau qui s'étend (l'instant de gloire) */
+    .cfx-burst { position: fixed; left: 50%; top: 42%; width: 16px; height: 16px; margin: -8px; pointer-events: none; z-index: var(--z-confetti); }
+    .cfx-burst::before { content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background: radial-gradient(circle, #FFF3C4 0%, #FFC93C 45%, rgba(255,154,61,0) 72%); animation: cfxFlash .75s ease-out forwards; }
+    .cfx-burst::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 3px solid rgba(255,201,60,.85); animation: cfxRing .8s cubic-bezier(.2,.8,.3,1) forwards; }
+    @keyframes cfxFlash { 0% { transform: scale(.4); opacity: 0; } 18% { opacity: 1; transform: scale(5); } 100% { transform: scale(9); opacity: 0; } }
+    @keyframes cfxRing { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(16); opacity: 0; border-width: 1px; } }
 
     /* ====================================================================
        NOUVEAUTÉS sociales (session 14), présence, vouch, traduction,
@@ -937,7 +947,13 @@
     .inspo-chip { font-size: .74rem; font-weight: 700; background: var(--cream); border: 1px solid var(--line); border-radius: 999px; padding: .2rem .55rem; color: var(--ink); }
     body.theme-dusk .inspo-chip { background: var(--dcard,#2a2140); }
     @keyframes popinfoFade { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes popinfoPop { from { opacity: 0; transform: translateY(10px) scale(.94); } to { opacity: 1; transform: none; } }
+    /* Transitions ×100 : ressort doux (la courbe dépasse légèrement puis se pose) — transform/opacity only */
+    @keyframes popinfoPop { from { opacity: 0; transform: translateY(16px) scale(.93); } to { opacity: 1; transform: none; } }
+    .popinfo-card { animation-duration: .3s !important; animation-timing-function: cubic-bezier(.22,1.36,.32,1) !important; }
+    @keyframes sheetUp { from { opacity: .6; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+    .picker-card { animation: sheetUp .32s cubic-bezier(.22,1.22,.3,1); }
+    #pickerOverlay.info .picker-card { animation: popinfoPop .3s cubic-bezier(.22,1.36,.32,1); }
+    .act-card { animation: popinfoPop .3s cubic-bezier(.22,1.36,.32,1); }
     /* Tuile « bientôt dispo » (Gold) : grisée, non cliquable */
     .tile-soon { opacity: .62; cursor: default; pointer-events: none; filter: grayscale(.35); }
     .qrow-soon { opacity: .6; pointer-events: none; filter: grayscale(.3); }
@@ -3151,7 +3167,7 @@
       display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .18s; }
     .sm-selsheet-ov.show { opacity: 1; pointer-events: auto; }
     .sm-selsheet { width: 100%; max-width: 480px; background: var(--paper); border-radius: 22px 22px 0 0; max-height: 46vh;
-      display: flex; flex-direction: column; transform: translateY(14px); transition: transform .2s; box-shadow: 0 -14px 44px rgba(0,0,0,.28);
+      display: flex; flex-direction: column; transform: translateY(26px); transition: transform .3s cubic-bezier(.22,1.22,.3,1); box-shadow: 0 -14px 44px rgba(0,0,0,.28);
       padding-bottom: env(safe-area-inset-bottom, 0px); }
     .sm-selsheet-ov.show .sm-selsheet { transform: translateY(0); }
     .sm-selsheet-grip { width: 38px; height: 4px; border-radius: 999px; background: var(--line); margin: .55rem auto .2rem; }
@@ -3339,10 +3355,24 @@
     /* (Golden Hour « 7 taps » SUPPRIMÉ — retour Maxime, il ne l'aimait pas au final.
        eggGoldShine est GARDÉ : l'écrin Premium s'en sert pour le titre Gold scintillant.) */
     @keyframes eggGoldShine { to { background-position: 200% 0; } }
+    /* Konami : allumage/extinction CRT — la ligne blanche s'étire puis balaie tout l'écran */
+    .crt-boot { position: fixed; inset: 0; z-index: 99999; pointer-events: none; animation: crtBg .95s steps(1) forwards; }
+    .crt-boot::before { content: ""; position: absolute; left: 6%; right: 6%; top: 50%; height: 2px; border-radius: 2px;
+      background: #fff; box-shadow: 0 0 24px 5px rgba(255,255,255,.9); transform: scaleX(0); animation: crtLine .95s cubic-bezier(.2,.8,.25,1) forwards; }
+    @keyframes crtLine { 0% { transform: scaleX(0) scaleY(1); opacity: 1; } 32% { transform: scaleX(1) scaleY(1); opacity: 1; }
+      52% { transform: scaleX(1) scaleY(8); opacity: .95; } 78% { transform: scaleX(1) scaleY(320); opacity: .8; } 100% { transform: scaleX(1) scaleY(560); opacity: 0; } }
+    @keyframes crtBg { 0% { background: rgba(4,2,10,.94); } 45% { background: rgba(4,2,10,.9); } 70%, 100% { background: transparent; } }
     .eg-rays { transform-origin: 32px 32px; animation: egRaysSpin 7s linear infinite; }
     @keyframes egRaysSpin { to { transform: rotate(360deg); } }
-    /* Baleine VECTORIELLE : surgissement, flottement, jet d'eau, ondulations, plongeon */
+    /* Baleine VECTORIELLE : surgissement, flottement, jet d'eau, ondulations, plongeon
+       + mouette qui plane (battement 2 temps) + éclaboussures au surgissement */
     .egg-whale-v { position: relative; animation: egwIn .8s cubic-bezier(.34,1.56,.64,1); }
+    .egg-whale-v .egw-gull { position: absolute; left: 4px; top: -24px; animation: egwGull 4.6s ease-in-out infinite alternate; }
+    @keyframes egwGull { from { transform: translate(0, 0); } to { transform: translate(44px, -9px); } }
+    .egg-whale-v .bwA { animation: egsStepA .36s steps(1, end) infinite; }
+    .egg-whale-v .bwB { opacity: 0; animation: egsStepB .36s steps(1, end) infinite; }
+    .egg-whale-v .egw-drop { position: absolute; left: 50%; top: 58%; width: 5px; height: 5px; border-radius: 50%; background: #CFE9F8; opacity: 0; animation: egwDrop .9s ease-out 2; }
+    @keyframes egwDrop { 0% { opacity: 0; transform: translate(0, 0) scale(1); } 14% { opacity: .95; } 100% { opacity: 0; transform: translate(var(--dx, 14px), -30px) scale(.5); } }
     .egg-whale-v svg { animation: egwBob 2.1s ease-in-out infinite alternate; filter: drop-shadow(0 5px 9px rgba(10,40,60,.35)); }
     .egg-whale-v.out { animation: egwOut .9s ease-in forwards; }
     .egw-spout circle { animation: egwSpout 1.6s ease-in-out infinite; opacity: 0; }
@@ -3354,9 +3384,16 @@
     @keyframes egwIn { from { transform: translateY(26px) scale(.4); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
     @keyframes egwBob { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-6px) rotate(2deg); } }
     @keyframes egwOut { to { transform: translateY(30px) scale(.6); opacity: 0; } }
-    /* Paquebot & iceberg : dérive douce + fumée qui monte */
-    .egg-ship { animation: egwIn .8s cubic-bezier(.34,1.56,.64,1); filter: drop-shadow(0 5px 9px rgba(10,30,50,.35)); }
+    /* Paquebot & iceberg : dérive douce + fumée qui monte + vague d'étrave + mouette
+       (l'iceberg, lui, DÉRIVE lentement vers le navire… suspense) */
+    .egg-ship { position: relative; animation: egwIn .8s cubic-bezier(.34,1.56,.64,1); filter: drop-shadow(0 5px 9px rgba(10,30,50,.35)); }
     .egg-ship svg { animation: egshDrift 3.4s ease-in-out infinite alternate; }
+    .egg-ship .egw-gull { position: absolute; animation: egwGull 5s ease-in-out infinite alternate; }
+    .egg-ship .egsh-bow path { animation: egshBow 1.8s ease-in-out infinite; opacity: 0; }
+    .egg-ship .egsh-bow path:nth-child(2) { animation-delay: .55s; }
+    @keyframes egshBow { 0% { opacity: 0; transform: translateX(0); } 30% { opacity: .85; } 100% { opacity: 0; transform: translateX(7px); } }
+    .egg-berg { animation: egwIn .8s cubic-bezier(.34,1.56,.64,1), egshBergDrift 14s linear 1s forwards; }
+    @keyframes egshBergDrift { from { transform: translateX(0); } to { transform: translateX(-16px); } }
     .egsh-smoke circle { animation: egshSmoke 2.4s ease-in-out infinite; }
     .egsh-smoke circle:nth-child(2) { animation-delay: .5s; } .egsh-smoke circle:nth-child(3) { animation-delay: 1s; }
     @keyframes egshDrift { from { transform: translateY(0) rotate(-1deg); } to { transform: translateY(-5px) rotate(1.5deg); } }
@@ -3389,38 +3426,58 @@
     /* ⚠️ PAS de filter sur .app-shell : un filtre crée un « containing block » qui DÉCOLLE
        tous les position:fixed enfants (la nav du bas partait au scroll). Les scanlines +
        la police machine + les pixels suffisent à l'ambiance CRT. */
-    /* 🦁 Hakuna matata — VRAIE scène de savane (retour Maxime « trop cheap ») :
-       ciel de coucher de soleil qui monte, SOLEIL GÉANT qui se couche DERRIÈRE le sol,
-       sol + herbes + acacias en silhouette, le trio marche sur la ligne d'horizon. */
-    .egg-savane { position: fixed; inset: 0; z-index: 99998; pointer-events: none; overflow: hidden; animation: egsFade 8.6s ease forwards; }
-    @keyframes egsFade { 0% { opacity: 0; } 8% { opacity: 1; } 88% { opacity: 1; } 100% { opacity: 0; } }
-    .egg-savane .egs-sky { position: absolute; left: 0; right: 0; bottom: 0; height: 52vh;
-      background: linear-gradient(to top, #FF9A3D 0%, #F2607E 38%, rgba(122,61,150,.5) 72%, rgba(122,61,150,0) 100%); opacity: .92; }
-    .egg-savane .egs-glow { position: absolute; left: 0; right: 0; bottom: 0; height: 40vh;
+    /* 🦁 Hakuna matata — scène NIVEAU FILM (refonte design ×100) : ciel par THÈME, soleil
+       géant qui se couche derrière l'horizon, collines + acacias + double rangée d'herbes,
+       la troupe marche EN FILE INDIENNE (proportions canon, zéro chevauchement), oiseaux
+       qui BATTENT des ailes. Tout en transform/opacity (zéro coût layout). */
+    .egg-savane { position: fixed; inset: 0; z-index: 99998; pointer-events: none; overflow: hidden; animation: egsFade 9.8s ease forwards; }
+    @keyframes egsFade { 0% { opacity: 0; } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }
+    .egg-savane .egs-sky { position: absolute; left: 0; right: 0; bottom: 0; height: 54vh;
+      background: linear-gradient(to top, #FF9A3D 0%, #F2607E 38%, rgba(122,61,150,.5) 72%, rgba(122,61,150,0) 100%); opacity: .94; }
+    .egg-savane .egs-stars { position: absolute; left: 0; right: 0; bottom: 20vh; height: 34vh; opacity: 0;
+      background-image: radial-gradient(1.6px 1.6px at 18% 30%, #FFF4D6 50%, transparent 60%), radial-gradient(1.3px 1.3px at 64% 12%, #FFE9C4 50%, transparent 60%), radial-gradient(1.8px 1.8px at 82% 42%, #fff 50%, transparent 60%), radial-gradient(1.2px 1.2px at 38% 8%, #FFEDD0 50%, transparent 60%), radial-gradient(1.4px 1.4px at 50% 50%, #fff 50%, transparent 60%); }
+    .egg-savane .egs-glow { position: absolute; left: 0; right: 0; bottom: 0; height: 42vh;
       background: radial-gradient(120% 90% at 50% 100%, rgba(255,201,60,.5), rgba(255,160,70,.16) 55%, rgba(255,200,110,0)); }
     .egg-savane .egs-sun { position: absolute; left: 50%; margin-left: -55px; bottom: calc(34px + env(safe-area-inset-bottom, 0px));
-      filter: drop-shadow(0 0 38px rgba(255,180,60,.95)); animation: egsSunSet 8.6s ease forwards; }
-    @keyframes egsSunSet { from { transform: translateY(-14px) scale(1); } to { transform: translateY(64px) scale(.94); } }
+      filter: drop-shadow(0 0 38px rgba(255,180,60,.95)); animation: egsSunSet 9.8s ease forwards; }
+    @keyframes egsSunSet { from { transform: translateY(-16px) scale(1); } to { transform: translateY(70px) scale(.93); } }
+    /* Collines lointaines (plan intermédiaire — la profondeur d'un vrai décor) */
+    .egg-savane .egs-hills { position: absolute; left: -4%; right: -4%; bottom: calc(56px + env(safe-area-inset-bottom, 0px)); height: 60px; opacity: .5;
+      background: radial-gradient(58% 120% at 18% 100%, #5C3414 58%, transparent 60%), radial-gradient(70% 150% at 78% 100%, #5C3414 55%, transparent 57%); }
     .egg-savane .egs-ground { position: absolute; left: 0; right: 0; bottom: 0; height: calc(72px + env(safe-area-inset-bottom, 0px));
       background: linear-gradient(to top, #3E2210 0%, #5C3414 62%, rgba(92,52,20,0) 100%); }
     .egg-savane .egs-grass { position: absolute; left: 0; right: 0; bottom: calc(58px + env(safe-area-inset-bottom, 0px)); height: 18px;
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='18'%3E%3Cpath d='M4 18C5 10 7 6 8 4 9 8 9 12 8 18zM16 18c2-6 4-9 6-11-1 5-2 9-3 11zM30 18c0-7 2-11 3-13 1 5 1 9 0 13zM44 18c2-5 4-8 6-9-1 4-2 7-3 9zM54 18c1-6 2-9 3-10 0 4 0 7-1 10z' fill='%233E2210'/%3E%3C/svg%3E") repeat-x bottom; }
+    .egg-savane .egs-grass.g2 { bottom: calc(40px + env(safe-area-inset-bottom, 0px)); transform: scaleX(-1); opacity: .8; }
     .egg-savane .egs-acacia { position: absolute; bottom: calc(54px + env(safe-area-inset-bottom, 0px)); opacity: .96; }
-    .egg-savane .egs-acacia.a1 { left: 6%; }
-    .egg-savane .egs-acacia.a2 { right: 8%; transform: scale(.62); transform-origin: bottom; }
-    /* La petite troupe : SILHOUETTES sur la ligne d'horizon (refonte design) — traversée +
-       léger roulis du corps + VRAIE marche 2 temps (deux jeux de pattes alternés). */
-    .egg-savane .egs-walk { position: absolute; left: -16%; bottom: calc(46px + env(safe-area-inset-bottom, 0px));
-      animation-name: egsCross; animation-timing-function: linear; animation-fill-mode: forwards; }
-    .egg-savane .egs-walk svg { animation: egsTrot .46s ease-in-out infinite alternate; }
-    @keyframes egsCross { from { left: -16%; } to { left: 106%; } }
+    .egg-savane .egs-acacia.a1 { left: 5%; }
+    .egg-savane .egs-acacia.a2 { right: 7%; transform: scale(.55); transform-origin: bottom; opacity: .8; }
+    /* LA TROUPE : un seul cortège (file indienne, écarts FIXES → aucun chevauchement possible),
+       Timon devant, Simba, puis Pumbaa — chacun avec son roulis et sa vraie marche 2 temps. */
+    .egg-savane .egs-troupe { position: absolute; left: 0; bottom: calc(46px + env(safe-area-inset-bottom, 0px));
+      display: flex; align-items: flex-end; gap: 30px; transform: translateX(-110%);
+      animation: egsCross 9.2s linear forwards; will-change: transform; }
+    @keyframes egsCross { from { transform: translateX(-110%); } to { transform: translateX(110vw); } }
+    .egg-savane .egs-chr svg { animation: egsTrot .46s ease-in-out infinite alternate; display: block; }
+    .egg-savane .egs-chr:nth-child(2) svg { animation-delay: .15s; }
+    .egg-savane .egs-chr:nth-child(3) svg { animation-delay: .3s; animation-duration: .4s; }
     @keyframes egsTrot { from { transform: translateY(0) rotate(-1deg); } to { transform: translateY(-2.5px) rotate(1deg); } }
-    .egg-savane .egs-walk .lgA { animation: egsStepA .46s steps(1, end) infinite; }
-    .egg-savane .egs-walk .lgB { opacity: 0; animation: egsStepB .46s steps(1, end) infinite; }
+    .egg-savane .lgA { animation: egsStepA .46s steps(1, end) infinite; }
+    .egg-savane .lgB { opacity: 0; animation: egsStepB .46s steps(1, end) infinite; }
     @keyframes egsStepA { 0%, 49.9% { opacity: 1; } 50%, 100% { opacity: 0; } }
     @keyframes egsStepB { 0%, 49.9% { opacity: 0; } 50%, 100% { opacity: 1; } }
-    .egg-savane .egs-bird { position: absolute; left: -8%; animation: egsBird 6.4s linear forwards; }
-    @keyframes egsBird { 0% { left: -8%; transform: translateY(0) scale(1); } 30% { transform: translateY(-14px) scale(.92); } 60% { transform: translateY(5px) scale(1.04); } 100% { left: 106%; transform: translateY(-10px) scale(.9); } }
+    /* Oiseaux : traversée + BATTEMENT d'ailes 2 temps (ailes hautes/basses alternées) */
+    .egg-savane .egs-bird { position: absolute; left: -8%; animation: egsBird 7s linear forwards; }
+    .egg-savane .egs-bird .bwA { animation: egsStepA .34s steps(1, end) infinite; }
+    .egg-savane .egs-bird .bwB { opacity: 0; animation: egsStepB .34s steps(1, end) infinite; }
+    @keyframes egsBird { 0% { left: -8%; transform: translateY(0) scale(1); } 30% { transform: translateY(-16px) scale(.94); } 60% { transform: translateY(6px) scale(1.03); } 100% { left: 106%; transform: translateY(-12px) scale(.9); } }
+    /* ── La scène S'ADAPTE au monde actif (règle : chaque egg vit dans les 4 modes) ── */
+    body.theme-dusk .egg-savane .egs-sky { background: linear-gradient(to top, #C2502E 0%, #7A2E5E 40%, rgba(43,26,84,.65) 75%, rgba(43,26,84,0) 100%); }
+    body.theme-dusk .egg-savane .egs-stars { opacity: 1; }
+    body.theme-dusk .egg-savane .egs-glow { background: radial-gradient(120% 90% at 50% 100%, rgba(255,150,90,.4), rgba(180,80,60,.14) 55%, transparent); }
+    body.theme-winter .egg-savane .egs-sky { background: linear-gradient(to top, #F2A07A 0%, #C97F9E 38%, rgba(110,130,180,.5) 75%, rgba(110,130,180,0) 100%); }
+    body.theme-winter .egg-savane .egs-glow { background: radial-gradient(120% 90% at 50% 100%, rgba(255,220,170,.42), rgba(190,170,200,.14) 55%, transparent); }
+    body.theme-tropic .egg-savane .egs-sky { background: linear-gradient(to top, #FF8A3D 0%, #E8557E 40%, rgba(20,128,95,.4) 78%, rgba(20,128,95,0) 100%); }
     /* 🎈 Là-haut : la VRAIE tuile « À la maison » décolle, pendue à des ballons vectoriels */
     .egg-flyhome { position: fixed; z-index: 99998; pointer-events: none; animation: efhFly 5.6s ease-in forwards; }
     @keyframes efhFly {
@@ -7590,7 +7647,7 @@
     }); }
 
     // Banque de sons (admin) : un bouton par son, lecture FORCÉE (même si coupé), + toggle global.
-    const SOUND_LABELS = { tap:"👆 Tap", pop:"🫧 Pop", nav:"🧭 Navigation", select:"✔️ Sélection", toggle:"🔀 Toggle", success:"✅ Succès", coin:"🪙 Pièce / XP", star:"⭐ Étoile", levelup:"🆙 Niveau sup.", unlock:"🔓 Déblocage", badge:"🏅 Badge", error:"⚠️ Erreur", whoosh:"💨 Whoosh", message:"💬 Message", notify:"🔔 Notif (signature)", match:"💛 Match / connexion", ringtone:"📞 Sonnerie faux appel" };
+    const SOUND_LABELS = { tap:"👆 Tap", pop:"🫧 Pop", nav:"🧭 Navigation", select:"✔️ Sélection", toggle:"🔀 Toggle", success:"✅ Succès", coin:"🪙 Pièce / XP", star:"⭐ Étoile", levelup:"🆙 Niveau sup.", unlock:"🔓 Déblocage", badge:"🏅 Badge", error:"⚠️ Erreur", whoosh:"💨 Whoosh", message:"💬 Message", notify:"🔔 Notif (signature)", match:"💛 Match / connexion", ringtone:"📞 Sonnerie faux appel", savane:"🦁 Savane (egg, original)" };
     function loadAdminSounds() {
       const box = $("adminSounds"); if (!box || !window.SMSound) return;
       box.innerHTML = SMSound.list().map((n) => `<button class="btn-ghost" data-snd="${n}" style="justify-content:center;font-size:.82rem">${SOUND_LABELS[n] || n}</button>`).join("");
@@ -13727,6 +13784,9 @@
         '<svg viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .7-5.2 4.7 1.5 6.9L12 17.8 5.7 20.8l1.5-6.9L2 9.2l7-.7z" fill="#FF8A3D"/></svg>',
         '<svg viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .7-5.2 4.7 1.5 6.9L12 17.8 5.7 20.8l1.5-6.9L2 9.2l7-.7z" fill="#7a5cff"/></svg>'
       ];
+      // Starburst central (flash doré + anneau) : l'instant de gloire AVANT la pluie
+      const burst = document.createElement("div"); burst.className = "cfx-burst";
+      document.body.appendChild(burst); setTimeout(() => burst.remove(), 900);
       const wrap = document.createElement("div");
       wrap.className = "confetti-wrap";
       for (let i = 0; i < 70; i++) {
@@ -13735,7 +13795,8 @@
         c.style.cssText = "left:" + (Math.random() * 100) + "%;width:" + size + "px;height:" + size +
           "px;background:none;border-radius:0;animation-duration:" + (1.9 + Math.random() * 1.6) +
           "s;animation-delay:" + (Math.random() * 0.4) + "s";
-        c.innerHTML = shapes[i % shapes.length];
+        // 2 axes imbriqués : <i> tombe, <b> se balance → vrai FLOTTEMENT de confetti
+        c.innerHTML = '<b style="animation-duration:' + (0.6 + Math.random() * 0.7).toFixed(2) + 's;animation-delay:' + (Math.random() * 0.5).toFixed(2) + 's">' + shapes[i % shapes.length] + "</b>";
         wrap.appendChild(c);
       }
       document.body.appendChild(wrap);
@@ -14942,6 +15003,9 @@
         // Baleine VECTORIELLE : corps dessiné, jet d'eau animé, ondulations qui s'élargissent.
         const whaleHtml = '<div class="egg-whale-v">'
           + '<span class="egw-ripple"></span><span class="egw-ripple" style="animation-delay:.9s"></span>'
+          // Éclaboussures au surgissement (3 gouttes qui giclent) + mouette qui plane (2 temps d'ailes)
+          + '<span class="egw-drop" style="--dx:-16px"></span><span class="egw-drop" style="--dx:6px;animation-delay:.12s"></span><span class="egw-drop" style="--dx:20px;animation-delay:.22s"></span>'
+          + '<svg class="egw-gull" viewBox="0 0 28 14" width="20" height="10"><g class="bwA"><path d="M2 11Q8 2 14 11Q20 2 26 11" stroke="#EAF6FC" stroke-width="2.4" fill="none" stroke-linecap="round"/></g><g class="bwB"><path d="M2 6Q8 12 14 6Q20 12 26 6" stroke="#EAF6FC" stroke-width="2.4" fill="none" stroke-linecap="round"/></g></svg>'
           + '<svg viewBox="0 0 96 56" width="84" height="49">'
           + '<defs><linearGradient id="egwh" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3E6E91"/><stop offset="100%" stop-color="#27506E"/></linearGradient></defs>'
           + '<g class="egw-spout" fill="#BFE2F4"><circle cx="26" cy="9" r="2.6"/><circle cx="20" cy="4" r="2.1"/><circle cx="31" cy="3" r="2.1"/></g>'
@@ -15038,18 +15102,24 @@
               + '<path d="M52 78V46l-10-13 7 3 6-11 6 11 7-3-10 13v32z" fill="#3E2210"/>'
               + '<path d="M6 30C24 8 86 8 104 32c-14-5-28-7-49-7-21 0-35 2-49 5z" fill="#3E2210"/>'
               + '<path d="M14 33c8-3 18-5 30-5M96 34c-8-3-18-5-30-5" stroke="#3E2210" stroke-width="3" stroke-linecap="round"/></svg>';
+            // Oiseaux à DEUX temps d'ailes (hautes/basses alternées = vrai battement)
+            const BIRD = (i) => `<svg class="egs-bird" style="top:${12 + i * 7}%;animation-delay:${(i * 0.8).toFixed(1)}s" viewBox="0 0 28 14" width="${23 - i * 4}" height="${12 - i * 2}">`
+              + '<g class="bwA"><path d="M2 11Q8 2 14 11Q20 2 26 11" stroke="#5C3414" stroke-width="2.2" fill="none" stroke-linecap="round"/></g>'
+              + '<g class="bwB"><path d="M2 6Q8 12 14 6Q20 12 26 6" stroke="#5C3414" stroke-width="2.2" fill="none" stroke-linecap="round"/></g></svg>';
             const w = document.createElement("div"); w.className = "egg-savane";
-            w.innerHTML = '<div class="egs-sky"></div><div class="egs-glow"></div>'
+            // FILE INDIENNE canon (aucun chevauchement) : Pumbaa massif derrière, Simba élancé
+            // au milieu, Timon petit devant — un seul cortège, écarts fixes.
+            w.innerHTML = '<div class="egs-sky"></div><div class="egs-stars"></div><div class="egs-glow"></div>'
               + '<div class="egs-sun">' + EGG_SUN_SVG(110) + "</div>"
+              + '<div class="egs-hills"></div>'
               + ACACIA + ACACIA.replace('class="egs-acacia a1"', 'class="egs-acacia a2"')
-              + '<div class="egs-ground"></div><div class="egs-grass"></div>'
-              + `<span class="egs-walk" style="animation-duration:7.4s;animation-delay:1s">${LION}</span>`
-              + `<span class="egs-walk" style="animation-duration:6.9s;animation-delay:.5s">${PHACO}</span>`
-              + `<span class="egs-walk" style="animation-duration:6.4s">${SURIC}</span>`
-              + Array.from({ length: 3 }, (_, i) => `<svg class="egs-bird" style="top:${13 + i * 7}%;animation-delay:${(i * 0.7).toFixed(1)}s" viewBox="0 0 28 12" width="${24 - i * 4}" height="${10 - i}"><path d="M2 9Q8 1 14 9Q20 1 26 9" stroke="#5C3414" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`).join("");
+              + '<div class="egs-ground"></div><div class="egs-grass"></div><div class="egs-grass g2"></div>'
+              + `<span class="egs-troupe"><span class="egs-chr">${PHACO.replace('width="70" height="43"', 'width="88" height="54"')}</span><span class="egs-chr">${LION.replace('width="104" height="56"', 'width="106" height="57"')}</span><span class="egs-chr">${SURIC.replace('width="27" height="44"', 'width="22" height="36"')}</span></span>`
+              + BIRD(0) + BIRD(1) + BIRD(2);
             document.body.appendChild(w);
+            if (window.SMSound) { try { SMSound.play("savane"); } catch (e) {} } // jingle savane ORIGINAL (pas la mélodie du film, protégée)
             if (typeof toast === "function") toast("🦁", i18nT("Hakuna matata · mais quelle phrase magnifique !"), null, { low: true });
-            setTimeout(() => w.remove(), 8800);
+            setTimeout(() => w.remove(), 10000);
             awardSecretBadge("badge_hakuna");
             return;
           }
@@ -15059,6 +15129,15 @@
 
     // 🎮 KONAMI — ↑↑↓↓←→←→BA au clavier, ou la même séquence en SWIPES sur mobile :
     // l'app passe en mode RÉTRO 8-bit pendant 10 min (scanlines, pixels, police machine).
+    // Allumage/extinction d'écran CRT (ligne blanche qui s'étire puis balaie l'écran) — utilisé
+    // par le Konami pour entrer/sortir de 1988 avec un vrai effet de télé cathodique.
+    function _crtFx() {
+      try {
+        if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const d = document.createElement("div"); d.className = "crt-boot";
+        document.body.appendChild(d); setTimeout(() => d.remove(), 980);
+      } catch (e) {}
+    }
     (function eggKonami() {
       const SEQ_K = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
       const SEQ_S = ["u", "u", "d", "d", "l", "r", "l", "r"];
@@ -15082,20 +15161,26 @@
           // Mode déjà actif → refaire le code (dans N'IMPORTE quel sens) = SORTIR.
           // (Avant : prolongation silencieuse → impression que « le retour est bugé ».)
           if (Date.now() < (+localStorage.getItem("sm_retro_until") || 0)) { unfire(); return; }
-          localStorage.setItem("sm_retro_until", String(Date.now() + 600000)); // 10 min
-          applyRetro();
-          if (window.SMSound) { try { SMSound.play("levelup"); } catch (e) {} }
-          if (typeof toast === "function") toast("🎮", i18nT("MODE RÉTRO DÉBLOQUÉ · bienvenue en 1988, voyageur·se"), null, { low: true });
-          awardSecretBadge("badge_konami");
+          _crtFx(); // allumage CRT : la ligne blanche balaie l'écran…
+          setTimeout(() => { // …et 1988 apparaît DERRIÈRE le balayage
+            localStorage.setItem("sm_retro_until", String(Date.now() + 600000)); // 10 min
+            applyRetro();
+            if (window.SMSound) { try { SMSound.play("levelup"); } catch (e) {} }
+            if (typeof toast === "function") toast("🎮", i18nT("MODE RÉTRO DÉBLOQUÉ · bienvenue en 1988, voyageur·se"), null, { low: true });
+            awardSecretBadge("badge_konami");
+          }, 330);
         } catch (e) {}
       }
       function unfire() { // séquence inversée : on rentre à la maison (2026)
         try {
           if (Date.now() >= (+localStorage.getItem("sm_retro_until") || 0)) return; // rien à annuler
-          localStorage.removeItem("sm_retro_until");
-          applyRetro();
-          if (window.SMSound) { try { SMSound.play("toggle"); } catch (e) {} }
-          if (typeof toast === "function") toast("🕹️", i18nT("Retour en 2026 · à bientôt dans le passé"), null, { low: true });
+          _crtFx(); // extinction CRT au retour
+          setTimeout(() => {
+            localStorage.removeItem("sm_retro_until");
+            applyRetro();
+            if (window.SMSound) { try { SMSound.play("toggle"); } catch (e) {} }
+            if (typeof toast === "function") toast("🕹️", i18nT("Retour en 2026 · à bientôt dans le passé"), null, { low: true });
+          }, 330);
         } catch (e) {}
       }
       // Clavier (ordi)
@@ -15187,8 +15272,11 @@
           + '<rect x="46" y="13" width="7" height="3" fill="#1E2430"/><rect x="60" y="13" width="7" height="3" fill="#1E2430"/><rect x="74" y="13" width="7" height="3" fill="#1E2430"/><rect x="88" y="13" width="7" height="3" fill="#1E2430"/>'
           + '<path d="M14 35h104l-12 16H28z" fill="#1E2430"/>'
           + '<path d="M14 35h104" stroke="#C8452C" stroke-width="3"/>'
-          + '<g fill="#FFE9A8"><circle cx="42" cy="44" r="1.6"/><circle cx="56" cy="44" r="1.6"/><circle cx="70" cy="44" r="1.6"/><circle cx="84" cy="44" r="1.6"/></g></svg></div>';
-        const iceHtml = '<div class="egg-ship" style="animation-delay:.5s"><svg viewBox="0 0 64 52" width="48" height="39">'
+          + '<g fill="#FFE9A8"><circle cx="42" cy="44" r="1.6"/><circle cx="56" cy="44" r="1.6"/><circle cx="70" cy="44" r="1.6"/><circle cx="84" cy="44" r="1.6"/></g>'
+          // Vague d'étrave (la proue fend l'eau) + mouette qui suit le navire
+          + '<g class="egsh-bow" stroke="#D7ECF8" stroke-width="2.2" fill="none" stroke-linecap="round"><path d="M104 52q6-4 12-2"/><path d="M102 56q8-5 16-3"/></g></svg>'
+          + '<svg class="egw-gull" style="left:auto;right:2px;top:-18px" viewBox="0 0 28 14" width="18" height="9"><g class="bwA"><path d="M2 11Q8 2 14 11Q20 2 26 11" stroke="#EDE7DA" stroke-width="2.4" fill="none" stroke-linecap="round"/></g><g class="bwB"><path d="M2 6Q8 12 14 6Q20 12 26 6" stroke="#EDE7DA" stroke-width="2.4" fill="none" stroke-linecap="round"/></g></svg></div>';
+        const iceHtml = '<div class="egg-ship egg-berg" style="animation-delay:.5s"><svg viewBox="0 0 64 52" width="48" height="39">'
           + '<path d="M6 48L19 13l8 13 7-19 11 24 6-9 7 26z" fill="#E8F4FC" stroke="#AFD3E8" stroke-width="2.4" stroke-linejoin="round"/>'
           + '<path d="M27 26l7-19M34 33l11-9" stroke="#C7E2F2" stroke-width="2" stroke-linecap="round"/></svg></div>';
         window._titanicOn = true;
@@ -15336,6 +15424,7 @@
         star: 1.0, notify: 0.92, success: 0.83, match: 0.75,
         unlock: 0.71, levelup: 0.73, badge: 0.69,                            // célébrations ramenées au niveau
         ringtone: 0.5,                                                       // aperçu sonnerie dégonflé
+        savane: 0.78,                                                        // jingle d'ambiance, discret
       };
       // Brique de base : une note avec enveloppe douce (+ glissando optionnel vers freqEnd).
       function blip(freq, dur, type, vol, when, freqEnd) {
@@ -15388,6 +15477,12 @@
         match:   (n) => { warmArp(n, [659, 880, 1047], 0.24, 0.08, 0.07); warm(1568, 0.3, 0.05, n + 0.22, 2200); },
         // Aperçu (1 phrase marimba) de la sonnerie du faux appel → visible/testable dans l'admin
         ringtone: (n) => { [523, 659, 784, 1047, 880, 784, 659, 587].forEach((f, i) => { blip(f, 0.45, "triangle", 0.16, n + i * 0.26); blip(f * 2, 0.26, "sine", 0.05, n + i * 0.26); }); },
+        // Jingle SAVANE 100% ORIGINAL (pentatonique façon kalimba + bourdon chaud) pour l'egg
+        // hakuna matata — la mélodie du film est protégée, on évoque l'ambiance sans la copier.
+        savane: (n) => {
+          [392, 523, 587, 659, 523, 587, 784, 659, 587, 523].forEach((f, i) => warm(f, 0.3, 0.065, n + i * 0.17));
+          warm(196, 1.5, 0.04, n); warm(196, 1.3, 0.035, n + 0.85); // bourdon de brousse
+        },
       };
       function play(name, force) {
         if (!on && !force) return; const c = ac(); if (!c) return;
