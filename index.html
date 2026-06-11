@@ -111,8 +111,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=425"></script>
-  <script src="sunmates-icons.js?v=425"></script>
+  <script src="sunmates-badges.js?v=426"></script>
+  <script src="sunmates-icons.js?v=426"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3204,6 +3204,15 @@
     body.theme-winter .sm-date-preview { background: linear-gradient(135deg, #F4FAFF, #E4F0FB); }
     body.theme-tropic .sm-date-preview { background: linear-gradient(135deg, #FDFBE8, #EDF6DF); }
 
+    /* #6 : chat de GROUPE — feuille plein écran, bulles du chat réutilisées + nom de l'auteur */
+    .gchat { position: fixed; inset: 0; z-index: 6200; background: rgba(20,12,8,.45); display: flex; align-items: flex-end; justify-content: center; }
+    .gchat.hidden { display: none; }
+    .gchat-card { width: 100%; max-width: 480px; height: 88dvh; background: var(--bg); border-radius: 22px 22px 0 0;
+      padding: .8rem .8rem calc(.8rem + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; box-shadow: 0 -18px 44px rgba(0,0,0,.3); animation: gchatIn .28s cubic-bezier(.22,.8,.3,1); }
+    @keyframes gchatIn { from { transform: translateY(40px); opacity: .4; } to { transform: none; opacity: 1; } }
+    .gchat-card .chat-body { flex: 1; min-height: 0; overflow-y: auto; }
+    .gchat-who { font-size: .68rem; font-weight: 800; color: var(--accent); margin-bottom: .12rem; }
+
     /* #6 : bannière « pas encore connectés » dans le chat (explication + CTA demande) */
     .chat-conn-notice { margin: .8rem auto .4rem; max-width: 92%; text-align: center; font-size: .82rem; line-height: 1.5; color: var(--ink);
       background: var(--accent-soft); border: 1px solid rgba(255,90,77,.25); border-radius: 14px; padding: .7rem .8rem; }
@@ -3586,6 +3595,25 @@
           <button type="button" class="fc-gbtn" data-fcg><span>👤</span>contacts</button>
         </div>
         <button class="fc-btn decline" id="fcHangup"><span>📵</span>Raccrocher</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== #6 Chat de GROUPE (modale dédiée, 100% indépendante du chat 1:1) ===== -->
+  <div id="groupChat" class="gchat hidden">
+    <div class="gchat-card">
+      <div class="chat-header" style="margin:0 0 .4rem">
+        <button class="backbtn" id="gchatClose" style="margin:0">‹</button>
+        <div style="flex:1;min-width:0">
+          <div class="name" style="font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="gchatName">—</div>
+          <div class="meta muted" style="font-size:.78rem" id="gchatMeta"></div>
+        </div>
+        <button class="iconbtn" id="gchatLeave" title="Quitter le groupe" aria-label="Quitter le groupe">🚪</button>
+      </div>
+      <div class="chat-body" id="gchatBody" data-noptr></div>
+      <div class="chat-input">
+        <input id="gchatInput" type="text" maxlength="1000" placeholder="Message au groupe…" />
+        <button class="btn-primary" id="gchatSend">➤</button>
       </div>
     </div>
   </div>
@@ -4192,6 +4220,15 @@
 
           <!-- Sous-onglet : Messages -->
           <div class="mates-seg" data-msegpanel="messages">
+            <!-- #6 : conversations de GROUPE (events à plusieurs) — masqué tant que la
+                 migration supabase_migration_groupes.sql n'est pas lancée. -->
+            <div class="card" id="groupCard" style="display:none">
+              <div class="section-head" style="margin-bottom:.3rem">
+                <h3 style="margin:0">👥 Tes groupes</h3>
+                <button class="btn-accent" id="groupCreateBtn" style="padding:.35rem .7rem;font-size:.78rem">➕ Créer</button>
+              </div>
+              <div id="groupList"></div>
+            </div>
             <div class="card" id="convList"></div>
           </div>
 
@@ -7555,6 +7592,7 @@
         ["❤️", "Compatibilité", "Score + détail « pourquoi vous matchez » (tuile cliquable)."],
         ["💬", "Chat temps réel", "Messages, « en train d'écrire », accusés de lecture, traduction."],
         ["🧊", "Brise-glace", "Suggestions de 1er message (intérêts/ville du Mate) quand la conversation est vide."],
+        ["👥", "Conversations de groupe", "Crée un groupe avec tes Mates connectés (sortie/event à plusieurs) : chat partagé en temps réel, nom de l'auteur sur chaque bulle, quitter quand tu veux."],
         ["🎤", "Notes vocales", "Enregistre une note vocale (30 s) dans le chat, lecture en 1 tap."],
         ["🔥", "Flammes (poc)", "Envoie un « poc » chaque jour pour entretenir une flamme avec ton Mate."],
         ["⚙️", "Menu conversation", "3 points en haut : profil, flammes, notifs, bloquer, supprimer."],
@@ -8929,6 +8967,7 @@
       if (typeof updateNotifBadges === "function") updateNotifBadges();
       if (typeof buildHomeFeed === "function") buildHomeFeed();
       if (typeof renderBff === "function") renderBff();
+      if (typeof loadGroups === "function") loadGroups(); // #6 : conversations de groupe (si migration lancée)
       if (typeof getHomeMode === "function" && getHomeMode() === "home") renderVisitors(); // voyageurs en ville à jour
     }
 
@@ -11371,6 +11410,113 @@
         if (mateProfileBack) { const f = mateProfileBack; mateProfileBack = null; f(); }
         else showMatesView("matesHome");
       }));
+
+    // ====================== #6 CONVERSATIONS DE GROUPE (events à plusieurs) ======================
+    // Tables group_chats / group_members / group_messages (migration supabase_migration_groupes.sql).
+    // 100% ADDITIF : le chat 1:1 n'est pas touché ; la section reste masquée si la migration manque.
+    let _gchatId = null, _gchatChannel = null, _groupsOk = null, myGroups = [];
+    function _gName(uid) { const p = travelerMap[uid] || profById[uid] || {}; return p.username || "Voyageur"; }
+    async function loadGroups() {
+      const card = $("groupCard"); if (!card || !myUserId) return;
+      if (_groupsOk === false) return; // migration absente (sondé une fois, on n'insiste pas)
+      const { data, error } = await db.from("group_chats").select("*").order("created_at", { ascending: false });
+      if (error) { _groupsOk = false; card.style.display = "none"; console.warn("[SunMates] groupes indisponibles · lance supabase_migration_groupes.sql (" + (error.message || "") + ")"); return; }
+      _groupsOk = true; myGroups = data || [];
+      card.style.display = "";
+      const list = $("groupList"); if (!list) return;
+      list.innerHTML = myGroups.length
+        ? myGroups.map((g) => `<div class="person conv-open" data-gopen="${g.id}" style="cursor:pointer">
+            <div class="avatar" style="display:grid;place-items:center">${escapeHtml(g.emoji || "👥")}</div>
+            <div class="info"><div class="name">${escapeHtml(g.name)}</div><div class="conv-preview">${i18nT("Conversation de groupe")}</div></div>
+            <div class="qarrow">›</div></div>`).join("")
+        : `<p class="muted" style="font-size:.8rem;margin:.2rem 0">${i18nT("Crée un groupe pour organiser une sortie à plusieurs 🎉")}</p>`;
+      list.querySelectorAll("[data-gopen]").forEach((el) => el.addEventListener("click", () => { const g = myGroups.find((x) => String(x.id) === el.dataset.gopen); if (g) openGroupChat(g); }));
+    }
+    async function createGroup() {
+      const mates = [...connectedIds].filter((id) => !String(id).startsWith("ia-") && !(travelerMap[id] || {}).is_demo);
+      if (!mates.length) { toast("👥", i18nT("Connecte-toi d'abord avec des Mates pour créer un groupe")); return; }
+      const name = await smPromptP("👥", i18nT("Nom du groupe"), i18nT("Ex : Sortie canal samedi, Road-trip Porto…"), { placeholder: "Sortie canal 🌅", maxlength: 60 });
+      if (!name) return;
+      popInfo("👥", i18nT("Qui vient ?"), `<div style="text-align:left;max-height:46vh;overflow-y:auto">`
+        + mates.map((id) => `<label class="qrow" style="gap:.6rem;cursor:pointer"><input type="checkbox" class="gm-pick" value="${escapeHtml(id)}" style="width:18px;height:18px;accent-color:var(--accent)"><span style="flex:1;font-weight:700">${escapeHtml(_gName(id))}</span></label>`).join("")
+        + `</div><button class="btn-primary btn-block" id="gmCreate" style="margin-top:.7rem">✨ ${i18nT("Créer le groupe")}</button>`);
+      setTimeout(() => { const b = $("gmCreate"); if (b) b.addEventListener("click", () => once("gcreate", async () => {
+        const picked = [...document.querySelectorAll(".gm-pick:checked")].map((c) => c.value);
+        if (!picked.length) { toast("👥", i18nT("Choisis au moins un Mate 🙂")); return; }
+        b.disabled = true; b.textContent = i18nT("Création…");
+        const { data: g, error } = await db.from("group_chats").insert({ name: String(name).slice(0, 60), creator: myUserId }).select().single();
+        if (error || !g) { b.disabled = false; b.textContent = "✨ " + i18nT("Créer le groupe"); toast("⚠️", i18nT("Erreur, réessaie.")); return; }
+        const rows = [{ group_id: g.id, user_id: myUserId, added_by: myUserId }].concat(picked.map((id) => ({ group_id: g.id, user_id: id, added_by: myUserId })));
+        const { error: e2 } = await db.from("group_members").insert(rows);
+        if (typeof closePopInfo === "function") closePopInfo();
+        if (e2) toast("⚠️", i18nT("Groupe créé, mais certains membres n'ont pas pu être ajoutés."));
+        else { toast("🎉", i18nT("Groupe créé ! À vous de jouer ✨")); if (typeof celebrate === "function") celebrate(); }
+        await loadGroups();
+        const created = myGroups.find((x) => x.id === g.id); if (created) openGroupChat(created);
+      })); }, 40);
+    }
+    function _gBubble(m) {
+      const me = m.sender_id === myUserId;
+      return `<div class="msg-row ${me ? "me" : ""}"><div class="bubble ${me ? "me" : ""}">${me ? "" : `<div class="gchat-who">${escapeHtml(_gName(m.sender_id))}</div>`}<span class="bubble-txt">${escapeHtml(m.content)}</span></div><span class="bubble-time">${msgTime(m.created_at)}</span></div>`;
+    }
+    async function openGroupChat(g) {
+      _gchatId = g.id;
+      $("gchatName").textContent = (g.emoji || "👥") + " " + g.name;
+      $("gchatMeta").textContent = "";
+      $("gchatBody").innerHTML = '<p class="muted" style="text-align:center">Chargement…</p>';
+      $("groupChat").classList.remove("hidden");
+      db.from("group_members").select("user_id").eq("group_id", g.id).then(({ data }) => {
+        if (_gchatId !== g.id || !data) return;
+        $("gchatMeta").textContent = data.length + " " + i18nT("membres") + " · " + data.map((m) => _gName(m.user_id)).slice(0, 4).join(", ") + (data.length > 4 ? "…" : "");
+      });
+      const { data, error } = await db.from("group_messages").select("*").eq("group_id", g.id).order("created_at", { ascending: false }).limit(100);
+      if (_gchatId !== g.id) return;
+      const body = $("gchatBody");
+      if (error) { body.innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
+      const msgs = (data || []).reverse();
+      body.innerHTML = msgs.length ? msgs.map(_gBubble).join("") : `<p class="muted" style="text-align:center;padding:1rem">${i18nT("Lance la conversation : qui, où, quand ? 🎉")}</p>`;
+      body.scrollTop = body.scrollHeight;
+      try { if (_gchatChannel) db.removeChannel(_gchatChannel); } catch (e) {}
+      _gchatChannel = db.channel("gchat:" + g.id)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "group_messages", filter: "group_id=eq." + g.id }, (payload) => {
+          if (_gchatId !== g.id || !payload.new) return;
+          if (payload.new.sender_id === myUserId) { // ma bulle optimiste est déjà là → on la confirme juste
+            const pend = body.querySelector(".bubble[data-gpending]"); if (pend) { pend.removeAttribute("data-gpending"); return; }
+          }
+          const ph = body.querySelector("p.muted"); if (ph) body.innerHTML = "";
+          body.insertAdjacentHTML("beforeend", _gBubble(payload.new));
+          body.scrollTop = body.scrollHeight;
+          if (window.SMSound) { try { SMSound.play("pop"); } catch (e) {} }
+        }).subscribe();
+    }
+    function closeGroupChat() { _gchatId = null; try { if (_gchatChannel) db.removeChannel(_gchatChannel); } catch (e) {} _gchatChannel = null; $("groupChat").classList.add("hidden"); }
+    async function sendGroupMessage() {
+      const i = $("gchatInput"); const text = (i && i.value || "").trim();
+      if (!text || !_gchatId) return;
+      i.value = "";
+      const body = $("gchatBody"); const ph = body.querySelector("p.muted"); if (ph) body.innerHTML = "";
+      body.insertAdjacentHTML("beforeend", `<div class="msg-row me"><div class="bubble me" data-gpending="1"><span class="bubble-txt">${escapeHtml(text)}</span></div><span class="bubble-time">⏳</span></div>`);
+      body.scrollTop = body.scrollHeight;
+      const gid = _gchatId;
+      const { error } = await db.from("group_messages").insert({ group_id: gid, sender_id: myUserId, content: text });
+      const pend = body.querySelector(".bubble[data-gpending]");
+      if (error) {
+        if (pend) { pend.classList.add("msg-failed"); pend.removeAttribute("data-gpending"); const r = pend.closest(".msg-row"); const t = r && r.querySelector(".bubble-time"); if (t) t.textContent = "⚠️ " + i18nT("non envoyé"); }
+        toast("⚠️", i18nT("Message non envoyé · réessaie")); if (i) i.value = text;
+      } else if (pend) {
+        const r = pend.closest(".msg-row"); const t = r && r.querySelector(".bubble-time"); if (t) t.textContent = msgTime(new Date().toISOString());
+      }
+    }
+    { const b = $("groupCreateBtn"); if (b) b.addEventListener("click", createGroup); }
+    { const c = $("gchatClose"); if (c) c.addEventListener("click", closeGroupChat); }
+    { const s = $("gchatSend"); if (s) s.addEventListener("click", sendGroupMessage); }
+    { const i = $("gchatInput"); if (i) i.addEventListener("keydown", (e) => { if (e.key === "Enter") sendGroupMessage(); }); }
+    { const lv = $("gchatLeave"); if (lv) lv.addEventListener("click", async () => {
+      if (!_gchatId) return;
+      if (!(await smConfirmP("🚪", i18nT("Quitter ce groupe ?"), i18nT("Tu ne verras plus ses messages."), i18nT("Quitter"), true))) return;
+      await db.from("group_members").delete().eq("group_id", _gchatId).eq("user_id", myUserId);
+      closeGroupChat(); loadGroups(); toast("🚪", i18nT("Tu as quitté le groupe"));
+    }); }
 
     // ====================== CENTRE DE SÉCURITÉ ======================
     // Conseils sécurité (voyageur·se solo), rotation quotidienne stable.
@@ -16565,6 +16711,26 @@
       "non envoyé · touche la bulle pour réessayer": "not sent · tap the bubble to retry",
       "La base a refusé l'envoi : vous n'êtes plus connectés tous les deux.": "The server refused it: you two are no longer connected.",
       "Message non envoyé (réseau ?) · touche la bulle rouge pour réessayer": "Message not sent (network?) · tap the red bubble to retry",
+      "Conversation de groupe": "Group conversation",
+      "Crée un groupe pour organiser une sortie à plusieurs 🎉": "Create a group to plan an outing together 🎉",
+      "Connecte-toi d'abord avec des Mates pour créer un groupe": "Connect with some Mates first to create a group",
+      "Nom du groupe": "Group name",
+      "Ex : Sortie canal samedi, Road-trip Porto…": "E.g.: Canal hangout Saturday, Porto road-trip…",
+      "Qui vient ?": "Who's coming?",
+      "Créer le groupe": "Create the group",
+      "Choisis au moins un Mate 🙂": "Pick at least one Mate 🙂",
+      "Création…": "Creating…",
+      "Groupe créé, mais certains membres n'ont pas pu être ajoutés.": "Group created, but some members couldn't be added.",
+      "Groupe créé ! À vous de jouer ✨": "Group created! Over to you ✨",
+      "membres": "members",
+      "Lance la conversation : qui, où, quand ? 🎉": "Start the conversation: who, where, when? 🎉",
+      "non envoyé": "not sent",
+      "Message non envoyé · réessaie": "Message not sent · try again",
+      "Quitter ce groupe ?": "Leave this group?",
+      "Tu ne verras plus ses messages.": "You won't see its messages anymore.",
+      "Quitter": "Leave",
+      "Tu as quitté le groupe": "You left the group",
+      "Message au groupe…": "Message the group…",
       "Demande déjà envoyée": "Request already sent",
       "réessaie": "try again",
       "Partage ton itinéraire et l'adresse de ton logement avec un proche avant de partir.": "Share your itinerary and your accommodation address with someone close before you leave.",
