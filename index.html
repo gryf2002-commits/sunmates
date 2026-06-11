@@ -5,7 +5,7 @@
   <!-- ============================================================
        MONITORING (erreurs + audience). Clés publiques par conception, région EU.
        Vie privée : on ne transmet JAMAIS d'email, de contenu de message, de GPS ni
-       l'usage du SOS — on compte des événements, pas des contenus.
+       l'usage du SOS · on compte des événements, pas des contenus.
        ============================================================ -->
   <script async src="https://browser.sentry-cdn.com/8.0.0/bundle.min.js" crossorigin="anonymous"></script>
   <script>
@@ -26,7 +26,7 @@
     })(0);
   </script>
   <script>
-    // PostHog (cloud EU) — mesure d'audience anonymisée (RGPD : mask_all_text + pas d'email).
+    // PostHog (cloud EU) · mesure d'audience anonymisée (RGPD : mask_all_text + pas d'email).
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
     // RGPD : PostHog ne démarre QU'APRÈS consentement explicite (bannière cookies).
     // Tant que l'utilisateur n'a pas accepté, aucun traceur n'est déposé, rien n'est envoyé.
@@ -100,8 +100,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=395"></script>
-  <script src="sunmates-icons.js?v=395"></script>
+  <script src="sunmates-badges.js?v=396"></script>
+  <script src="sunmates-icons.js?v=396"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -115,7 +115,7 @@
         window.location.reload();
       });
       // Quand un nouveau SW est "installed" alors qu'un ancien contrôle encore la page,
-      // on lui demande EXPLICITEMENT de prendre la main tout de suite (skipWaiting) — au cas où
+      // on lui demande EXPLICITEMENT de prendre la main tout de suite (skipWaiting) · au cas où
       // l'auto-skip du SW serait ignoré par le navigateur (Safari/iOS notamment).
       function promoteSW(reg) {
         var w = reg.installing || reg.waiting; if (!w) return;
@@ -173,7 +173,7 @@
          au plus haut). Centralisée ici pour éviter les conflits d'empilement. */
       --z-header:   50;    /* en-tête collant */
       --z-nav:      60;    /* barre de navigation du bas */
-      --z-picker:   6000;  /* overlay sélecteur (choisir un Mate) — AU-DESSUS des feuilles/modales (z-modal 4300), sinon il s'ouvre DERRIÈRE (bug « Défier un Mate » invisible) ; sous popinfo 6500 + fakecall 6700 */
+      --z-picker:   6000;  /* overlay sélecteur (choisir un Mate) · AU-DESSUS des feuilles/modales (z-modal 4300), sinon il s'ouvre DERRIÈRE (bug « Défier un Mate » invisible) ; sous popinfo 6500 + fakecall 6700 */
       --z-notif:    210;   /* panneau de notifications */
       --z-toast:    300;   /* toasts éphémères */
       --z-pwa:      400;   /* bannière « installer l'app » */
@@ -359,7 +359,7 @@
     /* Carte chaude « lever de soleil » : crème → abricot, filigrane ☀, rangées UNIFORMES (retour Maxime). */
     .prog-card { padding: .2rem 0; margin-bottom: .55rem; overflow: hidden; position: relative;
       background: linear-gradient(168deg, #FFFBF1 0%, #FFF1DE 100%); border: 1.5px solid rgba(232,150,31,.2); }
-    .prog-card::after { content: "☀"; position: absolute; top: -16px; right: -8px; font-size: 72px; line-height: 1; opacity: .08; transform: rotate(14deg); pointer-events: none; }
+    /* Filigrane ☀ retiré (retour Maxime : il tombait pile sur la rangée « Objectifs » et semblait être une icône) */
     .prog-row { position: relative; z-index: 1; display: flex; align-items: center; gap: .7rem; width: 100%; padding: .68rem .9rem; background: transparent; border: 0; border-bottom: 1px solid rgba(176,142,116,.18); text-align: left; cursor: pointer; font: inherit; color: var(--ink); }
     .prog-row:last-child { border-bottom: 0; }
     .prog-row:active { background: rgba(255,138,61,.1); }
@@ -372,7 +372,7 @@
     .prog-row .pr-val { flex: 0 0 auto; font-size: .8rem; font-weight: 800; color: var(--accent); background: rgba(255,90,77,.09); border-radius: 999px; padding: .12rem .5rem; }
     .prog-row .pr-chev { flex: 0 0 auto; color: var(--accent); font-weight: 700; }
     body.theme-dusk .prog-row { border-bottom-color: rgba(255,255,255,.08); }
-    /* (anciennes tuiles carrées de progression — classes gardées pour compat si réutilisées ailleurs) */
+    /* (anciennes tuiles carrées de progression · classes gardées pour compat si réutilisées ailleurs) */
     .prog-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: .55rem; margin-bottom: .55rem; }
     .prog-split { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: .55rem; }
     .prog-tile, .prog-half { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .35rem; text-align: center;
@@ -424,7 +424,9 @@
     .fpost-like.liked { color: var(--accent); }
     .fpost-del { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--muted); font-size: .9rem; }
     .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: .4rem; }
-    .fpost { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .7rem; box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease; }
+    /* Séparation NETTE entre les posts (avant : cartes qui se fondaient, surtout en mode nuit) */
+    .fpost { background: var(--card); border: 1.5px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .9rem; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease; }
+    body.theme-dusk .fpost { background: #241b35; border-color: rgba(255,255,255,.12); box-shadow: 0 10px 26px rgba(0,0,0,.4); }
     /* Chip « Dispo ? » : intention de rencontre. État actif = ambre/sunset (jamais vert vif, DA). */
     .avail-chip { flex-shrink: 0; border: 1px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: .3rem .6rem; font-size: .74rem; font-weight: 800; cursor: pointer; transition: .12s; }
     .avail-chip:active { transform: scale(.95); }
@@ -972,9 +974,9 @@
       .souvenir-card { padding: 1rem 1.1rem; }
       #photoLightboxImg { max-height: 84vh; }
     }
-    /* Cropper photo de profil (HORS media query — doit s'appliquer PARTOUT, surtout desktop/portrait) */
+    /* Cropper photo de profil (HORS media query · doit s'appliquer PARTOUT, surtout desktop/portrait) */
     .crop-card { max-height: 92vh; overflow-y: auto; }
-    /* Taille du stage FIXÉE EN JS (carré garanti) — pas d'aspect-ratio (buguait en flex → image géante). */
+    /* Taille du stage FIXÉE EN JS (carré garanti) · pas d'aspect-ratio (buguait en flex → image géante). */
     .crop-stage { position: relative; width: 240px; height: 240px; margin: 0 auto; border-radius: 16px; overflow: hidden; background-color: #1a1320; background-repeat: no-repeat; touch-action: none; cursor: grab; }
     .crop-stage:active { cursor: grabbing; }
     .crop-stage img { display: none; } /* l'image s'affiche en background du stage (clip garanti) ; l'<img> ne sert qu'à l'export */
@@ -1005,8 +1007,9 @@
     /* En plein écran : outils EN BAS À GAUCHE (équilibré avec le zoom en bas-droite ; rien
        en haut-gauche). On les remonte BIEN au-dessus de la safe-area / barre gestuelle mobile
        pour que les taps passent toujours. La croix reste en haut-droite. */
-    .homemap-card.fs .homemap-tools { bottom: calc(1.4rem + env(safe-area-inset-bottom, 0px)); left: .7rem;
-      right: auto; top: auto; align-items: flex-start; z-index: 1500; max-width: calc(60% - 1rem); }
+    /* Plein écran : outils à DROITE (retour Maxime), même côté qu'en carte réduite */
+    .homemap-card.fs .homemap-tools { bottom: calc(1.4rem + env(safe-area-inset-bottom, 0px)); right: .7rem;
+      left: auto; top: auto; align-items: flex-end; z-index: 1500; max-width: calc(60% - 1rem); }
     .homemap-card.fs .homemap-fsclose { z-index: 1600; }
     .homemap-tools { position: absolute; right: .55rem; bottom: .55rem; z-index: 1100; display: flex; flex-direction: column; gap: .4rem; align-items: flex-end; pointer-events: auto; }
     .homemap-tools button { background: var(--card); color: var(--ink); border: 1px solid rgba(0,0,0,.08); border-radius: 999px; padding: .4rem .7rem; font-size: .76rem; font-weight: 700; box-shadow: var(--shadow-sm); cursor: pointer; }
@@ -1546,7 +1549,7 @@
     .bname { font-size: .72rem; font-weight: 700; color: var(--ink); line-height: 1.15; }
     .bprog { font-size: .68rem; color: var(--muted); }
     .bitem.locked .bname { color: var(--muted); }
-    /* Badges sur-mesure (SVG joaillerie) — remplace .hex emoji */
+    /* Badges sur-mesure (SVG joaillerie) · remplace .hex emoji */
     .smbadge-wrap { width: 72px; height: 72px; margin: 0 auto .4rem; display: grid; place-items: center; }
     .smbadge-wrap .smbadge-svg { width: 72px; height: 72px; transition: transform .2s ease; }
     .bitem:hover .smbadge-wrap .smbadge-svg { transform: translateY(-3px) rotate(-3deg); }
@@ -1580,23 +1583,26 @@
     .sv-stat .sv-ico { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; vertical-align: -5px; margin-right: 4px; }
 
     /* ============================================================= */
-    /* ============ HOME v2 — « Paris, ton terrain de jeu » ========= */
+    /* ============ HOME v2 · « Paris, ton terrain de jeu » ========= */
     /* ============================================================= */
     /* --- 1. Héros joueur --- */
-    /* P2.20 : plus COMPACT et plus CALME (moins imposant/flashy) — padding réduit, ombre douce,
+    /* P2.20 : plus COMPACT et plus CALME (moins imposant/flashy) · padding réduit, ombre douce,
        halo statique discret (plus de « respiration »), avatar et titre plus petits. */
     /* #12 : en-tête Jeux avec badge rond de niveau (cliquable). */
     .jh-head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
-    .player-badge{ position:relative; flex-shrink:0; width:52px; height:52px; border-radius:50%; border:0; cursor:pointer; overflow:visible;
-      background:var(--accent-grad); display:grid; place-items:center; box-shadow:0 6px 16px rgba(255,90,77,.34); transition:transform .12s ease; }
+    /* Badge niveau plus imposant + anneau crème DA (retour « tout petit et bizarre ») */
+    .player-badge{ position:relative; flex-shrink:0; width:66px; height:66px; border-radius:50%; cursor:pointer; overflow:visible;
+      background:var(--accent-grad); display:grid; place-items:center; box-shadow:0 8px 20px rgba(255,90,77,.4); transition:transform .12s ease;
+      border:3px solid rgba(255,247,238,.9); }
+    body.theme-dusk .player-badge{ border-color:rgba(255,255,255,.25); }
     .player-badge:active{ transform:scale(.94); }
     /* #5 + FIX « photo ovale » : en grille auto, width:100% ne se résout pas (le span restait
        13×26px → la photo se peignait dans un mini OVALE). Absolu plein cadre = toujours 52×52 rond. */
-    .player-badge .pb-av{ position:absolute; inset:0; z-index:0; border-radius:50%; display:grid; place-items:center; font-size:1.55rem; line-height:1; overflow:hidden;
+    .player-badge .pb-av{ position:absolute; inset:0; z-index:0; border-radius:50%; display:grid; place-items:center; font-size:1.9rem; line-height:1; overflow:hidden;
       background-color:rgba(255,255,255,.18); background-size:cover; background-position:center center; background-repeat:no-repeat; }
     .player-badge .pb-lvl{ z-index:1; }
-    .player-badge .pb-lvl{ position:absolute; bottom:-3px; right:-4px; min-width:20px; height:20px; padding:0 4px; border-radius:999px;
-      background:#fff; color:var(--accent); font-weight:900; font-size:.72rem; display:grid; place-items:center; border:2px solid var(--accent); box-shadow:0 2px 5px rgba(0,0,0,.2); }
+    .player-badge .pb-lvl{ position:absolute; bottom:-4px; right:-5px; min-width:24px; height:24px; padding:0 5px; border-radius:999px;
+      background:#fff; color:var(--accent); font-weight:900; font-size:.8rem; display:grid; place-items:center; border:2px solid var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.22); }
     .player-hero{ position:relative; overflow:hidden; border-radius:var(--radius); padding:.8rem .95rem .9rem; margin:.2rem 0 .85rem;
       background: radial-gradient(120% 130% at 18% -10%, rgba(255,255,255,.22), rgba(255,255,255,0) 46%), var(--accent-grad);
       box-shadow:var(--shadow); color:#fff; isolation:isolate; }
@@ -1668,7 +1674,7 @@
     .todo-toggle.active{ background:var(--accent-grad); color:#fff; border-color:transparent; }
     .todo-toggle.active .tt-state{ background:rgba(255,255,255,.28); color:#fff; }
     body.theme-dusk .todo-toggle:not(.active){ background:#2a2140; color:#eee; border-color:rgba(255,255,255,.12); }
-    /* HomeMates — souvenirs (mode Maison) */
+    /* HomeMates · souvenirs (mode Maison) */
     .hm-recap{ display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.6rem; }
     .hm-recap .hr-chip{ background:var(--cream); border-radius:12px; padding:.4rem .6rem; font-size:.8rem; font-weight:700; color:var(--ink); }
     body.theme-dusk .hm-recap .hr-chip{ background:rgba(255,255,255,.06); color:#f3e9f3; }
@@ -1704,25 +1710,29 @@
     .qcoll-bar > span{ display:block; height:100%; border-radius:999px; background:var(--accent-grad); transition:width .4s ease; }
 
     /* --- 2. Quête du jour --- */
-    .quest-spotlight{ position:relative; overflow:hidden; border-radius:var(--radius); padding:1.05rem 1.1rem 1.1rem; margin:0 0 1rem;
+    /* Resserrée (retour « trop imposante ») + halo jaune du coin RETIRÉ (tache sous le compteur) */
+    .quest-spotlight{ position:relative; overflow:hidden; border-radius:var(--radius); padding:.85rem .95rem .95rem; margin:0 0 1rem;
       background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow); isolation:isolate; }
     .quest-spotlight::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--accent-grad); }
-    .qs-aura{ position:absolute; z-index:-1; right:-50px; top:-50px; width:170px; height:170px; background:radial-gradient(circle, rgba(255,138,61,.32), rgba(255,138,61,0) 70%); }
-    body.theme-dusk .qs-aura{ background:radial-gradient(circle, rgba(255,154,141,.30), rgba(255,154,141,0) 70%); }
+    .qs-aura{ display:none; }
+    body.theme-dusk .quest-spotlight{ background:#241b35; border-color:rgba(255,255,255,.09); }
     .qs-head{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; margin-bottom:.7rem; padding-left:.4rem; }
     .qs-pill{ display:inline-flex; align-items:center; gap:.2rem; font-weight:800; font-size:.74rem; letter-spacing:.3px; color:#fff; padding:.3rem .65rem;
       border-radius:999px; background:var(--accent-grad); box-shadow:0 4px 12px rgba(255,90,77,.32); }
     .qs-timer{ font-size:.76rem; font-weight:700; color:var(--muted); white-space:nowrap; }
     .qs-body{ display:flex; align-items:flex-start; gap:.8rem; padding-left:.4rem; }
-    .qs-emblem{ flex-shrink:0; width:58px; height:58px; display:grid; place-items:center; font-size:30px; border-radius:18px;
+    .qs-emblem{ flex-shrink:0; width:48px; height:48px; display:grid; place-items:center; font-size:25px; border-radius:15px;
       background: radial-gradient(circle at 36% 28%, rgba(255,255,255,.5), rgba(255,255,255,0) 55%), var(--accent-grad);
       box-shadow:0 8px 18px rgba(255,90,77,.30), inset 0 -8px 14px rgba(0,0,0,.12), inset 0 2px 3px rgba(255,255,255,.5); }
     .qs-txt{ min-width:0; }
-    .qs-title{ margin:.1rem 0 .25rem !important; font-family:"Fraunces",serif; font-weight:900; font-size:1.18rem; line-height:1.12; color:var(--ink);
+    .qs-title{ margin:.1rem 0 .25rem !important; font-family:"Fraunces",serif; font-weight:900; font-size:1.05rem; line-height:1.15; color:var(--ink);
       display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
     .qs-desc{ margin:0; font-size:.83rem; line-height:1.4; color:var(--text); }
-    .qs-reward{ display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin:.85rem .4rem .9rem; font-size:.82rem; color:var(--text); }
+    .qs-reward{ display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin:.6rem .4rem .65rem; font-size:.82rem; color:var(--text); }
     .qs-xp{ font-weight:800; color:#B5740E; background:linear-gradient(135deg, rgba(255,209,92,.28), rgba(255,138,61,.18)); padding:.22rem .55rem; border-radius:999px; }
+    /* Mode nuit : l'ocre foncé était illisible sur fond sombre */
+    body.theme-dusk .qs-xp{ color:#ffce8a; background:linear-gradient(135deg, rgba(255,201,60,.16), rgba(255,138,61,.12)); }
+    body.theme-dusk .qs-timer{ color:#cbbfdc; }
     .qs-xp b{ font-family:"Fraunces",serif; font-weight:900; } .qs-dot{ color:var(--muted); } .qs-badge-hint b{ color:var(--ink); font-weight:800; }
     .qs-mode{ display:flex; gap:.2rem; padding:.22rem; background:var(--accent-soft); border-radius:999px; margin:0 .4rem .7rem; }
     .qs-mode-btn{ flex:1; min-height:40px; border:0; background:none; cursor:pointer; font-weight:800; font-size:.82rem; color:var(--accent);
@@ -1760,12 +1770,11 @@
     .br-mini{ font-size:.68rem; font-weight:700; color:var(--muted); }
     @media (prefers-reduced-motion: reduce){ .ph-glow, .ph-xp-fill::after{ animation:none; } .ph-xp-fill{ transition:none; } .qm-card, .qs-mode-btn, .qs-play{ transition:none; } }
 
-    /* ===================== MAISON v2 — Hub solo ===================== */
+    /* ===================== MAISON v2 · Hub solo ===================== */
     .solo-prog{ position:relative; overflow:hidden; padding:1.05rem 1.1rem 1.15rem; margin:.2rem 0 1rem;
       background:linear-gradient(135deg, rgba(255,201,60,.16), rgba(255,138,61,.12)); border:1px solid rgba(201,138,30,.20); }
-    /* #10 : halo atténué + décalé pour ne plus « baver » de couleur derrière la pastille streak. */
-    .solo-prog .sp-aura{ position:absolute; z-index:0; width:150px; height:150px; right:-70px; top:-50px; pointer-events:none;
-      background:radial-gradient(circle at 36% 28%, rgba(255,209,92,.28), rgba(255,138,61,.10) 45%, transparent 70%); filter:blur(6px); }
+    /* Halo RETIRÉ (retour Maxime : « tache jaune sous la flamme » · atténué en v359, toujours gênant) */
+    .solo-prog .sp-aura{ display:none; }
     .solo-prog > *{ position:relative; z-index:1; }
     .sp-head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
     .sp-title{ font-family:"Fraunces",serif; font-weight:800; font-size:1.12rem; margin:0; color:var(--ink); }
@@ -1922,7 +1931,7 @@
     .bubble { max-width: 80%; padding: .6rem .85rem; border-radius: 16px; font-size: .9rem; line-height: 1.35; word-wrap: break-word; }
     .bubble.them { background: #ffe7e1; color: var(--text); border-bottom-left-radius: 5px; align-self: flex-start; }
     .bubble.me { background: var(--accent-grad); color: #fff; border-bottom-right-radius: 5px; align-self: flex-end; }
-    /* Brise-glace (chat vide) — chips chaudes DA (suggestions engageantes, pas des boutons ternes) */
+    /* Brise-glace (chat vide) · chips chaudes DA (suggestions engageantes, pas des boutons ternes) */
     .ice-break { display: flex; flex-direction: column; gap: .55rem; padding: 1.1rem .4rem; }
     .ice-break-t { font-size: .8rem; font-weight: 800; color: var(--muted); text-align: center; margin-bottom: .25rem; letter-spacing: .02em; }
     .ice-chip { display: flex; align-items: flex-start; gap: .5rem; text-align: left;
@@ -1948,7 +1957,7 @@
     .completion-bar { height: 9px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
     .completion-bar span { display: block; height: 100%; width: 0; background: var(--accent-grad); transition: width .4s ease; }
     .completion-txt { font-size: .78rem; color: var(--muted); margin-top: .35rem; }
-    /* P2.29 : bloc « Mon parcours » plus attrayant — header + rangée de mini-stats façon résumé d'aventure. */
+    /* P2.29 : bloc « Mon parcours » plus attrayant · header + rangée de mini-stats façon résumé d'aventure. */
     .parcours-card .pc-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
     .parcours-card .pc-head b { font-size: .95rem; }
     .parcours-card .pc-share { padding: .4rem .8rem; font-size: .8rem; white-space: nowrap; flex-shrink: 0; }
@@ -1969,7 +1978,7 @@
     .sm-badge { display: inline-grid; place-items: center; line-height: 1; vertical-align: middle; flex-shrink: 0; }
     .sm-badge svg { display: block; width: 100%; height: 100%; }
     .sm-badge--emoji { border-radius: 50%; background: var(--accent-grad); color: #fff; box-shadow: var(--shadow-sm); }
-    /* ===== V2.1 — anti-débordement (troncatures oubliées sur composants JS) + cibles tactiles ===== */
+    /* ===== V2.1 · anti-débordement (troncatures oubliées sur composants JS) + cibles tactiles ===== */
     .post-head .ph-name, .post-body .pb-title, .post-body .pb-sub { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .post-head .ph-time { flex-shrink: 0; }
     .feed-card .ftitle, .feed-card .fmeta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1981,27 +1990,27 @@
     .iconbtn { min-width: 44px; min-height: 44px; }
     .bottom-nav button { min-height: 44px; }
 
-    /* ============ V2.2 — DA unifiée : RELIEF / PROFONDEUR (ADN onb-emoji) ============ */
+    /* ============ V2.2 · DA unifiée : RELIEF / PROFONDEUR (ADN onb-emoji) ============ */
     /* Une seule signature d'ombre, partagée par icônes maison, emojis natifs ET badges,
        pour qu'ils sortent enfin du même monde (la profondeur des emojis d'onboarding). */
     :root { --relief: drop-shadow(0 8px 14px rgba(120,40,0,.34)) drop-shadow(0 2px 3px rgba(0,0,0,.18));
       --relief-strong: drop-shadow(0 12px 22px rgba(0,0,0,.42)) drop-shadow(0 3px 5px rgba(120,40,0,.30)); }
     @keyframes floatySoft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    /* Emojis natifs des tuiles : relief/profondeur (DA onb-emoji) — ils décollent de leur tuile */
+    /* Emojis natifs des tuiles : relief/profondeur (DA onb-emoji) · ils décollent de leur tuile */
     .cic, .jo-ic, .qm-ic, .smgem, .thumb, .qico, .sv-ico, .cico {
       filter: drop-shadow(0 3px 4px rgba(90,25,10,.38)) drop-shadow(0 1px 1px rgba(0,0,0,.22)); }
     /* Emojis-héros natifs : même signature de relief (DA cohérente partout) */
     .qs-emblem, .ph-av-emoji, .sp-next-bdg, .qm-ic, .hm-hero-ic, .hm-host-ic, .rit-ic, .empty-ill, .fe-emoji,
     .dh-emoji, .tip-ic, .onb-emoji, .sos-logo, .coupon .cico, .su-e, .su-ic { filter: var(--relief); }
     .sm-emoji3d { filter: var(--relief); } .sm-emoji3d.sm-float { animation: floatySoft 3.2s ease-in-out infinite; }
-    /* Badges RONDS à emoji : peps ÉCLATANT — couleurs pleines + relief dimensionnel */
+    /* Badges RONDS à emoji : peps ÉCLATANT · couleurs pleines + relief dimensionnel */
     .br-medal, .smbadge-wrap, .sm-badge {
       filter: drop-shadow(0 5px 11px rgba(120,40,0,.26)) drop-shadow(0 1px 2px rgba(0,0,0,.14)) saturate(1.06);
       position: relative; isolation: isolate; }
     .br-medal::before, .smbadge-wrap::before { content: none; }
     @media (prefers-reduced-motion: reduce) { .sm-float { animation: none !important; } }
 
-    /* ============ V2.2 — SOBRIÉTÉ (déclutter) + soleil signature ============ */
+    /* ============ V2.2 · SOBRIÉTÉ (déclutter) + soleil signature ============ */
     /* Plus d'air entre les sections de l'accueil */
     .tab-panel[data-panel="accueil"] > section, .tab-panel[data-panel="accueil"] > .section-head { margin-top: 1.3rem; }
     /* Sobriété accueil : on masque le rail de badges (le jeu vit dans l'onglet Jeux) */
@@ -2031,7 +2040,7 @@
     .tab-panel[data-panel="accueil"] .tile .thumb::after,
     .tab-panel[data-panel="securite"] .tile .thumb::after {
       content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-      /* reflet glossy diagonal (peps) + ombre basse pour le volume — chute rapide = brillance, pas halo */
+      /* reflet glossy diagonal (peps) + ombre basse pour le volume · chute rapide = brillance, pas halo */
       background:linear-gradient(150deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.10) 26%, rgba(255,255,255,0) 50%), linear-gradient(180deg, rgba(255,255,255,0) 64%, rgba(0,0,0,.07) 100%); }
     .tab-panel[data-panel="accueil"] .tile:active .thumb,
     .tab-panel[data-panel="securite"] .tile:active .thumb { transform: scale(.96); }
@@ -2241,7 +2250,7 @@
     }
 
     /* --- Accueil : titre dégradé, vignettes en relief --- */
-    /* « Bonjour {pseudo} » en corail/rouge (l'âme SunMates) — couleur d'accent, qui DIFFÈRE jour/nuit. */
+    /* « Bonjour {pseudo} » en corail/rouge (l'âme SunMates) · couleur d'accent, qui DIFFÈRE jour/nuit. */
     #homeHello { color: var(--accent); }
     #homeHello .hello-name { color: var(--accent); }
     /* Série de jours (streak), gamification douce près du Bonjour */
@@ -3106,7 +3115,7 @@
   <div id="cropModal" class="act-overlay hidden">
     <div class="act-card crop-card" style="max-width:360px">
       <div class="picker-head"><h3 style="margin:0">✂️ Cadre ta photo</h3><button id="cropCancel" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
-      <p class="muted" style="font-size:.78rem;margin:.2rem 0 .5rem">Glisse pour positionner, zoome — puis publie.</p>
+      <p class="muted" style="font-size:.78rem;margin:.2rem 0 .5rem">Glisse pour positionner, zoome · puis publie.</p>
       <div id="cropStage" class="crop-stage"><img id="cropImg" alt="" draggable="false" /><div class="crop-ring"></div></div>
       <div class="crop-zoom"><span>➖</span><input type="range" id="cropZoom" min="1" max="3" step="0.01" value="1" /><span>➕</span></div>
       <button class="btn-primary btn-block" id="cropApply" style="margin-top:.6rem">✅ Recadrer &amp; publier</button>
@@ -3445,9 +3454,9 @@
         </div>
         <div id="searchResults"></div>
 
-        <!-- ============ HOME v2 — Hub de jeu (visible en Voyage ET en Maison) ============ -->
+        <!-- ============ HOME v2 · Hub de jeu (visible en Voyage ET en Maison) ============ -->
         <!-- Héros joueur : l'identité, toujours en haut dans les deux modes -->
-        <!-- (Vignette de niveau "player-hero" déplacée dans l'onglet Jeux — mieux intégrée là-bas) -->
+        <!-- (Vignette de niveau "player-hero" déplacée dans l'onglet Jeux · mieux intégrée là-bas) -->
 
         <!-- (Quête du jour + missions rapides RETIRÉES de l'accueil : elles vivent dans l'onglet Jeux.
              L'accueil = rencontre/carte d'abord. Le solo "à la maison" a ses propres défis/rituels plus bas.) -->
@@ -3457,10 +3466,10 @@
           <div class="card hm-hero">
             <div class="hm-hero-ic">🏠</div>
             <div><div class="hm-hero-title" id="hmHomeCity">De retour chez toi</div>
-              <div class="muted" style="font-size:.84rem">Même chez toi, garde le lien 💛 papote avec tes Mates, accueille des voyageurs de passage et continue à sympathiser — pas besoin d'être parti·e pour vivre SunMates 🌍</div></div>
+              <div class="muted" style="font-size:.84rem">Même chez toi, garde le lien 💛 papote avec tes Mates, accueille des voyageurs de passage et continue à sympathiser · pas besoin d'être parti·e pour vivre SunMates 🌍</div></div>
           </div>
 
-          <!-- ============ MAISON v2 — Hub SOLO (l'app se suffit à elle-même) ============ -->
+          <!-- ============ MAISON v2 · Hub SOLO (l'app se suffit à elle-même) ============ -->
           <section class="card solo-prog" id="soloProgress" aria-label="Ta progression solo">
             <div class="sp-aura" aria-hidden="true"></div>
             <div class="sp-head">
@@ -3545,7 +3554,7 @@
             <div class="card" id="nextTripCard"></div>
             <div id="tripPrepCard" class="card hidden"></div>
             <div class="section-head"><h3 style="margin-top:.4rem">Mes envies d'ailleurs 🌠</h3></div>
-            <p class="muted" style="margin:-.2rem 0 .5rem;font-size:.8rem">Ta liste perso de destinations rêvées — <b>privée, juste pour toi</b>, pour préparer tes prochaines aventures.</p>
+            <p class="muted" style="margin:-.2rem 0 .5rem;font-size:.8rem">Ta liste perso de destinations rêvées · <b>privée, juste pour toi</b>, pour préparer tes prochaines aventures.</p>
             <div class="card" id="wishlistCard"></div>
             <div id="tripsDoneSection" class="hidden">
               <div class="section-head"><h3 style="margin-top:.4rem">Mes voyages 🧳</h3></div>
@@ -3671,7 +3680,7 @@
           <div class="tile" data-goto="jeux"><div class="thumb gold">🎮</div><div class="t-name">Jeux &amp; Quêtes</div><div class="t-meta" id="qaJeux">XP &amp; badges</div></div>
           <div class="tile" data-goto="jeux" data-jeuxview="jeuxRank"><div class="thumb blue">🏆</div><div class="t-name">Classement</div><div class="t-meta">Grimpe le top</div></div>
           <div class="tile" data-goto="jeux" data-jeuxview="jeuxCoupons"><div class="thumb teal">🎟️</div><div class="t-name">Coupons</div><div class="t-meta" id="qaCoupons">Tes récompenses</div></div>
-          <div class="tile tile-soon" id="goldTile" aria-disabled="true" title="SunMates Gold — bientôt"><div class="thumb gold-soon">👑</div><div class="t-name">Gold</div><div class="t-meta">Avantages premium</div></div>
+          <div class="tile tile-soon" id="goldTile" aria-disabled="true" title="SunMates Gold · bientôt"><div class="thumb gold-soon">👑</div><div class="t-name">Gold</div><div class="t-meta">Avantages premium</div></div>
           <div class="tile" data-goto="profil"><div class="thumb gold">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Score de confiance</div></div>
         </div>
       </div>
@@ -3709,13 +3718,13 @@
         <!-- Filtres et tris SÉPARÉS visuellement (mêmes tuiles, même câblage #lieuxCats .cat-tile :
              un tri repart de « Tous », un filtre annule le tri → une seule tuile active, voulu) -->
         <div id="lieuxCats">
-          <div class="jnav-cap" style="margin-top:.4rem">🗂️ Filtrer</div>
+          <div class="jnav-cap" style="margin-top:.4rem">🌈 Ton ambiance</div>
           <div class="cat-row" style="margin-top:0">
             <div class="cat-tile active" data-catcf="all"><div class="cic c-sun" data-smicon="coffee" data-smicon-size="36">☕</div><div class="clbl">Tous</div></div>
             <div class="cat-tile" data-catcf="eco"><div class="cic c-green" data-smicon="eco" data-smicon-size="36">🌱</div><div class="clbl">Éco</div></div>
             <div class="cat-tile" data-catcf="near"><div class="cic c-blue" data-smicon="near" data-smicon-size="36">📍</div><div class="clbl">Près de moi</div></div>
           </div>
-          <div class="jnav-cap">↕️ Trier</div>
+          <div class="jnav-cap">🏆 Le top du coin</div>
           <div class="cat-row" style="margin-top:0">
             <div class="cat-tile" data-catsort="rating"><div class="cic c-gold" data-smicon="rating" data-smicon-size="36">⭐</div><div class="clbl">Top notés</div></div>
             <div class="cat-tile" data-catsort="checkins"><div class="cic c-purp" data-smicon="popular" data-smicon-size="36">🔥</div><div class="clbl">Populaires</div></div>
@@ -4302,7 +4311,7 @@
             <!-- FUSION : UNE seule visite guidée (auto + pas-à-pas), 83 chapitres A→Z. -->
             <div class="card demo-intro" style="text-align:center">
               <h3 style="margin-top:0">🎬 Visite guidée complète (A → Z)</h3>
-              <p class="muted" style="margin:.2rem 0 .9rem;font-size:.84rem">Un seul parcours qui combine TOUT : l'app se déroule toute seule, écran par écran, avec narration — et tu peux <b>mettre en pause, avancer ou reculer</b> (Précédent / Suivant) pour aller à ton rythme. Plus de 80 chapitres.</p>
+              <p class="muted" style="margin:.2rem 0 .9rem;font-size:.84rem">Un seul parcours qui combine TOUT : l'app se déroule toute seule, écran par écran, avec narration · et tu peux <b>mettre en pause, avancer ou reculer</b> (Précédent / Suivant) pour aller à ton rythme. Plus de 80 chapitres.</p>
               <button class="btn-primary btn-block" id="demoPlay" style="font-size:1.05rem">▶ Lancer la visite guidée</button>
               <p class="muted" style="font-size:.76rem;margin:.6rem 0 0">Pause / avancer / reculer / quitter à tout moment. Chaque « ▶ Démo guidée » du catalogue l'ouvre directement au bon chapitre.</p>
             </div>
@@ -4485,7 +4494,7 @@
           <button class="btn-accent btn-block" id="savePasswordBtn" style="margin-top:.4rem">Changer le mot de passe</button>
           <div class="msg" id="settingsMsg"></div>
 
-          <!-- RGPD : suppression de compte (droit à l'effacement) — P2.50 -->
+          <!-- RGPD : suppression de compte (droit à l'effacement) · P2.50 -->
           <div class="set-grouptitle" style="margin-top:1.2rem">Données personnelles (RGPD)</div>
           <p class="muted" style="font-size:.78rem;margin:.2rem 0 .5rem">Télécharge une copie de toutes tes données, ou supprime définitivement ton compte (<b>irréversible</b>).</p>
           <button class="btn-ghost btn-block" id="exportDataBtn" style="margin-bottom:.5rem">📦 Exporter mes données</button>
@@ -4541,7 +4550,7 @@
               <div class="cat-tile" data-jeuxnav="shop"><div class="cic c-pink" data-smicon="shop" data-smicon-size="36">🛍️</div><div class="clbl">Boutique</div></div>
             </div>
           </div>
-          <!-- ⚡ QUÊTE DU JOUR (spotlight) — moteur renderQuestSpotlight ressuscité (le DOM avait sauté
+          <!-- ⚡ QUÊTE DU JOUR (spotlight) · moteur renderQuestSpotlight ressuscité (le DOM avait sauté
                lors d'un dédoublonnage : le renderer tournait dans le vide). Contenu vivant au cœur du hub. -->
           <section class="card quest-spotlight" id="questSpotlight" aria-label="Quête du jour">
             <div class="qs-aura" aria-hidden="true"></div>
@@ -4719,7 +4728,7 @@
           <div class="section-head"><h3 style="margin:1rem 0 .2rem">🖼️ Cadres d'avatar</h3></div>
           <p class="muted" style="font-size:.78rem;margin:.1rem 0 .5rem">Encadre ta photo de profil.</p>
           <div id="shopFrames" class="shop-grid"></div>
-          <!-- #14 : boosts retirés (« pay to win » : profil mis en avant payant) — décision produit. -->
+          <!-- #14 : boosts retirés (« pay to win » : profil mis en avant payant) · décision produit. -->
           <div id="shopBoosts" style="display:none"></div>
         </div>
 
@@ -5301,7 +5310,7 @@
       const d = myProfile || {};
       const pairs = [[d.prompt1_q, d.prompt1_a], [d.prompt2_q, d.prompt2_a], [d.prompt3_q, d.prompt3_a]];
       wrap.innerHTML = pairs.map((pr, i) => {
-        const opts = ['<option value="">— Choisir une question —</option>']
+        const opts = ['<option value="">Choisir une question…</option>']
           .concat(PROMPT_QUESTIONS.map((q) => `<option ${pr[0] === q ? "selected" : ""}>${escapeHtml(q)}</option>`)).join("");
         return `<div style="margin-bottom:.7rem">
             <select id="promptQ${i}">${opts}</select>
@@ -5431,7 +5440,7 @@
     async function renderTrips() {
       const box = $("myTrips"); if (!box || !myUserId) return;
       const trips = await loadMyTrips();
-      if (trips === null) { console.warn("[SunMates] table trips absente — lance supabase_migration_trips.sql"); box.innerHTML = '<div class="trip-empty">Tes voyages arrivent très vite ✈️</div>'; const bn = $("tripMatchBanner"); if (bn) bn.innerHTML = ""; return; }
+      if (trips === null) { console.warn("[SunMates] table trips absente · lance supabase_migration_trips.sql"); box.innerHTML = '<div class="trip-empty">Tes voyages arrivent très vite ✈️</div>'; const bn = $("tripMatchBanner"); if (bn) bn.innerHTML = ""; return; }
       const matches = await loadTripMatches();
       // Profils des voyageurs qui chevauchent (1 requête)
       const ids = [...new Set(matches.map((m) => m.user_id))];
@@ -5527,7 +5536,7 @@
       const url = (myProfile && myProfile.avatar_url) || ""; let drewPhoto = false;
       if (withPhoto && url) {
         // FIX photo « ovale » : on recadre la photo en CARRÉ centré à la source (sx/sy/s) avant de la
-        // dessiner dans le cercle — sinon une photo portrait/paysage est écrasée (visage déformé).
+        // dessiner dans le cercle · sinon une photo portrait/paysage est écrasée (visage déformé).
         await new Promise((res) => { const img = new Image(); img.crossOrigin = "anonymous"; img.onload = () => { try { const s = Math.min(img.width, img.height), sx = (img.width - s) / 2, sy = (img.height - s) / 2; c.save(); c.beginPath(); c.arc(cx, cy, rad, 0, 7); c.clip(); c.drawImage(img, sx, sy, s, s, cx - rad, cy - rad, rad * 2, rad * 2); c.restore(); drewPhoto = true; } catch (e) {} res(); }; img.onerror = () => res(); img.src = url; });
       }
       if (!drewPhoto) { c.fillStyle = "#fff"; c.font = "800 140px system-ui,Arial"; c.textBaseline = "middle"; c.fillText((name[0] || "?").toUpperCase(), cx, cy); c.textBaseline = "alphabetic"; }
@@ -5570,7 +5579,7 @@
         const xp = (myProfile && myProfile.xp) || 0;
         const line = (e, lbl, v) => `<div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.2rem 0"><span style="font-size:1.2rem">${e}</span><b style="color:#B5740E;font-size:1.1rem">${v}</b><span class="muted" style="font-size:.85rem">${lbl}</span></div>`;
         setTimeout(() => popInfo("🌅", "Ta semaine sur SunMates", `
-          <p class="muted" style="font-size:.84rem;margin:0 0 .6rem;text-align:center">Nouvelle semaine qui commence — petit bilan ✨</p>
+          <p class="muted" style="font-size:.84rem;margin:0 0 .6rem;text-align:center">Nouvelle semaine qui commence · petit bilan ✨</p>
           ${line("🔥", "jours de série", streak)}
           ${line("🤝", "Mates dans ton cercle", matesN)}
           ${line("⭐", "XP au total", xp)}
@@ -5604,7 +5613,7 @@
             if (!d0) {
               d0 = document.createElement("section"); d0.id = "hmDay0"; d0.className = "card";
               d0.style.cssText = "background:linear-gradient(150deg,#FFE9C4,#FFD9AE);border:0;text-align:center";
-              d0.innerHTML = '<div style="font-size:2rem;filter:var(--relief)">🌅</div><h3 style="margin:.2rem 0 .3rem">' + i18nT("Bienvenue chez toi") + '</h3><p style="margin:0 0 .7rem;font-size:.85rem;color:#7a4a20">' + i18nT("Ici, c'est ton cocon : défis du quotidien et rituels. L'aventure, elle, se passe en mode Voyage — carte, Mates et quêtes autour de toi.") + '</p><button class="btn-primary btn-block" id="hmDay0Go">✈️ ' + i18nT("Passer en mode Voyage") + '</button><button class="btn-ghost btn-block" id="hmDay0X" style="margin-top:.4rem">' + i18nT("Rester ici pour l'instant") + "</button>";
+              d0.innerHTML = '<div style="font-size:2rem;filter:var(--relief)">🌅</div><h3 style="margin:.2rem 0 .3rem">' + i18nT("Bienvenue chez toi") + '</h3><p style="margin:0 0 .7rem;font-size:.85rem;color:#7a4a20">' + i18nT("Ici, c'est ton cocon : défis du quotidien et rituels. L'aventure, elle, se passe en mode Voyage · carte, Mates et quêtes autour de toi.") + '</p><button class="btn-primary btn-block" id="hmDay0Go">✈️ ' + i18nT("Passer en mode Voyage") + '</button><button class="btn-ghost btn-block" id="hmDay0X" style="margin-top:.4rem">' + i18nT("Rester ici pour l'instant") + "</button>";
               const host = $("homeHomeMode"); if (host) host.insertBefore(d0, host.firstChild);
               const g = $("hmDay0Go"); if (g) g.addEventListener("click", () => { try { localStorage.setItem("sm_day0_done", "1"); } catch (e) {} d0.remove(); setHomeMode("travel"); });
               const x = $("hmDay0X"); if (x) x.addEventListener("click", () => { try { localStorage.setItem("sm_day0_done", "1"); } catch (e) {} d0.remove(); });
@@ -5742,29 +5751,29 @@
     // m = mots-clés de détection (villes/pays/drapeau) ; le reste = infos pratiques concrètes.
     const COUNTRY_TIPS = [
       { name: "Portugal", flag: "🇵🇹", m: ["portugal", "lisbonne", "lisboa", "porto", "🇵🇹"], visa: "UE : carte d'identité suffit, séjour libre.", money: "Euro (€). CB partout, un peu de cash pour les petits cafés.", lang: "Portugais ; anglais courant dans les villes.", transport: "Métro/tram à Lisbonne (carte Viva), trains Comboios CP entre villes. Méfie-toi du tram 28 bondé (pickpockets).", water: "Eau du robinet potable.", plug: "Prise type C/F (comme en France), 230V.", tip: "Pourboire ~5-10% si content, non obligatoire.", health: "Carte Européenne d'Assurance Maladie (CEAM) valable.", custom: "On dîne tard (20h30+). Le 'bom dia' poli ouvre les portes.", safe: "Très sûr, même en solo la nuit dans les zones animées." },
-      { name: "Japon", flag: "🇯🇵", m: ["japon", "japan", "tokyo", "kyoto", "osaka", "🇯🇵"], visa: "Exemption 90 j pour les Français (passeport valide).", money: "Yen (¥). Société encore très cash — retire aux ATM 7-Eleven. IC Card (Suica/Pasmo) pour les transports.", lang: "Japonais ; peu d'anglais — Google Traduction photo très utile.", transport: "Trains ultra ponctuels. Le JR Pass peut valoir le coup si tu bouges beaucoup (à acheter avant idéalement).", water: "Eau du robinet potable.", plug: "Prise type A (US), 100V — adaptateur nécessaire.", tip: "PAS de pourboire (c'est mal vu).", health: "Excellents soins mais chers → assurance voyage indispensable.", custom: "Déchausse-toi à l'entrée, ne mange pas en marchant, silence dans les trains.", safe: "L'un des pays les plus sûrs au monde." },
-      { name: "Maroc", flag: "🇲🇦", m: ["maroc", "morocco", "marrakech", "fès", "fes", "casablanca", "🇲🇦"], visa: "Pas de visa pour les Français (séjour ≤ 90 j).", money: "Dirham (MAD), non exportable — change sur place. Cash roi dans les souks.", lang: "Arabe & berbère ; français très répandu.", transport: "Trains ONCF confortables (Casa-Marrakech). Petits taxis : exige le compteur ou négocie avant.", water: "Eau en bouteille uniquement.", plug: "Prise type C/E (comme France), 220V.", tip: "Pourboire (bakchich) attendu pour petits services.", health: "Évite glaçons et crudités lavées à l'eau du robinet.", custom: "Tenue couvrante (épaules/genoux), surtout pour les femmes. Marchander fait partie du jeu, avec le sourire.", safe: "Globalement sûr ; en solo femme, ignore les rabatteurs, reste dans les zones passantes." },
-      { name: "Islande", flag: "🇮🇸", m: ["islande", "iceland", "reykjavik", "reykjavík", "🇮🇸"], visa: "Espace Schengen : carte d'identité suffit.", money: "Couronne islandaise (ISK). Tout se paie en CB, même un café — quasi zéro cash.", lang: "Islandais ; anglais parlé par tous.", transport: "Pas de train — loue une voiture (4x4 hors été). Vérifie la météo/routes sur road.is et safetravel.is.", water: "Eau du robinet parmi les meilleures du monde.", plug: "Prise type C/F (comme France), 230V.", tip: "Pas de pourboire attendu.", health: "Soins excellents ; assurance recommandée (activités nature).", custom: "Douche nue obligatoire avant les piscines géothermales.", safe: "Ultra sûr ; le vrai danger, c'est la météo et la nature (respecte les barrières)." },
-      { name: "Mexique", flag: "🇲🇽", m: ["mexique", "mexico", "mexico city", "cancun", "oaxaca", "🇲🇽"], visa: "Pas de visa (≤ 180 j), formulaire FMM à l'arrivée.", money: "Peso (MXN). Cash pour la street food, CB ailleurs.", lang: "Espagnol ; anglais limité hors zones touristiques.", transport: "Bus longue distance excellents (ADO). En ville, privilégie Uber/Didi (plus sûr que taxi de rue).", water: "Eau en bouteille uniquement (même pour les dents).", plug: "Prise type A (US), 127V.", tip: "Pourboire 10-15% au resto.", health: "Attention à la 'turista' — mange chaud et fréquenté.", custom: "Les Mexicains sont chaleureux ; un peu d'espagnol fait des merveilles.", safe: "Varie fortement selon la région — évite les déplacements de nuit, ne montre pas de signes de richesse, vérifie les zones." },
+      { name: "Japon", flag: "🇯🇵", m: ["japon", "japan", "tokyo", "kyoto", "osaka", "🇯🇵"], visa: "Exemption 90 j pour les Français (passeport valide).", money: "Yen (¥). Société encore très cash · retire aux ATM 7-Eleven. IC Card (Suica/Pasmo) pour les transports.", lang: "Japonais ; peu d'anglais · Google Traduction photo très utile.", transport: "Trains ultra ponctuels. Le JR Pass peut valoir le coup si tu bouges beaucoup (à acheter avant idéalement).", water: "Eau du robinet potable.", plug: "Prise type A (US), 100V · adaptateur nécessaire.", tip: "PAS de pourboire (c'est mal vu).", health: "Excellents soins mais chers → assurance voyage indispensable.", custom: "Déchausse-toi à l'entrée, ne mange pas en marchant, silence dans les trains.", safe: "L'un des pays les plus sûrs au monde." },
+      { name: "Maroc", flag: "🇲🇦", m: ["maroc", "morocco", "marrakech", "fès", "fes", "casablanca", "🇲🇦"], visa: "Pas de visa pour les Français (séjour ≤ 90 j).", money: "Dirham (MAD), non exportable · change sur place. Cash roi dans les souks.", lang: "Arabe & berbère ; français très répandu.", transport: "Trains ONCF confortables (Casa-Marrakech). Petits taxis : exige le compteur ou négocie avant.", water: "Eau en bouteille uniquement.", plug: "Prise type C/E (comme France), 220V.", tip: "Pourboire (bakchich) attendu pour petits services.", health: "Évite glaçons et crudités lavées à l'eau du robinet.", custom: "Tenue couvrante (épaules/genoux), surtout pour les femmes. Marchander fait partie du jeu, avec le sourire.", safe: "Globalement sûr ; en solo femme, ignore les rabatteurs, reste dans les zones passantes." },
+      { name: "Islande", flag: "🇮🇸", m: ["islande", "iceland", "reykjavik", "reykjavík", "🇮🇸"], visa: "Espace Schengen : carte d'identité suffit.", money: "Couronne islandaise (ISK). Tout se paie en CB, même un café · quasi zéro cash.", lang: "Islandais ; anglais parlé par tous.", transport: "Pas de train · loue une voiture (4x4 hors été). Vérifie la météo/routes sur road.is et safetravel.is.", water: "Eau du robinet parmi les meilleures du monde.", plug: "Prise type C/F (comme France), 230V.", tip: "Pas de pourboire attendu.", health: "Soins excellents ; assurance recommandée (activités nature).", custom: "Douche nue obligatoire avant les piscines géothermales.", safe: "Ultra sûr ; le vrai danger, c'est la météo et la nature (respecte les barrières)." },
+      { name: "Mexique", flag: "🇲🇽", m: ["mexique", "mexico", "mexico city", "cancun", "oaxaca", "🇲🇽"], visa: "Pas de visa (≤ 180 j), formulaire FMM à l'arrivée.", money: "Peso (MXN). Cash pour la street food, CB ailleurs.", lang: "Espagnol ; anglais limité hors zones touristiques.", transport: "Bus longue distance excellents (ADO). En ville, privilégie Uber/Didi (plus sûr que taxi de rue).", water: "Eau en bouteille uniquement (même pour les dents).", plug: "Prise type A (US), 127V.", tip: "Pourboire 10-15% au resto.", health: "Attention à la 'turista' · mange chaud et fréquenté.", custom: "Les Mexicains sont chaleureux ; un peu d'espagnol fait des merveilles.", safe: "Varie fortement selon la région · évite les déplacements de nuit, ne montre pas de signes de richesse, vérifie les zones." },
       { name: "Grèce", flag: "🇬🇷", m: ["grèce", "grece", "greece", "athènes", "athenes", "santorin", "🇬🇷"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). Cash utile sur les petites îles.", lang: "Grec ; anglais courant côté tourisme.", transport: "Ferries entre îles (réserve en haute saison). Loue un scooter avec prudence.", water: "Potable sur le continent ; bouteille conseillée sur certaines îles.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10%.", health: "CEAM valable.", custom: "Repas tardifs et conviviaux ; rythme tranquille (siga siga).", safe: "Très sûr en solo." },
-      { name: "Vietnam", flag: "🇻🇳", m: ["vietnam", "hanoi", "hanoï", "saigon", "ho chi minh", "🇻🇳"], visa: "E-visa en ligne nécessaire (90 j) — fais-le avant.", money: "Dong (VND). Cash roi ; retire de grosses coupures.", lang: "Vietnamien ; anglais basique côté tourisme.", transport: "Grab (VTC/moto) partout, pas cher. Trains de nuit sympas. Traverser la rue = avance lentement et régulièrement.", water: "Eau en bouteille uniquement.", plug: "Prise type A/C, 220V.", tip: "Pourboire pas obligatoire mais apprécié.", health: "Mange chaud et fréquenté ; vaccins à vérifier (hépatite A, typhoïde).", custom: "Marchander avec le sourire ; enlève tes chaussures chez l'habitant.", safe: "Sûr ; surveille tes affaires (vols à l'arraché à moto)." },
+      { name: "Vietnam", flag: "🇻🇳", m: ["vietnam", "hanoi", "hanoï", "saigon", "ho chi minh", "🇻🇳"], visa: "E-visa en ligne nécessaire (90 j) · fais-le avant.", money: "Dong (VND). Cash roi ; retire de grosses coupures.", lang: "Vietnamien ; anglais basique côté tourisme.", transport: "Grab (VTC/moto) partout, pas cher. Trains de nuit sympas. Traverser la rue = avance lentement et régulièrement.", water: "Eau en bouteille uniquement.", plug: "Prise type A/C, 220V.", tip: "Pourboire pas obligatoire mais apprécié.", health: "Mange chaud et fréquenté ; vaccins à vérifier (hépatite A, typhoïde).", custom: "Marchander avec le sourire ; enlève tes chaussures chez l'habitant.", safe: "Sûr ; surveille tes affaires (vols à l'arraché à moto)." },
       { name: "Pérou", flag: "🇵🇪", m: ["pérou", "perou", "peru", "cusco", "lima", "machu", "🇵🇪"], visa: "Pas de visa (≤ 183 j).", money: "Sol (PEN). Cash pour marchés et taxis.", lang: "Espagnol (et quechua) ; anglais limité.", transport: "Vols internes pour les longues distances ; bus Cruz del Sur fiables. Train pour le Machu Picchu (réserve tôt).", water: "Eau en bouteille uniquement.", plug: "Prise type A/C, 220V.", tip: "Pourboire ~10%.", health: "Mal d'altitude à Cusco (3 400 m) : monte progressivement, hydrate-toi, maté de coca.", custom: "Respect des traditions andines ; négocie poliment.", safe: "Cusco/Lima : attention aux pickpockets et faux taxis (commande via appli)." },
       { name: "Italie", flag: "🇮🇹", m: ["italie", "italy", "rome", "roma", "milan", "florence", "venise", "🇮🇹"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). CB partout.", lang: "Italien ; anglais correct côté tourisme.", transport: "Trains Trenitalia/Italo rapides entre villes (compose ton billet régional). Évite la voiture en centre-ville (ZTL = amendes).", water: "Potable (fontaines 'nasoni' à Rome).", plug: "Prise type C/F/L, 230V.", tip: "'Coperto' souvent inclus ; petit pourboire si content.", health: "CEAM valable.", custom: "Cappuccino le matin seulement ; on dîne après 20h.", safe: "Sûr ; pickpockets dans les transports et sites touristiques." },
       { name: "Thaïlande", flag: "🇹🇭", m: ["thaïlande", "thailande", "thailand", "bangkok", "chiang mai", "phuket", "🇹🇭"], visa: "Exemption ~60 j pour les Français (vérifie la durée à jour).", money: "Baht (THB). Cash pour marchés ; CB dans les malls.", lang: "Thaï ; anglais basique côté tourisme.", transport: "Grab en ville, trains et bus pas chers, vols internes AirAsia. Loue un scooter avec un vrai permis (et casque).", water: "Eau en bouteille uniquement.", plug: "Prise type A/C, 220V.", tip: "Pourboire apprécié, pas obligatoire.", health: "Vaccins à vérifier ; attention arnaques 'temple fermé'.", custom: "Ne touche pas la tête, déchausse-toi aux temples (épaules/genoux couverts), respect du roi.", safe: "Très sûr pour le solo ; gare aux arnaques touristiques." },
       { name: "Espagne", flag: "🇪🇸", m: ["espagne", "spain", "barcelone", "barcelona", "madrid", "séville", "seville", "🇪🇸"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). CB partout.", lang: "Espagnol (catalan à Barcelone) ; anglais correct.", transport: "Trains AVE rapides, métro efficace. Très bons réseaux urbains.", water: "Potable.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire facultatif (arrondir).", health: "CEAM valable.", custom: "Repas très tardifs (déj 14h, dîner 21h+), sieste l'aprem dans le sud.", safe: "Sûr ; Barcelone = capitale du pickpocket, vigilance Ramblas/métro." },
       { name: "Norvège", flag: "🇳🇴", m: ["norvège", "norvege", "norway", "oslo", "tromsø", "tromso", "bergen", "🇳🇴"], visa: "Schengen : carte d'identité suffit.", money: "Couronne norvégienne (NOK). Tout en CB/sans contact, quasi zéro cash.", lang: "Norvégien ; anglais parlé par tous.", transport: "Trains panoramiques, ferries pour les fjords, bus fiables.", water: "Eau du robinet excellente.", plug: "Prise type C/F (comme France), 230V.", tip: "Pas de pourboire attendu.", health: "Soins excellents ; assurance conseillée.", custom: "Pays cher → cuisine un peu toi-même. 'Friluftsliv' : la vie dehors.", safe: "Ultra sûr ; le froid et la nature sont les seuls vrais risques." },
       { name: "Colombie", flag: "🇨🇴", m: ["colombie", "colombia", "carthagène", "cartagena", "bogota", "medellin", "medellín", "🇨🇴"], visa: "Pas de visa (≤ 90 j).", money: "Peso colombien (COP). Cash pour le quotidien.", lang: "Espagnol ; peu d'anglais.", transport: "Vols internes pas chers (grandes distances), Uber/taxi via appli.", water: "Bouteille hors grandes villes.", plug: "Prise type A/B (US), 110V.", tip: "Pourboire ~10% (souvent 'propina' suggérée).", health: "Vaccin fièvre jaune pour l'Amazonie/zones tropicales.", custom: "Gens très accueillants ; 'no dar papaya' = ne tente pas les voleurs.", safe: "Reste dans les quartiers sûrs, commande tes taxis, discrétion avec téléphone/cash." },
-      { name: "Australie", flag: "🇦🇺", m: ["australie", "australia", "sydney", "melbourne", "🇦🇺"], visa: "eVisitor/ETA obligatoire (en ligne, avant départ).", money: "Dollar australien (AUD). CB/sans contact partout.", lang: "Anglais.", transport: "Grandes distances → vols internes. Conduite à gauche ; faune sur les routes la nuit.", water: "Potable.", plug: "Prise type I, 230V — adaptateur spécifique.", tip: "Pas de pourboire attendu.", health: "Soleil très fort (indice UV extrême) : crème + chapeau. Méfie-toi des courants en mer (baigne-toi entre les drapeaux).", custom: "Décontracté et amical.", safe: "Très sûr." },
-      { name: "Turquie", flag: "🇹🇷", m: ["turquie", "turkey", "istanbul", "cappadoce", "🇹🇷"], visa: "Pas de visa pour les Français (séjour ≤ 90 j).", money: "Livre turque (TRY), forte inflation — change peu à la fois. Cash pour bazars.", lang: "Turc ; anglais côté tourisme.", transport: "Tram/métro à Istanbul (Istanbulkart), vols internes pas chers, bus longue distance confortables.", water: "Eau en bouteille conseillée.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10%.", health: "RAS hors précautions alimentaires de base.", custom: "Marchander au bazar ; tenue correcte dans les mosquées (foulard pour les femmes).", safe: "Istanbul sûre en zones touristiques ; ignore les rabatteurs trop insistants." },
-      { name: "États-Unis", flag: "🇺🇸", m: ["états-unis", "etats-unis", "usa", "états unis", "new york", "los angeles", "miami", "🇺🇸"], visa: "ESTA obligatoire (en ligne, avant départ) pour ≤ 90 j.", money: "Dollar US (USD). CB/sans contact partout, cash pour les pourboires.", lang: "Anglais.", transport: "Voiture-roi hors grandes villes ; en ville Uber/Lyft + métro. Conduite à droite.", water: "Eau du robinet potable.", plug: "Prise type A/B (US), 120V — adaptateur nécessaire.", tip: "Pourboire ATTENDU : 18-20 % au resto, 1-2 $ par service.", health: "Soins TRÈS chers → assurance voyage indispensable.", custom: "Service ultra commercial et souriant ; taxes ajoutées en caisse (prix affichés HT).", safe: "Globalement sûr ; renseigne-toi quartier par quartier dans les grandes villes." },
-      { name: "Royaume-Uni", flag: "🇬🇧", m: ["royaume-uni", "angleterre", "uk", "londres", "london", "écosse", "ecosse", "🇬🇧"], visa: "Pas de visa pour les Français (≤ 6 mois) ; passeport requis (plus la CNI).", money: "Livre sterling (GBP). Sans contact partout.", lang: "Anglais.", transport: "Métro (Oyster/contactless), trains chers (réserve tôt). Conduite à gauche.", water: "Eau du robinet potable.", plug: "Prise type G (3 broches) — adaptateur spécifique.", tip: "Pourboire ~10-12,5 % (souvent inclus 'service charge').", health: "CEAM plus valable post-Brexit → assurance conseillée.", custom: "On fait la queue religieusement ; pub culture le soir.", safe: "Sûr ; vigilance pickpockets dans les transports londoniens." },
+      { name: "Australie", flag: "🇦🇺", m: ["australie", "australia", "sydney", "melbourne", "🇦🇺"], visa: "eVisitor/ETA obligatoire (en ligne, avant départ).", money: "Dollar australien (AUD). CB/sans contact partout.", lang: "Anglais.", transport: "Grandes distances → vols internes. Conduite à gauche ; faune sur les routes la nuit.", water: "Potable.", plug: "Prise type I, 230V · adaptateur spécifique.", tip: "Pas de pourboire attendu.", health: "Soleil très fort (indice UV extrême) : crème + chapeau. Méfie-toi des courants en mer (baigne-toi entre les drapeaux).", custom: "Décontracté et amical.", safe: "Très sûr." },
+      { name: "Turquie", flag: "🇹🇷", m: ["turquie", "turkey", "istanbul", "cappadoce", "🇹🇷"], visa: "Pas de visa pour les Français (séjour ≤ 90 j).", money: "Livre turque (TRY), forte inflation · change peu à la fois. Cash pour bazars.", lang: "Turc ; anglais côté tourisme.", transport: "Tram/métro à Istanbul (Istanbulkart), vols internes pas chers, bus longue distance confortables.", water: "Eau en bouteille conseillée.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10%.", health: "RAS hors précautions alimentaires de base.", custom: "Marchander au bazar ; tenue correcte dans les mosquées (foulard pour les femmes).", safe: "Istanbul sûre en zones touristiques ; ignore les rabatteurs trop insistants." },
+      { name: "États-Unis", flag: "🇺🇸", m: ["états-unis", "etats-unis", "usa", "états unis", "new york", "los angeles", "miami", "🇺🇸"], visa: "ESTA obligatoire (en ligne, avant départ) pour ≤ 90 j.", money: "Dollar US (USD). CB/sans contact partout, cash pour les pourboires.", lang: "Anglais.", transport: "Voiture-roi hors grandes villes ; en ville Uber/Lyft + métro. Conduite à droite.", water: "Eau du robinet potable.", plug: "Prise type A/B (US), 120V · adaptateur nécessaire.", tip: "Pourboire ATTENDU : 18-20 % au resto, 1-2 $ par service.", health: "Soins TRÈS chers → assurance voyage indispensable.", custom: "Service ultra commercial et souriant ; taxes ajoutées en caisse (prix affichés HT).", safe: "Globalement sûr ; renseigne-toi quartier par quartier dans les grandes villes." },
+      { name: "Royaume-Uni", flag: "🇬🇧", m: ["royaume-uni", "angleterre", "uk", "londres", "london", "écosse", "ecosse", "🇬🇧"], visa: "Pas de visa pour les Français (≤ 6 mois) ; passeport requis (plus la CNI).", money: "Livre sterling (GBP). Sans contact partout.", lang: "Anglais.", transport: "Métro (Oyster/contactless), trains chers (réserve tôt). Conduite à gauche.", water: "Eau du robinet potable.", plug: "Prise type G (3 broches) · adaptateur spécifique.", tip: "Pourboire ~10-12,5 % (souvent inclus 'service charge').", health: "CEAM plus valable post-Brexit → assurance conseillée.", custom: "On fait la queue religieusement ; pub culture le soir.", safe: "Sûr ; vigilance pickpockets dans les transports londoniens." },
       { name: "Indonésie (Bali)", flag: "🇮🇩", m: ["indonésie", "indonesie", "bali", "jakarta", "ubud", "🇮🇩"], visa: "Visa à l'arrivée (VOA, payant) ou e-VOA, 30 j prolongeables.", money: "Roupie indonésienne (IDR). Cash roi hors zones touristiques.", lang: "Indonésien ; anglais correct à Bali.", transport: "Scooter partout (permis international + casque), Grab/Gojek en ville. Trafic dense.", water: "Eau en bouteille uniquement.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire apprécié, pas obligatoire.", health: "Vaccins à vérifier ; attention 'Bali belly' (mange chaud), dengue (anti-moustiques).", custom: "Respect des temples (sarong, épaules couvertes) ; sourire et politesse partout.", safe: "Sûr ; gare aux arnaques de location de scooter et au trafic." },
       { name: "Inde", flag: "🇮🇳", m: ["inde", "india", "delhi", "jaipur", "goa", "🇮🇳"], visa: "e-Visa touristique obligatoire (en ligne, avant départ).", money: "Roupie indienne (INR). Cash indispensable ; UPI très répandu localement.", lang: "Hindi, anglais (officiel) très utile.", transport: "Trains mythiques (réserve sur IRCTC), rickshaws (négocie/compteur), Uber/Ola en ville.", water: "Eau en bouteille SCELLÉE uniquement.", plug: "Prise type C/D/M, 230V.", tip: "Pourboire 10 % ; petits pourboires fréquents.", health: "Vaccins (hépatite A/typhoïde) ; mange chaud et très cuit, évite crudités/glaçons.", custom: "Tenue couvrante ; déchausse-toi aux temples ; main droite pour manger/donner.", safe: "Intense ; femmes solo : prudence accrue, transports réputés, évite la nuit isolée." },
       { name: "Égypte", flag: "🇪🇬", m: ["égypte", "egypte", "egypt", "le caire", "caire", "louxor", "🇪🇬"], visa: "Visa à l'arrivée ou e-Visa (payant).", money: "Livre égyptienne (EGP). Cash roi ; beaucoup de petits pourboires (baksheesh).", lang: "Arabe ; anglais côté tourisme.", transport: "Uber/Careem au Caire (plus sûr que taxi de rue), trains pour Louxor/Assouan.", water: "Eau en bouteille uniquement.", plug: "Prise type C/F (comme France), 220V.", tip: "Baksheesh attendu pour tout petit service.", health: "Attention 'turista' ; protège-toi du soleil.", custom: "Marchander partout ; tenue couvrante (surtout femmes) ; rabatteurs insistants aux sites.", safe: "Sites touristiques sûrs/encadrés ; femmes solo : prévois le harcèlement de rue, reste ferme." },
       { name: "Allemagne", flag: "🇩🇪", m: ["allemagne", "germany", "berlin", "munich", "münich", "🇩🇪"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€). Étonnamment CASH dans beaucoup de bars/petits commerces.", lang: "Allemand ; très bon anglais.", transport: "Trains DB ponctuels, métros efficaces, vélos partout.", water: "Eau du robinet potable.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~5-10 % (on annonce le total au serveur).", health: "CEAM valable.", custom: "Ponctualité et règles respectées ; le dimanche tout ferme.", safe: "Très sûr." },
       { name: "Croatie", flag: "🇭🇷", m: ["croatie", "croatia", "dubrovnik", "split", "zagreb", "🇭🇷"], visa: "Schengen : carte d'identité suffit.", money: "Euro (€) depuis 2023.", lang: "Croate ; bon anglais côté côte.", transport: "Bus confortables, ferries entre îles (Jadrolinija). Loue une voiture pour l'arrière-pays.", water: "Eau du robinet potable.", plug: "Prise type C/F (comme France), 230V.", tip: "Pourboire ~10 %.", health: "CEAM valable.", custom: "Côte adriatique détendue ; haute saison très fréquentée (juillet-août).", safe: "Très sûr." },
       { name: "Brésil", flag: "🇧🇷", m: ["brésil", "bresil", "brazil", "rio", "sao paulo", "são paulo", "🇧🇷"], visa: "Pas de visa pour les Français (≤ 90 j).", money: "Real (BRL). Cash + Pix (paiement instantané local) ; CB courante.", lang: "Portugais ; peu d'anglais.", transport: "Vols internes pour les distances, Uber/99 en ville (plus sûr que taxi).", water: "Eau en bouteille conseillée.", plug: "Prise type N (parfois C), 127/220V selon région.", tip: "Service 10 % souvent inclus.", health: "Vaccin fièvre jaune (Amazonie/zones) ; anti-moustiques (dengue).", custom: "Chaleureux et festif ; 'no dar bobeira' = discrétion avec tes affaires.", safe: "Varie fortement : discrétion (pas de bijoux/téléphone exposé), commande tes taxis, évite favelas non encadrées et la nuit isolée." },
-      { name: "Canada", flag: "🇨🇦", m: ["canada", "montréal", "montreal", "toronto", "vancouver", "québec", "quebec", "🇨🇦"], visa: "AVE obligatoire (en ligne, avant départ) pour ≤ 6 mois.", money: "Dollar canadien (CAD). Sans contact partout.", lang: "Anglais + français (Québec).", transport: "Grandes distances → vols/voiture ; bons transports urbains.", water: "Eau du robinet potable.", plug: "Prise type A/B (US), 120V — adaptateur.", tip: "Pourboire ATTENDU 15-20 % ; taxes ajoutées en caisse.", health: "Soins chers → assurance voyage.", custom: "Très poli ; hivers rudes (équipe-toi).", safe: "Très sûr." },
+      { name: "Canada", flag: "🇨🇦", m: ["canada", "montréal", "montreal", "toronto", "vancouver", "québec", "quebec", "🇨🇦"], visa: "AVE obligatoire (en ligne, avant départ) pour ≤ 6 mois.", money: "Dollar canadien (CAD). Sans contact partout.", lang: "Anglais + français (Québec).", transport: "Grandes distances → vols/voiture ; bons transports urbains.", water: "Eau du robinet potable.", plug: "Prise type A/B (US), 120V · adaptateur.", tip: "Pourboire ATTENDU 15-20 % ; taxes ajoutées en caisse.", health: "Soins chers → assurance voyage.", custom: "Très poli ; hivers rudes (équipe-toi).", safe: "Très sûr." },
     ];
     function _countryFor(dest) {
       const d = (dest || "").toLowerCase();
@@ -5854,7 +5863,7 @@
       if (typeof celebrate === "function") celebrate();
     }
     document.querySelectorAll("#homeModeSwitch button").forEach((b) => b.addEventListener("click", () => setHomeMode(b.dataset.mode)));
-    // Statut « hôte » (local) : 3 états — aucun / en attente de validation / actif.
+    // Statut « hôte » (local) : 3 états · aucun / en attente de validation / actif.
     // Devenir hôte n'est PAS instantané : on envoie une demande, validée ensuite (modération).
     function hostState() { try { return localStorage.getItem("sm_host") || "none"; } catch (e) { return "none"; } } // "none" | "pending" | "1"
     function isHost() { return hostState() === "1"; }
@@ -5867,7 +5876,7 @@
         : (st === "pending"
           ? "On vérifie ton profil (compte vérifié, ancienneté, sérieux) avant d'activer ton statut d'hôte. Tu seras prévenu·e dès que c'est bon ✨"
           : "Aide les voyageurs à se sentir en sécurité dans ta ville : conseils, bons spots, café d'accueil.");
-      if (b) { b.textContent = st === "1" ? "✓ Hôte actif" : (st === "pending" ? "⏳ Demande envoyée — voir le statut" : "Je veux aider"); b.disabled = false; b.style.opacity = ""; }
+      if (b) { b.textContent = st === "1" ? "✓ Hôte actif" : (st === "pending" ? "⏳ Demande envoyée · voir le statut" : "Je veux aider"); b.disabled = false; b.style.opacity = ""; }
       const pb = $("profileHostBadge"); if (pb) show(pb, st === "1"); // badge profil seulement si validé
     }
     { const hb = $("hostBtn"); if (hb) hb.addEventListener("click", () => {
@@ -6030,7 +6039,7 @@
       const gt = $("goldTile");
       if (gt) {
         if (data.is_admin) { gt.classList.remove("tile-soon"); gt.removeAttribute("aria-disabled"); gt.style.cursor = "pointer"; gt.title = "Aperçu Premium (admin)"; }
-        else { gt.classList.add("tile-soon"); gt.setAttribute("aria-disabled", "true"); gt.style.cursor = "default"; gt.title = "SunMates Gold — bientôt"; }
+        else { gt.classList.add("tile-soon"); gt.setAttribute("aria-disabled", "true"); gt.style.cursor = "default"; gt.title = "SunMates Gold · bientôt"; }
       }
     }
 
@@ -6397,7 +6406,7 @@
           </div>
         </div>`;
       }).join("") : ('<p class="muted">' + (cafeFilter.mode === "near"
-        ? "Aucun lieu géolocalisé près de toi pour l'instant 📍 — repasse sur « Tous » ou explore une autre ville ✨"
+        ? "Aucun lieu géolocalisé près de toi pour l'instant 📍 · repasse sur « Tous » ou explore une autre ville ✨"
         : "Aucun lieu ne correspond. Essaie un autre filtre.") + "</p>"));
       list.querySelectorAll("[data-checkin]").forEach((b) =>
         b.addEventListener("click", () => checkIn(Number(b.dataset.checkin), b.dataset.name)));
@@ -6655,7 +6664,7 @@
         });
       }, 6000);
     }
-    // Retours bêta (segment dédié) — lit la table app_feedback (best-effort).
+    // Retours bêta (segment dédié) · lit la table app_feedback (best-effort).
     async function loadAdminFeedback() {
       const box = $("adminFeedback"); if (!box) return;
       box.innerHTML = '<p class="muted" style="font-size:.82rem">Chargement…</p>';
@@ -6663,7 +6672,7 @@
       let rows = null;
       // P2.34 : on lit aussi id + réponse + statut pour permettre de répondre.
       try { const { data, error } = await db.from("app_feedback").select("id,type,message,username,app_version,created_at,admin_reply,status").order("created_at", { ascending: false }).limit(60); if (!error) rows = data || []; } catch (e) {}
-      if (rows === null) { box.innerHTML = '<p class="muted" style="font-size:.8rem">Table <code>app_feedback</code> absente — lance <code>supabase_migration_feedback.sql</code> pour activer la collecte.</p>'; return; }
+      if (rows === null) { box.innerHTML = '<p class="muted" style="font-size:.8rem">Table <code>app_feedback</code> absente · lance <code>supabase_migration_feedback.sql</code> pour activer la collecte.</p>'; return; }
       if (!rows.length) { box.innerHTML = '<p class="muted" style="font-size:.82rem">Aucun retour pour l\'instant.</p>'; return; }
       const cnt = rows.reduce((a, r) => (a[r.type] = (a[r.type] || 0) + 1, a), {});
       box.innerHTML =
@@ -6687,7 +6696,7 @@
             const { data, error } = await db.rpc("sm_reply_feedback", { p_id: row.dataset.fbid, p_reply: txt });
             const res = (data && data[0]) || data || {};
             if (error || !res.ok) { toast("⚠️", (res && res.message) || "Erreur"); go.disabled = false; go.textContent = "Répondre"; return; }
-            toast("✅", "Réponse envoyée — l'auteur sera notifié");
+            toast("✅", "Réponse envoyée · l'auteur sera notifié");
             loadAdminFeedback();
           } catch (e) { toast("⚠️", "Erreur"); go.disabled = false; go.textContent = "Répondre"; }
         });
@@ -6714,7 +6723,7 @@
       let d = _lastAdminStats;
       if (!d) { try { const r = await db.rpc("admin_stats"); if (r.data && r.data.ok) d = r.data; } catch (e) {} }
       if (!d) { toast("⚠️", "Stats indisponibles"); return; }
-      const txt = `📊 SunMates ${_appBuild()} — rapport\n`
+      const txt = `📊 SunMates ${_appBuild()} · rapport\n`
         + `👥 Membres ${d.users} · ✅ Vérifiés ${d.verified} · 👑 Gold ${d.gold} · 🚫 Bannis ${d.banned}\n`
         + `🤝 Connexions ${d.connections} (${d.pending_conn} en attente) · 💬 Messages ${d.messages}\n`
         + `🛟 Check-ins ${d.checkins} · 🎯 Quêtes ${d.quests_done} · 🏅 Badges ${d.badges} · 🎟️ Coupons ${d.coupons}\n`
@@ -6820,7 +6829,7 @@
         ["💡", "Inspiration du jour", "Vraie fiche destination : pourquoi y aller, incontournables, quand/budget/sécurité, ajout en 1 tap."],
         ["🧳", "Préparer mon voyage", "Check-list par catégories + FICHE PAYS réelle (formalités, argent, transport, eau, prise, coutumes, sécurité) selon la destination."],
         ["👋", "De passage chez toi", "Voyageurs qui explorent ta ville ; devenir hôte/ambassadeur."],
-        ["🏡", "HomeMates — souvenirs", "Récap de tes aventures (Mates, villes, quêtes, check-ins) gardé au retour ; partage en carte souvenir."],
+        ["🏡", "HomeMates · souvenirs", "Récap de tes aventures (Mates, villes, quêtes, check-ins) gardé au retour ; partage en carte souvenir."],
       ]],
       ["🏅 Badges", [
         ["🏅", "Catalogue de badges", "Médaillons ronds à emoji, couleurs variées (DA), grisés tant que verrouillés."],
@@ -7045,9 +7054,9 @@
         run: () => { const d = document.querySelector(".hm-plan"); if (d) d.open = true; adInto("#wishlistCard", 300); } },
       { title: "🛟 Devenir hôte SunMates", text: "Aide les voyageurs de passage dans ta ville. Le rôle est validé manuellement (confiance).", ms: 6000,
         run: () => { A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#hostBtn", 300); } },
-      { title: "🏡 HomeMates — tes souvenirs", text: "Tes aventures et tes Mates restent avec toi : récap Mates/villes/quêtes/check-ins.", ms: 6000,
+      { title: "🏡 HomeMates · tes souvenirs", text: "Tes aventures et tes Mates restent avec toi : récap Mates/villes/quêtes/check-ins.", ms: 6000,
         run: () => { A(() => { if (typeof setHomeMode === "function") setHomeMode("home"); }); adInto("#homeMates", 300); } },
-      { title: "📖 L'album souvenir par ville", text: "Note un souvenir marquant par ville visitée — ton carnet de route perso.", ms: 5500,
+      { title: "📖 L'album souvenir par ville", text: "Note un souvenir marquant par ville visitée · ton carnet de route perso.", ms: 5500,
         run: () => { adInto("#homeMates", 200); } },
       { title: "📍 Mon spot du jour", text: "Dis où tu traînes : tes Mates te voient sur la carte et peuvent te rejoindre. Visible 24 h, façon story.", ms: 6000,
         run: () => { adCleanup(); A(() => goToTab("lieux")); setTimeout(() => { const s = document.getElementById("spotCard"); if (s) s.open = true; adInto("#spotCard", 250); }, 400); } },
@@ -7065,7 +7074,7 @@
         run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showLevelInfo === "function") showLevelInfo(); }, 500); } },
       { title: "🎮 Les jeux populaires", text: "6 mini-jeux intégrés, jouables tout de suite, en solo ou avec un Mate.", ms: 6000,
         run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof openJeuxSheet === "function") openJeuxSheet("games"); }, 500); } },
-      { title: "🎲 La roue des défis", text: "Un défi fun tiré au sort à chaque clic — parfait pour se lancer.", ms: 5500,
+      { title: "🎲 La roue des défis", text: "Un défi fun tiré au sort à chaque clic · parfait pour se lancer.", ms: 5500,
         run: () => { setTimeout(() => { if (typeof playGame === "function") playGame("wheel"); }, 300); } },
       { title: "❓ Le quiz du voyageur", text: "Teste ta culture voyage, une question à la fois, et enchaîne les bonnes réponses.", ms: 6000,
         run: () => { setTimeout(() => { if (typeof playGame === "function") playGame("quiz"); }, 300); } },
@@ -7085,11 +7094,11 @@
         run: () => { A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxShop"); }, 350); } },
       { title: "🎟️ Tes coupons partenaires", text: "Les récompenses débloquées (1er verre offert, happy hour…), prêtes à dégainer.", ms: 5500,
         run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxCoupons"); }, 450); } },
-      { title: "🏆 Le classement par ville", text: "Compare-toi par XP, check-ins, confiance ou badges — filtrable par ville.", ms: 6000,
+      { title: "🏆 Le classement par ville", text: "Compare-toi par XP, check-ins, confiance ou badges · filtrable par ville.", ms: 6000,
         run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => { if (typeof showJeuxView === "function") { showJeuxView("jeuxRank"); if (typeof renderLeaderboard === "function") renderLeaderboard(); } }, 450); } },
-      { title: "❤️ La compatibilité d'un Mate", text: "Sur chaque profil, un score de compatibilité — touche-le pour voir pourquoi vous matchez.", ms: 6000,
+      { title: "❤️ La compatibilité d'un Mate", text: "Sur chaque profil, un score de compatibilité · touche-le pour voir pourquoi vous matchez.", ms: 6000,
         run: () => { adCleanup(); A(() => ensureIaPersonas && ensureIaPersonas()); A(() => goToTab("connexions")); setTimeout(() => { const m = adDemoProfile(); if (m && typeof openTravelerProfile === "function") openTravelerProfile(m); setTimeout(() => adInto("#tpCompatStat", 0, "center"), 500); }, 600); } },
-      { title: "⭐ Recommander un Mate (vouch)", text: "Tu peux te porter garant d'un Mate de confiance — un vrai signal pour la communauté.", ms: 5500,
+      { title: "⭐ Recommander un Mate (vouch)", text: "Tu peux te porter garant d'un Mate de confiance · un vrai signal pour la communauté.", ms: 5500,
         run: () => { setTimeout(() => adInto("#tpVouchCard", 0, "center"), 300); } },
       { title: "🎯 Défi, BFF ou Bloquer", text: "Sous le profil : lance un défi, désigne ton BFF du moment, ou bloque/signale en un geste.", ms: 5500,
         run: () => { setTimeout(() => adInto(".tp-actions2", 0, "center"), 300); } },
@@ -7099,7 +7108,7 @@
         run: () => { setTimeout(() => { const ov = document.getElementById("popInfoOv"); if (ov) ov.classList.add("hidden"); if (typeof openRingtonePicker === "function") openRingtonePicker(); }, 400); } },
       { title: "✈️ Voyager en sécurité", text: "Un guide complet : avant de partir, transports, logement, soirée, rencontres, argent, pépins.", ms: 6500,
         run: () => { adCleanup(); A(() => goToTab("securite")); setTimeout(() => { if (typeof handleSecu === "function") handleSecu("voyage"); }, 500); } },
-      { title: "🌍 Les numéros d'urgence", text: "Le bon numéro selon le pays — indispensable à l'étranger.", ms: 5500,
+      { title: "🌍 Les numéros d'urgence", text: "Le bon numéro selon le pays · indispensable à l'étranger.", ms: 5500,
         run: () => { const ov = document.getElementById("pickerOverlay"); A(() => goToTab("securite")); setTimeout(() => { if (typeof openNumbers === "function") openNumbers(); }, 500); } },
       { title: "🎬 Tout est dans la visite guidée", text: "Cette visite EST le tuto : tu peux la relancer, avancer chapitre par chapitre, ou l'ouvrir sur une zone précise depuis le catalogue.", ms: 6500,
         run: () => { adCleanup(); A(() => goToTab("accueil")); } },
@@ -7215,8 +7224,8 @@
       const POP = {};
       const list = (arr) => "<div style='text-align:left'>" + arr.map((x) => "<div class='coll-row'>" + x + "</div>").join("") + "</div>";
       cities.forEach((c) => { POP["city:" + c] = ["🗺️ " + esc(c), list(byCity[c].map((q) => (q.emoji || "🎯") + " " + esc(q.title) + " <span style='color:var(--muted)'>· +" + (q.points || 0) + " XP</span>"))]; });
-      POP["games"] = ["🎮 Jeux populaires (intégrés)", list(cgames.map((g) => g.emoji + " <b>" + esc(g.name) + "</b> — " + esc(g.desc)))];
-      POP["badges"] = ["🏅 Badges (catalogue)", badges.length ? list(badges.map((b) => (b.emoji || "🏅") + " <b>" + esc(b.name) + "</b>" + (b.is_secret ? " 🔒 secret" : "") + (b.description ? " — " + esc(b.description) : ""))) : "<p class='muted'>Lance les migrations badges.</p>"];
+      POP["games"] = ["🎮 Jeux populaires (intégrés)", list(cgames.map((g) => g.emoji + " <b>" + esc(g.name) + "</b> · " + esc(g.desc)))];
+      POP["badges"] = ["🏅 Badges (catalogue)", badges.length ? list(badges.map((b) => (b.emoji || "🏅") + " <b>" + esc(b.name) + "</b>" + (b.is_secret ? " 🔒 secret" : "") + (b.description ? " · " + esc(b.description) : ""))) : "<p class='muted'>Lance les migrations badges.</p>"];
       POP["chal"] = ["🧭 Défis solo", list(chal.map((c) => c.emoji + " <b>" + esc(c.title) + "</b> · +" + c.xp + " XP"))];
       POP["rits"] = ["☀️ Rituels", list(rits.map((r) => r.emoji + " " + esc(r.title)))];
       POP["nums"] = ["🌍 Numéros d'urgence (" + nums.length + " pays)", list(nums.map((n) => (n.f || "🏳️") + " <b>" + esc(n.c) + "</b> · " + esc(n.n)))];
@@ -7237,7 +7246,7 @@
         </div>` : '<p class="muted">Stats indisponibles (accès admin requis).</p>';
 
       const citiesBlock = `
-        <div class="set-grouptitle">🗺️ Contenu de jeu — quêtes par ville (${quests.length} quêtes · ${cities.length} villes) <span style="font-weight:400;color:var(--muted)">· touche une ville</span></div>
+        <div class="set-grouptitle">🗺️ Contenu de jeu · quêtes par ville (${quests.length} quêtes · ${cities.length} villes) <span style="font-weight:400;color:var(--muted)">· touche une ville</span></div>
         <div class="pgrid">${cities.length ? cities.map((c) => cell(c, byCity[c].length, "city:" + c)).join("") : '<div class="pcell"><div class="k">—</div><div class="v">0</div></div>'}</div>`;
 
       const catalog = `
@@ -7282,10 +7291,10 @@
       const migrations = `
         <div class="set-grouptitle">🧱 Migrations SQL lancées</div>
         <div style="font-size:.8rem;line-height:1.7">
-          <div>s30 — 45 quêtes géoloc (10 villes FR) &nbsp; s31 — admin_stats (bannis exclus)</div>
-          <div>s32 — parrainage + coupons &nbsp; s33 — classement par ville</div>
-          <div>s34 — badges villes/Tour de France &nbsp; s35 — feed communautaire</div>
-          <div>s36 — notes vocales (bucket privé) &nbsp; <b>s37 — badges prestige + secret Légende</b></div>
+          <div>s30 · 45 quêtes géoloc (10 villes FR) &nbsp; s31 · admin_stats (bannis exclus)</div>
+          <div>s32 · parrainage + coupons &nbsp; s33 · classement par ville</div>
+          <div>s34 · badges villes/Tour de France &nbsp; s35 · feed communautaire</div>
+          <div>s36 · notes vocales (bucket privé) &nbsp; <b>s37 · badges prestige + secret Légende</b></div>
         </div>`;
 
       const refreshBtn = '<button class="btn-ghost btn-block" id="adminDataRefresh" style="margin-bottom:.6rem">↻ Rafraîchir les données</button>';
@@ -7313,7 +7322,7 @@
         } catch (e) {}
       })();
 
-      // Stockage live (asynchrone, ne bloque pas l'affichage) — avec capacité RESTANTE estimée.
+      // Stockage live (asynchrone, ne bloque pas l'affichage) · avec capacité RESTANTE estimée.
       _liveStorage().then((s) => {
         const box = $("adminStorageLive"); if (!box) return;
         const CAP = 1073741824; // 1 Go (free tier)
@@ -7501,7 +7510,7 @@
       let res = await doSave(row);
       // Repli si la migration cafe_infos n'est pas encore lancée (colonnes hours/price_range absentes)
       if (res.error && /hours|price_range/.test(res.error.message || "")) {
-        console.warn("[SunMates] colonnes hours/price_range absentes — lance supabase_migration_cafe_infos.sql");
+        console.warn("[SunMates] colonnes hours/price_range absentes · lance supabase_migration_cafe_infos.sql");
         const { hours, price_range, ...lite } = row;
         res = await doSave(lite);
       }
@@ -7628,7 +7637,7 @@
     // Partage de position : CONFIRMATION (anti miss-click) + explication de ce que ça fait.
     $("shareLocBtn").addEventListener("click", () => {
       popInfo("📍", "Partager ma position ?",
-        "<p style='font-size:.88rem;line-height:1.5'>Ta position GPS sera <b>partagée avec ton cercle de confiance</b> (tes connexions acceptées), <b>visible 24 h</b>. Idéal quand tu sors seul·e — eux seuls la voient.</p>" +
+        "<p style='font-size:.88rem;line-height:1.5'>Ta position GPS sera <b>partagée avec ton cercle de confiance</b> (tes connexions acceptées), <b>visible 24 h</b>. Idéal quand tu sors seul·e · eux seuls la voient.</p>" +
         "<button class='btn-primary btn-block' id='confirmShareLoc' style='margin-top:.9rem'>📍 Oui, partager</button>" +
         "<button class='btn-ghost btn-block' id='cancelShareLoc' style='margin-top:.5rem'>Annuler</button>");
       setTimeout(() => {
@@ -7725,7 +7734,7 @@
     }
     { const b = $("safeArrivedBtn"); if (b) b.addEventListener("click", confirmSafeArrival); }
     // Minuteur expiré PENDANT que l'app était fermée : au retour, 30 s de grâce (« Tout va
-    // bien ? ») au lieu d'alerter aussitôt — souvent on a juste oublié de confirmer. Sans
+    // bien ? ») au lieu d'alerter aussitôt · souvent on a juste oublié de confirmer. Sans
     // réponse, l'alerte part quand même : l'esprit du dispositif est préservé (fermer la
     // modale sans répondre ne l'annule PAS).
     function _safeGraceCheck() {
@@ -7871,7 +7880,7 @@
     function openRingtonePicker() {
       const fileIn = $("fcSoundFile"); if (!fileIn) return;
       popInfo("🎵", "Ma sonnerie",
-        "<p style='font-size:.84rem;margin:0 0 .8rem'>Choisis un fichier audio depuis ton téléphone — idéalement <b>court (≈30 s) et léger (&lt; 2 Mo)</b>. Il reste <b>sur ton appareil</b> (rien n'est envoyé en ligne).</p>" +
+        "<p style='font-size:.84rem;margin:0 0 .8rem'>Choisis un fichier audio depuis ton téléphone · idéalement <b>court (≈30 s) et léger (&lt; 2 Mo)</b>. Il reste <b>sur ton appareil</b> (rien n'est envoyé en ligne).</p>" +
         "<button class='btn-primary btn-block' id='ringPick'>📂 Choisir un fichier</button>" +
         (_hasCustomRing ? "<button class='btn-ghost btn-block' id='ringReset' style='margin-top:.5rem'>↩️ Revenir à la sonnerie par défaut</button>" : ""));
       setTimeout(() => {
@@ -7925,7 +7934,7 @@
           <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.9rem">${names.map((n) => `<button class="btn-ghost fc-pickname" data-n="${escapeHtml(n)}" style="flex:0 0 auto;padding:.35rem .7rem;font-size:.82rem">${escapeHtml(n)}</button>`).join("")}</div>
           <button class="btn-ghost btn-block" id="fcRingBtn" style="margin-bottom:.6rem">${ringTxt}</button>
           <button class="btn-primary btn-block" id="fcLaunch">📞 Lancer l'appel (dans 5 s)</button>
-          <p class="muted" style="font-size:.74rem;text-align:center;margin:.5rem 0 0">L'appel sonnera dans 5 s — range ton téléphone 😉</p>
+          <p class="muted" style="font-size:.74rem;text-align:center;margin:.5rem 0 0">L'appel sonnera dans 5 s · range ton téléphone 😉</p>
         </div>`);
       setTimeout(() => {
         document.querySelectorAll(".fc-pickname").forEach((bt) => bt.onclick = () => { const i = $("fcNameInput"); if (i) { i.value = bt.dataset.n; } });
@@ -8430,8 +8439,10 @@
         const wkKey = "sm_wg_done_" + _weekStart();
         try { if (!localStorage.getItem(wkKey)) { localStorage.setItem(wkKey, "1"); if (typeof toast === "function") toast("🎉", "Objectifs de la semaine bouclés, bravo !"); if (typeof celebrate === "function") celebrate(); } } catch (e) {}
       }
-      box.innerHTML = `<details class="card wg-card">
-        <summary class="wg-head"><span>🗓️ Objectifs de la semaine</span><span class="wg-count">${doneCount}/${goals.length}</span><span class="wg-chev">▾</span></summary>
+      // Plus de <details> repliable : ce bloc n'est plus affiché que DANS le panneau
+      // « Objectifs de la semaine » (déjà ouvert via la rangée de progression) → liste directe.
+      box.innerHTML = `<div class="card wg-card">
+        <div class="wg-head" style="cursor:default"><span>🗓️ Objectifs de la semaine</span><span class="wg-count">${doneCount}/${goals.length}</span></div>
         ${goals.map((g) => {
           const done = g.cur >= g.max, pct = Math.round((g.cur / g.max) * 100);
           return `<div class="wg-goal${done ? " done" : ""}"${done ? "" : ` data-wggo="${g.go}" style="cursor:pointer"`}>
@@ -8442,7 +8453,7 @@
           </div>`;
         }).join("")}
         ${doneCount === goals.length ? '<div class="wg-alldone">🎉 Semaine parfaite ! Reviens lundi pour de nouveaux objectifs.</div>' : ""}
-      </details>`;
+      </div>`;
       box.querySelectorAll("[data-wggo]").forEach((el) => el.addEventListener("click", () => {
         const g = el.dataset.wggo;
         if (g === "quests") { goToTab("jeux"); if (typeof openJeuxSheet === "function") setTimeout(() => openJeuxSheet("quests"), 80); }
@@ -8456,7 +8467,7 @@
     }
     function renderParcours() {
       const el = $("parcoursToday"); if (!el) return;
-      // Rangée de mini-stats TOTALES (résumé d'aventure attrayant) — P2.29.
+      // Rangée de mini-stats TOTALES (résumé d'aventure attrayant) · P2.29.
       const row = $("parcoursStatsRow");
       if (row) {
         const s = parcoursStats();
@@ -8498,7 +8509,7 @@
       const s = parcoursStats();
       const name = (myProfile && myProfile.username) || "Moi";
       const lvl = Math.floor(s.xp / 100) + 1;
-      const text = `🧭 Mon parcours SunMates, ${name} — ⭐ Niveau ${lvl}\n📍 ${s.ck} check-ins · 🎯 ${s.q} quêtes · 🏅 ${s.b} badges · ⭐ ${s.xp} XP${s.trips > 0 ? ` · 🧳 ${s.trips} voyage${s.trips > 1 ? "s" : ""}` : ""}\nRejoins-moi sur SunMates ☀️`;
+      const text = `🧭 Mon parcours SunMates, ${name} · ⭐ Niveau ${lvl}\n📍 ${s.ck} check-ins · 🎯 ${s.q} quêtes · 🏅 ${s.b} badges · ⭐ ${s.xp} XP${s.trips > 0 ? ` · 🧳 ${s.trips} voyage${s.trips > 1 ? "s" : ""}` : ""}\nRejoins-moi sur SunMates ☀️`;
       if (navigator.share) { navigator.share({ title: "Mon parcours SunMates", text }).catch(() => {}); }
       else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast("📋", "Parcours copié, colle-le où tu veux !"), () => {}); }
       else toast("🧭", text);
@@ -8514,7 +8525,7 @@
       const base = location.href.split("#")[0].split("?")[0];
       const url = myUserId ? (base + "?ref=" + encodeURIComponent(myUserId)) : base;
       // P2.21 : message SANS l'URL (sinon navigator.share l'ajoute via le champ `url` → lien en double).
-      const msg = "🌍 Rejoins-moi sur SunMates ☀️ — l'appli pour voyager solo en sécurité et se faire de vrais potes en route. On démarre avec un verre offert à tous les deux 🍹";
+      const msg = "🌍 Rejoins-moi sur SunMates ☀️ · l'appli pour voyager solo en sécurité et se faire de vrais potes en route. On démarre avec un verre offert à tous les deux 🍹";
       try { if (typeof track === "function") track("invite_shared", {}); } catch (e) {}
       // Compteur local d'invitations partagées (sert au badge « Early Bird » de la campagne de lancement)
       try { const k = "sm_invites_shared"; localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || "0", 10) || 0) + 1)); } catch (e) {}
@@ -8566,7 +8577,7 @@
           const days = Math.floor((now - parseInt(last, 10)) / 86400000);
           if (days >= 3) {
             const hasMates = (typeof connectedIds !== "undefined" && connectedIds && connectedIds.size > 0);
-            setTimeout(() => { if (typeof toast === "function") toast(hasMates ? "👀" : "☀️", hasMates ? i18nT("Ça fait {d} jours ! Un Mate t'attend peut-être.", { d: days }) : i18nT("Content de te revoir — prêt·e pour une nouvelle quête ?")); }, 1600);
+            setTimeout(() => { if (typeof toast === "function") toast(hasMates ? "👀" : "☀️", hasMates ? i18nT("Ça fait {d} jours ! Un Mate t'attend peut-être.", { d: days }) : i18nT("Content de te revoir · prêt·e pour une nouvelle quête ?")); }, 1600);
           }
         }
         localStorage.setItem(k, String(now));
@@ -8630,7 +8641,7 @@
     // mot-clé). `lock` rend l'image stable. Un dégradé vif reste derrière, donc
     // jamais d'image cassée. Mots-clés distincts → villes/pays variés.
     function flickrImg(keywords, seed) {
-      // v379 : photos TRIÉES À LA MAIN (planche-contact picsum) — intérieurs chauds, devantures,
+      // v379 : photos TRIÉES À LA MAIN (planche-contact picsum) · intérieurs chauds, devantures,
       // ruelles, tram, lumières… Fini la photo au hasard (une montagne pour un café 🙃).
       // Toujours DÉTERMINISTE (même lieu → même photo) + cache média SW → instantané.
       const POOL = [1, 45, 56, 155, 210, 221, 232, 265, 320, 331, 342, 397, 419, 430, 441, 639, 672, 694, 815, 826, 859, 936, 947, 1013];
@@ -8709,7 +8720,7 @@
         closePicker();
         { const js = $("jeuxSheet"); if (js) js.classList.add("hidden"); } // sinon la feuille couvre le chat
         goToTab("connexions"); if (typeof openChat === "function") openChat(item.id);
-        setTimeout(() => { const inp = $("chatInput"); if (inp) { inp.value = i18nT("🎮 Je te défie : « {g} » sur SunMates{s} — à toi de jouer !", { g: gameName, s: scoreTxt ? " · " + scoreTxt : "" }); inp.focus(); } }, 450);
+        setTimeout(() => { const inp = $("chatInput"); if (inp) { inp.value = i18nT("🎮 Je te défie : « {g} » sur SunMates{s} · à toi de jouer !", { g: gameName, s: scoreTxt ? " · " + scoreTxt : "" }); inp.focus(); } }, 450);
       });
     }
     function playGame(key) {
@@ -9039,19 +9050,19 @@
       const it = list.find((x) => x.id === id); if (!it) return;
       const equip = () => { setShopState(kind === "title" ? { title: id } : { frame: id }); applyProfileCosmetics(); renderShop(); };
       if (isCosmeticOwned(it)) { equip(); if (window.SMSound) SMSound.play("select"); toast(kind === "title" ? "Titre équipé ✨" : "Cadre équipé ✨"); return; }
-      if (myCoins() < it.cost) { toast("🪙", "Encore " + (it.cost - myCoins()) + " SunCoins pour « " + it.name + " » — gagne-en en quête !"); return; }
+      if (myCoins() < it.cost) { toast("🪙", "Encore " + (it.cost - myCoins()) + " SunCoins pour « " + it.name + " » · gagne-en en quête !"); return; }
       await once("buy:" + kind + ":" + id, async () => {
         try {
           const { data, error } = await db.rpc("sm_spend_coins", { p_amount: it.cost, p_item: id });
           const res = (data && data[0]) || data || {};
-          if (error || !res.ok) { toast("🪙", (res && res.message) || "Achat impossible — réessaie."); return; }
+          if (error || !res.ok) { toast("🪙", (res && res.message) || "Achat impossible · réessaie."); return; }
           if (myProfile) { myProfile.coins = res.balance; const ow = ownedCosmetics(); if (ow.indexOf(id) === -1) myProfile.cosmetics_owned = ow.concat(id); }
           equip();
           if (typeof renderGameHub === "function") renderGameHub(); // resynchronise le solde 🪙 partout (bannière XP, hub)
           if (window.SMSound) SMSound.play("coin");
           if (typeof celebrate === "function") celebrate();
           toast("🎉", (kind === "title" ? "Titre" : "Cadre") + " « " + it.name + " » acheté & équipé !");
-        } catch (e) { toast("🪙", "Achat impossible — réessaie."); }
+        } catch (e) { toast("🪙", "Achat impossible · réessaie."); }
       });
     }
     // Applique le titre + le cadre choisis sur la carte profil (et l'aperçu).
@@ -9110,7 +9121,7 @@
 
     // ===== BOOSTS (SunCoins, P2.17) : coups de pouce temporaires =====
     const BOOSTS = [
-      { id: "spotlight", emoji: "🚀", name: "Coup de projecteur", desc: "Ton profil mis en avant 24 h dans Découvrir — plus de vues, plus de Mates ✨", cost: 120 },
+      { id: "spotlight", emoji: "🚀", name: "Coup de projecteur", desc: "Ton profil mis en avant 24 h dans Découvrir · plus de vues, plus de Mates ✨", cost: 120 },
     ];
     function isBoosted() { return !!(myProfile && myProfile.boosted_until && new Date(myProfile.boosted_until).getTime() > Date.now()); }
     function boostHoursLeft() { return isBoosted() ? Math.max(1, Math.ceil((new Date(myProfile.boosted_until).getTime() - Date.now()) / 3600000)) : 0; }
@@ -9122,13 +9133,13 @@
         try {
           const { data, error } = await db.rpc("sm_buy_boost", { p_boost: id, p_cost: b.cost });
           const res = (data && data[0]) || data || {};
-          if (error || !res.ok) { toast("🪙", (res && res.message) || "Achat impossible — réessaie."); return; }
+          if (error || !res.ok) { toast("🪙", (res && res.message) || "Achat impossible · réessaie."); return; }
           if (myProfile) { myProfile.coins = res.balance; if (id === "spotlight") myProfile.boosted_until = new Date(Date.now() + 24 * 3600 * 1000).toISOString(); }
           if (window.SMSound) SMSound.play("levelup");
           if (typeof celebrate === "function") celebrate();
-          toast("🚀", "Coup de projecteur activé — tu es en vedette 24 h ✨");
+          toast("🚀", "Coup de projecteur activé · tu es en vedette 24 h ✨");
           renderShop();
-        } catch (e) { toast("🪙", "Achat impossible — réessaie."); }
+        } catch (e) { toast("🪙", "Achat impossible · réessaie."); }
       });
     }
     function renderBoosts() {
@@ -9234,7 +9245,7 @@
         // Quête de groupe : option "valider avec un Mate" (+ bonus) uniquement quand elle est rejointe
         if (grpBtn) grpBtn.style.display = (q.is_group && status === "joined") ? "" : "none";
         $("detailMsg").style.color = "var(--muted)";
-        $("detailMsg").textContent = status === "completed" ? "✅ Quête accomplie !" : (status === "joined" ? "🎒 Quête en cours — accomplis-la puis valide" : "Rejoins la quête pour la démarrer");
+        $("detailMsg").textContent = status === "completed" ? "✅ Quête accomplie !" : (status === "joined" ? "🎒 Quête en cours · accomplis-la puis valide" : "Rejoins la quête pour la démarrer");
       }
       // P2.12 : on peut QUITTER une quête rejointe (mais pas une déjà accomplie).
       { const lv = $("detailLeaveBtn"); if (lv) lv.style.display = (!q.demo && status === "joined") ? "" : "none"; }
@@ -9273,7 +9284,7 @@
     });
 
     // Valide RÉELLEMENT une quête (appel RPC). Anti-triche : on n'arrive ici qu'après une
-    // JUSTIFICATION (code du lieu OU note « sur l'honneur ») — plus de simple clic = XP.
+    // JUSTIFICATION (code du lieu OU note « sur l'honneur ») · plus de simple clic = XP.
     async function _completeQuestNow(qkey, code, m) {
       await once("complete:" + qkey, async () => {
         if (m) { m.style.color = "var(--muted)"; m.textContent = "Validation…"; }
@@ -9313,7 +9324,7 @@
     function openQuestProof(q) {
       _proof = { mode: "quest", key: q.key, title: q.title || "Quête", xp: q.points || 0 };
       $("proofTitle").textContent = q.title || "Quête";
-      $("proofDesc").textContent = (q.description || "Confirme que tu as bien accompli cette quête") + " — explique en quelques mots comment (sur l'honneur ✨). Obligatoire.";
+      $("proofDesc").textContent = (q.description || "Confirme que tu as bien accompli cette quête") + " · explique en quelques mots comment (sur l'honneur ✨). Obligatoire.";
       const n = $("proofNote"); if (n) { n.value = ""; n.setAttribute("placeholder", "Comment l'as-tu accomplie ? (obligatoire) ✨"); }
       $("proofSubmit").disabled = false; $("proofMsg").textContent = "";
       show($("proofModal"), true);
@@ -9648,11 +9659,11 @@
         if (typeof toast === "function") toast("🗑️", "Message supprimé");
         return;
       }
-      // (L'heure se révèle en GLISSANT la conversation vers la gauche — peek façon Insta —
+      // (L'heure se révèle en GLISSANT la conversation vers la gauche · peek façon Insta —
       //  pas au simple tap, pour ne pas chevaucher ses propres bulles.)
     });
 
-    // ===== Item 12 — Liker un message (double-tap ❤️) + swipe pour voir l'heure (façon Insta) =====
+    // ===== Item 12 · Liker un message (double-tap ❤️) + swipe pour voir l'heure (façon Insta) =====
     const _msgReact = {}; // id → { mine: bool, count: int }
     function _reactKey(mid) { return "sm_react_" + mid; }
     function renderHeart(mid, pop) {
@@ -9992,7 +10003,7 @@
       }
       try { if (typeof track === "function") track("beta_feedback", { type: _fbType }); } catch (e) {}
       closePopInfo(); // ferme la modale de feedback après envoi
-      if (typeof toast === "function") toast(_fbFlavor === "support" ? "✉️" : "💛", _fbFlavor === "support" ? "Message envoyé — l'équipe te répond vite 💛" : "Merci ! Ton retour est bien arrivé.");
+      if (typeof toast === "function") toast(_fbFlavor === "support" ? "✉️" : "💛", _fbFlavor === "support" ? "Message envoyé · l'équipe te répond vite 💛" : "Merci ! Ton retour est bien arrivé.");
       if (window.SMSound) SMSound.play("pop");
     }
     { const bf = $("betaFeedbackBtn"); if (bf) bf.addEventListener("click", openBetaFeedback); }
@@ -10549,7 +10560,7 @@
           <p class="muted" style="font-size:.72rem;margin:.6rem 0 0">Ces tips ne remplacent pas une formation aux premiers secours (PSC1).</p>
         </div>`);
       } else if (action === "aide" && typeof currentLang !== "undefined" && currentLang === "en") {
-        // Version EN rédigée (ton SunMates) — data-no-tr : on coupe le filet auto (sinon il "re-traduirait" l'anglais)
+        // Version EN rédigée (ton SunMates) · data-no-tr : on coupe le filet auto (sinon il "re-traduirait" l'anglais)
         showInfo("Help center ❓", `<div class="faq-secu" data-no-tr>
           <details open><summary>🎯 How do I earn XP and badges?</summary><p>Complete <b>quests</b> (Games tab or straight from the map), take on <b>solo challenges</b> and <b>rituals</b> in Home mode. Each quest asks for a quick <b>note</b> (anti-cheat).</p></details>
           <details><summary>🛟 How does location sharing work?</summary><p>Your location is only shared with your <b>trusted circle</b> (accepted connections), visible for 24 h. The emergency alert broadcasts it instantly.</p></details>
@@ -11196,7 +11207,7 @@
         allMarkers.push(homeMeMarker);
       }
 
-      // 🎯 Points de quêtes Paris — le « plateau de jeu ». Données : on privilégie les
+      // 🎯 Points de quêtes Paris · le « plateau de jeu ». Données : on privilégie les
       // VRAIES quêtes géolocalisées de la base (migration session26, lat/lng réels) ;
       // tant que la migration n'est pas lancée, on retombe sur la liste Paris en dur.
       // Chaque quête est placée à SA position réelle (fini le placement aléatoire incohérent).
@@ -11216,7 +11227,7 @@
       const grpBtn = (_hmMode !== "home") ? '<button class="mappop-btn alt" data-hmqgroup="1">👥 À plusieurs <span style="opacity:.8">+bonus</span></button>' : '';
       const soloLabel = (_hmMode !== "home") ? "🧭 Jouer en solo" : "🧭 Jouer";
       questPts.forEach((q) => {
-        // Distance depuis ta position (si connue) — cohérent avec le radar « quête la plus proche ».
+        // Distance depuis ta position (si connue) · cohérent avec le radar « quête la plus proche ».
         const distTxt = (lastKnownGeo && typeof haversineKm === "function") ? ` · 📍 à ${_fmtDist(haversineKm(lastKnownGeo, { lat: q.lat, lng: q.lng }))}` : "";
         const mk = L.marker([q.lat, q.lng], { icon: epinIcon(q.emoji, "#E8961F", "quest") })
           .bindPopup(`<div class="mappop-mini mappop-quest"><span class="mq-tag">⚡ Quête${distTxt}</span><br><b>${escapeHtml(q.title)}</b><br><span class="muted" style="font-size:.74rem">${escapeHtml(q.desc)}</span><div class="mq-rew">+${q.xp} XP · 🏅 ${escapeHtml(q.badge)}</div><button class="mappop-btn" data-hmqplay="${escapeHtml(q.key)}">${soloLabel}</button>${grpBtn}</div>`);
@@ -11599,7 +11610,7 @@
         { tab: "jeux", sel: "#jeuxNav", emoji: "🎯", title: "Quêtes & jeux", text: "Quêtes, jeux, badges, coupons, classement, boutique : tout est ici." },
         { tab: "connexions", sel: "#inviteFriendsBtn", emoji: "✨", title: "Inviter des amis", text: "Fais venir tes amis : un coupon « 1er verre offert » pour vous deux 🍹" },
         { tab: "connexions", sel: ".mseg", emoji: "🤝", title: "Tes Mates", text: "Messages, Découvrir de nouveaux voyageurs, et Demandes de connexion." },
-        { tab: "securite", sel: '[data-tab="securite"]', emoji: "🛡️", title: "Sécurité", text: "SOS, faux appel, partage de position au cercle, contacts d'urgence — pour voyager serein·e." },
+        { tab: "securite", sel: '[data-tab="securite"]', emoji: "🛡️", title: "Sécurité", text: "SOS, faux appel, partage de position au cercle, contacts d'urgence · pour voyager serein·e." },
         { tab: "profil", sel: "#editProfileBtn", emoji: "👤", title: "Ton profil", text: "Complète-le pour de meilleurs matchs. Mon parcours et ton BFF sont dans la carte juste en dessous." },
       ],
     };
@@ -11938,7 +11949,7 @@
         setTimeout(() => location.replace(location.pathname), 1900);
       } catch (e) { if (m) { m.style.color = "var(--danger)"; m.textContent = "Erreur : réessaie."; } }
     })); }
-    // RGPD : export de mes données (droit à la portabilité) — bundle JSON téléchargé localement.
+    // RGPD : export de mes données (droit à la portabilité) · bundle JSON téléchargé localement.
     function _downloadJson(obj, filename) {
       const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -11974,7 +11985,7 @@
       "<li><b>Position</b> : partagée <b>uniquement</b> quand tu le décides (cercle de confiance ou alerte).</li>" +
       "</ul>" +
       "<p style='margin:.2rem 0 .55rem'>Tes données sont hébergées chez <b>Supabase (UE)</b> et protégées par des règles d'accès : personne d'autre que toi ne lit tes données privées.</p>" +
-      "<p style='margin:.2rem 0 .55rem'>💬 <b>Tes messages privés restent privés.</b> Seuls toi et ton destinataire pouvez les lire — <b>personne au sein de l'app, pas même l'équipe SunMates, ne peut accéder à vos conversations.</b></p>" +
+      "<p style='margin:.2rem 0 .55rem'>💬 <b>Tes messages privés restent privés.</b> Seuls toi et ton destinataire pouvez les lire · <b>personne au sein de l'app, pas même l'équipe SunMates, ne peut accéder à vos conversations.</b></p>" +
       "<p style='margin:.2rem 0'>Conformément au <b>RGPD</b>, tu peux <b>exporter</b> ou <b>supprimer</b> toutes tes données à tout moment, juste au-dessus.</p>" +
       "</div>")); }
     $("saveEmailBtn").addEventListener("click", async () => {
@@ -12014,14 +12025,14 @@
     // ---- Utiliser un coupon ----
     async function useCoupon(id) {
       // ÉCRAN PRÉSENTABLE : on montre d'abord le coupon EN GRAND (à présenter au partenaire),
-      // puis on le marque utilisé — la boucle « monde réel » au lieu d'une simple confirmation.
+      // puis on le marque utilisé · la boucle « monde réel » au lieu d'une simple confirmation.
       const c = (typeof myCoupons !== "undefined" ? myCoupons : []).find((x) => x.id === id);
       popInfo("🎟️", (c && c.title) || "Coupon", "<div style='text-align:center;line-height:1.5'>"
         + "<div style='font-size:3rem;filter:var(--relief)'>🎟️</div>"
         + "<b style='font-size:1.05rem'>" + escapeHtml((c && c.title) || "Coupon") + "</b>"
         + (c && c.descr ? "<div class='muted' style='font-size:.85rem;margin-top:.25rem'>" + escapeHtml(c.descr) + "</div>" : "")
         + "<div style='margin:.7rem 0;padding:.55rem;border:1.5px dashed var(--accent);border-radius:12px;font-weight:800;color:var(--accent)'>" + i18nT("Montre cet écran au partenaire 😎") + "</div>"
-        + "<button class='btn-primary btn-block' id='couponMarkUsed'>" + i18nT("✅ C'est validé — marquer utilisé") + "</button>"
+        + "<button class='btn-primary btn-block' id='couponMarkUsed'>" + i18nT("✅ C'est validé · marquer utilisé") + "</button>"
         + "<p class='muted' style='font-size:.72rem;margin:.5rem 0 0'>" + i18nT("Une fois marqué utilisé, le coupon ne peut plus servir.") + "</p></div>");
       setTimeout(() => { const b = $("couponMarkUsed"); if (b) b.onclick = () => once("usecoupon:" + id, async () => {
         const { error } = await db.from("user_coupons").update({ used: true }).eq("id", id);
@@ -12114,7 +12125,7 @@
     // Fermeture programmatique de la modale popInfo (ex. après envoi d'un formulaire).
     function closePopInfo() { const ov = document.getElementById("popInfoOv"); if (ov) ov.classList.add("hidden"); }
     window.closePopInfo = closePopInfo;
-    // Confirmation EN DA (remplace le confirm() natif « moche » — P2.44). onConfirm appelé si on valide.
+    // Confirmation EN DA (remplace le confirm() natif « moche » · P2.44). onConfirm appelé si on valide.
     function smConfirm(emoji, title, message, confirmLabel, onConfirm) {
       popInfo(emoji, title,
         '<p style="font-size:.88rem;line-height:1.5;margin:.1rem 0 1rem;text-align:center">' + message + '</p>' +
@@ -12410,7 +12421,7 @@
         const box = $("fcmtList"); if (!box) return;
         let rows = null;
         try { const { data, error } = await db.from("feed_comments").select("id,body,user_id,created_at").eq("post_id", postId).order("created_at", { ascending: true }).limit(100); if (!error) rows = data || []; } catch (e) {}
-        if (rows === null) { console.warn("[SunMates] table feed_comments absente — lance supabase_migration_feed_comments.sql"); box.innerHTML = '<p class="muted" style="font-size:.82rem">Les commentaires arrivent très vite 💬</p>'; return; }
+        if (rows === null) { console.warn("[SunMates] table feed_comments absente · lance supabase_migration_feed_comments.sql"); box.innerHTML = '<p class="muted" style="font-size:.82rem">Les commentaires arrivent très vite 💬</p>'; return; }
         if (!rows.length) { box.innerHTML = '<p class="muted" style="font-size:.84rem;text-align:center;padding:.6rem">Aucun commentaire. Sois le premier ✨</p>'; return; }
         // Pseudos/avatars depuis le cache (sinon « Voyageur »).
         box.innerHTML = rows.map((c) => {
@@ -12442,7 +12453,7 @@
     // Rend un sondage : barres de votes, % et mon choix surligné. Touche une option = voter.
     function _renderPollBox(postId, options, countMap, myChoice) {
       const box = document.querySelector('[data-pollbox="' + postId + '"]'); if (!box) return;
-      if (!options || !options.length) { console.warn("[SunMates] table polls absente — lance supabase_migration_polls.sql"); box.innerHTML = '<p class="muted" style="font-size:.8rem;margin:.4rem 0 0">Ce sondage n\'est pas disponible pour l\'instant 🙂</p>'; return; }
+      if (!options || !options.length) { console.warn("[SunMates] table polls absente · lance supabase_migration_polls.sql"); box.innerHTML = '<p class="muted" style="font-size:.8rem;margin:.4rem 0 0">Ce sondage n\'est pas disponible pour l\'instant 🙂</p>'; return; }
       const total = Object.values(countMap || {}).reduce((a, b) => a + Number(b), 0);
       const voted = myChoice != null;
       box.innerHTML = options.map((opt, i) => {
@@ -12553,7 +12564,7 @@
     { const ta = $("feedInput"); if (ta) ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 112) + "px"; }); }
     $("feedRefresh").addEventListener("click", () => { buildHomeFeed(); });
 
-    /* ================= HOME v2 — Hub de jeu « Paris » ================= */
+    /* ================= HOME v2 · Hub de jeu « Paris » ================= */
     // Points de quêtes géolocalisés sur Paris (le « plateau de jeu » sur la carte
     // d'accueil ET la « quête du jour » du héros). Les `key` correspondent aux quêtes
     // réelles de la table `quests` (migration session26) : « Jouer » ouvre la vraie
@@ -12578,7 +12589,7 @@
       if (g === "Homme") return masc;
       return incl;
     }
-    // Titres de niveau — progression longue (jusqu'au niv 99 et au-delà), sans plafond annoncé.
+    // Titres de niveau · progression longue (jusqu'au niv 99 et au-delà), sans plafond annoncé.
     function _hubTitle(lvl) {
       if (lvl >= 99) return "Mythe vivant 🌟";
       if (lvl >= 75) return _gw("Légende vivante", "Légende vivant", "Légende vivante");
@@ -12685,7 +12696,7 @@
     // #13 : les tuiles de progression ouvrent le contenu du widget correspondant (sources masquées).
     document.querySelectorAll("[data-prog]").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.prog;
-      if (k === "goals") { const w = $("weeklyGoals"); const has = w && w.innerHTML.trim(); showInfo("🎯 Objectifs de la semaine", has ? '<div style="text-align:left">' + w.innerHTML + '</div>' : '<p class="muted" style="text-align:center;padding:1rem">Pas d\'objectif cette semaine — reviens bientôt ✨</p>'); }
+      if (k === "goals") { const w = $("weeklyGoals"); const has = w && w.innerHTML.trim(); showInfo("🎯 Objectifs de la semaine", has ? '<div style="text-align:left">' + w.innerHTML + '</div>' : '<p class="muted" style="text-align:center;padding:1rem">Pas d\'objectif cette semaine · reviens bientôt ✨</p>'); }
       else if (k === "collection") { if (typeof showCollectionSheet === "function") showCollectionSheet(); }
       else if (k === "nearquest") { if (typeof showNearestQuests === "function") showNearestQuests(); }
       else if (k === "capitale") { const c = $("capitaleDuJour"); if (c && c.onclick) c.onclick(); else showInfo("🏙️ Ville à l'honneur", '<p class="muted" style="text-align:center;padding:1rem">Pas de ville à l\'honneur pour l\'instant (il faut des quêtes dans plusieurs villes).</p>'); }
@@ -12696,7 +12707,7 @@
     function showLevelInfo() {
       const xp = (myProfile && myProfile.xp) || 0, lvl = Math.floor(xp / 100) + 1, inLvl = xp % 100;
       showInfo(i18nT("⭐ Niveau {n} · tes récompenses", { n: lvl }), `<div style="line-height:1.6;font-size:.9rem">
-        <p style="margin:.2rem 0">Tu es <b>Niveau ${lvl}</b> (${inLvl}/100 XP) — plus que <b>${100 - inLvl} XP</b> pour le suivant 🚀</p>
+        <p style="margin:.2rem 0">Tu es <b>Niveau ${lvl}</b> (${inLvl}/100 XP) · plus que <b>${100 - inLvl} XP</b> pour le suivant 🚀</p>
         <p style="margin:.2rem 0">Chaque <b>100 XP</b> (gagnés en quêtes) = un niveau. Tes <b>titres</b> évoluent :</p>
         <p style="margin:.2rem 0">🧭 Tes titres évoluent : Touriste → Explorateur·rice → Routard·e → Aventurier·ère → Globe-trotter → Grand·e voyageur·se → Légende… <b>et bien au-delà</b> 🌟</p>
         <p style="margin:.2rem 0">🎁 <b>Des surprises t'attendent aux niveaux élevés</b> : titres rares, cadres exclusifs et quelques secrets gardés pour les vrais mordus. À toi de les découvrir 😏</p>
@@ -12750,7 +12761,7 @@
         if (typeof toast === "function") toast("🏆", "Collection de quêtes complète, bravo !");
       }
       _lastCollDone = done;
-      // Jauge « Villes explorées » (Tour de France) — national, indépendant du filtre ville.
+      // Jauge « Villes explorées » (Tour de France) · national, indépendant du filtre ville.
       const aq = (typeof allQuests !== "undefined" ? allQuests : []).filter((q) => q.kind === "quest" && q.city);
       const allCities = [...new Set(aq.map((q) => q.city))];
       const explored = [...new Set(aq.filter((q) => typeof myQuestStatus !== "undefined" && myQuestStatus[q.key] === "completed").map((q) => q.city))];
@@ -12761,7 +12772,7 @@
         const cf = $("cityFill"); if (cf) cf.style.width = Math.round((explored.length / allCities.length) * 100) + "%";
         if (explored.length === allCities.length && explored.length > 0 && _lastCities !== -1 && explored.length > _lastCities) {
           if (typeof celebrate === "function") celebrate();
-          if (typeof toast === "function") toast("🇫🇷", "Tour de France bouclé — toutes les villes explorées !");
+          if (typeof toast === "function") toast("🇫🇷", "Tour de France bouclé · toutes les villes explorées !");
         }
         _lastCities = explored.length;
       } else if (cp && cb) { cp.style.display = "none"; cb.style.display = "none"; }
@@ -12848,12 +12859,12 @@
     function focusHomeMapOnQuest(lat, lng) {
       if (!isFinite(lat) || !isFinite(lng)) return; // coords invalides → on ne touche pas la carte
       // #9 : on prend la main sur le centrage (sinon centerHomeMapOnUser, async, recentre sur la
-      // ville de l'utilisateur — ex Biarritz — APRÈS, et la quête de Paris « saute » ailleurs).
+      // ville de l'utilisateur · ex Biarritz · APRÈS, et la quête de Paris « saute » ailleurs).
       homeFitDone = true; _homeForceCenter = [lat, lng];
       if (typeof setHomeMode === "function") setHomeMode("travel");
       goToTab("accueil");
       // La mini-carte vient d'apparaître : on lui laisse le temps de se rendre, on RECALCULE sa
-      // taille (sinon tuiles grises / rendu cassé), PUIS on cadre — sans animation (plus stable).
+      // taille (sinon tuiles grises / rendu cassé), PUIS on cadre · sans animation (plus stable).
       setTimeout(() => {
         if (!homeLeaf) { _homeForceCenter = null; return; }
         try {
@@ -12883,7 +12894,7 @@
       return '<span class="sm-badge sm-badge--emoji" style="width:' + px + 'px;height:' + px + 'px;font-size:' + Math.round(px * 0.5) + 'px"' + grey + '>' + e + '</span>';
     }
 
-    /* ============ MAISON v2 — défis solo & rituels (l'app utile en SOLO) ============ */
+    /* ============ MAISON v2 · défis solo & rituels (l'app utile en SOLO) ============ */
     const SOLO_CHALLENGES = [
       { key: "explore_quartier", emoji: "🧭", tone: "coral", xp: 60, title: "Explore un quartier inconnu", desc: "Marche 20 min dans un coin de {ville} où tu ne vas jamais." },
       { key: "photo_detail", emoji: "📸", tone: "gold", xp: 40, title: "La photo du détail", desc: "Prends en photo un détail beau et caché : porte, fresque, enseigne." },
@@ -12917,7 +12928,7 @@
     }
     // Crédit d'XP solo : SERVEUR D'ABORD (RPC anti-triche grant_solo_xp, cap 3+3/j,
     // cross-device). Repli sur crédit direct uniquement si la migration s27 n'est pas
-    // encore lancée (le RPC n'existe pas) — après s27, le trigger bloque tout crédit direct.
+    // encore lancée (le RPC n'existe pas) · après s27, le trigger bloque tout crédit direct.
     async function grantSoloXp(key, amount, proofUrl) {
       try {
         const { data, error } = await db.rpc("grant_solo_xp", { p_key: key, p_proof_url: proofUrl || null });
@@ -12948,7 +12959,7 @@
       const picked = _soloPick(s.seed || 0);
       grid.innerHTML = picked.map((c) => '<button class="sc-card sc-' + c.tone + (done[c.key] ? " is-done" : "") + '" data-solo="' + c.key + '"><span class="sc-ic">' + c.emoji + '</span><span class="sc-body"><span class="sc-name">' + escapeHtml(c.title) + '</span><span class="sc-desc">' + escapeHtml(c.desc.replace("{ville}", city)) + '</span></span><span class="sc-xp">+' + c.xp + '</span><span class="sc-check">✓</span></button>').join("")
         // État « tout bouclé » joyeux (au lieu d'une grille éteinte qui a l'air cassée)
-        + (picked.every((c) => done[c.key]) ? '<div class="solo-alldone">' + i18nT("🌟 Tous les défis du jour relevés — chapeau ! Reviens demain, ou 🎲 mélange pour en piocher d'autres.") + "</div>" : "");
+        + (picked.every((c) => done[c.key]) ? '<div class="solo-alldone">' + i18nT("🌟 Tous les défis du jour relevés · chapeau ! Reviens demain, ou 🎲 mélange pour en piocher d'autres.") + "</div>" : "");
       grid.querySelectorAll("[data-solo]").forEach((b) => b.addEventListener("click", () => completeSolo(b.dataset.solo)));
     }
     // Un défi ne se valide plus en 1 clic : on doit POSTER une photo preuve (anti-triche).
@@ -12959,7 +12970,7 @@
       _proof = { mode: "solo", key: c.key, xp: c.xp, title: c.title };
       const city = (myProfile && myProfile.city) || "ta ville";
       $("proofTitle").textContent = c.title;
-      $("proofDesc").textContent = c.desc.replace("{ville}", city) + " — confirme quand c'est fait (sur l'honneur ✨).";
+      $("proofDesc").textContent = c.desc.replace("{ville}", city) + " · confirme quand c'est fait (sur l'honneur ✨).";
       { const n = $("proofNote"); if (n) n.value = ""; }
       $("proofSubmit").disabled = false; $("proofMsg").textContent = "";
       show($("proofModal"), true);
@@ -12971,10 +12982,10 @@
     function editCustomRitual() {
       const cur = _customRit() || {};
       const emos = ["⭐", "💧", "🧘", "📓", "🏃", "🥗", "📵", "🌙", "📞", "🙏"];
-      // Suggestions 1-tap : partir d'une page blanche fait abandonner — on propose, l'utilisateur ajuste.
+      // Suggestions 1-tap : partir d'une page blanche fait abandonner · on propose, l'utilisateur ajuste.
       const suggs = [["💧", "Boire 2 L d'eau"], ["🏃", "Bouger 30 minutes"], ["📞", "Appeler un proche"], ["📖", "Lire 10 pages"]];
       popInfo("✍️", "Mon rituel à moi",
-        "<p style='font-size:.84rem;margin:0 0 .6rem'>Crée <b>ta</b> routine quotidienne — ce qui compte pour toi.</p>" +
+        "<p style='font-size:.84rem;margin:0 0 .6rem'>Crée <b>ta</b> routine quotidienne · ce qui compte pour toi.</p>" +
         "<div style='display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;margin-bottom:.6rem'>" + suggs.map((sg, i) => "<button type='button' class='cre-sugg' data-si='" + i + "' style='font-size:.76rem;font-weight:700;padding:.35rem .6rem;border:1px solid var(--line);border-radius:999px;background:var(--cream);cursor:pointer'>" + sg[0] + " " + escapeHtml(i18nT(sg[1])) + "</button>").join("") + "</div>" +
         "<input id='custRitTitle' type='text' maxlength='40' placeholder='Ex : Boire 1,5 L d'eau' value=\"" + (cur.title ? escapeHtml(cur.title).replace(/"/g, "&quot;") : "") + "\" style='width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin-bottom:.6rem'>" +
         "<div id='custRitEmos' style='display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center'>" + emos.map((e) => "<button type='button' class='cre-emo' data-e='" + e + "' style='font-size:1.3rem;padding:.25rem .4rem;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer'>" + e + "</button>").join("") + "</div>" +
@@ -13014,7 +13025,7 @@
         // Matin motivé : tout cocher d'un geste (au lieu de 3-4 taps)
         + (todo.length >= 2 ? '<button class="rit-row rit-all" id="ritAllBtn"><span class="rit-ic">✨</span><span class="rit-name">' + i18nT("Tout cocher d'un coup") + '</span><span class="rit-box">✓✓</span></button>' : "")
         // Tout est coché → petit mot chaleureux (pas une liste éteinte)
-        + (!todo.length ? '<div class="solo-alldone">' + i18nT("🎉 Rituels bouclés pour aujourd'hui — prends soin de toi ✨") + "</div>" : "")
+        + (!todo.length ? '<div class="solo-alldone">' + i18nT("🎉 Rituels bouclés pour aujourd'hui · prends soin de toi ✨") + "</div>" : "")
         + '<button class="rit-row rit-add" id="ritAddBtn"><span class="rit-ic">➕</span><span class="rit-name">' + (hasCustom ? "Modifier mon rituel" : "Créer mon rituel") + '</span></button>';
       const cnt = $("ritCnt"); if (cnt) cnt.textContent = Object.keys(done).length + "/" + rits.length;
       list.querySelectorAll("[data-rit]").forEach((b) => b.addEventListener("click", (e) => {
@@ -13035,7 +13046,7 @@
       }
       renderSoloProgress(); renderRituals();
       if (typeof renderGameHub === "function") renderGameHub();
-      if (creditedAll && todo.length) { if (typeof toast === "function") toast("✨", i18nT("Rituels du jour cochés — belle journée ☀️")); if (window.SMSound) SMSound.play("success"); }
+      if (creditedAll && todo.length) { if (typeof toast === "function") toast("✨", i18nT("Rituels du jour cochés · belle journée ☀️")); if (window.SMSound) SMSound.play("success"); }
     }
     async function toggleRitual(key) {
       const r = _allRituals().find((x) => x.key === key); if (!r) return;
@@ -13081,19 +13092,19 @@
         const mdBg = _safeImgUrl(md.avatar_url);
         let mdWrap = sec.querySelector(".hm-mateday-wrap");
         if (!mdWrap) { mdWrap = document.createElement("div"); mdWrap.className = "hm-mateday-wrap"; row.parentNode.insertBefore(mdWrap, row); }
-        mdWrap.innerHTML = '<div class="hm-mateday"><div class="avatar"' + (mdBg ? " style=\"background-image:url('" + mdBg + "')\"" : "") + ">" + (mdBg ? "" : escapeHtml((md.username || "?")[0].toUpperCase())) + '</div><div class="hmd-tx"><b>' + escapeHtml(md.username || "Mate") + "</b><span>" + i18nT("Ton Mate du jour — un petit coucou ? ☀️") + '</span></div><button class="btn-accent hmd-btn" data-hmmate="' + escapeHtml(md.id) + '">💬</button></div>';
+        mdWrap.innerHTML = '<div class="hm-mateday"><div class="avatar"' + (mdBg ? " style=\"background-image:url('" + mdBg + "')\"" : "") + ">" + (mdBg ? "" : escapeHtml((md.username || "?")[0].toUpperCase())) + '</div><div class="hmd-tx"><b>' + escapeHtml(md.username || "Mate") + "</b><span>" + i18nT("Ton Mate du jour · un petit coucou ? ☀️") + '</span></div><button class="btn-accent hmd-btn" data-hmmate="' + escapeHtml(md.id) + '">💬</button></div>';
         mdWrap.querySelectorAll("[data-hmmate]").forEach((el) => el.addEventListener("click", () => { goToTab("connexions"); if (typeof openChat === "function") openChat(el.dataset.hmmate); }));
         row.innerHTML = mates.slice(0, 12).map((p) => { const bg = _safeImgUrl(p.avatar_url); return '<div class="hm-mate" data-hmmate="' + escapeHtml(p.id) + '"><div class="avatar"' + (bg ? " style=\"background-image:url('" + bg + "')\"" : "") + ">" + (bg ? "" : escapeHtml((p.username || "?")[0].toUpperCase())) + '</div><div class="hm-mate-n">' + escapeHtml(p.username || "Mate") + "</div></div>"; }).join("");
         row.querySelectorAll("[data-hmmate]").forEach((el) => el.addEventListener("click", () => { goToTab("connexions"); if (typeof openChat === "function") openChat(el.dataset.hmmate); }));
-      } else { if (lbl) lbl.textContent = ""; const mw = sec.querySelector(".hm-mateday-wrap"); if (mw) mw.remove(); row.innerHTML = '<p class="muted" style="font-size:.8rem">Pas encore de Mate — pars à la rencontre sur la carte ✨</p>'; }
+      } else { if (lbl) lbl.textContent = ""; const mw = sec.querySelector(".hm-mateday-wrap"); if (mw) mw.remove(); row.innerHTML = '<p class="muted" style="font-size:.8rem">Pas encore de Mate · pars à la rencontre sur la carte ✨</p>'; }
       // Teaser : on montre un bout du 1er souvenir SUR le résumé fermé → donne envie d'ouvrir l'album.
       const firstNoted = cities.find((c) => _souvGet(c));
-      const teaser = firstNoted ? ' <span style="font-weight:500;color:var(--muted);font-size:.78rem">— ' + escapeHtml(firstNoted) + ' : « ' + escapeHtml(_souvGet(firstNoted).slice(0, 42)) + (_souvGet(firstNoted).length > 42 ? "…" : "") + ' »</span>' : "";
+      const teaser = firstNoted ? ' <span style="font-weight:500;color:var(--muted);font-size:.78rem">· ' + escapeHtml(firstNoted) + ' : « ' + escapeHtml(_souvGet(firstNoted).slice(0, 42)) + (_souvGet(firstNoted).length > 42 ? "…" : "") + ' »</span>' : "";
       $("hmCities").innerHTML = cities.length
         ? '<details class="hm-album"><summary>📖 Album souvenir par ville (' + cities.length + ')' + teaser + '</summary>' + cities.slice(0, 8).map((c) => {
             const note = _souvGet(c);
             return '<div class="hm-city-row" data-souvcity="' + escapeHtml(c) + '" style="cursor:pointer">'
-              + '<span>📍</span><span class="hc-name">' + escapeHtml(c) + (note ? ' <span style="font-weight:500;color:var(--text)">— « ' + escapeHtml(note) + ' »</span>' : "") + '</span>'
+              + '<span>📍</span><span class="hc-name">' + escapeHtml(c) + (note ? ' <span style="font-weight:500;color:var(--text)">· « ' + escapeHtml(note) + ' »</span>' : "") + '</span>'
               + '<span class="hc-n">' + (note ? "✏️" : "➕ souvenir") + "</span></div>";
           }).join("") + "</details>"
         : "";
@@ -13153,7 +13164,7 @@
           <div class="coll-bar"><span style="width:${pct}%"></span></div>
           <div class="coll-list">${rows}</div></details>`;
       }).join("");
-      if (!total) html = "<p class='muted' style='text-align:center'>Aucune quête pour l'instant — reviens vite ✨</p>";
+      if (!total) html = "<p class='muted' style='text-align:center'>Aucune quête pour l'instant · reviens vite ✨</p>";
       showInfo("🗺️ Ma collection", html);
     }
     { const qc = $("questCollection"); if (qc) { qc.style.cursor = "pointer"; qc.addEventListener("click", () => { showCollectionSheet(); if (window.SMSound) SMSound.play("tap"); }); } }
@@ -13161,7 +13172,7 @@
     document.querySelectorAll("#soloProgress [data-spstat]").forEach((el) => el.addEventListener("click", () => {
       const k = el.dataset.spstat;
       const info = {
-        done: ["🧭", "Défis relevés", "Le nombre de <b>défis solo de ta ville</b> que tu as accomplis. Redécouvre ton coin comme en voyage — chaque défi relevé te rapporte de l'XP. 🎲 « Mélanger » t'en propose d'autres."],
+        done: ["🧭", "Défis relevés", "Le nombre de <b>défis solo de ta ville</b> que tu as accomplis. Redécouvre ton coin comme en voyage · chaque défi relevé te rapporte de l'XP. 🎲 « Mélanger » t'en propose d'autres."],
         rit: ["☀️", "Rituels du jour", "Tes petits <b>rituels quotidiens</b> (sortir, capturer un instant, rêver une destination…). Coche-les chaque jour pour garder ta série 🔥. Tu peux aussi <b>créer le tien</b> !"],
         xp: ["⭐", "XP gagné", "L'<b>expérience</b> que tu gagnes en solo. Chaque palier d'XP te fait monter de niveau et débloque titres &amp; cadres dans la <b>Boutique</b> (onglet Jeux)."],
       }[k];
@@ -13210,8 +13221,14 @@
     { const ps = $("phStreak"); if (ps) ps.addEventListener("click", () => { const h = $("homeStreak"); if (h) h.click(); }); }
     // « Tout cliquable » : chaque info du hub ouvre sa tuile explicative
     { const gn = $("goldNote"); if (gn) gn.addEventListener("click", () => popInfo("👑", "Gratuit vs Gold",
-      "<div style='text-align:left;line-height:1.6;font-size:.88rem'><p style='margin:.2rem 0'><b>Gratuit</b> : 1 quête + 1 activité par jour, les jeux, les badges, le classement — et toute la <b>sécurité</b>, gratuite pour toujours 🛟</p><p style='margin:.2rem 0'><b>Gold 👑</b> : quêtes illimitées + <b>coupons exclusifs</b> chez les partenaires, bien plus avantageux.</p><p class='muted' style='margin:.4rem 0 0;font-size:.78rem'>Le détail des avantages est dans Profil → Premium.</p></div>")); }
+      "<div style='text-align:left;line-height:1.6;font-size:.88rem'><p style='margin:.2rem 0'><b>Gratuit</b> : 1 quête + 1 activité par jour, les jeux, les badges, le classement · et toute la <b>sécurité</b>, gratuite pour toujours 🛟</p><p style='margin:.2rem 0'><b>Gold 👑</b> : quêtes illimitées + <b>coupons exclusifs</b> chez les partenaires, bien plus avantageux.</p><p class='muted' style='margin:.4rem 0 0;font-size:.78rem'>Le détail des avantages est dans Profil → Premium.</p></div>")); }
     { const jn = $("jhNext"); if (jn) { jn.style.cursor = "pointer"; jn.setAttribute("role", "button"); jn.setAttribute("tabindex", "0"); jn.addEventListener("click", () => { const xi = $("xpInfoBtn"); if (xi && xi.onclick) xi.onclick(); }); } }
+    // « Niv. X · encore Y XP » de la progression solo (Maison) : cliquable lui aussi → explication XP
+    { const sn = document.querySelector("#soloProgress .sp-next"); if (sn) { sn.style.cursor = "pointer"; sn.setAttribute("role", "button"); sn.setAttribute("tabindex", "0"); sn.addEventListener("click", () => {
+      const xi = $("xpInfoBtn");
+      if (xi && xi.onclick) xi.onclick();
+      else showInfo("⭐ L'XP & les niveaux", "<p style='line-height:1.6;font-size:.9rem'>Tu gagnes de l'<b>XP</b> avec les quêtes, défis et rituels : chaque <b>100 XP</b> = un <b>niveau</b> en plus 🆙 L'XP est une monnaie de jeu, elle ne change pas ton score de confiance 🛡️</p>");
+    }); } }
     const MISSION_QUEST = { talk: "quest_paris_canal", coffee: "quest_paris_marais", photo: "quest_paris_eiffel", quartier: "quest_paris_montmartre" };
     document.querySelectorAll("#qmRail .qm-card").forEach((c) => c.addEventListener("click", () => {
       const m = c.dataset.mission;
@@ -13273,9 +13290,9 @@
         error:   (n) => blip(220, 0.22, "sawtooth", 0.06, n, 130),            // volontairement distinct (pas chaud)
         whoosh:  (n) => blip(300, 0.26, "sine", 0.05, n, 900),
         message: (n) => { warm(740, 0.1, 0.06, n); warm(990, 0.12, 0.05, n + 0.06); },
-        // SIGNATURE SUNMATES — « ping » de notification : quinte montante chaude, douce, reconnaissable.
+        // SIGNATURE SUNMATES · « ping » de notification : quinte montante chaude, douce, reconnaissable.
         notify:  (n) => { warm(659, 0.13, 0.075, n); warm(988, 0.2, 0.07, n + 0.08); },
-        // MATCH / connexion acceptée — petit accord majeur ensoleillé + étoile.
+        // MATCH / connexion acceptée · petit accord majeur ensoleillé + étoile.
         match:   (n) => { warmArp(n, [659, 880, 1047], 0.24, 0.08, 0.07); warm(1568, 0.3, 0.05, n + 0.22, 2200); },
         // Aperçu (1 phrase marimba) de la sonnerie du faux appel → visible/testable dans l'admin
         ringtone: (n) => { [523, 659, 784, 1047, 880, 784, 659, 587].forEach((f, i) => { blip(f, 0.45, "triangle", 0.16, n + i * 0.26); blip(f * 2, 0.26, "sine", 0.05, n + i * 0.26); }); },
@@ -13296,7 +13313,7 @@
         g2.gain.setValueAtTime(0, t); g2.gain.linearRampToValueAtTime(vol * 0.3, t + 0.008); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
         o.connect(g); g.connect(m); o2.connect(g2); g2.connect(m); o.start(t); o2.start(t); o.stop(t + 0.55); o2.stop(t + 0.35);
       }
-      // Basse douce (sine, chaude — pas de sawtooth criard) sous la phrase.
+      // Basse douce (sine, chaude · pas de sawtooth criard) sous la phrase.
       function _rsub(t, c, m, f) { const o = c.createOscillator(), g = c.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.16, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + 0.6); o.connect(g); g.connect(m); o.start(t); o.stop(t + 0.65); }
       // Sonnerie marimba synthétisée (fallback, 100 % libre de droit).
       function _synthRing() {
@@ -13485,11 +13502,11 @@
     // Clés = texte FR EXACT (trimmé) tel qu'affiché. Le contenu utilisateur n'y est pas.
     const I18N_DICT = {
       // ===== Passe EN (audit) : chaînes JS statiques manquantes (toasts/modales/confirmations) =====
-      // — Flammes / série / joker —
+      // · Flammes / série / joker —
       "Jour manqué rattrapé ! Ton <b>joker hebdo</b> a sauvé ta flamme 🔥": "Missed day recovered! Your <b>weekly joker</b> saved your flame 🔥",
       "Réessaie dans un instant.": "Try again in a moment.",
       "Réessaie.": "Try again.",
-      // — Voyages / souvenirs / récap —
+      // · Voyages / souvenirs / récap —
       "Supprimer ce voyage ?": "Delete this trip?", "Ce voyage sera retiré de ton profil.": "This trip will be removed from your profile.",
       "Ajouter un voyage": "Add a trip", "Ta semaine sur SunMates": "Your week on SunMates",
       "Localisation de la ville…": "Locating the city…",
@@ -13497,26 +13514,26 @@
       "Génération de ton récap…": "Generating your recap…", "Impossible de générer l'image.": "Couldn't generate the image.",
       "Récap téléchargé ! Partage-le en story ☀️": "Recap downloaded! Share it as a story ☀️",
       "✓ Ajouté à tes envies": "✓ Added to your wishlist",
-      // — Hôte —
+      // · Hôte —
       "Tu es hôte SunMates": "You're a SunMates host", "Demande en cours": "Request pending", "Devenir hôte SunMates": "Become a SunMates host",
-      // — Profil / photo / vérif —
+      // · Profil / photo / vérif —
       "Optimisation & envoi…": "Optimising & uploading…",
       "Choisis une image.": "Choose an image.", "Fichier trop lourd (max 15 Mo).": "File too heavy (max 15 MB).",
       "Erreur de recadrage.": "Cropping error.",
-      // — Lieux / check-in / avis —
+      // · Lieux / check-in / avis —
       "Connecte-toi d'abord avec un Mate pour lui recommander un lieu.": "Connect with a Mate first to recommend a place.",
       "📍 Localisation…": "📍 Locating…",
       "Check-in": "Check-in",
       "Nettoyage du cache…": "Clearing cache…", "Cache vidé ✅ rechargement…": "Cache cleared ✅ reloading…",
-      // — Admin / modération —
+      // · Admin / modération —
       "Membre suspendu, signalement traité": "Member suspended, report handled",
       "Supprimer ce signalement ?": "Delete this report?", "Suppression définitive de ce signalement.": "This report will be permanently deleted.",
-      "Écris une réponse": "Write a reply", "Réponse envoyée — l'auteur sera notifié": "Reply sent — the author will be notified",
+      "Écris une réponse": "Write a reply", "Réponse envoyée · l'auteur sera notifié": "Reply sent · the author will be notified",
       "Erreur": "Error", "Stats indisponibles": "Stats unavailable", "Rapport copié !": "Report copied!",
       "Bannir définitivement ?": "Ban permanently?", "Ce membre disparaîtra de la liste.": "This member will disappear from the list.",
       "Membre": "Member", "Ce lieu partenaire sera supprimé.": "This partner place will be deleted.",
       "Aperçu": "Preview", "Profil indisponible": "Profile unavailable", "Badge": "Badge",
-      // — Sécurité / position / minuteur / faux appel —
+      // · Sécurité / position / minuteur / faux appel —
       "Partager ma position ?": "Share my location?",
       "Déclencher une alerte d'urgence ?": "Trigger an emergency alert?", "Ta position sera diffusée aussitôt à ton cercle de confiance.": "Your location will be shared instantly with your trust circle.", "Déclencher l'alerte": "Trigger the alert",
       "Minuteur en cours": "Timer running", "Rentrée en sécurité": "Home safe",
@@ -13528,23 +13545,23 @@
       "Fichier trop lourd (max 2 Mo). Prends un extrait plus court / moins bon débit.": "File too heavy (max 2 MB). Pick a shorter clip / lower bitrate.",
       "Ta sonnerie est enregistrée !": "Your ringtone is saved!", "Impossible d'enregistrer ce fichier.": "Couldn't save this file.",
       "Appel entrant…": "Incoming call…", "📞 Configurer le faux appel": "📞 Set up the fake call",
-      // — Jeux / quêtes / XP / boutique —
+      // · Jeux / quêtes / XP / boutique —
       "Invitation copiée, partage-la !": "Invite copied, share it!",
       "Décide pour moi": "Decide for me", "Quiz du voyageur": "Traveller quiz", "Bingo de voyage": "Travel bingo",
       "BINGO ! Grille complète, bravo 🎉": "BINGO! Full grid, well done 🎉",
       "Badges secrets 🔒": "Secret badges 🔒",
-      "Achat impossible — réessaie.": "Purchase failed — try again.",
+      "Achat impossible · réessaie.": "Purchase failed · try again.",
       "Ton retour a été traité 💛": "Your feedback has been handled 💛",
-      "Coup de projecteur activé — tu es en vedette 24 h ✨": "Spotlight on — you're featured for 24 h ✨",
+      "Coup de projecteur activé · tu es en vedette 24 h ✨": "Spotlight on · you're featured for 24 h ✨",
       "Quitter cette quête ?": "Leave this quest?", "Tu pourras la rejoindre à nouveau plus tard.": "You can join it again later.", "Quitter": "Leave",
       "Quête quittée": "Quest left",
       "Validation…": "Validating…",
       "Collection de quêtes complète, bravo !": "Quest collection complete, well done!",
-      "Tour de France bouclé — toutes les villes explorées !": "Tour de France done — all cities explored!",
+      "Tour de France bouclé · toutes les villes explorées !": "Tour de France done · all cities explored!",
       "⭐ Ta progression": "⭐ Your progress", "🎯 Objectifs de la semaine": "🎯 Weekly goals", "🏙️ Ville à l'honneur": "🏙️ City of the day", "🎯 Quêtes proches de toi": "🎯 Quests near you", "🗺️ Ma collection": "🗺️ My collection",
       "Invite un Mate pour une sortie de groupe (+bonus XP) ✨": "Invite a Mate for a group outing (+XP bonus) ✨",
       "Décris en quelques mots comment tu l'as accomplie (anti-triche).": "Describe in a few words how you did it (anti-cheat).",
-      // — Chat / messages / flammes / vocaux —
+      // · Chat / messages / flammes / vocaux —
       "Ce message sera retiré de la conversation.": "This message will be removed from the conversation.",
       "Message supprimé": "Message deleted",
       "Tes messages de cette conversation seront supprimés.": "Your messages in this conversation will be deleted.",
@@ -13557,10 +13574,10 @@
       "Activer le micro ?": "Enable the mic?", "Pour une note vocale (30 s max). Rien n'est gardé tant que tu n'envoies pas.": "For a voice note (30 s max). Nothing is kept until you send.",
       "Échec envoi vocal (lance la migration s36 ?)": "Voice note failed (run migration s36?)", "Lecture impossible": "Playback failed",
       "✓ Vu": "✓ Seen",
-      // — Activités carte —
+      // · Activités carte —
       "⏳ Localisation…": "⏳ Locating…", "Publication…": "Posting…",
       "Elle sera retirée de la carte.": "It will be removed from the map.",
-      // — Compte / confidentialité / données —
+      // · Compte / confidentialité / données —
       "✅ Réponse de l'équipe SunMates": "✅ Reply from the SunMates team",
       "SunMates Gold 👑": "SunMates Gold 👑",
       "Supprimer ton compte ?": "Delete your account?", "Suppression DÉFINITIVE de ton compte et de toutes tes données. Cette action est irréversible.": "PERMANENT deletion of your account and all your data. This action can't be undone.",
@@ -13568,25 +13585,25 @@
       "Erreur : réessaie.": "Error: try again.",
       "Préparation de tes données…": "Preparing your data…", "Tes données ont été téléchargées 📦": "Your data has been downloaded 📦",
       "Confidentialité & données": "Privacy & data",
-      // — Coupons / blocage —
+      // · Coupons / blocage —
       "Il sera marqué utilisé et ne pourra plus servir.": "It'll be marked as used and can't be used again.", "Marquer utilisé": "Mark as used",
       "Bloquer ce voyageur ?": "Block this traveller?", "Il n'apparaîtra plus dans ta découverte ni tes messages. Tu pourras le débloquer plus tard.": "They won't appear in your discovery or messages anymore. You can unblock them later.",
-      // — Fil / posts / commentaires —
+      // · Fil / posts / commentaires —
       "Supprimer ce post ?": "Delete this post?", "Ce post sera retiré du fil.": "This post will be removed from the feed.", "Post supprimé": "Post deleted",
       "Commentaires": "Comments", "Commentaire supprimé": "Comment deleted",
       "Connecte-toi pour commenter.": "Log in to comment.", "Connecte-toi pour voter.": "Log in to vote.",
       "Mets au moins 2 options.": "Add at least 2 options.", "Erreur, réessaie.": "Error, try again.",
-      // — Rituels / souvenirs —
+      // · Rituels / souvenirs —
       "Mon rituel à moi": "My own ritual",
       "Ajoute une photo de profil dans « Modifier mon profil »": "Add a profile photo in “Edit my profile”",
-      // — QR / caméra / installation —
+      // · QR / caméra / installation —
       "QR indisponible": "QR unavailable",
       "Activer la caméra ?": "Enable the camera?", "Uniquement pour scanner le QR d'un Mate. Aucune image n'est enregistrée ni envoyée.": "Only to scan a Mate's QR. No image is saved or sent.",
       "Afficher": "Show",
       "Sur iPhone/iPad, l'installation se fait via le menu Partager de Safari.": "On iPhone/iPad, install via Safari's Share menu.",
       "SunMates est déjà installée sur cet appareil 🎉": "SunMates is already installed on this device 🎉",
       // ===== fin passe EN audit =====
-      // — Accueil / mode Voyage & Maison —
+      // · Accueil / mode Voyage & Maison —
       "Bonjour": "Hello", "Regarde qui traîne dans le coin 👀": "See who's around 👀",
       "✈️ En voyage": "✈️ Travelling", "🏠 À la maison": "🏠 At home",
       "Explore autour de toi 🗺️": "Explore around you 🗺️", "⛶ Plein écran": "⛶ Fullscreen", "✕ Fermer": "✕ Close",
@@ -13599,7 +13616,7 @@
       "Ville à l'honneur du jour · explore ses quêtes (ou repère-les pour ton prochain voyage)": "City of the day · explore its quests (or save them for your next trip)", "Explorer ›": "Explore ›",
       "Tes Mates d'aventure": "Your adventure Mates", "🎯 Quêtes du jour": "🎯 Daily quests", "🎮 Jeux populaires": "🎮 Popular games",
       "➕ Rejoindre la quête": "➕ Join the quest", "✅ Marquer comme accompli": "✅ Mark as done", "👥 Valider avec un Mate (+ bonus XP)": "👥 Validate with a Mate (+ bonus XP)", "🤝 Proposer à un Mate": "🤝 Suggest to a Mate", "📍 Voir sur la carte": "📍 See on map",
-      "Rejoins la quête pour la démarrer": "Join the quest to start it", "🎒 Quête en cours — accomplis-la puis valide": "🎒 Quest in progress — do it then validate", "✅ Quête accomplie !": "✅ Quest completed!",
+      "Rejoins la quête pour la démarrer": "Join the quest to start it", "🎒 Quête en cours · accomplis-la puis valide": "🎒 Quest in progress · do it then validate", "✅ Quête accomplie !": "✅ Quest completed!",
       "Rejoindre": "Join", "En cours": "In progress", "Accompli": "Done", "XP à gagner": "XP to earn",
       "Défi": "Challenge", "BFF": "BFF", "Bloquer": "Block", "À propos": "About", "Infos": "Info",
       "🛟 Sécurité": "🛟 Safety", "📄 Documents": "📄 Documents", "🎒 Pratique": "🎒 Practical", "💊 Santé": "💊 Health",
@@ -13624,11 +13641,11 @@
       "Mes voyages 🧳": "My trips 🧳", "De passage chez toi 👋": "Passing through 👋",
       "Deviens hôte SunMates": "Become a SunMates host", "🛟 Tu es hôte SunMates": "🛟 You're a SunMates host", "Je veux aider": "I want to help", "✓ Hôte actif": "✓ Active host",
       "🎒 Préparatifs": "🎒 Trip prep",
-      // — Lieux —
+      // · Lieux —
       "Tous": "All", "Éco": "Eco", "Près de moi": "Near me", "Top notés": "Top rated", "Populaires": "Popular",
       "Rechercher un lieu ou une ville…": "Search a place or city…", "⭐ Avis": "⭐ Reviews", "📍 Carte": "📍 Map",
       "☀️ Mon spot du jour": "☀️ My spot of the day", "Publier": "Post", "Effacer": "Clear",
-      // — Mates —
+      // · Mates —
       "Rencontre des voyageurs, discute et pars à l'aventure ensemble 🌍": "Meet travellers, chat and go on adventures together 🌍",
       "Rechercher par pseudo ou ville…": "Search by username or city…", "🔎 Filtres avancés": "🔎 Advanced filters", "Réinitialiser les filtres": "Reset filters",
       "Trier par": "Sort by", "💬 Message": "💬 Message", "🤝 Se connecter": "🤝 Connect", "Connexion": "Connect", "✅ Connecté": "✅ Connected",
@@ -13636,14 +13653,14 @@
       "📨 Demandes reçues": "📨 Requests received", "Accepter": "Accept", "Envoyer un message…": "Send a message…",
       "Âge": "Age", "Genre": "Gender", "Orientation": "Orientation", "Recherche": "Looking for", "Métier": "Job", "Études": "Education",
       "Langues": "Languages", "Style de voyage": "Travel style", "Personnalité": "Personality", "Signe astro": "Star sign",
-      // — Jeux —
+      // · Jeux —
       "Relève des défis, gagne de l'XP et débloque des coupons.": "Take on challenges, earn XP and unlock coupons.",
       "Quêtes": "Quests", "Jeux": "Games", "Badges": "Badges", "Coupons": "Coupons", "Classement": "Leaderboard", "Boutique": "Shop",
       "Quêtes du jour": "Today's quests", "Jeux populaires": "Popular games", "Description": "Description", "🎁 Récompenses": "🎁 Rewards",
       "➕ Rejoindre la quête": "➕ Join the quest", "✅ Marquer comme accompli": "✅ Mark as done", "🤝 Proposer à un Mate": "🤝 Suggest to a Mate", "📍 Voir sur la carte": "📍 See on map",
       "🛍️ Boutique XP": "🛍️ XP Shop", "🏷️ Titres de profil": "🏷️ Profile titles", "🖼️ Cadres d'avatar": "🖼️ Avatar frames", "Gratuit": "Free", "Débloqué": "Unlocked", "✓ Équipé": "✓ Equipped",
       "🗓️ Objectifs de la semaine": "🗓️ Weekly goals", "Accomplir 2 quêtes": "Complete 2 quests", "Faire 1 check-in": "Do 1 check-in", "Profil complété à 80 %": "Profile 80% complete",
-      // — Sécurité —
+      // · Sécurité —
       "En cas de besoin, un seul geste. On est là pour toi.": "If you need it, one tap. We're here for you.", "Besoin d'aide ?": "Need help?",
       "🆘 J'ai besoin d'aide": "🆘 I need help", "✅ Je vais bien": "✅ I'm okay", "Conseil sécurité du jour": "Safety tip of the day",
       "Accès rapides": "Quick actions", "Faux appel": "Fake call", "Sortie de secours": "Emergency exit", "Signal d'aide": "Help signal", "Se signaler": "Flag yourself",
@@ -13653,33 +13670,33 @@
       "Numéros d'urgence": "Emergency numbers", "Par pays 🌍": "By country 🌍", "📞 Numéros d'urgence": "📞 Emergency numbers", "Rechercher un pays…": "Search a country…", "Urgences": "Emergency", "Police": "Police", "Ambulance": "Ambulance",
       "🚩 Signaler un voyageur": "🚩 Report a traveller", "Signaler un voyageur": "Report a traveller", "📋 Mes signalements": "📋 My reports", "Historique de rencontres": "Meetings history",
       "Qui peut me contacter": "Who can contact me", "Premiers secours · gestes qui sauvent": "First aid · lifesaving moves", "Voyager en sécurité": "Travel safely",
-      // — Profil & réglages —
+      // · Profil & réglages —
       "Modifier mon profil": "Edit my profile", "🪪 Aperçu": "🪪 Preview", "Premium ✨": "Premium ✨", "Admin 🛡️": "Admin 🛡️", "Mes check-ins": "My check-ins",
       "⚙️ Paramètres du compte": "⚙️ Account settings", "Se déconnecter": "Log out", "Déconnexion": "Log out", "Changer de thème": "Switch theme",
-      // — Auth —
+      // · Auth —
       "Pars solo, trouve ta bande 🌍": "Travel solo, find your crew 🌍", "Email": "Email", "Mot de passe": "Password",
       "Compte créé ! Bienvenue 🌞": "Account created! Welcome 🌞",
-      // — Communs —
+      // · Communs —
       "Annuler": "Cancel", "Enregistrer": "Save", "Fermer": "Close", "Retour": "Back", "Suivant →": "Next →", "Passer": "Skip", "C'est parti ! 🚀": "Let's go! 🚀",
       "Chargement…": "Loading…", "Aucun résultat.": "No results.", "Voir le profil ›": "See profile ›",
-      // — Onboarding —
+      // · Onboarding —
       "Salut": "Hi", "Ta carte vivante": "Your living map", "Crée des moments": "Create moments", "Joue & gagne": "Play & win", "Des lieux sûrs": "Safe places", "…et l'esprit léger": "…and peace of mind",
       "Retour": "Back",
-      // — Sections du profil —
+      // · Sections du profil —
       "📸 Photo & présentation": "📸 Photo & intro", "🧭 Voyage & affinités": "🧭 Travel & affinities", "🪪 Identité": "🪪 Identity", "💼 Travail & études": "💼 Work & studies", "🌿 Style de vie": "🌿 Lifestyle", "✨ Plus sur moi": "✨ More about me", "✍️ Infos inutiles mais importantes !": "✍️ Useless but important info!",
       "Pseudo": "Username", "Ville": "City", "Bio": "Bio", "Centres d'intérêt": "Interests", "Mode de vie": "Lifestyle",
-      // — Réglages —
+      // · Réglages —
       "🌍 Langue / Language": "🌍 Language / Langue", "Vibrations (haptique)": "Vibrations (haptics)", "Afficher ma présence": "Show my presence", "Profil public": "Public profile", "Thème sombre": "Dark theme", "🪪 Mon QR": "🪪 My QR", "📷 Scanner": "📷 Scan", "Nouvel email": "New email", "Changer l'email": "Change email", "Changer le mot de passe": "Change password", "📲 Installer l'app": "📲 Install the app", "🚀 Revoir la présentation": "🚀 Replay the intro",
-      // — Premium / Gold —
+      // · Premium / Gold —
       "Passe en SunMates Gold": "Go SunMates Gold", "Mates illimités": "Unlimited Mates", "Check-ins illimités": "Unlimited check-ins", "Filtres avancés": "Advanced filters", "Profil mis en avant": "Featured profile", "Gratuit": "Free", "Inclus": "Included",
-      // — Parcours / souvenir —
+      // · Parcours / souvenir —
       "🧭 Mon parcours": "🧭 My journey", "Partager": "Share", "check-ins": "check-ins", "quêtes": "quests", "badges": "badges", "voyages": "trips",
-      // — Toasts & messages fréquents —
+      // · Toasts & messages fréquents —
       "Profil enregistré ✅": "Profile saved ✅", "Position partagée 📍": "Location shared 📍", "Email mis à jour ✅": "Email updated ✅", "Mot de passe mis à jour ✅": "Password updated ✅", "Tu participes au classement !": "You're on the leaderboard!", "Voyage planifié ! Bons préparatifs ✨": "Trip planned! Happy packing ✨",
       "Aucune conversation pour l'instant": "No conversations yet", "Aucune demande reçue": "No requests received", "Aucun check-in encore": "No check-ins yet",
-      // — Admin —
+      // · Admin —
       "📊 Tableau de bord": "📊 Dashboard", "👥 Membres": "👥 Members", "📍 Lieux sûrs": "📍 Safe places", "🚩 Signalements": "🚩 Reports", "💼 Demandes de devis B2B": "💼 B2B quote requests", "Rechercher un pseudo…": "Search a username…", "Vérifier": "Verify", "Bannir": "Ban", "Débannir": "Unban",
-      // — Batch 3 : couverture élargie —
+      // · Batch 3 : couverture élargie —
       // Chat
       "Voir le profil ›": "See profile ›", "Supprimer la conversation": "Delete conversation", "Traduire": "Translate", "🌐 Traduire": "🌐 Translate",
       // Notifications
@@ -13705,7 +13722,7 @@
       // États vides & divers
       "Personne pour l'instant 🌍": "Nobody yet 🌍", "Reviens bientôt 🌍": "Come back soon 🌍", "Aucun lieu ne correspond. Essaie un autre filtre.": "No place matches. Try another filter.", "Aucun voyageur trouvé": "No traveller found", "Aucune rencontre pour l'instant. Connecte-toi avec des voyageurs !": "No meetings yet. Connect with travellers!",
       "Demander une révision": "Request a review", "Compte suspendu": "Account suspended",
-      // — Batch 4 : gaps repérés au rendu —
+      // · Batch 4 : gaps repérés au rendu —
       "Rechercher un lieu ou un·e voyageur·se…": "Search a place or a traveller…",
       "Filtre, puis": "Filter, then", "touche une pastille": "tap a pin", "pour agir 👇": "to act 👇",
       "📍 Lieux": "📍 Places", "🧑 Mates": "🧑 Mates", "🎉 Activités": "🎉 Activities", "✅ Check-ins": "✅ Check-ins",
@@ -13713,15 +13730,15 @@
       "Explore autour de toi": "Explore around you", "Découvrir": "Discover", "Demandes": "Requests", "Messages": "Messages",
       "Pars solo, trouve ta bande 🌍": "Travel solo, find your crew 🌍", "Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.": "Spot travellers around you, suggest a coffee or an outing, and leave with friends.",
       "Inscription": "Sign up", "Créer mon compte": "Create my account",
-      // — Batch 5 : gaps onglet Sécurité —
+      // · Batch 5 : gaps onglet Sécurité —
       "Partage de position, alerte d'urgence, cercle de confiance et plus.": "Location sharing, emergency alert, trust circle and more.",
       "En cas d'urgence": "In an emergency", "Un geste, et tu n'es plus seul·e.": "One tap, and you're not alone.", "📍 Partager ma position (sans urgence)": "📍 Share my location (no emergency)",
       "Tes proches à joindre en un geste. Stockés sur ton appareil (privé).": "Your close contacts, one tap away. Stored on your device (private).",
       "Seules les positions de tes connexions acceptées apparaissent ici.": "Only the locations of your accepted connections appear here.",
       "Trouver de l'aide autour de moi": "Find help around me",
-      // — Onboarding slide « spots » (reformulée fun) —
+      // · Onboarding slide « spots » (reformulée fun) —
       "Tes spots préférés": "Your favourite spots", "Découvre les": "Discover the", "meilleurs spots": "best spots", "de la communauté (cafés, co-livings, bars), avis et notes à l'appui, pour retrouver du monde 🎉": "from the community (cafés, co-livings, bars), backed by reviews and ratings, to meet up with people 🎉",
-      // — Batch 6 : onglet Profil (labels + textes) —
+      // · Batch 6 : onglet Profil (labels + textes) —
       "Non vérifié": "Not verified", "Confiance ⓘ": "Trust ⓘ", "Confiance": "Trust", "📤 Partager": "📤 Share",
       "Touche une section pour la déplier. Pense à": "Tap a section to expand. Remember to", "en bas.": "at the bottom.", "Enregistrer": "Save",
       "Demander la vérification": "Request verification", "Aperçu de mon profil public": "Preview of my public profile",
@@ -13730,13 +13747,13 @@
       "Nom de l'établissement": "Place name", "Nom du contact": "Contact name", "Taille (cm)": "Height (cm)", "Langue parlée": "Spoken language",
       "Langues parlées": "Spoken languages", "Enfants": "Children", "Avec photo": "With photo", "Métier": "Job", "Emploi": "Job", "Entreprise": "Company",
       "Centres d'intérêt": "Interests", "Intention": "Intent", "Je suis ici pour": "I'm here to", "Animaux": "Pets", "Musique": "Music",
-      // — Batch 7 : Lieux + labels stat Mates + divers —
+      // · Batch 7 : Lieux + labels stat Mates + divers —
       "Les meilleurs spots pour se retrouver ☕ Fais un check-in pour grimper au classement 🏆": "The best spots to meet up ☕ Check in to climb the leaderboard 🏆",
       "Mates de confiance ›": "Trusted Mates ›", "Trouve tes premiers Mates 🌍 ›": "Find your first Mates 🌍 ›",
       "(privé · jamais affiché)": "(private · never shown)", "Ajouter le tien ›": "Add yours ›",
       "Plein écran": "Fullscreen", "Quitter le plein écran": "Exit fullscreen", "Tout afficher": "Show all", "Centrer sur ma position": "Center on my location",
       "Partager une activité sur la carte": "Share an activity on the map", "Quand, où exactement, niveau…": "When, where exactly, level…",
-      // — Batch 8 : vues profondes (réglages, premium, B2B, actions profil, chat) —
+      // · Batch 8 : vues profondes (réglages, premium, B2B, actions profil, chat) —
       "Application": "App", "Compte": "Account", "Apparaître dans le classement": "Appear in the leaderboard", "Mode sombre": "Dark mode", "🌙 Mode sombre": "🌙 Dark mode", "Thème « nuit tropicale », repose les yeux": "“Tropical night” theme, easy on the eyes", "Langue": "Language",
       "Afficher ma présence": "Show my presence", "« En ligne » sur ton avatar": "“Online” on your avatar",
       "Mes connexions": "My connections", "Voir mes connexions": "See my connections", "✅ Mes connexions": "✅ My connections",
@@ -13748,13 +13765,13 @@
       "Badge « Lieu sûr »": "“Safe place” badge", "Check-ins & offres": "Check-ins & deals", "Fréquentation & avis": "Footfall & reviews", "Mis en avant sur la carte": "Featured on the map", "La confiance en plus": "Extra trust",
       "Quêtes à confirmer": "Quests to confirm", "Défis reçus": "Challenges received", "Quêtes du jour": "Today's quests", "Jeux populaires": "Popular games",
       "Mon parcours de voyageur·se": "My traveller journey", "Partager mon parcours": "Share my journey",
-      // — Batch 9 : page de connexion + Pro —
+      // · Batch 9 : page de connexion + Pro —
       "Seul·e au départ, jamais à l'arrivée ☀️": "Solo when you leave, never when you arrive ☀️",
       "Fais de ton établissement un lieu sûr repéré par les voyageurs solo.": "Make your venue a safe spot spotted by solo travellers.", "Espace Pro": "Pro space",
       "Cafés, co-livings, bars et hôtels demandent à être référencés comme lieux sûrs.": "Cafés, co-livings, bars and hotels apply to be listed as safe places.", "🚀 Démarrer": "🚀 Get started",
       "🚀 Démarrer, Espace Pro": "🚀 Get started, Pro space", "Aucun compte requis : découvre l'offre et envoie ta demande de partenariat.": "No account needed: discover the offer and send your partnership request.",
       "Pourquoi nous rejoindre": "Why join us", "Votre tableau de bord Pro": "Your Pro dashboard", "Demande de référencement": "Listing request", "Envoyer ma demande": "Send my request",
-      // — Batch 10 : toasts fréquents —
+      // · Batch 10 : toasts fréquents —
       "Profil enregistré 🎉": "Profile saved 🎉", "Photo de profil mise à jour": "Profile photo updated", "Demande de connexion envoyée !": "Connection request sent!", "Quête rejointe !": "Quest joined!",
       "Conversation supprimée": "Conversation deleted", "Coupon utilisé, bon plan !": "Coupon used, nice deal!", "Merci pour ton avis !": "Thanks for your review!", "Contact d'urgence ajouté": "Emergency contact added", "Contact supprimé": "Contact deleted",
       "Activité publiée sur la carte ✅": "Activity posted on the map ✅", "Activité supprimée": "Activity deleted", "Ajouté à tes envies !": "Added to your wishlist!", "Tu participes au classement !": "You're on the leaderboard!",
@@ -13763,10 +13780,10 @@
       "Parcours copié, colle-le où tu veux !": "Journey copied, paste it anywhere!", "Appel simulé dans 5 s… range ton téléphone 😉": "Simulated call in 5s… put your phone away 😉", "Profil introuvable": "Profile not found",
       "Signalement supprimé": "Report deleted", "Signalement traité": "Report handled", "Indique une destination et une date 🙂": "Enter a destination and a date 🙂", "Voyage planifié ! Bons préparatifs ✨": "Trip planned! Happy packing ✨",
       "Quête accomplie ! 🎉": "Quest completed! 🎉", "Demande de connexion envoyée": "Connection request sent", "Connexion réussie !": "Logged in!", "Tu n'es plus hôte.": "You're no longer a host.", "Tu es hôte ! Merci 💛": "You're a host! Thank you 💛",
-      // — Batch 11 : bannière PWA + divers noms propres composés —
+      // · Batch 11 : bannière PWA + divers noms propres composés —
       "Installer SunMates": "Install SunMates", "Installer": "Install", "Installer l'app": "Install the app", "Installer l'application": "Install the app", "Ajouter à l'écran d'accueil": "Add to home screen", "Plus tard": "Later", "Menu du navigateur": "Browser menu",
       "Découvrir des Mates": "Discover Mates", "Voir les lieux sûrs": "See safe places", "Trouve des voyageurs de confiance et envoie une demande de connexion.": "Find trusted travellers and send a connection request.",
-      // — Pré-traductions auto (texte descriptif, généré) —
+      // · Pré-traductions auto (texte descriptif, généré) —
       "📡 Hors-ligne, vérifie ta connexion": "📡 Offline, check your connection",
       "Accès direct depuis ton écran d'accueil, comme une vraie app.": "Direct access from your home screen, like a real app.",
       "Ajoute SunMates à ton écran d'accueil : accès direct, plein écran, et même hors-ligne. Voici comment :": "Add SunMates to your home screen: direct access, full screen, and even offline. Here's how:",
@@ -14028,12 +14045,12 @@
       "Ce qui me fait vibrer en voyage": "What makes me tick on a trip",
       "Tu peux en choisir {n} au maximum ici.": "You can pick up to {n} here.",
       "Ta réponse…": "Your answer…",
-      "{n} jours de série, tu es en feu ! Continue 🌟": "{n}-day streak — you're on fire! Keep it going 🌟",
+      "{n} jours de série, tu es en feu ! Continue 🌟": "{n}-day streak · you're on fire! Keep it going 🌟",
       "🔥 Ta série": "🔥 Your streak",
       "De retour à {c}": "Back in {c}",
       "Poc déjà envoyé aujourd'hui ! Reviens dans ~{h} h pour faire grandir ta flamme 🔥": "Poc already sent today! Come back in ~{h} h to grow your flame 🔥",
       "Poc ! Ta flamme grandit : x{n} 🔥": "Poc! Your flame is growing: x{n} 🔥",
-      "Poc envoyé ! Flamme allumée 🔥": "Poc sent — flame lit 🔥",
+      "Poc envoyé ! Flamme allumée 🔥": "Poc sent · flame lit 🔥",
       "Tu n'es plus signalé·e comme dispo.": "You're no longer shown as available.",
       "Tu es <b>dispo</b> pour une rencontre (3 h) ☕ Tes Mates le voient.": "You're <b>up for meeting</b> (3 h) ☕ Your Mates can see it.",
       "Voyage ajouté ! <b>{n}</b> voyageur sera là en même temps ✨": "Trip added! <b>{n}</b> traveler will be there at the same time ✨",
@@ -14042,7 +14059,7 @@
       "Lieu recommandé à {n} ✅": "Spot recommended to {n} ✅",
       "Activité proposée à {n} ✅": "Activity suggested to {n} ✅",
       "Ça fait {d} jours ! Un Mate t'attend peut-être.": "It's been {d} days! A Mate might be waiting for you.",
-      "Content de te revoir — prêt·e pour une nouvelle quête ?": "Good to see you again — ready for a new quest?",
+      "Content de te revoir · prêt·e pour une nouvelle quête ?": "Good to see you again · ready for a new quest?",
       "✨ aujourd'hui : {b}": "✨ today: {b}",
       "Prêt·e pour de nouvelles aventures 🌞": "Ready for new adventures 🌞",
       "⭐ Niveau {n}": "⭐ Level {n}",
@@ -14065,19 +14082,19 @@
       "Une nouvelle ville chaque jour": "A new city every day",
       "Aujourd'hui : {c}": "Today: {c}",
       "Niv. {n} · encore {x} XP": "Lvl {n} · {x} XP to go",
-      "🌟 Tous les défis du jour relevés — chapeau ! Reviens demain, ou 🎲 mélange pour en piocher d'autres.": "🌟 All of today's challenges done — hats off! Come back tomorrow, or 🎲 shuffle for new ones.",
-      "🎉 Rituels bouclés pour aujourd'hui — prends soin de toi ✨": "🎉 Rituals all done for today — take care of yourself ✨",
+      "🌟 Tous les défis du jour relevés · chapeau ! Reviens demain, ou 🎲 mélange pour en piocher d'autres.": "🌟 All of today's challenges done · hats off! Come back tomorrow, or 🎲 shuffle for new ones.",
+      "🎉 Rituels bouclés pour aujourd'hui · prends soin de toi ✨": "🎉 Rituals all done for today · take care of yourself ✨",
       "Tout cocher d'un coup": "Check them all at once",
-      "Rituels du jour cochés — belle journée ☀️": "Today's rituals checked — have a lovely day ☀️",
+      "Rituels du jour cochés · belle journée ☀️": "Today's rituals checked · have a lovely day ☀️",
       "Boire 2 L d'eau": "Drink 2 L of water",
       "Bouger 30 minutes": "Move for 30 minutes",
       "Appeler un proche": "Call someone you love",
       "Lire 10 pages": "Read 10 pages",
       "Bienvenue chez toi": "Welcome home",
-      "Ici, c'est ton cocon : défis du quotidien et rituels. L'aventure, elle, se passe en mode Voyage — carte, Mates et quêtes autour de toi.": "This is your cozy corner: daily challenges and rituals. The adventure lives in Travel mode — map, Mates and quests around you.",
+      "Ici, c'est ton cocon : défis du quotidien et rituels. L'aventure, elle, se passe en mode Voyage · carte, Mates et quêtes autour de toi.": "This is your cozy corner: daily challenges and rituals. The adventure lives in Travel mode · map, Mates and quests around you.",
       "Passer en mode Voyage": "Switch to Travel mode",
       "Rester ici pour l'instant": "Stay here for now",
-      "Ton Mate du jour — un petit coucou ? ☀️": "Your Mate of the day — say hi? ☀️",
+      "Ton Mate du jour · un petit coucou ? ☀️": "Your Mate of the day · say hi? ☀️",
       "prochaine quête dans ~{h} h ☀️": "next quest in ~{h} h ☀️",
       "💫 Encore {x} XP pour le niveau {n}": "💫 {x} XP to go for level {n}",
       "+{x} XP · 👥 +{g} à deux ✨": "+{x} XP · 👥 +{g} together ✨",
@@ -14087,10 +14104,10 @@
       "Tu es {r} dans ce classement": "You're {r} in this ranking",
       "Défier un Mate": "Challenge a Mate",
       "Record : {n}": "Best: {n}",
-      "🎮 Je te défie : « {g} » sur SunMates{s} — à toi de jouer !": "🎮 I challenge you: \"{g}\" on SunMates{s} — your turn!",
+      "🎮 Je te défie : « {g} » sur SunMates{s} · à toi de jouer !": "🎮 I challenge you: \"{g}\" on SunMates{s} · your turn!",
       "{n} jours d'affilée !": "{n} days in a row!",
       "Montre cet écran au partenaire 😎": "Show this screen to the partner 😎",
-      "✅ C'est validé — marquer utilisé": "✅ All good — mark as used",
+      "✅ C'est validé · marquer utilisé": "✅ All good · mark as used",
       "Une fois marqué utilisé, le coupon ne peut plus servir.": "Once marked as used, the coupon can't be used again.",
       "sera envoyé à la reconnexion": "will be sent when back online",
       "{n} message(s) en attente envoyé(s) ✅": "{n} queued message(s) sent ✅",
@@ -14533,9 +14550,9 @@
       "Voyageuse solo, team apéro 🍷": "Solo traveller, aperitif team 🍷",
       " ici récemment": "here recently",
       "✨ Sois le·la 1er·ère à checker !": "✨ Be the 1st to check in!",
-      "Aucun lieu géolocalisé près de toi pour l'instant 📍 — repasse sur « Tous » ou explore une autre ville ✨": "No geolocated place near you yet 📍 — switch back to \"All\" or explore another city ✨",
-      "🗂️ Filtrer": "🗂️ Filter",
-      "↕️ Trier": "↕️ Sort",
+      "Aucun lieu géolocalisé près de toi pour l'instant 📍 · repasse sur « Tous » ou explore une autre ville ✨": "No geolocated place near you yet 📍 · switch back to \"All\" or explore another city ✨",
+      "🌈 Ton ambiance": "🌈 Your vibe",
+      "🏆 Le top du coin": "🏆 Local favourites",
       " · 🌱 éco": "ECO ",
       "☕ Café découverte": "Discovery ☕ coffee",
       "🌅 Lever de soleil ensemble": "🌅 Sunrise together",
