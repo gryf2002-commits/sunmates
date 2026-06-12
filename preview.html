@@ -13223,11 +13223,18 @@
         try {
           if (typeof _homeBase._update === "function") {
             homeLeaf.off("move", _homeBase._update, _homeBase);
-            let _glLast = 0, _glTrail = null;
-            // Intervalle ADAPTATIF : encore plus espacé en plein écran (canvas ~4× plus grand).
-            const _glGap = () => (document.querySelector(".homemap-card.fs") ? 180 : 90);
+            let _glLast = 0, _glTrail = null, _glRaf = 0;
+            // P5 (fluidité « à la Plans ») : en PLEIN ÉCRAN le throttle 180 ms donnait des
+            // À-COUPS (le fond « sautait » à chaque resync) → resync à CHAQUE frame via rAF,
+            // possible car le canvas plein écran est rendu à pixelRatio 1 (≈ même surface GPU
+            // que la mini-carte en rétina). La MINI-carte garde l'économie 90 ms (batterie).
             homeLeaf.on("move", () => {
-              const now = Date.now(), gap = _glGap();
+              if (document.querySelector(".homemap-card.fs")) {
+                if (_glRaf) return; // déjà programmé pour la frame en cours
+                _glRaf = requestAnimationFrame(() => { _glRaf = 0; try { _homeBase._update(); } catch (e) {} });
+                return;
+              }
+              const now = Date.now(), gap = 90;
               if (now - _glLast > gap) { _glLast = now; try { _homeBase._update(); } catch (e) {} }
               else { clearTimeout(_glTrail); _glTrail = setTimeout(() => { _glLast = Date.now(); try { _homeBase._update(); } catch (e) {} }, gap); }
             });
@@ -13646,26 +13653,9 @@
         if (homeLeaf.scrollWheelZoom) { on ? homeLeaf.scrollWheelZoom.enable() : homeLeaf.scrollWheelZoom.disable(); }
         // P4 : plein écran = drag toujours actif ; en sortir rendort la mini-carte (tap pour réveiller)
         try { if (window._smCoarse && homeLeaf.dragging) { if (on) homeLeaf.dragging.enable(); else if (window._smMapSleep) window._smMapSleep(); else homeLeaf.dragging.disable(); } } catch (e) {}
-        // P3 (retour Maxime : plein écran « ultra méga lent ») : le fond VECTORIEL GPU re-rend
-        // toute la scène sur un canvas ~4× plus grand → saccadé. En plein écran on bascule sur
-        // le fond RASTER (tuiles cachées par le SW = très fluide, variante sombre la nuit) ;
-        // le fond vectoriel DA revient dès qu'on referme.
-        try {
-          if (window._homeBaseLyr) {
-            if (on && !window._homeFsRaster) {
-              homeLeaf.removeLayer(window._homeBaseLyr);
-              // P4 (retour Maxime) : TOUJOURS voyager — la variante sombre était illisible
-              // (rues invisibles). Lisibilité d'abord, même en mode nuit.
-              window._homeFsRaster = L.tileLayer(
-                "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-                { attribution: "© OpenStreetMap · © CARTO", maxZoom: 19, keepBuffer: 4, updateWhenIdle: false, updateWhenZooming: false }
-              ).addTo(homeLeaf);
-            } else if (!on && window._homeFsRaster) {
-              homeLeaf.removeLayer(window._homeFsRaster); window._homeFsRaster = null;
-              window._homeBaseLyr.addTo(homeLeaf);
-            }
-          }
-        } catch (e) {}
+        // P5 (retour Maxime) : le swap raster du plein écran est RETIRÉ — la carte garde le
+        // fond vectoriel SunMates recoloré par MODE (jour/nuit/hiver/tropiques) partout.
+        // La fluidité plein écran se joue ailleurs : resync GL à chaque frame (voir renderHomeMap).
         // iOS : le conteneur change de taille via CSS sans event resize natif fiable.
         // On force Leaflet à recalculer SES dimensions, puis à redessiner les pastilles :
         // un setView "sur place" relance le rendu des marqueurs, et refreshClusters()
