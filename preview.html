@@ -1059,11 +1059,18 @@
     /* P2.7 : un chouia plus GRANDE (240→266px) — possible maintenant que le scroll de la page
        ne se fait plus avaler par la carte (geste coopératif : 1 doigt = page, plein écran = drag). */
     .homemap { height: 266px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
-    .hm-coop-hint { position: absolute; left: 50%; bottom: .6rem; transform: translateX(-50%) translateY(6px); z-index: 1000;
-      background: rgba(20,14,28,.84); color: #fff; font: 700 .76rem/1 Manrope, system-ui, sans-serif; padding: .55rem .85rem;
-      border: 1px solid rgba(255,201,60,.45); box-shadow: 0 4px 14px rgba(0,0,0,.35);
+    /* P7 : pastille « touche la carte » — EN HAUT de la carte (le bas porte déjà Partager/
+       Autour de moi/Tout voir), aux couleurs DA (carte + encre, déclinée par mode), avec la
+       petite main qui tapote pour l'intuition. */
+    .hm-coop-hint { position: absolute; left: 50%; top: .6rem; transform: translateX(-50%) translateY(-6px); z-index: 1000;
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: var(--card); color: var(--ink); font: 700 .76rem/1 Manrope, system-ui, sans-serif; padding: .5rem .8rem;
+      border: 1px solid var(--line); box-shadow: var(--shadow-sm);
       border-radius: 999px; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; white-space: nowrap; }
     .hm-coop-hint.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .hm-coop-hint .hh { display: inline-block; animation: hhTap 1.8s ease-in-out infinite; }
+    @keyframes hhTap { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px) scale(.9); } }
+    body.theme-dusk .hm-coop-hint { background: var(--dcard, #2a2140); color: #f3e9f3; border-color: rgba(255,255,255,.16); }
     /* P4 : carte RÉVEILLÉE (tap) = liseré corail discret, pour voir qu'elle est « en main » */
     .homemap.hm-live::after { content: ""; position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 14px; pointer-events: none; opacity: .5; z-index: 899; }
     /* P2.10 : ruban préversion / version archivée */
@@ -3336,6 +3343,9 @@
     .da-sw-band { display: block; width: 100%; margin-bottom: .45rem; }
     .da-band { display: block; height: 34px; border-radius: 10px; margin-bottom: .3rem; border: 1px solid rgba(0,0,0,.06); }
     body.theme-dusk .da-sw { background: var(--dcard, #2a2140); border-color: rgba(255,255,255,.1); }
+    .da-comp-row { display: flex; align-items: center; gap: .6rem; padding: .45rem 0; border-bottom: 1px dashed var(--line); }
+    .da-comp-row:last-child { border-bottom: 0; }
+    .da-comp-live { flex-shrink: 0; min-width: 92px; display: inline-flex; justify-content: center; }
     .da-emo-zone { font-size: .68rem; font-weight: 800; letter-spacing: .04em; color: var(--muted); margin: .55rem 0 .25rem; text-transform: uppercase; }
     .da-emo-grid { display: flex; flex-wrap: wrap; gap: .3rem; }
     .da-emo { width: 38px; height: 38px; display: grid; place-items: center; font-size: 1.15rem; background: var(--cream, #faf3ec); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; padding: 0; }
@@ -5282,6 +5292,11 @@
               <div id="daVisuels"></div>
               <p class="muted" style="font-size:.78rem;margin:.6rem 0 .3rem"><b>Les 6 logos</b> (un par monde) :</p>
               <div id="daLogos" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>
+            </div>
+            <!-- P7 : composants-statuts rendus EN VRAI (sceau vérifié, boutons, chips, présence…) -->
+            <div class="card"><h3 style="margin-top:0">🔘 Composants &amp; statuts (rendus en direct)</h3>
+              <p class="muted" style="font-size:.78rem;margin:.2rem 0 .6rem">Chaque composant est affiché avec sa VRAIE classe CSS — tap = copier son fond. Ils suivent le mode de l'app.</p>
+              <div id="daComps"></div>
             </div>
             <div class="card"><h3 style="margin-top:0">🟣 Pastilles (accès rapides &amp; sécurité)</h3>
               <p class="muted" style="font-size:.78rem;margin:.2rem 0 .6rem">La palette « émaillée » des tuiles ; elles suivent le mode choisi ci-dessus.</p>
@@ -8048,7 +8063,15 @@
       ["🖼️", "Photos d'ambiance", "Banque thématique (cafés, plats, nature, eau, nuit, culture, route, ville) choisie par mots-clés du contenu + shimmer crème pendant le chargement."],
       ["🎬", "Scènes & célébrations", "100 % CSS/SVG maison : hakuna matata (silhouettes de savane), ballons « Là-haut », petit globe, avion en papier, baleine, confettis-soleils, pluie de saison (flocons/feuilles/étoiles)."],
       ["📱", "QR & cartes à partager", "QR en écrin DA (cadre sunset, papier ivoire, encre aubergine) ; récap story et cartes souvenirs dessinés au canvas avec la typo Fraunces."],
-      ["🗺️", "Carte", "Fond vectoriel recoloré DA (4 palettes : jour/nuit/hiver/tropiques) + épingles par type (lieux corail · mates violet · activités ambre · check-ins teal) ; fond raster fluide en plein écran."],
+      ["🗺️", "Carte", "Fond vectoriel recoloré DA (4 palettes : jour/nuit/hiver/tropiques) + épingles par type (lieux corail · mates violet · activités ambre · check-ins teal), fluide en plein écran."],
+      ["✓", "Sceau vérifié", "Pastille ronde dégradé sunset→teal avec ✓ blanc — LA marque de confiance de l'app (profils, lieux). Jamais de vert criard."],
+      ["✅", "Coche « accompli » DA", "Validations, objectifs et quêtes cochés en DORÉ-ambre — la coche verte générique est bannie de SunMates."],
+      ["🟠", "Présence & statuts", "Point « en ligne » ambre sur l'avatar + pilule « En ligne » ; chip « ☕ Dispo ? » ; série en chip 🔥 ambré ; pastille hôte 🛟."],
+      ["📊", "Jauges & barres", "Barre d'XP dorée brillante (halo doux), jauge de confiance, barres de progression — toujours en dégradé accent/or, coins 999px."],
+      ["🖼️", "Avatars & cadres", "Ronds, initiale sur fond chaud si pas de photo ; liseré dégradé au boost/match ; flamme de streak autour de l'avatar ; cadres cosmétiques de la boutique XP."],
+      ["🔘", "Boutons & chips", "btn-primary = dégradé sunset + ombre chaude · btn-ghost = contour discret · chips de filtres = crème au repos, dégradé accent quand actives."],
+      ["🍞", "Toasts", "Pilules en haut de l'écran, 2 visibles max + file d'attente, liseré accent, fonds déclinés par mode, balayables vers le haut, cliquables."],
+      ["📜", "Détails d'interface", "Barre de défilement thémée (jamais blanche), sélection de texte corail, ombres chaudes (--shadow), rayons 22/14/28 px, ressort doux des modales."],
     ];
     // P4 : les principaux emojis EN SERVICE, par zone — visualisables (et copiables d'un tap).
     const DA_EMOJIS = [
@@ -8059,6 +8082,33 @@
       ["Profil & statuts", ["🪪", "📷", "⚙️", "🌙", "☀️", "🔔", "👋", "📤", "🧪", "💼"]],
       ["Météo & célébrations", ["🌦️", "🌡️", "☔", "❄️", "🌴", "🌅", "🎉", "🎈", "🐋", "🚢", "🦁", "🎂"]],
     ];
+    // P7 : les COMPOSANTS-STATUTS sondés en direct (classe CSS réelle → rendu vivant + couleurs lues).
+    const DA_COMPONENTS = [
+      ["vchip", "Sceau vérifié", "✓"],
+      ["btn-primary", "Bouton principal", "Continuer"],
+      ["btn-accent", "Bouton accent", "Copier"],
+      ["btn-ghost", "Bouton fantôme", "Annuler"],
+      ["chip", "Chip filtre (repos)", "📍 Lieux"],
+      ["chip active", "Chip filtre (active)", "📍 Lieux"],
+      ["streak-chip", "Série de jours", "🔥 3 jours"],
+      ["avail-chip", "Dispo ?", "☕ Dispo ?"],
+      ["presence-pill", "Présence", "En ligne"],
+      ["nbadge", "Compteur de notifs", "3"],
+      ["fpost-kindtag", "Étiquette de post", "📍 Spot"],
+    ];
+    function _daReadComponents(mode) {
+      return _daWithMode(mode, () => {
+        const wrap = document.createElement("div"); wrap.style.cssText = "position:absolute;left:-9999px;top:0";
+        wrap.innerHTML = DA_COMPONENTS.map(([cls, , txt]) => `<span class="${cls}">${txt || ""}</span>`).join("");
+        document.body.appendChild(wrap);
+        const out = DA_COMPONENTS.map(([cls, label], i) => {
+          const s = getComputedStyle(wrap.children[i]);
+          const bg = (s.backgroundImage && s.backgroundImage !== "none") ? s.backgroundImage : s.backgroundColor;
+          return { cls, label, bg, color: s.color, border: s.borderColor };
+        });
+        wrap.remove(); return out;
+      }) || [];
+    }
     function renderDaPanel() {
       const seg = $("daModeSeg");
       if (seg && !seg.dataset.wired) {
@@ -8103,6 +8153,15 @@
           }).join("");
         }
       }
+      // P7 : composants-statuts — rendu VIVANT (vraie classe) + couleurs sondées du mode choisi
+      const dc = $("daComps");
+      if (dc) {
+        const comps = _daReadComponents(_daMode);
+        dc.innerHTML = comps.map((c, i) => {
+          const [cls, , txt] = DA_COMPONENTS[i];
+          return `<div class="da-comp-row"><span class="da-comp-live"><span class="${cls}">${escapeHtml(txt || "")}</span></span><span class="nm" style="flex:1">${escapeHtml(c.label)}<span class="vl">.${escapeHtml(cls.replace(" ", "."))}</span></span><button type="button" class="da-sw" style="padding:.3rem .45rem" data-dacopy="${escapeHtml(c.bg)}"><span class="sq" style="width:22px;height:22px;background:${escapeHtml(c.bg)}"></span></button></div>`;
+        }).join("");
+      }
       // Pastilles émaillées
       const th = _daReadThumbs(_daMode);
       $("daThumbs").innerHTML = '<div class="da-grid">' + th.map((t) =>
@@ -8119,11 +8178,14 @@
           // un brief externe (Stitch, Figma, cowork) a TOUT, pas seulement les couleurs.
           DA_VISUELS.forEach(([ic, name, desc]) => kit.visuels[name] = desc);
           kit.emojis = {}; DA_EMOJIS.forEach(([zone, list]) => kit.emojis[zone] = list.join(" "));
+          // P7 : LE KIT LE PLUS COMPLET — tokens + pastilles + dégradés + COMPOSANTS-STATUTS
+          // (sceau vérifié, boutons, chips, présence, compteurs…) sondés dans CHAQUE mode.
           DA_MODES.forEach(([m]) => {
-            kit.modes[m] = { tokens: {}, pastilles: {}, degrades: {} };
+            kit.modes[m] = { tokens: {}, pastilles: {}, degrades: {}, composants: {} };
             _daReadTokens(m).forEach((t) => kit.modes[m].tokens[t.v] = t.val);
             _daReadThumbs(m).forEach((t) => kit.modes[m].pastilles[t.name] = t.bg);
             DA_GRADS.forEach(([src, label]) => kit.modes[m].degrades[label] = _daGradVal(src, m));
+            _daReadComponents(m).forEach((c) => kit.modes[m].composants[c.label] = { classe: "." + c.cls.replace(" ", "."), fond: c.bg, texte: c.color, bordure: c.border });
           });
           _daCopy(JSON.stringify(kit, null, 2));
         });
@@ -13191,7 +13253,7 @@
           // explorer » est VISIBLE EN PERMANENCE tant que la carte dort — plus seulement
           // pendant un geste. Il disparaît au réveil, revient quand elle se rendort.
           const hint = document.createElement("div"); hint.className = "hm-coop-hint show";
-          hint.textContent = "🖐️ " + i18nT("Touche la carte pour l'explorer");
+          hint.innerHTML = '<span class="hh">🖐️</span>' + escapeHtml(i18nT("Touche la carte pour l'explorer"));
           el.appendChild(hint);
           let t0 = null;
           const wake = () => { try { homeLeaf.dragging.enable(); } catch (e) {} el.classList.add("hm-live"); hint.classList.remove("show"); };
