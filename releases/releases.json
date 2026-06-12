@@ -1,4 +1,10 @@
 [
   { "v": "v441", "date": "2026-06-12", "note": "Fin passe 2 — panneau DA, retour téléphone, préversion, perf célébrations", "file": "v441.html" },
-  { "v": "v439", "date": "2026-06-12", "note": "Fin passe 9 — 43 retours visuels (valise folle, météo, carnet d'adresses…)", "file": "v439.html" }
+  { "v": "v439", "date": "2026-06-12", "note": "Fin passe 9 — 43 retours visuels (valise folle, météo, carnet d'adresses…)", "file": "v439.html" },
+  { "v": "v375", "date": "2026-06-10", "note": "Jalon · cadrages DA (safe-areas, cibles tactiles 44px, centre d'aide)", "file": "v375.html" },
+  { "v": "v300", "date": "2026-06-09", "note": "Jalon · grand audit sécurité (fix XSS, anti-élévation de privilèges, perf)", "file": "v300.html" },
+  { "v": "v225", "date": "2026-06-07", "note": "Jalon · HomeMates, récap souvenirs du mode Maison", "file": "v225.html" },
+  { "v": "Étape 150", "date": "2026-06-06", "note": "Jalon · boutique XP & cosmétiques (150ᵉ évolution)", "file": "etape-150.html" },
+  { "v": "Étape 75", "date": "2026-06-05", "note": "Jalon · peaufinage carte plein écran & login (75ᵉ évolution)", "file": "etape-75.html" },
+  { "v": "Genèse 🌱", "date": "2026-06-02", "note": "LA toute première page du projet — pour mesurer le chemin parcouru", "file": "genese.html" }
 ]
