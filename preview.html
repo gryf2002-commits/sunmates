@@ -12963,6 +12963,10 @@
             return;
           }
           if (ly.type === "symbol") {
+            // P13b (« carrés blancs sur la carte ») : les ÉCUSSONS routiers (A86, N13…) ont un
+            // sprite BLANC — leur peindre le texte en crème donnait des rectangles blancs vides.
+            // On les laisse 100 % d'origine : panneau blanc + numéro sombre, lisible partout.
+            if (/shield/.test(id)) return;
             set(ly.id, "text-color", P.text);
             set(ly.id, "text-halo-color", P.halo);
             // P13 : halo ÉPAISSI (1.3 la nuit, 1.1 le jour) → noms de rues, bars et commerces
@@ -12972,8 +12976,12 @@
         });
         // P13 : LABELS EN FRANÇAIS — le style « bright » affiche name/name:en (« des trucs en
         // anglais qui dénaturent la carte »). Priorité : name:fr → name:latin → name.
+        // P13b : on ne touche QU'AUX champs basés sur un NOM — les écussons ({ref} = numéro de
+        // route) et numéros de maison gardent leur champ d'origine (sinon : écussons vides).
         layers.forEach((ly) => {
           if (ly.type !== "symbol" || !(ly.layout && ly.layout["text-field"])) return;
+          const tf = JSON.stringify(ly.layout["text-field"]);
+          if (!/name/.test(tf) || /\bref\b|shield/.test(tf + (ly.id || ""))) return;
           try { m.setLayoutProperty(ly.id, "text-field", ["coalesce", ["get", "name:fr"], ["get", "name:latin"], ["get", "name"]]); } catch (e) {}
         });
       } catch (e) {}
