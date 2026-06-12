@@ -114,8 +114,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=436"></script>
-  <script src="sunmates-icons.js?v=436"></script>
+  <script src="sunmates-badges.js?v=437"></script>
+  <script src="sunmates-icons.js?v=437"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -3415,6 +3415,21 @@
     .bottom-nav button.egp-land { animation: egpLand .8s cubic-bezier(.3,1.6,.4,1); }
     @keyframes egpLand { 0% { transform: translateY(0); } 30% { transform: translateY(-7px) scale(1.1); } 100% { transform: translateY(0); } }
 
+    /* #38 : album souvenir PLUS PRÉSENT (lignes plus grandes, accents chauds) */
+    .gal-city { padding: .65rem .55rem !important; font-size: .95rem; border: 1px solid var(--line); border-radius: 12px; margin-top: .4rem; background: var(--card); }
+    .gal-city .hc-name { font-weight: 700; }
+    .gal-city .hc-n { color: var(--accent); font-weight: 800; }
+    body.theme-dusk .gal-city { background: var(--dcard, #2a2140); border-color: rgba(255,255,255,.08); }
+
+    /* #37 : pastille météo — pilule chaude cliquable, déclinée par mode */
+    .weather-chip { display: inline-flex; align-items: center; gap: .35rem; margin: 0 0 .55rem; padding: .42rem .75rem;
+      border-radius: 999px; border: 1px solid rgba(232,150,31,.3); background: linear-gradient(180deg, var(--cream), var(--card));
+      color: var(--ink); font-weight: 700; font-size: .82rem; cursor: pointer; box-shadow: var(--shadow-sm); }
+    .weather-chip .wc-ic { font-size: 1.05rem; }
+    .weather-chip .wc-sep { color: var(--muted); }
+    .weather-chip .wc-hint { color: var(--accent); font-weight: 800; }
+    body.theme-dusk .weather-chip { background: var(--dcard, #2a2140); border-color: rgba(255,209,92,.2); color: #f3e9f3; }
+
     /* #18 : QR en écrin DA — cadre dégradé sunset, papier ivoire, soleil en sceau */
     .qr-frame { position: relative; display: inline-block; padding: 12px; border-radius: 20px; margin: .4rem auto .5rem;
       background: linear-gradient(135deg, #FFC93C, #FF8A3D 55%, #FF5A4D); box-shadow: 0 10px 26px rgba(232,120,60,.35); }
@@ -4289,6 +4304,8 @@
         <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem;text-align:center">Touche une pastille pour voir un lieu, un Mate ou une activité autour de toi ✨</p>
         <!-- 🌅 Ma journée de voyage (#28) : top départ → WRAPPED du soir -->
         <div id="daySessionCard" style="margin:.2rem 0 .6rem"></div>
+        <!-- #37 : météo du moment + conseils (UV, pluie, chaleur) — rempli si géoloc déjà accordée -->
+        <button id="weatherChip" class="weather-chip" style="display:none"></button>
         <div class="card homemap-card">
           <!-- Sélecteur de ville (menu déroulant) : concentre la carte sur une ville de jeu -->
           <!-- UNE seule rangée au-dessus de la carte : ville + À faire + Filtres (avant : 2 rangées éparpillées) -->
@@ -6054,10 +6071,30 @@
       btn.addEventListener("click", () => goToTab(btn.dataset.tab));
     });
     // Liens "Voir tout" / tuiles d'accès rapide de l'accueil
+    // #27 : les tuiles d'accès rapides qui DOUBLONNAIENT la nav du bas ont maintenant une vraie
+    // valeur ajoutée — un tap ouvre une TUILE-SOMMAIRE (les features de la destination, chacune
+    // cliquable en accès direct) + bouton « Ouvrir ». Les tuiles à vue précise restent directes.
+    const QA_FEATURES = {
+      connexions: { e: "🤝", t: "Mes Mates", rows: [["💬", "Mes conversations", () => { goToTab("connexions"); }], ["🔎", "Découvrir des voyageurs", () => { goToTab("connexions"); if (typeof showMatesSegment === "function") showMatesSegment("discover"); }], ["📨", "Demandes reçues", () => { goToTab("connexions"); if (typeof showMatesSegment === "function") showMatesSegment("requests"); }], ["🪪", "Mon QR à faire scanner", () => { if (typeof openQr === "function") openQr(); }]] },
+      securite: { e: "🛟", t: "Sécurité", rows: [["📞", "Faux appel (sortie de secours)", () => { goToTab("securite"); setTimeout(() => { const b = document.querySelector('[data-secuquick="fakecall"]'); if (b) b.click(); }, 250); }], ["📍", "Partager ma position", () => { goToTab("securite"); setTimeout(() => { const b = document.querySelector('[data-secuquick="position"]'); if (b) b.click(); }, 250); }], ["⏱️", "Minuteur « bien arrivé·e »", () => { goToTab("securite"); setTimeout(() => { const b = document.querySelector('[data-secuquick="safearrival"]'); if (b) b.click(); }, 250); }], ["☎️", "Numéros d'urgence du pays", () => { goToTab("securite"); setTimeout(() => { const b = document.querySelector('[data-secuquick="numbers"]'); if (b) b.click(); }, 250); }]] },
+      lieux: { e: "📍", t: "Lieux sûrs", rows: [["☕", "Explorer les lieux validés", () => { goToTab("lieux"); }], ["📡", "Près de moi", () => { goToTab("lieux"); setTimeout(() => { const c = document.querySelector('#lieuxCats .cat-tile[data-catfilter="near"], #lieuxCats [data-cf="near"]'); if (c) c.click(); }, 300); }], ["🌅", "Mon spot du jour", () => { goToTab("lieux"); setTimeout(() => { const s = document.querySelector(".spot-card"); if (s) s.scrollIntoView({ block: "center" }); }, 300); }], ["🏆", "Top notés", () => { goToTab("lieux"); setTimeout(() => { const c = document.querySelector('#lieuxCats [data-catsort="rating"]'); if (c) c.click(); }, 300); }]] },
+      jeux: { e: "🎮", t: "Jeux & Quêtes", rows: [["🎯", "Les quêtes du jour", () => { goToTab("jeux"); }], ["🎲", "Mini-jeux instantanés", () => { goToTab("jeux"); setTimeout(() => { if (typeof openJeuxSheet === "function") openJeuxSheet("games"); }, 300); }], ["🏅", "Ma collection de badges", () => { goToTab("jeux"); if (typeof showJeuxView === "function") showJeuxView("jeuxBadges"); }], ["🛍️", "La boutique SunCoins", () => { goToTab("jeux"); if (typeof showJeuxView === "function") { showJeuxView("jeuxShop"); if (typeof renderShop === "function") renderShop(); } }]] },
+    };
     document.querySelectorAll('[data-goto]').forEach((el) => {
       el.addEventListener("click", () => {
-        goToTab(el.dataset.goto);
-        const jv = el.dataset.jeuxview;
+        const dest = el.dataset.goto, jv = el.dataset.jeuxview;
+        const feat = !jv && el.closest('.tab-panel[data-panel="accueil"]') && QA_FEATURES[dest];
+        if (feat) {
+          popInfo(feat.e, feat.t, '<div style="text-align:left">'
+            + feat.rows.map((r, i) => `<div class="qrow" data-qarow="${i}" style="cursor:pointer"><div class="qico">${r[0]}</div><div class="qname">${r[1]}</div><div class="qarrow">›</div></div>`).join("")
+            + `</div><button class="btn-primary btn-block" id="qaOpenBtn" style="margin-top:.7rem">Ouvrir ${feat.t} ›</button>`);
+          setTimeout(() => {
+            document.querySelectorAll("[data-qarow]").forEach((rw) => rw.addEventListener("click", () => { if (typeof closePopInfo === "function") closePopInfo(); feat.rows[Number(rw.dataset.qarow)][2](); }));
+            const ob = $("qaOpenBtn"); if (ob) ob.addEventListener("click", () => { if (typeof closePopInfo === "function") closePopInfo(); goToTab(dest); });
+          }, 40);
+          return;
+        }
+        goToTab(dest);
         if (jv && typeof showJeuxView === "function") {
           showJeuxView(jv);
           if (jv === "jeuxRank" && typeof renderLeaderboard === "function") renderLeaderboard();
@@ -6133,7 +6170,21 @@
       "Mon prochain défi",
       "Le truc dont je ne me lasse pas",
       "Ce qui me fait vibrer en voyage",
+      // #31 : plus de choix (et toujours possibilité d'écrire SA question, option ✍️ ci-dessous)
+      "Mon plus beau coucher de soleil",
+      "Le plat que je traverserais un pays pour remanger",
+      "Ma pire galère de voyage (et j'en ris encore)",
+      "La chanson de mes road-trips",
+      "Mon talent caché",
+      "Une opinion impopulaire que j'assume",
+      "Le pays qui ne me ressemble pas mais que j'ai adoré",
+      "Ce que je glisse TOUJOURS dans mon sac",
+      "Mon rêve de voyage un peu fou",
+      "La première chose que je fais en arrivant quelque part",
+      "Mon café/bar idéal en trois mots",
+      "Le souvenir que je raconte à toutes les soirées",
     ];
+    const PROMPT_CUSTOM = "✍️ Ma propre question…";
 
     // État de sélection en cours
     const selInterests = new Set();
@@ -6185,17 +6236,27 @@
       const d = myProfile || {};
       const pairs = [[d.prompt1_q, d.prompt1_a], [d.prompt2_q, d.prompt2_a], [d.prompt3_q, d.prompt3_a]];
       wrap.innerHTML = pairs.map((pr, i) => {
+        // #31 : question PERSO possible — si la question enregistrée n'est pas du catalogue,
+        // elle vit dans un champ texte libre (option « ✍️ Ma propre question… »).
+        const isCustom = !!(pr[0] && !PROMPT_QUESTIONS.includes(pr[0]));
         const opts = ['<option value="">Choisir une question…</option>']
-          .concat(PROMPT_QUESTIONS.map((q) => `<option ${pr[0] === q ? "selected" : ""}>${escapeHtml(q)}</option>`)).join("");
+          .concat(PROMPT_QUESTIONS.map((q) => `<option ${pr[0] === q ? "selected" : ""}>${escapeHtml(q)}</option>`))
+          .concat([`<option value="__custom__" ${isCustom ? "selected" : ""}>${PROMPT_CUSTOM}</option>`]).join("");
         return `<div style="margin-bottom:.7rem">
             <select id="promptQ${i}">${opts}</select>
+            <input id="promptQC${i}" type="text" maxlength="80" placeholder="Écris ta question…" value="${isCustom ? escapeHtml(pr[0]) : ""}" style="margin-top:.3rem;${isCustom ? "" : "display:none"}" />
             <textarea id="promptA${i}" rows="2" maxlength="160" placeholder="Ta réponse…" style="margin-top:.3rem">${escapeHtml(pr[1] || "")}</textarea>
           </div>`;
       }).join("");
-      wrap.querySelectorAll("textarea,select").forEach((el) => el.addEventListener("input", updateCompletion));
+      wrap.querySelectorAll("textarea,select,input").forEach((el) => el.addEventListener("input", updateCompletion));
+      [0, 1, 2].forEach((i) => { const s = $("promptQ" + i); if (s) s.addEventListener("change", () => { const c = $("promptQC" + i); if (c) c.style.display = s.value === "__custom__" ? "" : "none"; }); });
     }
     function getPrompts() {
-      return [0, 1, 2].map((i) => ({ q: $("promptQ" + i)?.value || "", a: ($("promptA" + i)?.value || "").trim() }));
+      return [0, 1, 2].map((i) => {
+        let q = $("promptQ" + i)?.value || "";
+        if (q === "__custom__") q = ($("promptQC" + i)?.value || "").trim(); // #31 : question perso
+        return { q, a: ($("promptA" + i)?.value || "").trim() };
+      });
     }
 
     // Calcule et affiche le taux de complétion du profil
@@ -14981,17 +15042,27 @@
       const qCity = {}; (typeof allQuests !== "undefined" ? allQuests : []).forEach((q) => { if (q.key) qCity[q.key] = (q.city || "").replace(/, France$/, ""); });
       const byCity = {}; doneQuests.forEach((r) => { const c = qCity[r.quest_key]; if (c) byCity[c] = (byCity[c] || 0) + 1; });
       const cities = Object.keys(byCity).sort((a, b) => byCity[b] - byCity[a]);
+      // #38 : ouverture INSTANTANÉE — les photos passent en lazy-load (data-lazybg + shimmer),
+      // « Tes Mates d'aventure » est REPLIABLE (état gardé), l'album est plus présent.
+      let galFolded = false; try { galFolded = localStorage.getItem("sm_coll_galmates") === "1"; } catch (e) {}
       const matesHtml = mates.length
-        ? '<div class="set-grouptitle" style="margin-top:.2rem">🤝 ' + i18nT("Tes Mates d'aventure") + '</div><div class="hmg-grid">' + mates.slice(0, 24).map((p) => { const bg = _safeImgUrl(p.avatar_url); return '<button type="button" class="hmg-cell" data-galmate="' + escapeHtml(p.id) + '"><span class="hmg-av big"' + (bg ? " style=\"background-image:url('" + bg + "')\"" : "") + ">" + (bg ? "" : escapeHtml((p.username || "?")[0].toUpperCase())) + '</span><span class="hmg-name">' + escapeHtml(p.username || "Mate") + "</span></button>"; }).join("") + "</div>"
+        ? '<button type="button" class="set-grouptitle gal-fold" id="galMatesFold" style="margin-top:.2rem;width:100%;text-align:left;background:none;border:0;cursor:pointer">🤝 ' + i18nT("Tes Mates d'aventure") + ' <span class="coll-chev">' + (galFolded ? "▸" : "▾") + '</span></button><div class="hmg-grid" id="galMatesGrid" style="' + (galFolded ? "display:none" : "") + '">' + mates.slice(0, 24).map((p) => { const bg = _safeImgUrl(p.avatar_url); return '<button type="button" class="hmg-cell" data-galmate="' + escapeHtml(p.id) + '"><span class="hmg-av big"' + (bg ? ' data-lazybg="' + escapeHtml(bg) + '"' : "") + ">" + (bg ? "" : escapeHtml((p.username || "?")[0].toUpperCase())) + '</span><span class="hmg-name">' + escapeHtml(p.username || "Mate") + "</span></button>"; }).join("") + "</div>"
         : "";
       const albumHtml = cities.length
         ? '<div class="set-grouptitle" style="margin-top:.8rem">📖 ' + i18nT("Album souvenir par ville") + "</div>" + cities.slice(0, 12).map((c) => {
             const note = _souvGet(c);
-            return '<div class="hm-city-row" data-galsouv="' + escapeHtml(c) + '" style="cursor:pointer"><span>📍</span><span class="hc-name">' + escapeHtml(c) + (note ? ' <span style="font-weight:500;color:var(--text)">· « ' + escapeHtml(note) + ' »</span>' : "") + '</span><span class="hc-n">' + (note ? "✏️" : "➕ souvenir") + "</span></div>";
+            return '<div class="hm-city-row gal-city" data-galsouv="' + escapeHtml(c) + '" style="cursor:pointer"><span>📍</span><span class="hc-name">' + escapeHtml(c) + (note ? ' <span style="font-weight:500;color:var(--text)">· « ' + escapeHtml(note) + ' »</span>' : "") + '</span><span class="hc-n">' + (note ? "✏️" : "➕ souvenir") + "</span></div>";
           }).join("")
         : "";
       showInfo(i18nT("🏡 Ta galerie SunMates"), (matesHtml || albumHtml) ? matesHtml + albumHtml : '<p class="muted" style="text-align:center;padding:1rem">' + i18nT("Tes souvenirs apparaîtront ici ✨") + "</p>");
       const body = $("pickerBody");
+      if (typeof observeLazy === "function") observeLazy(body); // photos chargées en douceur (shimmer)
+      { const f = $("galMatesFold"); if (f) f.addEventListener("click", () => {
+        const g = $("galMatesGrid"); if (!g) return;
+        const folded = g.style.display !== "none" ? (g.style.display = "none", true) : (g.style.display = "", false);
+        const ch = f.querySelector(".coll-chev"); if (ch) ch.textContent = folded ? "▸" : "▾";
+        try { localStorage.setItem("sm_coll_galmates", folded ? "1" : "0"); } catch (e) {}
+      }); }
       body.querySelectorAll("[data-galmate]").forEach((el) => el.addEventListener("click", () => { if (typeof closePicker === "function") closePicker(); goToTab("connexions"); if (typeof openChat === "function") openChat(el.dataset.galmate); }));
       body.querySelectorAll("[data-galsouv]").forEach((el) => el.addEventListener("click", () => _souvEdit(el.dataset.galsouv, true)));
     }
@@ -16145,6 +16216,52 @@
         }, () => {}, { maximumAge: 3600000, timeout: 8000 });
       }).catch(() => {});
     })();
+    // ====== #37 MÉTÉO DU VOYAGEUR : pastille vivante + conseils (UV, pluie, vent, chaleur) ======
+    // Géoloc UNIQUEMENT si déjà accordée (zéro prompt non sollicité), open-meteo sans clé,
+    // cache 30 min. Tap → tuile détaillée avec les conseils du moment.
+    const _WMO = (c) => c === 0 ? "☀️" : (c <= 2 ? "🌤️" : (c === 3 ? "☁️" : (c <= 48 ? "🌫️" : (c <= 57 ? "🌦️" : (c <= 67 ? "🌧️" : (c <= 77 ? "❄️" : (c <= 82 ? "🌧️" : (c <= 86 ? "🌨️" : "⛈️"))))))));
+    function _weatherAdvice(w) {
+      const tips = [];
+      if (w.uv >= 8) tips.push("🧴 <b>UV très fort (" + w.uv + ")</b> : crème toutes les 2 h, chapeau, et l'ombre entre 12 h et 16 h.");
+      else if (w.uv >= 6) tips.push("🧴 <b>UV fort (" + w.uv + ")</b> : crème solaire et lunettes pour explorer.");
+      else if (w.uv >= 3) tips.push("😎 UV modéré (" + w.uv + ") : un peu de crème si tu restes dehors longtemps.");
+      if (w.rain > 0.4) tips.push("☔ <b>Il pleut</b> : musée, café cosy ou fiche pays — l'aventure peut être intérieure.");
+      if (w.wind >= 40) tips.push("💨 <b>Vent fort (" + Math.round(w.wind) + " km/h)</b> : évite les crêtes et balcons exposés.");
+      if (w.temp >= 30) tips.push("🥤 <b>Grosse chaleur</b> : bois souvent, vise les activités tôt le matin ou en soirée.");
+      if (w.temp <= 0) tips.push("🧣 <b>Il gèle</b> : superpose les couches, gants pour le téléphone.");
+      if (!tips.length) tips.push("✨ Conditions parfaites pour explorer · profite !");
+      return tips;
+    }
+    async function renderWeather() {
+      const chip = $("weatherChip"); if (!chip) return;
+      try {
+        let w = null;
+        try { const c = JSON.parse(localStorage.getItem("sm_weather") || "null"); if (c && Date.now() - c.t < 1800000) w = c.w; } catch (e) {}
+        if (!w) {
+          if (!navigator.geolocation || !navigator.permissions || !navigator.permissions.query) return;
+          const st = await navigator.permissions.query({ name: "geolocation" });
+          if (st.state !== "granted") return;
+          const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { maximumAge: 1800000, timeout: 8000 }));
+          const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + pos.coords.latitude.toFixed(3) + "&longitude=" + pos.coords.longitude.toFixed(3) + "&current=temperature_2m,precipitation,weather_code,wind_speed_10m,uv_index&daily=uv_index_max,temperature_2m_max&timezone=auto&forecast_days=1");
+          const j = await r.json();
+          if (!j || !j.current) return;
+          w = { temp: Math.round(j.current.temperature_2m), code: j.current.weather_code, rain: j.current.precipitation || 0, wind: j.current.wind_speed_10m || 0,
+                uv: Math.round((j.current.uv_index != null ? j.current.uv_index : (j.daily && j.daily.uv_index_max && j.daily.uv_index_max[0])) || 0),
+                tmax: Math.round((j.daily && j.daily.temperature_2m_max && j.daily.temperature_2m_max[0]) != null ? j.daily.temperature_2m_max[0] : j.current.temperature_2m) };
+          try { localStorage.setItem("sm_weather", JSON.stringify({ t: Date.now(), w })); } catch (e) {}
+        }
+        chip.innerHTML = `<span class="wc-ic">${_WMO(w.code)}</span><b>${w.temp}°</b><span class="wc-sep">·</span><span>UV ${w.uv}</span><span class="wc-sep">·</span><span class="wc-hint">${i18nT("conseils")} ›</span>`;
+        chip.style.display = "";
+        chip.onclick = () => {
+          popInfo(_WMO(w.code), i18nT("Météo du moment"), `<div style="text-align:left;line-height:1.6;font-size:.88rem">
+            <div style="text-align:center;font-size:1.6rem;font-weight:800;margin-bottom:.3rem">${_WMO(w.code)} ${w.temp}°<span class="muted" style="font-size:.8rem;font-weight:600"> · max ${w.tmax}° aujourd'hui</span></div>
+            <div style="display:flex;gap:.4rem;justify-content:center;margin-bottom:.7rem" class="muted">🌞 UV ${w.uv} · 💨 ${Math.round(w.wind)} km/h${w.rain > 0 ? " · ☔ " + w.rain + " mm" : ""}</div>
+            ${_weatherAdvice(w).map((t) => `<div style="margin:.3rem 0">${t}</div>`).join("")}</div>`);
+        };
+      } catch (e) {}
+    }
+    setTimeout(renderWeather, 2500);
+
     { const st = $("setThemeToggle"); if (st) st.addEventListener("change", () => {
       const next = st.checked ? "dusk" : "day";
       localStorage.setItem("sm_theme", next); applyTheme(next);
@@ -16190,6 +16307,12 @@
       "La réponse.": "The answer.",
       "« 42 : la réponse à la grande question sur la vie, l'univers et le reste. » Bon voyage galactique — et n'oublie jamais ta serviette 🧻✨": "“42: the answer to the great question of life, the universe and everything.” Safe galactic travels — and never forget your towel 🧻✨",
       "Hakuna matata · mais quelle phrase magnifique !": "Hakuna matata · what a wonderful phrase!",
+      "conseils": "tips", "Météo du moment": "Weather right now",
+      "six seveeen !": "six seveeen!", "Flamme envoyée ! 🔥": "Flame sent! 🔥",
+      "L'avion est rentré au hangar 🛬": "The plane is back in the hangar 🛬",
+      "Vibrations activées · tu viens de le sentir 😉": "Vibrations on · you just felt it 😉",
+      "Tu n'es plus hôte · merci pour tout 💛": "You're no longer a host · thanks for everything 💛",
+      "<b>{n}</b> badges débloqués d'un coup 🎉 · touche pour voir": "<b>{n}</b> badges unlocked at once 🎉 · tap to see",
       "Et si c'était ta prochaine destination ? {p} ✨": "What if this were your next destination? {p} ✨",
       "Atterrissage parfait · +5 XP déposés sur Jeux ✨": "Perfect landing · +5 XP dropped on Games ✨",
       "Atterrissage parfait ✈️ (le bonus du jour est déjà pris)": "Perfect landing ✈️ (today's bonus is already claimed)",
