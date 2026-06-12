@@ -114,8 +114,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=439"></script>
-  <script src="sunmates-icons.js?v=439"></script>
+  <script src="sunmates-badges.js?v=440"></script>
+  <script src="sunmates-icons.js?v=440"></script>
   <script>
     if ("serviceWorker" in navigator) {
       // ===== Mise à jour FORCÉE pour TOUS, au plus vite =====
@@ -234,6 +234,9 @@
     /* Conteneur façon téléphone, centré */
     .app-shell {
       max-width: 460px; margin: 0 auto; min-height: 100vh;
+      /* P2.6 : 100dvh = la VRAIE hauteur visible du moment (barres du navigateur comprises) —
+         100vh laissait une bande vide en bas sur Android/iPhone quand la barre se rétracte. */
+      min-height: 100dvh;
       background: var(--bg); position: relative;
       display: flex; flex-direction: column;
     }
@@ -243,7 +246,9 @@
       display: flex; align-items: center; justify-content: space-between; gap: .75rem;
       /* safe-area-inset-top : laisse la place de l'encoche / status bar (iPhone) sans chevauchement */
       padding: calc(1rem + env(safe-area-inset-top, 0px)) 1.25rem .75rem; position: sticky; top: 0; z-index: var(--z-header);
-      background: linear-gradient(var(--bg) 70%, rgba(253,243,241,0));
+      /* P2.2 : header OPAQUE à bord net — fini la bande dégradée translucide sous « SunMates »
+         où le contenu scrollé apparaissait à moitié (effet sale). */
+      background: var(--bg); border-bottom: 1px solid var(--line);
     }
     /* min-width:0 : le wordmark peut rétrécir au lieu de pousser les actions ; padding-right : espace constant avec le bouton thème */
     .brand { display: flex; align-items: center; gap: .5rem; min-width: 0; padding-right: .25rem; font-weight: 800; font-size: 1.15rem; color: var(--ink); letter-spacing: .5px; }
@@ -1032,7 +1037,13 @@
     .homemap-filters .chip.active { opacity: 1; }
     .homemap-filters .chip b { font-weight: 800; opacity: .85; }
     .homemap-wrap { position: relative; isolation: isolate; } /* contient les outils carte (z-index) -> ne débordent plus sur la nav du bas */
-    .homemap { height: 240px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
+    /* P2.7 : un chouia plus GRANDE (240→266px) — possible maintenant que le scroll de la page
+       ne se fait plus avaler par la carte (geste coopératif : 1 doigt = page, plein écran = drag). */
+    .homemap { height: 266px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
+    .hm-coop-hint { position: absolute; left: 50%; bottom: .6rem; transform: translateX(-50%) translateY(6px); z-index: 900;
+      background: rgba(20,14,28,.78); color: #fff; font: 700 .74rem/1 Manrope, system-ui, sans-serif; padding: .5rem .75rem;
+      border-radius: 999px; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; white-space: nowrap; }
+    .hm-coop-hint.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     /* Mode paysage (téléphone tourné, peu de hauteur) : on raccourcit les gros visuels pour rester lisible */
     @media (orientation: landscape) and (max-height: 560px) {
       .auth-hero { padding: .8rem 1rem !important; min-height: 0; }
@@ -1273,7 +1284,7 @@
     hr { border: 0; border-top: 1px solid var(--line); margin: 1.2rem 0; }
 
     /* ------------------------- Écran connexion ---------------------- */
-    .auth-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-wrap { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
     .auth-hero {
       background: var(--accent-grad); border-radius: 0 0 36px 36px; padding: 3rem 1.5rem 2.5rem;
       text-align: center; color: #fff; box-shadow: 0 14px 30px rgba(255,90,77,.3);
@@ -2764,7 +2775,7 @@
     body.theme-dusk .mseg, body.theme-dusk .chip { background: var(--dcard,#2a2140) !important; border-color: rgba(255,255,255,.08) !important; }
     body.theme-dusk .chip.active, body.theme-dusk .mseg button.active { background: var(--accent-grad) !important; color: #fff !important; }
     body.theme-dusk .notif-card, body.theme-dusk .picker-card { background: #221a34; }
-    body.theme-dusk .topbar { background: linear-gradient(rgba(23,16,38,.86), rgba(23,16,38,0)); }
+    body.theme-dusk .topbar { background: #171026; border-bottom-color: rgba(255,255,255,.08); }
     body.theme-dusk .bottom-nav { background: #1c1428 !important; }
     body.theme-dusk .iconbtn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.13); }
     body.theme-dusk .bubble.them { background: #2c2342; color: #ede6f2; }
@@ -2831,7 +2842,7 @@
     /* --- Marque / en-tête --- */
     .brand b { font-weight: 600; letter-spacing: .015em; font-size: 1.2rem; }
     .brand .mark { background: var(--accent-grad); border-radius: 11px; box-shadow: var(--shadow-sm); }
-    .topbar { background: linear-gradient(var(--bg) 72%, rgba(244,237,224,0)); }
+    .topbar { background: var(--bg); border-bottom: 1px solid var(--line); }
 
     /* --- Cartes : épurées, bord fin, ombre douce --- */
     .card { background: var(--card) !important; border: 1px solid var(--line) !important; border-radius: var(--radius);
@@ -2924,7 +2935,7 @@
     body.theme-dusk #bgFx { background: radial-gradient(125% 50% at 50% -8%, rgba(255,138,61,.34) 0%, rgba(255,79,109,.10) 40%, rgba(0,0,0,0) 66%), var(--bg); }
 
     h1, h2, h3 { color: var(--ink); }
-    .topbar { background: linear-gradient(var(--bg) 70%, rgba(255,244,230,0)); }
+    .topbar { background: var(--bg); border-bottom: 1px solid var(--line); }
     .brand .mark { background: var(--accent-grad); box-shadow: 0 6px 16px rgba(255,90,77,.4); }
     .section-head a { color: var(--retro-teal); }
 
@@ -3025,8 +3036,13 @@
     body.theme-dusk .feed-card, body.theme-dusk .pcell, body.theme-dusk .pprompt, body.theme-dusk .stat-box,
     body.theme-dusk .dstat, body.theme-dusk .tile, body.theme-dusk .gcard, body.theme-dusk .chip,
     body.theme-dusk .mseg, body.theme-dusk .coupon, body.theme-dusk .reco { background: #2E1B4C !important; }
+    /* P2.8 : FIL homogène en nuit — les posts rejoignent la MÊME famille violette que les cartes
+       (avant : brun délavé #241b35 posé à côté de cartes #2A1846 = patchwork), un cran plus
+       clair que la tuile principale (le composer, dégradé sombre) pour bien les distinguer. */
+    body.theme-dusk:not(.theme-winter):not(.theme-tropic) .fpost { background: #2E1B4C; border-color: rgba(255,255,255,.10); }
+    body.theme-dusk:not(.theme-winter):not(.theme-tropic) .fpost-empty { background: #271642; border-color: rgba(255,255,255,.14); }
     body.theme-dusk .bottom-nav { background: #190e2e; }
-    body.theme-dusk .topbar { background: linear-gradient(rgba(25,14,46,.88), rgba(25,14,46,0)); }
+    body.theme-dusk .topbar { background: #190e2e; border-bottom-color: rgba(255,255,255,.08); }
     body.theme-dusk .bubble.them { background: #2E1B4C; color: #f3e9f3; }
     body.theme-dusk .iconbtn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); }
     body.theme-dusk .notif-card, body.theme-dusk .picker-card { background: #22123A; }
@@ -4111,6 +4127,11 @@
       <div id="authForm">
         <label>Email</label>
         <input id="authEmail" type="email" placeholder="chloe@exemple.com" />
+        <!-- P2.5 : pseudo choisi DÈS l'inscription (sinon c'était le début de l'email qui s'affichait partout) -->
+        <div id="authPseudoWrap" class="hidden">
+          <label>Pseudo</label>
+          <input id="authPseudo" type="text" maxlength="20" placeholder="Chloé l'exploratrice" autocomplete="nickname" />
+        </div>
         <label>Mot de passe</label>
         <div style="position:relative">
           <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" autocomplete="current-password" />
@@ -5861,6 +5882,7 @@
       authMode = mode;
       $("tabLogin").classList.toggle("active", mode === "login");
       $("tabSignup").classList.toggle("active", mode === "signup");
+      show($("authPseudoWrap"), mode === "signup"); // P2.5 : le pseudo ne sert qu'à l'inscription
       const proBtn = $("tabPro"); if (proBtn) proBtn.classList.toggle("active", mode === "pro");
       $("authMsg").textContent = "";
       // Onglet Pro : la page de connexion change DU TOUT AU TOUT (pas d'identifiants, juste « Démarrer »).
@@ -5891,11 +5913,16 @@
       if (!email || !password) { msg.style.color = "var(--danger)"; msg.textContent = "Remplis l'email et le mot de passe."; return; }
       // Sécurité : minimum 8 caractères à l'inscription (aligner aussi le réglage Supabase Auth).
       if (authMode === "signup" && password.length < 8) { msg.style.color = "var(--danger)"; msg.textContent = "Mot de passe trop court : 8 caractères minimum."; return; }
+      // P2.5 : pseudo obligatoire à l'inscription (2 à 20 caractères) → fini l'email affiché à l'onboarding.
+      const pseudo = authMode === "signup" ? ($("authPseudo") ? $("authPseudo").value.trim() : "") : "";
+      if (authMode === "signup" && (pseudo.length < 2 || pseudo.length > 20)) { msg.style.color = "var(--danger)"; msg.textContent = "Choisis un pseudo (2 à 20 caractères) — c'est lui que les autres verront."; return; }
       await once("auth:" + authMode, async () => {
         msg.style.color = "var(--muted)"; msg.textContent = "Un instant…";
         const { data, error } = authMode === "login"
           ? await db.auth.signInWithPassword({ email, password })
-          : await db.auth.signUp({ email, password });
+          // Le pseudo voyage dans les métadonnées du compte : ensureProfile le lit au 1er login
+          // (même si l'utilisateur confirme son email sur un autre appareil).
+          : await db.auth.signUp({ email, password, options: { data: { username: pseudo } } });
         if (error) {
           const notConfirmed = error.code === "email_not_confirmed" || /email not confirmed/i.test(error.message || "");
           if (authMode === "login" && notConfirmed) {
@@ -6083,8 +6110,11 @@
     async function ensureProfile(user) {
       const { data } = await db.from("profiles").select("id").eq("id", user.id).maybeSingle();
       if (!data) {
+        // P2.5 : le pseudo choisi à l'inscription (métadonnées du compte) d'abord ; le début de
+        // l'email n'est plus qu'un repli (anciens comptes / inscriptions hors formulaire).
+        const meta = (user.user_metadata && user.user_metadata.username) ? String(user.user_metadata.username).trim().slice(0, 20) : "";
         // Nouveau compte = profil PRIVÉ par défaut (n'apparaît pas dans le classement tant qu'il n'opte pas).
-        await db.from("profiles").insert({ id: user.id, username: user.email.split("@")[0], is_public: false });
+        await db.from("profiles").insert({ id: user.id, username: meta || user.email.split("@")[0], is_public: false });
       }
     }
 
@@ -6152,6 +6182,7 @@
       if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
       window.scrollTo(0, 0); // PERF : retour haut INSTANTANÉ (le scroll animé donnait une impression de lenteur au switch)
       if (target === "accueil" && typeof renderHomeMap === "function" && (typeof getHomeMode !== "function" || getHomeMode() !== "home")) setTimeout(renderHomeMap, 60);
+      if (target !== "accueil" && window._smArmBack) window._smArmBack(); // P2.3 : le retour téléphone ramènera à l'Accueil
       __lastTab = target;
     }
 
@@ -12139,7 +12170,7 @@
         $("pickerOverlay"), $("popInfoOv"), $("qrModal"), $("trustModal"), $("matesListModal"), $("groupChat"), $("tour"), $("qrScanModal"),
         ...document.querySelectorAll(".act-overlay"), ...document.querySelectorAll(".sm-selsheet-ov"),
       ].filter(Boolean);
-      const sync = () => { try { document.body.classList.toggle("modal-open", cands().some(isOpen)); } catch (e) {} };
+      const sync = () => { try { const any = cands().some(isOpen); document.body.classList.toggle("modal-open", any); if (any && window._smArmBack) window._smArmBack(); } catch (e) {} };
       const mo = new MutationObserver(sync);
       const hook = (el) => { try { mo.observe(el, { attributes: true, attributeFilter: ["class"] }); } catch (e) {} };
       cands().forEach(hook);
@@ -12147,6 +12178,42 @@
         if (n.nodeType === 1 && n.classList && (n.classList.contains("sm-selsheet-ov") || n.classList.contains("act-overlay") || n.id === "popInfoOv")) { hook(n); sync(); }
       })); }).observe(document.body, { childList: true });
       sync();
+      // P2.3 : le registre des overlays sert aussi au bouton retour du téléphone (ci-dessous).
+      window._smOvCands = cands; window._smOvIsOpen = isOpen;
+    })();
+
+    // P2.3 : BOUTON RETOUR DU TÉLÉPHONE (Android / geste iOS) — comme une vraie app native.
+    // Principe : une entrée « garde » est posée dans l'historique du navigateur. Le retour
+    // système arrive donc chez nous (popstate) au lieu de fermer la PWA :
+    //   1) une modale/feuille est ouverte  → on la FERME (la plus haute) ;
+    //   2) on n'est pas sur l'Accueil      → on REVIENT à l'Accueil ;
+    //   3) sinon                            → prochain retour = quitter (petit toast d'info, 1×).
+    (function systemBack() {
+      if (window.__smBackWired) return; window.__smBackWired = true;
+      let guarded = false, exitHint = false;
+      const guard = () => { if (guarded) return; try { history.pushState({ smGuard: 1 }, "", location.href); guarded = true; } catch (e) {} };
+      window._smArmBack = guard; // ré-arme la garde dès qu'un overlay s'ouvre ou qu'on change d'onglet
+      // Ferme l'overlay ouvert le plus pertinent : bouton de fermeture s'il existe (la voie
+      // « propre » de chaque composant), sinon bascule de classe (celle que sync() observe).
+      const closeTop = () => {
+        const open = (window._smOvCands ? window._smOvCands() : []).filter((el) => window._smOvIsOpen && window._smOvIsOpen(el));
+        if (!open.length) return false;
+        const el = open[open.length - 1];
+        const btn = el.querySelector('[data-close], [data-sclose], .po-close, .sheet-close, .gchat-close, .picker-close, button[aria-label="Fermer"], .close-x');
+        if (btn) { try { btn.click(); return true; } catch (e) {} }
+        if (el.classList.contains("sm-selsheet-ov") || el.classList.contains("act-overlay")) el.classList.remove("show");
+        else el.classList.add("hidden");
+        return true;
+      };
+      window.addEventListener("popstate", () => {
+        guarded = false;
+        if (closeTop()) { guard(); return; }
+        const cur = (typeof __lastTab !== "undefined" && __lastTab) || "accueil";
+        if (cur !== "accueil") { try { goToTab("accueil"); } catch (e) {} guard(); return; }
+        // Accueil, rien d'ouvert : on laisse la garde consommée → le prochain retour quitte l'app.
+        if (!exitHint) { exitHint = true; try { toast("👋", i18nT("Encore un retour pour quitter"), null, { low: true }); } catch (e) {} }
+      });
+      guard();
     })();
 
     // #24 : cartes REPLIABLES dans « Besoin d'aide » — toucher le titre replie/déplie,
@@ -12542,9 +12609,27 @@
             m.once("load", () => _smRecolorStyle(m));
           } catch (e) {}
         }, 0);
+        // P2.4 : CHIEN DE GARDE « carte vide » — si le style vectoriel n'est pas chargé au bout
+        // de 8 s (réseau capricieux, CDN KO), la carte restait un carré beige à l'infini. On
+        // remplace alors le fond GL par le raster CARTO (toujours une carte visible) ; le fond
+        // vectoriel reviendra naturellement au prochain lancement.
+        let _wdTries = 0;
+        const _watchdog = () => {
+          try {
+            const map = lyr._map;
+            if (!map) { if (++_wdTries < 20) setTimeout(_watchdog, 2000); return; } // pas encore ajoutée à une carte
+            const m = lyr.getMaplibreMap ? lyr.getMaplibreMap() : null;
+            if (m && m.isStyleLoaded && m.isStyleLoaded()) return; // tout va bien
+            map.removeLayer(lyr); _smRasterBase().addTo(map);
+          } catch (e) {}
+        };
+        setTimeout(_watchdog, 8000);
         return lyr;
       }
-      // Repli raster : CARTO Voyager (CDN mondial bien plus rapide que tile.openstreetmap.org).
+      return _smRasterBase();
+    }
+    // Repli raster : CARTO Voyager (CDN mondial bien plus rapide que tile.openstreetmap.org).
+    function _smRasterBase() {
       return L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
         { attribution: "© OpenStreetMap · © CARTO", maxZoom: 19, keepBuffer: 4, updateWhenIdle: false, updateWhenZooming: false });
     }
@@ -12807,6 +12892,23 @@
           // #12 : UN seul monde (fini les cartes côte à côte au dézoom) + bords élastiques doux
           minZoom: 2.4, maxBounds: [[-85, -180], [85, 180]], maxBoundsViscosity: 0.8, worldCopyJump: false,
           preferCanvas: true, tap: false, zoomAnimation: true, fadeAnimation: true, inertiaDeceleration: 2600 }).setView([46.6, 2.3], 4);
+        // P2.7 : GESTE COOPÉRATIF sur la MINI-carte (téléphone) — glisser 1 doigt fait défiler la
+        // PAGE (Leaflet retire la classe « leaflet-touch-drag » → le navigateur reprend le scroll),
+        // le pincement zoome toujours, et l'exploration libre se fait en PLEIN ÉCRAN (drag réactivé là).
+        window._smCoarse = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
+        if (window._smCoarse) {
+          try { homeLeaf.dragging.disable(); } catch (e) {}
+          const hint = document.createElement("div"); hint.className = "hm-coop-hint";
+          hint.textContent = "⛶ " + i18nT("Plein écran pour explorer la carte");
+          el.appendChild(hint);
+          let ht = 0, shown = 0;
+          el.addEventListener("touchmove", (ev) => {
+            if (document.querySelector(".homemap-card.fs") || (ev.touches && ev.touches.length > 1)) return;
+            if (Date.now() - shown < 2600) return;
+            shown = Date.now(); hint.classList.add("show");
+            clearTimeout(ht); ht = setTimeout(() => hint.classList.remove("show"), 1600);
+          }, { passive: true });
+        }
         // Fond vectoriel SunMates : rendu GPU continu (fini le chargement tuile par tuile),
         // recoloré dans la DA. Le service worker met style/glyphes/tuiles en cache → offline OK.
         const _homeBase = smBaseLayer().addTo(homeLeaf);
@@ -13240,6 +13342,8 @@
       try { _smGlMaps.forEach((m) => { if (m && typeof m.setPixelRatio === "function") m.setPixelRatio(on ? 1 : Math.min(window.devicePixelRatio || 1, 2)); }); } catch (e) {}
       if (homeLeaf) {
         if (homeLeaf.scrollWheelZoom) { on ? homeLeaf.scrollWheelZoom.enable() : homeLeaf.scrollWheelZoom.disable(); }
+        // P2.7 : sur téléphone le drag 1 doigt ne vit qu'en plein écran (sinon il avalait le scroll de l'accueil)
+        try { if (window._smCoarse && homeLeaf.dragging) { on ? homeLeaf.dragging.enable() : homeLeaf.dragging.disable(); } } catch (e) {}
         // iOS : le conteneur change de taille via CSS sans event resize natif fiable.
         // On force Leaflet à recalculer SES dimensions, puis à redessiner les pastilles :
         // un setView "sur place" relance le rendu des marqueurs, et refreshClusters()
@@ -16675,6 +16779,11 @@
       "Explore autour de toi": "Explore around you", "Découvrir": "Discover", "Demandes": "Requests", "Messages": "Messages",
       "Pars solo, trouve ta bande 🌍": "Travel solo, find your crew 🌍", "Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.": "Spot travellers around you, suggest a coffee or an outing, and leave with friends.",
       "Inscription": "Sign up", "Créer mon compte": "Create my account",
+      // · P2 (passe 2) : pseudo à l'inscription + retour système —
+      "Pseudo": "Username", "Chloé l'exploratrice": "Chloe the explorer",
+      "Choisis un pseudo (2 à 20 caractères) — c'est lui que les autres verront.": "Pick a username (2 to 20 characters) — that's what others will see.",
+      "Encore un retour pour quitter": "Press back once more to exit",
+      "Plein écran pour explorer la carte": "Full screen to explore the map",
       // · Batch 5 : gaps onglet Sécurité —
       "Partage de position, alerte d'urgence, cercle de confiance et plus.": "Location sharing, emergency alert, trust circle and more.",
       "En cas d'urgence": "In an emergency", "Un geste, et tu n'es plus seul·e.": "One tap, and you're not alone.", "📍 Partager ma position (sans urgence)": "📍 Share my location (no emergency)",
