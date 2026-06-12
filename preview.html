@@ -1059,8 +1059,9 @@
     /* P2.7 : un chouia plus GRANDE (240→266px) — possible maintenant que le scroll de la page
        ne se fait plus avaler par la carte (geste coopératif : 1 doigt = page, plein écran = drag). */
     .homemap { height: 266px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
-    .hm-coop-hint { position: absolute; left: 50%; bottom: .6rem; transform: translateX(-50%) translateY(6px); z-index: 900;
-      background: rgba(20,14,28,.78); color: #fff; font: 700 .74rem/1 Manrope, system-ui, sans-serif; padding: .5rem .75rem;
+    .hm-coop-hint { position: absolute; left: 50%; bottom: .6rem; transform: translateX(-50%) translateY(6px); z-index: 1000;
+      background: rgba(20,14,28,.84); color: #fff; font: 700 .76rem/1 Manrope, system-ui, sans-serif; padding: .55rem .85rem;
+      border: 1px solid rgba(255,201,60,.45); box-shadow: 0 4px 14px rgba(0,0,0,.35);
       border-radius: 999px; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; white-space: nowrap; }
     .hm-coop-hint.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     /* P4 : carte RÉVEILLÉE (tap) = liseré corail discret, pour voir qu'elle est « en main » */
@@ -12881,7 +12882,8 @@
           style: "https://tiles.openfreemap.org/styles/bright",
           attribution: "© OpenStreetMap · OpenFreeMap",
           attributionControl: false,
-          padding: 0.3,             // rend une marge autour de l'écran → pan sans zones vides
+          padding: 0.15,            // P6 : marge réduite (0.3→0.15) = ~34 % de pixels GPU en moins ;
+                                    // le resync par frame du plein écran couvre désormais les bords
           fadeDuration: 0,          // étiquettes immédiates (pas de fondu coûteux)
           pixelRatio: Math.min(window.devicePixelRatio || 1, 2), // cap rétina : ÉNORME gain GPU sur mobile
         });
@@ -13177,7 +13179,7 @@
         homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.5, wheelPxPerZoomLevel: 120, zoomControl: false, maxZoom: 19,
           // #12 : UN seul monde (fini les cartes côte à côte au dézoom) + bords élastiques doux
           minZoom: 2.4, maxBounds: [[-85, -180], [85, 180]], maxBoundsViscosity: 0.8, worldCopyJump: false,
-          preferCanvas: true, tap: false, zoomAnimation: true, fadeAnimation: true, inertiaDeceleration: 2600 }).setView([46.6, 2.3], 4);
+          preferCanvas: true, tap: false, zoomAnimation: true, fadeAnimation: true, inertiaDeceleration: 2000 }).setView([46.6, 2.3], 4); /* P6 : inertie plus douce, glisse « à la Plans » */
         // P4 (retour Maxime, remplace le geste P2.7) : TAP-POUR-EXPLORER — la mini-carte dort
         // (1 doigt = la page défile) ; un TAP dessus la RÉVEILLE (drag direct, 100 % réactive,
         // liseré corail discret) ; toucher la page EN DEHORS la rendort → le scroll de
@@ -13185,14 +13187,17 @@
         window._smCoarse = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
         if (window._smCoarse) {
           try { homeLeaf.dragging.disable(); } catch (e) {}
-          const hint = document.createElement("div"); hint.className = "hm-coop-hint";
+          // P6 (retour Maxime : « le bouton est pas visible ») : le badge « touche pour
+          // explorer » est VISIBLE EN PERMANENCE tant que la carte dort — plus seulement
+          // pendant un geste. Il disparaît au réveil, revient quand elle se rendort.
+          const hint = document.createElement("div"); hint.className = "hm-coop-hint show";
           hint.textContent = "🖐️ " + i18nT("Touche la carte pour l'explorer");
           el.appendChild(hint);
-          let ht = 0, shown = 0, t0 = null;
+          let t0 = null;
           const wake = () => { try { homeLeaf.dragging.enable(); } catch (e) {} el.classList.add("hm-live"); hint.classList.remove("show"); };
           const sleep = () => {
             if (document.querySelector(".homemap-card.fs")) return; // en plein écran, drag toujours actif
-            try { homeLeaf.dragging.disable(); } catch (e) {} el.classList.remove("hm-live");
+            try { homeLeaf.dragging.disable(); } catch (e) {} el.classList.remove("hm-live"); hint.classList.add("show");
           };
           window._smMapSleep = sleep; // la sortie du plein écran rendort la mini-carte
           el.addEventListener("touchstart", (ev) => { const t = ev.touches && ev.touches[0]; t0 = t ? { x: t.clientX, y: t.clientY } : null; }, { passive: true });
@@ -13202,13 +13207,6 @@
             if (t0 && t && Math.abs(t.clientX - t0.x) < 10 && Math.abs(t.clientY - t0.y) < 10) wake();
           }, { passive: true });
           document.addEventListener("touchstart", (ev) => { if (el.classList.contains("hm-live") && !el.contains(ev.target)) sleep(); }, { passive: true });
-          el.addEventListener("touchmove", (ev) => {
-            // On tente de glisser la carte ENDORMIE → petit rappel « touche-la pour l'explorer »
-            if (el.classList.contains("hm-live") || document.querySelector(".homemap-card.fs") || (ev.touches && ev.touches.length > 1)) return;
-            if (Date.now() - shown < 2600) return;
-            shown = Date.now(); hint.classList.add("show");
-            clearTimeout(ht); ht = setTimeout(() => hint.classList.remove("show"), 1500);
-          }, { passive: true });
         }
         // Fond vectoriel SunMates : rendu GPU continu (fini le chargement tuile par tuile),
         // recoloré dans la DA. Le service worker met style/glyphes/tuiles en cache → offline OK.
@@ -13648,7 +13646,9 @@
       // PERF plein écran : le canvas GPU devient ~4× plus grand → résolution de rendu ×1.0
       // le temps du plein écran (légèrement moins net, BEAUCOUP plus fluide), netteté ×2
       // restaurée en revenant en vue carte réduite.
-      try { _smGlMaps.forEach((m) => { if (m && typeof m.setPixelRatio === "function") m.setPixelRatio(on ? 1 : Math.min(window.devicePixelRatio || 1, 2)); }); } catch (e) {}
+      // P6 : 0.8 en plein écran (au lieu de 1) — encore ~36 % de pixels GPU en moins, le
+      // léger flou est invisible en mouvement et la carte « colle au doigt ».
+      try { _smGlMaps.forEach((m) => { if (m && typeof m.setPixelRatio === "function") m.setPixelRatio(on ? 0.8 : Math.min(window.devicePixelRatio || 1, 2)); }); } catch (e) {}
       if (homeLeaf) {
         if (homeLeaf.scrollWheelZoom) { on ? homeLeaf.scrollWheelZoom.enable() : homeLeaf.scrollWheelZoom.disable(); }
         // P4 : plein écran = drag toujours actif ; en sortir rendort la mini-carte (tap pour réveiller)
