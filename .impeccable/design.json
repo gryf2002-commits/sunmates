@@ -1,0 +1,312 @@
+{
+ "schemaVersion": 2,
+ "generatedAt": "2026-06-13T00:00:00+02:00",
+ "title": "Design System: SunMates",
+ "extensions": {
+  "colorMeta": {
+   "corail": {
+    "role": "primary",
+    "displayName": "Corail",
+    "canonical": "#FF5A4D",
+    "tonalRamp": [
+     "#140C18",
+     "#572227",
+     "#9A3936",
+     "#DD4F45",
+     "#FF7165",
+     "#FF9F95",
+     "#FFCCC4",
+     "#FFFAF4"
+    ]
+   },
+   "orange-chaud": {
+    "role": "primary",
+    "displayName": "Orange chaud",
+    "canonical": "#FF8A3D",
+    "tonalRamp": [
+     "#140C18",
+     "#573023",
+     "#9A542D",
+     "#DD7838",
+     "#FF9A57",
+     "#FFBA8B",
+     "#FFDAC0",
+     "#FFFAF4"
+    ]
+   },
+   "ambre-dore": {
+    "role": "primary",
+    "displayName": "Ambre doré",
+    "canonical": "#FFC93C",
+    "tonalRamp": [
+     "#140C18",
+     "#574222",
+     "#9A782D",
+     "#DDAE37",
+     "#FFD056",
+     "#FFDE8B",
+     "#FFECBF",
+     "#FFFAF4"
+    ]
+   },
+   "or-badge": {
+    "role": "secondary",
+    "displayName": "Or badge",
+    "canonical": "#FFD15C",
+    "tonalRamp": [
+     "#140C18",
+     "#57442B",
+     "#9A7D3F",
+     "#DDB552",
+     "#FFD772",
+     "#FFE39D",
+     "#FFEEC9",
+     "#FFFAF4"
+    ]
+   },
+   "teal-securite": {
+    "role": "secondary",
+    "displayName": "Teal sécurité",
+    "canonical": "#11B5A0",
+    "tonalRamp": [
+     "#140C18",
+     "#133C3F",
+     "#126D66",
+     "#119D8D",
+     "#33BFAC",
+     "#77D3C4",
+     "#BBE6DC",
+     "#FFFAF4"
+    ]
+   },
+   "violet-social": {
+    "role": "secondary",
+    "displayName": "Violet social",
+    "canonical": "#7A5CFF",
+    "tonalRamp": [
+     "#140C18",
+     "#31235A",
+     "#4E3A9C",
+     "#6B51DE",
+     "#8D73FD",
+     "#B3A0FA",
+     "#D9CDF7",
+     "#FFFAF4"
+    ]
+   },
+   "sable-leve": {
+    "role": "neutral",
+    "displayName": "Sable levé",
+    "canonical": "#FFF4E6",
+    "tonalRamp": [
+     "#140C18",
+     "#574E53",
+     "#9A918E",
+     "#DDD3C9",
+     "#FFF5E8",
+     "#FFF7EC",
+     "#FFF8F0",
+     "#FFFAF4"
+    ]
+   },
+   "encre-aubergine": {
+    "role": "neutral",
+    "displayName": "Encre aubergine",
+    "canonical": "#39203A",
+    "tonalRamp": [
+     "#140C18",
+     "#1F1222",
+     "#29172B",
+     "#341D35",
+     "#553F55",
+     "#8E7D8A",
+     "#C6BCBF",
+     "#FFFAF4"
+    ]
+   },
+   "texte-prune": {
+    "role": "neutral",
+    "displayName": "Texte prune",
+    "canonical": "#5B4455",
+    "tonalRamp": [
+     "#140C18",
+     "#281C29",
+     "#3D2C3B",
+     "#513C4C",
+     "#725E6C",
+     "#A19299",
+     "#D0C6C7",
+     "#FFFAF4"
+    ]
+   },
+   "prune-nuit": {
+    "role": "neutral",
+    "displayName": "Prune nuit",
+    "canonical": "#190E2E",
+    "tonalRamp": [
+     "#140C18",
+     "#150D1E",
+     "#170D25",
+     "#180E2B",
+     "#3A304A",
+     "#7C7383",
+     "#BDB7BB",
+     "#FFFAF4"
+    ]
+   }
+  },
+  "typographyMeta": {
+   "display": {
+    "displayName": "Fraunces",
+    "purpose": "Titres et chiffres héros : l'émotion. Jamais pour du texte fonctionnel."
+   },
+   "body": {
+    "displayName": "Manrope",
+    "purpose": "UI, corps, labels : l'information."
+   }
+  },
+  "shadows": [
+   {
+    "name": "repos",
+    "value": "0 14px 40px rgba(45,38,52,.10), 0 4px 12px rgba(45,38,52,.05)",
+    "purpose": "Surface posée au repos : gris chaud neutre, doctrine v444 (ni rouge ni marron)."
+   },
+   {
+    "name": "pop",
+    "value": "0 18px 50px rgba(45,38,52,.16)",
+    "purpose": "Feuilles et modales."
+   },
+   {
+    "name": "ring",
+    "value": "0 0 0 4px rgba(255,90,77,.16)",
+    "purpose": "Focus / sélection : le seul anneau corail autorisé hors signaux d'attention."
+   }
+  ],
+  "motion": [
+   {
+    "name": "retour-tactile",
+    "value": "transform: scale(.97)",
+    "purpose": "Tout élément tapable en :active."
+   },
+   {
+    "name": "balayage-brillance",
+    "value": "3.6s linear infinite",
+    "purpose": "Bande blanche oblique sur les badges non-lite ; coupé par prefers-reduced-motion."
+   }
+  ],
+  "breakpoints": []
+ },
+ "components": [
+  {
+   "name": "Bouton principal",
+   "kind": "button",
+   "refersTo": "button-primary",
+   "description": "CTA dégradé « Soleil couchant », pilule.",
+   "html": "<button class=\"ds-btn-primary\">Rejoindre la quête</button>",
+   "css": ".ds-btn-primary{background:linear-gradient(135deg, #FFC93C 0%, #FF7A3D 46%, #FF4F6D 100%);color:#fff;border:none;border-radius:999px;padding:13px 26px;font:700 15px Manrope,system-ui,sans-serif;box-shadow:0 14px 40px rgba(45,38,52,.10);transition:transform .15s}.ds-btn-primary:active{transform:scale(.97)}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(255,90,77,.16)}"
+  },
+  {
+   "name": "Bouton accent",
+   "kind": "button",
+   "refersTo": "button-accent",
+   "description": "Action secondaire chaude.",
+   "html": "<button class=\"ds-btn-accent\">Voir le lieu</button>",
+   "css": ".ds-btn-accent{background:#FFE6DC;color:#FF5A4D;border:1px solid #FF5A4D;border-radius:999px;padding:12px 24px;font:700 15px Manrope,system-ui,sans-serif;transition:transform .15s}.ds-btn-accent:active{transform:scale(.97)}"
+  },
+  {
+   "name": "Chip filtre",
+   "kind": "chip",
+   "refersTo": "chip",
+   "description": "Filtre au repos + état actif sunset (l'état sélectionné EST un coucher de soleil).",
+   "html": "<span class=\"ds-chip\">Cafés</span> <span class=\"ds-chip ds-chip-active\">Lieux sûrs</span>",
+   "css": ".ds-chip{display:inline-block;background:#FFF1E0;color:#5B4455;border:1px solid #F6E3D6;border-radius:999px;padding:8px 16px;font:700 13px Manrope,system-ui,sans-serif}.ds-chip-active{background:linear-gradient(135deg, #FFC93C 0%, #FF7A3D 46%, #FF4F6D 100%);color:#fff;border-color:transparent}"
+  },
+  {
+   "name": "Sceau vérifié",
+   "kind": "chip",
+   "refersTo": "sceau-verifie",
+   "description": "La confiance en un pictogramme : ambre vers teal.",
+   "html": "<span class=\"ds-vchip\">✔ Vérifié</span>",
+   "css": ".ds-vchip{display:inline-block;background:linear-gradient(135deg,#FFC93C,#FF8A3D 60%,#17A99B);color:#fff;border:1px solid #fff;border-radius:999px;padding:5px 12px;font:800 12px Manrope,system-ui,sans-serif}"
+  },
+  {
+   "name": "Compteur de notifs",
+   "kind": "chip",
+   "refersTo": "compteur-notifs",
+   "description": "Pastille corail pleine.",
+   "html": "<span class=\"ds-nbadge\">3</span>",
+   "css": ".ds-nbadge{display:inline-grid;place-items:center;min-width:22px;height:22px;background:#FF5A4D;color:#fff;border:2px solid #fff;border-radius:999px;font:800 12px Manrope,system-ui,sans-serif;padding:0 5px}"
+  },
+  {
+   "name": "Carte",
+   "kind": "card",
+   "refersTo": "card",
+   "description": "Surface posée, ombre gris chaud, titre Fraunces.",
+   "html": "<div class=\"ds-card\"><strong>Café Lumière</strong><br>Lieu sûr partenaire · à 200 m</div>",
+   "css": ".ds-card{background:#fff;color:#5B4455;border-radius:22px;padding:18px 20px;box-shadow:0 14px 40px rgba(45,38,52,.10),0 4px 12px rgba(45,38,52,.05);font:500 14px/1.5 Manrope,system-ui,sans-serif}.ds-card strong{color:#39203A;font-family:Fraunces,Georgia,serif;font-weight:800;font-size:16px}"
+  }
+ ],
+ "narrative": {
+  "northStar": "La joaillerie du couchant",
+  "overview": "La chaleur d'une rencontre au coucher du soleil + la confiance d'un lieu sûr. DA chaude, vibrante, généreuse, jamais froide ni clinique ; niveau « badge d'arène » (matières, lumière haut-gauche, rim-light) ; aucun pixel générique. Six mondes (day, dusk, winter, winter-dusk, tropic, tropic-dusk), tout composant lisible dans les six.",
+  "keyCharacteristics": [
+   "Palette sunset corail/orange/ambre/or + accents teal et violet",
+   "Dégradé signature 135deg #FFC93C → #FF7A3D → #FF4F6D",
+   "Matières radiales, jamais d'aplats pour les joyaux",
+   "Nuit prune chaude violette, jamais gris bleuté",
+   "Fraunces = émotion, Manrope = information",
+   "Un seul index.html vanilla, tokens :root + thèmes body.theme-*"
+  ],
+  "rules": [
+   {
+    "name": "The No-Green Rule",
+    "body": "Aucun vert criard ; « validé / en ligne » = teal #11B5A0 ou ambre.",
+    "section": "colors"
+   },
+   {
+    "name": "The No-Ivory Rule",
+    "body": "Blanc pur en reflet uniquement, jamais en masse ; aucun fond ivoire/crème.",
+    "section": "colors"
+   },
+   {
+    "name": "La Loi de contraste",
+    "body": "Température opposée + contraste de valeur + couture (ombre de contact + rim-light) : rien ne se noie, dans les 6 modes.",
+    "section": "colors"
+   },
+   {
+    "name": "The Émotion/Information Rule",
+    "body": "Fraunces pour l'émotion, Manrope pour l'information.",
+    "section": "typography"
+   },
+   {
+    "name": "The Warm-Gray Shadow Rule",
+    "body": "Toute ombre = gris chaud neutre base rgba(45,38,52) ; rouge ou marron = bug de DA (doctrine v444).",
+    "section": "elevation"
+   },
+   {
+    "name": "The Z-Token Rule",
+    "body": "Jamais de z-index brut : échelle nommée --z-* obligatoire.",
+    "section": "elevation"
+   }
+  ],
+  "dos": [
+   "Do tirer toute valeur de sunmates-kit-da-v445.json (le mode concerné)",
+   "Do vérifier chaque changement dans les 6 modes : thémé ET lisible",
+   "Do appliquer la Loi de contraste à tout objet posé",
+   "Do mettre les feedbacks en toast EN HAUT, près de l'action",
+   "Do annoncer explicitement tout changement de teinte/fond",
+   "Do garder vifs les anneaux d'attention (pinPulse, SOS, flamme)"
+  ],
+  "donts": [
+   "Don't : vert criard ou indicateur vert hors DA",
+   "Don't : ombre rouge ou marron",
+   "Don't : ivoire/crème en masse, blanc pur en remplissage",
+   "Don't : icône de banque générique (Lucide, Material, Heroicons)",
+   "Don't : scrollbar blanche système",
+   "Don't : z-index brut ou couleur hors kit",
+   "Don't : deux tuiles dorées côte à côte",
+   "Don't : tiret cadratin dans les textes de l'app ; genre via _gw",
+   "Don't : toucher aux écussons routiers ni sacrifier lisibilité ou thème de la carte"
+  ]
+ }
+}
