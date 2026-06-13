@@ -125,7 +125,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=451"></script>
+  <script src="sunmates-badges.js?v=452"></script>
   <script src="sunmates-icons.js?v=445"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale — jamais depuis
@@ -12680,6 +12680,21 @@
     //   1) une modale/feuille est ouverte  → on la FERME (la plus haute) ;
     //   2) on n'est pas sur l'Accueil      → on REVIENT à l'Accueil ;
     //   3) sinon                            → prochain retour = quitter (petit toast d'info, 1×).
+    // Retour téléphone (audit Maxime « tous les retours ramènent à l'Accueil au lieu de l'étape
+    // d'avant ») : AVANT de quitter l'onglet pour l'Accueil, on déroule UNE étape de sous-vue.
+    // Chaque onglet a des sous-écrans en swap de panneaux (show/hide) qui n'étaient PAS vus par le
+    // retour → on les ramène à leur écran-racine, une étape par appui. (vis = panneau réellement
+    // affiché : offsetParent null si l'onglet parent est masqué → seul l'onglet ACTIF réagit.)
+    function _smViewBack() {
+      const vis = (id) => { const e = document.getElementById(id); return !!(e && !e.classList.contains("hidden") && e.offsetParent !== null); };
+      if ((vis("matesProfile") || vis("matesChat")) && typeof showMatesView === "function") { showMatesView("matesHome"); return true; }
+      if ((vis("jeuxDetail") || vis("jeuxBadges") || vis("jeuxCoupons") || vis("jeuxRank") || vis("jeuxShop")) && typeof showJeuxView === "function") { showJeuxView("jeuxHome"); return true; }
+      if (vis("secuHelp") && typeof showSecuView === "function") { showSecuView("secuHome"); return true; }
+      if (vis("settingsCard")) { const sc = document.getElementById("settingsCard"), pm = document.getElementById("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); window.scrollTo(0, 0); return true; }
+      return false;
+    }
+    window._smViewBack = _smViewBack;
+
     (function systemBack() {
       if (window.__smBackWired) return; window.__smBackWired = true;
       let guarded = false, exitHint = false;
@@ -12705,6 +12720,7 @@
       window.addEventListener("popstate", () => {
         guarded = false;
         if (closeTop()) { guard(); return; }
+        if (_smViewBack()) { guard(); return; } // sous-vue ouverte → étape précédente AVANT de quitter l'onglet
         const cur = (typeof __lastTab !== "undefined" && __lastTab) || "accueil";
         if (cur !== "accueil") { try { goToTab("accueil"); } catch (e) {} guard(); return; }
         // Accueil, rien d'ouvert : on laisse la garde consommée → le prochain retour quitte l'app.

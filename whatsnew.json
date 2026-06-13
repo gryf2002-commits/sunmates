@@ -1,10 +1,9 @@
 {
-  "candidate": "v451",
+  "candidate": "v452",
   "items": [
-    "🐛 3 corrections de tes retours (pas l'audit cette fois).",
-    "📍 Choix de ville : on peut À NOUVEAU revenir à « Toutes les villes » (l'option avait disparu → on restait coincé sur une ville). Et la pastille de ville est allégée (moins épaisse, sans ombre).",
-    "📱 Retour Android sur la carte : quand la carte est en plein écran, le bouton « retour » du téléphone QUITTE le plein écran (avant il ne faisait rien d'utile / changeait d'onglet par-dessous).",
-    "🔝 Haut de l'écran : la barre d'état du téléphone prend exactement la couleur du fond de l'app (avant un crème/violet légèrement différent créait une séparation nette / un grain de couleur en haut). Corrigé dans les 6 modes, y compris après avoir basculé jour/nuit en hiver ou tropiques.",
-    "ℹ️ Le lot F de l'audit (écrans vides plus accueillants) arrive juste après."
+    "🔙 Bouton RETOUR du téléphone repensé (ton audit) : il ramène maintenant à l'ÉTAPE PRÉCÉDENTE, plus directement à l'Accueil. Avant, depuis un sous-écran (fiche d'un Mate, chat, détail d'une quête, badges, boutique, « Besoin d'aide », Réglages…), un retour sautait tout l'historique et filait à l'Accueil.",
+    "🪜 Désormais le retour DÉROULE pas à pas : fiche/chat d'un Mate → liste des Mates → Accueil ; détail quête/badges/boutique → accueil Jeux → Accueil ; « Besoin d'aide » → Sécurité → Accueil ; Réglages → Profil → Accueil. (Les fiches de lieu et fenêtres restent fermées en premier, comme avant.)",
+    "🔝 Rappel : le grain de couleur / la séparation en haut a été corrigé en v451 (la barre d'état suit le fond du mode). Si tu le revois en v452 sur ton téléphone, dis-moi exactement OÙ (barre d'état tout en haut, ou une ligne plus bas) — je cible.",
+    "ℹ️ Le lot F de l'audit (écrans vides) reste en attente, je le ferai juste après."
   ]
 }
