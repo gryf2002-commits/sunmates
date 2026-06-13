@@ -1,8 +1,9 @@
 {
   "candidate": "v460",
   "items": [
-    "🗺️ VRAI fix carte plein écran : le fil et les tuiles « Accès rapides » passaient PAR-DESSUS la carte en plein écran (ce n'était PAS du cache !). Cause technique : une animation d'opacité sur le conteneur de la carte emprisonnait sa priorité d'affichage. Réglé en masquant tout le reste de l'Accueil pendant le plein écran → la carte est seule à l'écran.",
-    "🌙 Plus de « coupure » sombre sous la status-bar du téléphone en mode NUIT : le haut du bandeau prend désormais EXACTEMENT la couleur de la barre d'état au lieu de laisser le halo transparaître dessous. Vrai dans les 3 nuits (violette, hiver, jungle) ; le verre dépoli reste plus bas.",
-    "✨ En cours de vérif : textes dorés qui se baladent encore en nuit d'hiver, et relecture des CGU (âge 18 ans + coquilles)."
+    "🗺️ VRAI fix carte plein écran : le fil et les tuiles « Accès rapides » passaient PAR-DESSUS la carte (ce n'était PAS du cache !). Une animation d'opacité sur le conteneur de la carte emprisonnait sa priorité d'affichage. Réglé : tout le reste de l'Accueil est masqué pendant le plein écran → la carte est seule à l'écran.",
+    "🌙 Plus de « coupure » sombre sous la status-bar en mode NUIT : le haut du bandeau prend EXACTEMENT la couleur de la barre d'état (les 3 nuits : violette, hiver, jungle). Verre dépoli conservé plus bas.",
+    "❄️ Ors de nuit, 2e passage : d'autres textes dorés se baladaient encore sur le navy en nuit d'HIVER (titres de section, bandeau XP, conseil sécurité, « Annuler » de la carte…) → passés en BLEU GLACIER. Gardés dorés volontairement : les SunCoins (monnaie), les étoiles de note et la carte Premium « Gold ».",
+    "📜 CGU : l'âge passe de « 16 ans et plus » à « 18 ans et plus »."
   ]
 }
