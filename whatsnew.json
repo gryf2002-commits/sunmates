@@ -1,11 +1,10 @@
 {
-  "candidate": "v446",
+  "candidate": "v447",
   "items": [
-    "🔍 LOT A de l'audit design Impeccable (contrastes WCAG) — petites retouches ciblées, AUCUNE refonte, tout reste dans la palette du kit v445",
-    "🌅 Dégradé des boutons CTA rééquilibré (ANNONCÉ) : mêmes 3 couleurs sunset par mode, mais le ton foncé arrive plus tôt → le texte blanc des boutons et chips actives passe de ~2:1 à ≥3:1 de contraste (avant, le label tombait sur la zone ambre quasi illisible)",
-    "🖋️ Texte secondaire plus lisible (ANNONCÉ) : le mauve discret du mode jour s'assombrit (#AC93A3 → #7F6878, même famille prune, 2.6 → 4.6:1) ; idem pour l'hiver et les tropiques (3.5 → 5.2:1). Les modes nuit ne bougent pas (déjà excellents)",
-    "✅ Les textes « éco / validé » en teal utilisent maintenant un teal sobre dédié (#1E7A5A, déjà dans la DA) le jour — le teal vif reste pour les fonds, icônes et la nuit",
-    "🔔 Compteur de notifications lisible partout : le chiffre blanc passait sous 3:1 ; le fond s'assombrit d'un cran vers l'encre du mode (jour 3.1 → 4.0:1, nuits 2.2-2.8 → 3.8-5.4:1)",
-    "📋 L'audit complet (P0/P1/P2 sur 6 axes : contrastes, typo, 6 modes, ombres, états vides, tactile) est posé — les lots B à G suivront, un par un, toujours en préversion d'abord"
+    "🔍 Suite de l'audit design Impeccable — LOTS A2 + B. Toujours dans la palette du kit v445, aucune refonte, le mode nuit par défaut (violet) ne bouge pas.",
+    "🖋️ LOT A2 (contrastes, P0) : les petits libellés corail posés sur un fond corail très pâle (bouton secondaire, étiquette de post, badge d'info, pastille de confiance) passaient à ~2.6:1 (illisibles). Ils utilisent maintenant un corail FONCÉ dédié au texte (~4.2:1) — le corail vif reste pour les fonds, icônes et dégradés. Décliné aussi en bleu (hiver) et lagon (tropiques).",
+    "❄️🌴 LOT B (cohérence des nuits de saison, P1) : la nuit d'HIVER et la nuit de JUNGLE viraient au VIOLET (cartes, champs, tuiles, bulles, notifications, toasts, barre du bas) à cause de couleurs codées en dur dans le thème nuit par défaut. Elles retrouvent enfin leur vraie teinte : navy l'hiver, vert profond aux tropiques.",
+    "📜 La barre de défilement suit aussi la saison maintenant (bleu glacier en hiver, lagon aux tropiques) au lieu du brun/corail hors palette.",
+    "ℹ️ Restent les lots C→G de l'audit (ombres, typo, cibles tactiles, états vides, tirets) — un par un, toujours en préversion d'abord."
   ]
 }
