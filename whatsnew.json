@@ -1,10 +1,9 @@
 {
   "candidate": "v463",
   "items": [
-    "🔒 Sécurité du faux appel : le numéro affiché pouvait, par hasard, correspondre au vrai mobile de quelqu'un. Il utilise désormais la plage OFFICIELLE réservée à la fiction (06 39 98…) → crédible mais qui ne joindra jamais personne.",
-    "📞 Écran du faux appel (une fois décroché) entièrement repensé : fini la grille d'emojis, place à des icônes sobres façon vrai téléphone.",
-    "🔎 Partager une activité : tu peux maintenant CHERCHER un lieu par son nom/adresse (pas seulement toucher la carte) → le pin se cale dessus.",
-    "🔁 Bascule « En voyage / À la maison » : les deux boutons sont enfin parfaitement alignés.",
-    "💎 Début du chantier premium : les tuiles passent en TONS BIJOU profonds (améthyste, rubis, émeraude, saphir, ambre…) au lieu de couleurs vives un peu criardes — chaque famille a sa pierre, cohérent partout. On continue écran par écran."
+    "🔒 Sécurité du faux appel : le numéro affiché est maintenant dans la plage OFFICIELLE de fiction (06 39 98…) → ne joindra jamais personne. Écran décroché repensé en icônes sobres (fini les emojis).",
+    "🔎 Partager une activité : tu peux CHERCHER un lieu par son nom → le pin se cale dessus.",
+    "🔁 Bascule « En voyage / À la maison » alignée.",
+    "💎 Chantier premium (Accueil) : les tuiles passent en TONS BIJOU profonds (améthyste, rubis, émeraude, saphir…), plus FINES, avec un reflet adouci, et des ICÔNES SVG sobres au lieu d'emojis. Beaucoup plus haut de gamme et cohérent. On généralise aux autres écrans ensuite."
   ]
 }
