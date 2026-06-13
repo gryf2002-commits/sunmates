@@ -126,7 +126,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
   <script src="sunmates-badges.js?v=463"></script>
-  <script src="sunmates-icons.js?v=463"></script>
+  <script src="sunmates-icons.js?v=464"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
     // la préversion (preview.html) ni une version archivée (releases/…) : elles se testent
@@ -9896,7 +9896,7 @@
       showInfo("📞 Configurer le faux appel", `
         <div style="text-align:left">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><label style="font-weight:700;font-size:.85rem">Nom de l'appelant</label><button class="btn-ghost" id="fcManage" style="padding:.25rem .6rem;font-size:.74rem">⚙️ Gérer</button></div>
-          <input id="fcNameInput" type="text" maxlength="24" placeholder="Ex : Maman, Le boulot…" value="${escapeHtml(saved)}" style="width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin:.3rem 0 .6rem" />
+          <input id="fcNameInput" type="text" maxlength="24" placeholder="Ex : Maman, Le boulot…" value="${escapeHtml(saved)}" autocomplete="off" autocapitalize="words" autocorrect="off" name="sm-fake-caller" data-lpignore="true" data-1p-ignore data-form-type="other" style="width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin:.3rem 0 .6rem" />
           <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem">${names.map((n) => `<button class="btn-ghost fc-pickname" data-n="${escapeHtml(n)}" style="flex:0 0 auto;padding:.35rem .7rem;font-size:.82rem">${escapeHtml(n)}</button>`).join("")}</div>
           <label style="font-weight:700;font-size:.85rem">Sonne dans</label>
           <div style="display:flex;gap:.4rem;margin:.3rem 0 .7rem">${FC_DELAYS.map(([s, l]) => `<button class="btn-ghost fc-delay${s === curDelay ? " active" : ""}" data-s="${s}" style="flex:1;padding:.42rem .2rem;font-size:.82rem${s === curDelay ? ";background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:800" : ""}">${l}</button>`).join("")}</div>

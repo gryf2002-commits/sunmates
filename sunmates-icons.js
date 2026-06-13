@@ -94,6 +94,10 @@
         if (!GLYPHS[k]) return;                 // inconnu → garde l'emoji de repli
         if (el.getAttribute('data-smicon-done') === k) return; // déjà rendu
         el.innerHTML = wrap(GLYPHS[k]);
+        // Honorer data-smicon-size (icônes INLINE dans des boutons/segments : taille fixe en px,
+        // sinon le svg.smi à 60% explose dans un conteneur non dimensionné · bug Mates).
+        var sz = el.getAttribute('data-smicon-size');
+        if (sz) { var s = el.querySelector('svg'); if (s) { s.style.width = sz + 'px'; s.style.height = sz + 'px'; s.style.flexShrink = '0'; } }
         el.setAttribute('data-smicon-done', k);
       });
     } catch (e) {}
