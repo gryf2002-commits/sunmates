@@ -126,7 +126,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
   <script src="sunmates-badges.js?v=463"></script>
-  <script src="sunmates-icons.js?v=465"></script>
+  <script src="sunmates-icons.js?v=466"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
     // la préversion (preview.html) ni une version archivée (releases/…) : elles se testent
@@ -1800,6 +1800,11 @@
     svg.smi { width: 60%; height: 60%; display: block; filter: drop-shadow(0 1.5px 2.5px rgba(60,25,10,.3)); }
     .cic svg.smi, .qico svg.smi, .smgem svg.smi, .sc-ic svg.smi { width: 64%; height: 64%; }
     .tile .thumb svg.smi { width: 58%; height: 58%; }
+    /* Icônes maison INLINE (boutons/chips/barres) : taille fixe ~em pour ne pas exploser. */
+    .iconbtn svg.smi { width: 23px; height: 23px; }
+    .chip svg.smi, .fc-kind svg.smi, .tpa-ic svg.smi, .tt-ic svg.smi, .stb-ic svg.smi, .avail-chip svg.smi,
+    .hm-layers-btn svg.smi, .homemap-tools button svg.smi, .btn-primary svg.smi, .btn-accent svg.smi,
+    .tpa-btn svg.smi, .mode-switch button svg.smi { width: 1.25em; height: 1.25em; vertical-align: -.24em; flex-shrink: 0; }
     .cat-tile.active .cic[data-smicon] { box-shadow: 0 8px 18px -4px rgba(45,38,52,.16), 0 2px 4px rgba(180,60,40,.32), inset 0 1px 1px rgba(255,246,236,.9), inset 0 -2px 3px rgba(150,45,30,.32); }
     /* Palette par tuile : un spectre DA distinct par catégorie (anti-uniformité) */
     [data-smicon="quest"]{--c1:#FF7A4D;--c2:#FF5238} [data-smicon="games"]{--c1:#8a5cff;--c2:#6638d6} [data-smicon="medal"]{--c1:#E8A33A;--c2:#D07F10} [data-smicon="coupon"]{--c1:#FF6FA5;--c2:#E84D86} [data-smicon="rank"]{--c1:#5E74E8;--c2:#3641B8} [data-smicon="shop"]{--c1:#FF5A8A;--c2:#C43A8A}

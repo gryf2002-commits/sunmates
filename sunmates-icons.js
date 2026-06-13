@@ -107,7 +107,19 @@
     mic: G('mic', 'coral', '<path d="M12 22a12 12 0 0 0 24 0" fill="none" stroke="' + K + '" stroke-width="2.6" stroke-linecap="round"/><line x1="24" y1="34" x2="24" y2="42" stroke="' + C.coral[0] + '" stroke-width="3.4" stroke-linecap="round"/>'),
     flame: G('flame', 'coral'),
     star: G('star', 'gold'),
-    handshake: '<path d="M4 18l8-3 9 6 6-2 4 3 9-4v12l-7 3-8-6-3 1-5 6-7-4z" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.7" stroke-linejoin="round"/>'
+    handshake: '<path d="M4 18l8-3 9 6 6-2 4 3 9-4v12l-7 3-8-6-3 1-5 6-7-4z" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.7" stroke-linejoin="round"/>',
+    // --- inline (boutons/chips) ---
+    door: '<rect x="11" y="6" width="22" height="37" rx="3" fill="' + C.teal[0] + '" stroke="' + C.teal[1] + '" stroke-width="1.7"/><path d="M30 9l8 4v22l-8 4z" fill="' + C.teal[0] + '" stroke="' + C.teal[1] + '" stroke-width="1.7" stroke-linejoin="round"/>' + dot(33, 24, 1.8),
+    check: G('target', 'green', '<path d="M16.5 24l5 5 9.5-10.5" fill="none" stroke="' + K + '" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>'),
+    layers: '<path d="M24 6 43 16 24 26 5 16z" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 23l18 9 18-9M6 31l18 9 18-9" fill="none" stroke="' + C.gold[0] + '" stroke-width="2.6" stroke-linejoin="round"/>',
+    party: '<path d="M6 42 18 14l16 16z" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7" stroke-linejoin="round"/><g fill="#FFD15C"><circle cx="34" cy="9" r="2.4"/><circle cx="41" cy="18" r="2.4"/><circle cx="28" cy="6" r="2"/></g><circle cx="38" cy="11" r="1.6" fill="#16C0A4"/>',
+    pin: '<circle cx="24" cy="14" r="9" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7"/><path d="M24 23v18" stroke="' + C.coral[1] + '" stroke-width="3" stroke-linecap="round"/>' + dot(24, 14, 3.4),
+    plus: G('target', 'teal', '<path d="M24 16v16M16 24h16" stroke="' + K + '" stroke-width="3.6" stroke-linecap="round"/>'),
+    globe: G('target', 'blue', '<g fill="none" stroke="' + K + '" stroke-width="2"><ellipse cx="24" cy="24" rx="8" ry="17"/><line x1="7" y1="24" x2="41" y2="24"/><path d="M10 15c8 5 20 5 28 0M10 33c8-5 20-5 28 0"/></g>'),
+    heart: '<path d="M24 41C9 31 6 22 6 16.5 6 11 10 7 15 7c3.5 0 6.5 2 9 5 2.5-3 5.5-5 9-5 5 0 9 4 9 9.5C42 22 39 31 24 41z" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7" stroke-linejoin="round"/>',
+    dots: '<g fill="' + C.violet[0] + '" stroke="' + C.violet[1] + '" stroke-width="1.4"><circle cx="10" cy="24" r="4"/><circle cx="24" cy="24" r="4"/><circle cx="38" cy="24" r="4"/></g>',
+    block: '<circle cx="24" cy="24" r="17" fill="' + C.red[0] + '" stroke="' + C.red[1] + '" stroke-width="1.7"/><line x1="13" y1="13" x2="35" y2="35" stroke="' + K + '" stroke-width="3.4" stroke-linecap="round"/>',
+    minus: G('target', 'teal', '<path d="M16 24h16" stroke="' + K + '" stroke-width="3.6" stroke-linecap="round"/>')
   };
   GLYPHS.challenge = GLYPHS.quest;
   GLYPHS.mood = GLYPHS.popular;
