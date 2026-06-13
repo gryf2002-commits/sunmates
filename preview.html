@@ -4142,7 +4142,7 @@
       <div class="picker-head"><h3 style="margin:0">✂️ Cadre ta photo</h3><button id="cropCancel" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
       <p class="muted" style="font-size:.78rem;margin:.2rem 0 .5rem">Glisse pour positionner, zoome · puis publie.</p>
       <div id="cropStage" class="crop-stage"><img id="cropImg" alt="" draggable="false" /><div class="crop-ring"></div></div>
-      <div class="crop-zoom"><span>➖</span><input type="range" id="cropZoom" min="1" max="3" step="0.01" value="1" /><span>➕</span></div>
+      <div class="crop-zoom"><span data-smicon="minus">➖</span><input type="range" id="cropZoom" min="1" max="3" step="0.01" value="1" /><span data-smicon="plus">➕</span></div>
       <button class="btn-primary btn-block" id="cropApply" style="margin-top:.6rem">✅ Recadrer &amp; publier</button>
       <div class="msg" id="cropMsg" style="text-align:center"></div>
     </div>
@@ -4223,7 +4223,7 @@
           <div class="name" style="font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="gchatName">—</div>
           <div class="meta muted" style="font-size:.78rem" id="gchatMeta"></div>
         </div>
-        <button class="iconbtn" id="gchatLeave" title="Quitter le groupe" aria-label="Quitter le groupe">🚪</button>
+        <button class="iconbtn" id="gchatLeave" title="Quitter le groupe" aria-label="Quitter le groupe"><span data-smicon="door">🚪</span></button>
       </div>
       <div class="chat-body" id="gchatBody" data-noptr></div>
       <div class="chat-input">
@@ -4491,7 +4491,7 @@
     </header>
     <div id="goldPreviewBanner">👁️ Aperçu « mode Gratuit » : les fonctions 👑 Gold sont grisées</div>
     <!-- Barre flottante du minuteur « Rentrée en sécurité » (visible sur tous les onglets quand actif) -->
-    <div id="safeTimerBar" class="hidden"><span class="stb-ic">⏱️</span><span class="stb-txt">Minuteur sécurité · <b id="safeTimerCount">--:--</b></span><button id="safeArrivedBtn" type="button">✅ Bien arrivé·e</button></div>
+    <div id="safeTimerBar" class="hidden"><span class="stb-ic" data-smicon="clock">⏱️</span><span class="stb-txt">Minuteur sécurité · <b id="safeTimerCount">--:--</b></span><button id="safeArrivedBtn" type="button"><span data-smicon="check">✅</span> Bien arrivé·e</button></div>
 
     <main>
       <!-- ---------------- Onglet ACCUEIL ---------------- -->
@@ -4499,7 +4499,7 @@
         <h1 id="homeHello">Bonjour</h1>
         <div class="hello-row">
           <p class="muted" id="homeSubtitle" style="margin:0">Regarde qui traîne dans le coin 👀</p>
-          <button id="availChip" class="avail-chip" type="button" title="Signale que tu es dispo pour une rencontre">☕ Dispo ?</button>
+          <button id="availChip" class="avail-chip" type="button" title="Signale que tu es dispo pour une rencontre"><span data-smicon="coffee">☕</span> Dispo ?</button>
           <button id="homeStreak" class="streak-chip hidden" title="Ta série de jours sur SunMates"></button>
         </div>
 
@@ -4663,16 +4663,16 @@
           <!-- UNE seule rangée au-dessus de la carte : ville + À faire + Filtres (avant : 2 rangées éparpillées) -->
           <!-- Retour Maxime : plus d'option « toutes les villes » sélectionnable (le bouton 🌍 Tout voir fait déjà ça) -->
           <!-- (P9 : le carnet 📓 vit EN TÊTE du panneau Filtres · un bouton de plus ici surchargeait l'accueil) -->
-          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button><button type="button" class="hm-layers-btn" id="hmLayersBtn">🗂️ Filtres <span class="hlb-cnt" id="hmLayersCnt">5</span></button></div>
+          <div class="city-pick"><select id="questCitySelect" aria-label="Choisir une ville"></select><button class="todo-toggle" id="questTodoToggle" type="button" title="N'afficher que les quêtes pas encore faites"><span class="tt-ic" data-smicon="quest">🎯</span><span class="tt-lbl">À faire</span><span class="tt-state" id="todoState">OFF</span></button><button type="button" class="hm-layers-btn" id="hmLayersBtn"><span data-smicon="layers">🗂️</span> Filtres <span class="hlb-cnt" id="hmLayersCnt">5</span></button></div>
           <!-- Chips gardés en DOM (pilotés par le panneau Filtres) mais plus affichés ici -->
           <div class="chips wrap homemap-filters as-btn" id="homeMapFilters" style="display:none">
-            <button class="chip active cl-places" data-layer="places">📍 Lieux <b data-cnt></b></button>
-            <button class="chip active cl-mates" data-layer="mates">🧑 Mates <b data-cnt></b></button>
-            <button class="chip active cl-acts" data-layer="activities">🎉 Activités <b data-cnt></b></button>
-            <button class="chip active cl-checkins" data-layer="checkins">✅ Check-ins <b data-cnt></b></button>
-            <button class="chip active cl-quests" data-layer="quests">🎯 Quêtes <b data-cnt></b></button>
+            <button class="chip active cl-places" data-layer="places"><span data-smicon="near">📍</span> Lieux <b data-cnt></b></button>
+            <button class="chip active cl-mates" data-layer="mates"><span data-smicon="usersolo">🧑</span> Mates <b data-cnt></b></button>
+            <button class="chip active cl-acts" data-layer="activities"><span data-smicon="party">🎉</span> Activités <b data-cnt></b></button>
+            <button class="chip active cl-checkins" data-layer="checkins"><span data-smicon="check">✅</span> Check-ins <b data-cnt></b></button>
+            <button class="chip active cl-quests" data-layer="quests"><span data-smicon="quest">🎯</span> Quêtes <b data-cnt></b></button>
             <!-- #6 : la chip MANQUAIT → le filtre « Mes adresses » du panneau tournait dans le vide -->
-            <button class="chip active cl-mypins" data-layer="mypins">📌 Mes adresses <b data-cnt></b></button>
+            <button class="chip active cl-mypins" data-layer="mypins"><span data-smicon="pin">📌</span> Mes adresses <b data-cnt></b></button>
           </div>
           <div class="homemap-wrap">
             <div id="homeMap" class="homemap"></div>
@@ -4681,9 +4681,9 @@
             <button class="homemap-fsclose" id="hmFullClose">✕ Fermer</button>
             <div class="homemap-hint hidden" id="homeMapHint">👆 Touche la carte pour placer ton activité · <a id="homeMapHintCancel">Annuler</a></div>
             <div class="homemap-tools">
-              <button id="hmAdd" title="Partager une activité sur la carte">➕ Partager</button>
-              <button id="hmLocate" title="Centrer sur ma position">📍 Autour de moi</button>
-              <button id="hmFit" title="Tout afficher">🌍 Tout voir</button>
+              <button id="hmAdd" title="Partager une activité sur la carte"><span data-smicon="plus">➕</span> Partager</button>
+              <button id="hmLocate" title="Centrer sur ma position"><span data-smicon="near">📍</span> Autour de moi</button>
+              <button id="hmFit" title="Tout afficher"><span data-smicon="globe">🌍</span> Tout voir</button>
             </div>
           </div>
           <!-- Légende supprimée : les chips colorés au-dessus font office de légende (anti-surcharge). -->
@@ -4744,9 +4744,9 @@
           <div id="feedPollOptions" class="hidden"></div>
           <div class="fc-bottom">
             <div class="fc-kinds">
-              <button class="fc-kind active" data-fkind="post" type="button">✨ Humeur</button>
-              <button class="fc-kind" data-fkind="spot" type="button">📍 Spot</button>
-              <button class="fc-kind" data-fkind="poll" type="button">📊 Sondage</button>
+              <button class="fc-kind active" data-fkind="post" type="button"><span data-smicon="mood">✨</span> Humeur</button>
+              <button class="fc-kind" data-fkind="spot" type="button"><span data-smicon="near">📍</span> Spot</button>
+              <button class="fc-kind" data-fkind="poll" type="button"><span data-smicon="chart">📊</span> Sondage</button>
             </div>
             <button class="btn-primary fc-send" id="feedPostBtn" type="button">Publier</button>
           </div>
@@ -4826,8 +4826,8 @@
         <!-- Moteur de filtrage (piloté par les cat-tiles ci-dessus ; masqué visuellement) -->
         <div class="chips wrap" id="cafeFilters" style="display:none">
           <button class="chip active" data-cf="all">Tous</button>
-          <button class="chip" data-cf="eco">🌱 Éco-responsables</button>
-          <button class="chip" data-cf="near">📍 Près de moi</button>
+          <button class="chip" data-cf="eco"><span data-smicon="eco">🌱</span> Éco-responsables</button>
+          <button class="chip" data-cf="near"><span data-smicon="near">📍</span> Près de moi</button>
         </div>
         <div id="cafesCount" class="muted" style="font-size:.8rem;margin-bottom:.5rem"></div>
         <div class="gold-only-note" style="margin-bottom:.7rem">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
@@ -4864,7 +4864,7 @@
             <div class="card" id="groupCard" style="display:none">
               <div class="section-head" style="margin-bottom:.3rem">
                 <h3 style="margin:0">👥 Tes groupes</h3>
-                <button class="btn-accent" id="groupCreateBtn" style="padding:.35rem .7rem;font-size:.78rem">➕ Créer</button>
+                <button class="btn-accent" id="groupCreateBtn" style="padding:.35rem .7rem;font-size:.78rem"><span data-smicon="plus">➕</span> Créer</button>
               </div>
               <div id="groupList"></div>
             </div>
@@ -4928,8 +4928,8 @@
               <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap">
                 <span class="muted" style="font-size:.82rem;white-space:nowrap">Trier par</span>
                 <div id="travSort" style="display:flex;gap:.4rem">
-                  <button type="button" class="chip active" data-sort="compat">Compatibilité ❤️</button>
-                  <button type="button" class="chip" data-sort="trust">Confiance 🛡️</button>
+                  <button type="button" class="chip active" data-sort="compat">Compatibilité <span data-smicon="heart">❤️</span></button>
+                  <button type="button" class="chip" data-sort="trust">Confiance <span data-smicon="shieldsafe">🛡️</span></button>
                 </div>
               </div>
               <div id="travelersList"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line l"></div><div class="skel skel-line s"></div></div></div></div>
@@ -4965,15 +4965,15 @@
           </div>
           <!-- Actions principales : visibles tout de suite, sans scroll -->
           <div class="row">
-            <button class="btn-primary" id="tpMsgBtn">💬 Message</button>
-            <button class="btn-accent" id="tpConnectBtn">🤝 Se connecter</button>
+            <button class="btn-primary" id="tpMsgBtn"><span data-smicon="message">💬</span> Message</button>
+            <button class="btn-accent" id="tpConnectBtn"><span data-smicon="handshake">🤝</span> Se connecter</button>
           </div>
           <div class="msg" id="tpMsg" style="text-align:center;margin:.5rem 0 .6rem"></div>
           <!-- Actions secondaires : rangée compacte, remontée pour être bien visible -->
           <div class="tp-actions2" style="margin-bottom:1rem">
-            <button class="tpa-btn tpa-chal" id="tpChallengeBtn"><span class="tpa-ic">🎯</span><span>Défi</span></button>
-            <button class="tpa-btn tpa-bff" id="tpBffBtn" style="display:none"><span class="tpa-ic">⭐</span><span>BFF</span></button>
-            <button class="tpa-btn tpa-danger" id="tpBlockBtn"><span class="tpa-ic">🚫</span><span>Bloquer</span></button>
+            <button class="tpa-btn tpa-chal" id="tpChallengeBtn"><span class="tpa-ic" data-smicon="quest">🎯</span><span>Défi</span></button>
+            <button class="tpa-btn tpa-bff" id="tpBffBtn" style="display:none"><span class="tpa-ic" data-smicon="star">⭐</span><span>BFF</span></button>
+            <button class="tpa-btn tpa-danger" id="tpBlockBtn"><span class="tpa-ic" data-smicon="block">🚫</span><span>Bloquer</span></button>
           </div>
           <div class="card">
             <div class="section-head" style="margin-bottom:.4rem"><h3 style="margin:0">À propos</h3><span id="tpVerif"></span></div>
@@ -5011,7 +5011,7 @@
             </div>
             <span class="chat-flame hidden" id="chatFlame" title="Votre flamme">🔥<b id="chatFlameN">0</b></span>
             <div style="position:relative">
-              <button class="iconbtn" id="chatMenuBtn" title="Options" aria-label="Options" style="font-size:1.1rem">⋯</button>
+              <button class="iconbtn" id="chatMenuBtn" title="Options" aria-label="Options" style="font-size:1.1rem"><span data-smicon="dots">⋯</span></button>
               <div class="chat-menu hidden" id="chatMenu">
                 <button data-cmenu="profile">👤 Voir le profil</button>
                 <button data-cmenu="flame">🔥 Flammes (24 h)</button>
@@ -5028,8 +5028,8 @@
             <button class="btn-primary" id="voiceStop" style="padding:.3rem .7rem">Envoyer ➤</button>
           </div>
           <div class="chat-input">
-            <button class="iconbtn chat-poc" id="chatPoc" title="Envoyer une flamme 🔥">🔥</button>
-            <button class="iconbtn chat-mic" id="chatMic" title="Note vocale (30 s max)">🎤</button>
+            <button class="iconbtn chat-poc" id="chatPoc" title="Envoyer une flamme 🔥"><span data-smicon="flame">🔥</span></button>
+            <button class="iconbtn chat-mic" id="chatMic" title="Note vocale (30 s max)"><span data-smicon="mic">🎤</span></button>
             <input id="chatInput" type="text" maxlength="1000" placeholder="Envoyer un message…" />
             <button class="btn-primary" id="chatSend">➤</button>
           </div>
@@ -5170,7 +5170,7 @@
         <!-- Retour Maxime : la mise en page « photo à gauche » ne plaisait pas (et la roue ⚙️
              devenait incliquable) → ON REMET la carte CENTRÉE d'origine. -->
         <div class="card prof-head" style="position:relative;text-align:center">
-          <button class="iconbtn" id="profileSettingsBtn" title="Paramètres du compte" aria-label="Paramètres du compte" style="position:absolute;top:.7rem;right:.7rem;z-index:2">⚙️</button>
+          <button class="iconbtn" id="profileSettingsBtn" title="Paramètres du compte" aria-label="Paramètres du compte" style="position:absolute;top:.7rem;right:.7rem;z-index:2"><span data-smicon="settings">⚙️</span></button>
           <!-- Photo ENTIÈRE (non rognée), centrée -->
           <div class="prof-photo" id="profileAvatar">😎</div>
           <div class="name prof-name"><span id="profileName">Voyageur</span> <span id="verifBadge"></span> <span id="profileHostBadge" class="badge ok hidden">🛟 Hôte</span></div>
