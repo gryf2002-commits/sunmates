@@ -125,7 +125,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=446"></script>
+  <script src="sunmates-badges.js?v=447"></script>
   <script src="sunmates-icons.js?v=445"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale — jamais depuis
@@ -252,6 +252,13 @@
     body.theme-dusk * { scrollbar-color: rgba(255,90,77,.5) transparent; }
     body.theme-dusk ::-webkit-scrollbar-thumb { background: rgba(255,90,77,.45); background-clip: padding-box; }
     body.theme-dusk ::-webkit-scrollbar-thumb:hover { background: rgba(255,90,77,.65); background-clip: padding-box; }
+    /* Lot B : la barre suit aussi les saisons (avant : brun chaud le jour, corail la nuit — hors palette en bleu/vert) */
+    body.theme-winter * { scrollbar-color: rgba(95,168,232,.5) transparent; }
+    body.theme-winter ::-webkit-scrollbar-thumb { background: rgba(95,168,232,.42); background-clip: padding-box; }
+    body.theme-winter ::-webkit-scrollbar-thumb:hover { background: rgba(95,168,232,.62); background-clip: padding-box; }
+    body.theme-tropic * { scrollbar-color: rgba(43,196,138,.5) transparent; }
+    body.theme-tropic ::-webkit-scrollbar-thumb { background: rgba(43,196,138,.42); background-clip: padding-box; }
+    body.theme-tropic ::-webkit-scrollbar-thumb:hover { background: rgba(43,196,138,.62); background-clip: padding-box; }
     body {
       font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
       margin: 0; background: var(--bg); color: var(--text);
@@ -480,7 +487,7 @@
     .fpost-like { display: inline-flex; align-items: center; gap: .3rem; background: none; border: 0; cursor: pointer; font-weight: 700; font-size: .82rem; color: var(--muted); }
     .fpost-like.liked { color: var(--accent); }
     .fpost-del { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--muted); font-size: .9rem; }
-    .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: .4rem; }
+    .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink, var(--accent)); margin-left: .4rem; } /* Lot A2 : encre foncée sur corail pâle */
     /* Séparation NETTE entre les posts (avant : cartes qui se fondaient, surtout en mode nuit) */
     .fpost { background: var(--card); border: 1.5px solid var(--line); border-radius: 18px; padding: .8rem .9rem; margin-bottom: .9rem; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease; }
     body.theme-dusk .fpost { background: var(--dcard2,#241b35); border-color: rgba(255,255,255,.12); box-shadow: 0 10px 26px rgba(0,0,0,.4); }
@@ -690,7 +697,7 @@
     .vouch-row .avatar { width: 30px; height: 30px; font-size: .76rem; margin-left: -8px; border: 2px solid #fff; box-shadow: var(--shadow-sm); }
     .vouch-row .avatar:first-child { margin-left: 0; }
     body.theme-dusk .vouch-row .avatar { border-color: var(--dcard2,#241b35); }
-    .vouch-more { margin-left: -8px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    .vouch-more { margin-left: -8px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink, var(--accent));
       display: grid; place-items: center; font-weight: 800; font-size: .74rem; border: 2px solid #fff; z-index: 1; }
     body.theme-dusk .vouch-more { border-color: var(--dcard2,#241b35); }
     .te-row.te-vouch { cursor: default; }
@@ -866,7 +873,7 @@
     .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 700; }
     .badge.ok { background: rgba(255,177,60,.16); color: #B5740E; } /* validé/vérifié : ton sunset (DA), plus de vert */
     .badge.no { background: #f1f2f5; color: var(--muted); }
-    .badge.warn { background: var(--accent-soft); color: var(--accent); }
+    .badge.warn { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); } /* Lot A2 : encre foncée sur corail pâle */
 
     /* --------------------------- Recherche -------------------------- */
     .search { position: relative; margin-bottom: .9rem; }
@@ -932,8 +939,8 @@
     .prof-name { font-size: 1.25rem; font-weight: 800; justify-content: center; display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
     .prof-title { font-size: .95rem; color: var(--accent); font-weight: 700; margin-top: .15rem; }
     .prof-city { font-size: .9rem; margin-top: .15rem; }
-    .prof-trust { display: inline-flex; align-items: center; gap: .35rem; margin: .8rem auto 0; padding: .35rem .8rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: .85rem; cursor: pointer; }
-    .prof-trust b { font-size: 1rem; color: var(--accent); }
+    .prof-trust { display: inline-flex; align-items: center; gap: .35rem; margin: .8rem auto 0; padding: .35rem .8rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-weight: 700; font-size: .85rem; cursor: pointer; } /* Lot A2 : encre foncée sur corail pâle */
+    .prof-trust b { font-size: 1rem; color: var(--accent-ink, var(--accent)); }
     .prof-trust .pt-info { opacity: .7; font-size: .8rem; }
     .prof-trust:active { transform: scale(.97); }
     /* (retour Maxime : la version « photo à gauche » est ABANDONNÉE — carte centrée d'origine) */
@@ -2614,7 +2621,7 @@
       border-radius: 7px; border: 1.5px solid currentColor;
     }
     .badge.ok   { background: rgba(255,177,60,.16); color: #B5740E; box-shadow: inset 0 0 0 1px rgba(255,177,60,.28) !important; }
-    .badge.warn { background: var(--accent-soft); color: var(--accent); }
+    .badge.warn { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); } /* Lot A2 : encre foncée sur corail pâle */
     .badge.no   { border-color: #d9d3cc; }
 
     /* --- Chips : galets crème, actif corail (touche rétro) --- */
@@ -2975,6 +2982,7 @@
       --accent-3:  #FFC93C;            /* jaune soleil */
       --accent-grad: linear-gradient(135deg, #FFC93C 0%, #FF7A3D 20%, #FF4F6D 52%); /* Lot A audit : stop foncé avancé à 52% → zone du label CTA ≥3:1 (avant ~2:1) — mêmes couleurs, ANNONCÉ */
       --accent-soft: #FFE6DC;
+      --accent-ink: #C23A2D;          /* Lot A2 : corail FONCÉ réservé au TEXTE sur fond pâle (≈4.4:1) — le corail vif #FF5A4D reste pour fonds/icônes/dégradés */
       --teal:      #14C2B8; --teal-2: #22D3C5;   /* turquoise mer */
       --retro-teal:#0E9E96;
       --gold:      #FFB52E;
@@ -3024,7 +3032,7 @@
     .btn-primary { background: var(--accent-grad) !important; color: #fff; box-shadow: 0 8px 18px rgba(40,34,46,.20) !important; } /* P12 : LE halo rouge des boutons (couche !important) dé-rougi */
     .btn-primary::before, .btn-danger::before { display: none !important; }
     .btn-primary:hover { transform: translateY(-2px); filter: saturate(1.05); }
-    .btn-accent { background: var(--accent-soft); color: var(--accent); }
+    .btn-accent { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); } /* Lot A2 : encre foncée sur fond corail pâle (2.58 → ≈4.2:1) */
     .btn-ghost { background: #fff; border: 1.5px solid var(--line); color: var(--ink); }
     .btn-danger { background: linear-gradient(135deg,#FF6A6A,#F0384E) !important; color: #fff; box-shadow: 0 12px 26px rgba(240,56,78,.34) !important; }
 
@@ -3095,7 +3103,7 @@
     body.theme-dusk {
       --bg: #190E2E; --card: #271641; --paper: #271641; --cream: #2E1B4C;
       --accent: #FF6A5D; --accent-2: #FF9248; --accent-3: #FFD15C;
-      --accent-soft: rgba(255,106,93,.18);
+      --accent-soft: rgba(255,106,93,.18); --accent-ink: var(--accent); /* Lot A2 : nuit = corail clair déjà lisible sur fond sombre (pas d'encre foncée) */
       --accent-grad: linear-gradient(135deg, #FFD15C 0%, #FF8A45 20%, #FF5570 52%); /* Lot A : idem jour */
       --teal: #2BE0D0; --retro-teal: #36E0CE; --gold: #FFD15C;
       --ink: #FCEFE9; --ink-warm: #FFF3EC; --text: #E6D7EC; --muted: #A98FC0;
@@ -3748,14 +3756,14 @@
        Les saisons remplacent visuellement jour/nuit (la classe theme-dusk est retirée). */
     body.theme-winter { --bg:#EAF3FB; --bg-grad:radial-gradient(125% 85% at 50% -12%, #F4FAFF 0%, #E8F2FB 40%, #E2EEF9 100%);
       --card:#FFFFFF; --cream:#F2F8FD; --ink:#1E3A52; --text:#2C4862; --muted:#4F6B84; --line:#DDE9F3; /* Lot A : muted 3.5→5.2:1 */
-      --accent:#3A8FD9; --accent-2:#6FB4E8; --accent-3:#A8D8F5; --accent-soft:#E3F1FB;
+      --accent:#3A8FD9; --accent-2:#6FB4E8; --accent-3:#A8D8F5; --accent-soft:#E3F1FB; --accent-ink:#1F6FAE; /* Lot A2 : bleu glacier foncé pour le texte (≈4.6:1) */
       --accent-grad:linear-gradient(135deg, #A8D8F5 0%, #6FB4E8 20%, #3A8FD9 52%); }
     body.theme-winter .topbar { background: linear-gradient(#EAF3FB 62%, rgba(234,243,251,0)); border-bottom: 0; }
     body.theme-winter #bgFx { background: radial-gradient(125% 48% at 50% -8%, rgba(168,216,245,.55) 0%, rgba(111,180,232,.12) 38%, rgba(255,255,255,0) 64%), var(--bg); }
     body.theme-winter .app-shell { background: transparent; }
     body.theme-tropic { --bg:#F7F9EC; --bg-grad:radial-gradient(125% 85% at 50% -12%, #FDFBE8 0%, #F3F7DE 40%, #ECF4DC 100%);
       --card:#FFFFFF; --cream:#F8FBEE; --ink:#1C3D2E; --text:#2A4A3A; --muted:#53705F; --line:#E2EDD9; /* Lot A : muted 3.5→5.2:1 */
-      --accent:#0FA37C; --accent-2:#36C495; --accent-3:#FFC23D; --accent-soft:#E2F4EC;
+      --accent:#0FA37C; --accent-2:#36C495; --accent-3:#FFC23D; --accent-soft:#E2F4EC; --accent-ink:#0C7F60; /* Lot A2 : lagon foncé sobre pour le texte (≈4.6:1) */
       --accent-grad:linear-gradient(135deg, #FFC23D 0%, #36C495 22%, #0FA37C 52%); }
     body.theme-tropic .topbar { background: linear-gradient(#F7F9EC 62%, rgba(247,249,236,0)); border-bottom: 0; }
     body.theme-tropic #bgFx { background: radial-gradient(125% 48% at 50% -8%, rgba(255,194,61,.40) 0%, rgba(54,196,149,.12) 38%, rgba(255,255,255,0) 64%), var(--bg); }
@@ -3803,7 +3811,7 @@
       --bg:#0F1B2B; --bg-grad:radial-gradient(130% 80% at 50% -8%, #1C3149 0%, #14253A 40%, #0F1B2B 100%);
       --card:#1A2B40; --paper:#16263A; --cream:#142233;
       --ink:#EAF3FB; --ink-warm:#EFF6FC; --text:#C9DAEA; --muted:#7E96AC; --line:rgba(255,255,255,.09);
-      --accent:#5FA8E8; --accent-2:#8CC4F2; --accent-3:#BFD9F0; --accent-soft:rgba(95,168,232,.16);
+      --accent:#5FA8E8; --accent-2:#8CC4F2; --accent-3:#BFD9F0; --accent-soft:rgba(95,168,232,.16); --accent-ink:var(--accent); /* Lot A2 : nuit hiver = bleu clair lisible sur navy */
       --accent-grad:linear-gradient(135deg, #BFD9F0 0%, #8CC4F2 20%, #3A77B8 52%);
       --dcard:#1B2C42; --dcard2:#152436; --dcard3:#1D3048; --dcard4:#243954; --dcard5:#12202F;
       color: var(--text);
@@ -3820,7 +3828,7 @@
       --bg:#0C1D17; --bg-grad:radial-gradient(130% 80% at 50% -8%, #16352A 0%, #102A20 40%, #0C1D17 100%);
       --card:#163027; --paper:#12281F; --cream:#10241C;
       --ink:#E9F7EF; --ink-warm:#F0FAF3; --text:#CBE6D6; --muted:#7FA18E; --line:rgba(255,255,255,.09);
-      --accent:#2BC48A; --accent-2:#5CD8A8; --accent-3:#FFC23D; --accent-soft:rgba(43,196,138,.16);
+      --accent:#2BC48A; --accent-2:#5CD8A8; --accent-3:#FFC23D; --accent-soft:rgba(43,196,138,.16); --accent-ink:var(--accent); /* Lot A2 : nuit jungle = lagon clair lisible sur fond sombre */
       --accent-grad:linear-gradient(135deg, #FFC23D 0%, #5CD8A8 22%, #1FA67A 52%);
       --dcard:#17332A; --dcard2:#122A21; --dcard3:#1A3A2E; --dcard4:#21453A; --dcard5:#0F241C;
       color: var(--text);
@@ -3833,6 +3841,31 @@
     body.theme-tropic.theme-dusk .sm-date-preview { background: linear-gradient(135deg,#1A3A2E,#122A21); color:#9ADBBE; }
     body.theme-tropic.theme-dusk #profSegNav button[data-pseg="premium"] { background: linear-gradient(135deg,#4a3a1a,#5a4520); border-color: rgba(240,169,58,.4); color:#ffd98a; }
     body.theme-tropic.theme-dusk #profSegNav button[data-pseg="admin"] { background: linear-gradient(135deg,#143527,#1E4A38); border-color: rgba(92,216,168,.4); color:#9ADBBE; }
+
+    /* ============ LOT B : NUITS DE SAISON — anti-fuite violette ============
+       La couche « nuit par défaut » (v3) code certaines surfaces en VIOLET DUR
+       (#2A1846 / #2E1B4C / #22123A) → elles débordaient sur la nuit d'HIVER (navy) et la
+       nuit de JUNGLE (vert), qui possèdent pourtant déjà leurs jetons de surface (--dcard, --card, --cream).
+       On réaligne ici CES surfaces sur les jetons de chaque saison. Spécificité (0,3,0) +
+       !important → ces overrides gagnent sur les hex codés en dur. Le mode nuit PAR DÉFAUT
+       (violet) n'est PAS touché. */
+    body.theme-winter.theme-dusk .card, body.theme-winter.theme-dusk .post, body.theme-winter.theme-dusk .pf-section,
+    body.theme-tropic.theme-dusk .card, body.theme-tropic.theme-dusk .post, body.theme-tropic.theme-dusk .pf-section {
+      background: linear-gradient(180deg, var(--dcard2), var(--dcard5)) !important; }
+    body.theme-winter.theme-dusk input, body.theme-winter.theme-dusk textarea, body.theme-winter.theme-dusk select, body.theme-winter.theme-dusk .search input,
+    body.theme-tropic.theme-dusk input, body.theme-tropic.theme-dusk textarea, body.theme-tropic.theme-dusk select, body.theme-tropic.theme-dusk .search input {
+      background: var(--cream) !important; }
+    body.theme-winter.theme-dusk .feed-card, body.theme-winter.theme-dusk .pcell, body.theme-winter.theme-dusk .pprompt, body.theme-winter.theme-dusk .stat-box, body.theme-winter.theme-dusk .dstat, body.theme-winter.theme-dusk .tile, body.theme-winter.theme-dusk .gcard, body.theme-winter.theme-dusk .chip:not(.active), body.theme-winter.theme-dusk .mseg, body.theme-winter.theme-dusk .coupon, body.theme-winter.theme-dusk .reco,
+    body.theme-tropic.theme-dusk .feed-card, body.theme-tropic.theme-dusk .pcell, body.theme-tropic.theme-dusk .pprompt, body.theme-tropic.theme-dusk .stat-box, body.theme-tropic.theme-dusk .dstat, body.theme-tropic.theme-dusk .tile, body.theme-tropic.theme-dusk .gcard, body.theme-tropic.theme-dusk .chip:not(.active), body.theme-tropic.theme-dusk .mseg, body.theme-tropic.theme-dusk .coupon, body.theme-tropic.theme-dusk .reco {
+      background: var(--dcard) !important; }
+    body.theme-winter.theme-dusk .bubble.them, body.theme-tropic.theme-dusk .bubble.them { background: var(--cream) !important; }
+    body.theme-winter.theme-dusk .notif-card, body.theme-winter.theme-dusk .picker-card,
+    body.theme-tropic.theme-dusk .notif-card, body.theme-tropic.theme-dusk .picker-card { background: var(--card) !important; }
+    body.theme-winter.theme-dusk .bottom-nav, body.theme-tropic.theme-dusk .bottom-nav { background: var(--dcard5) !important; }
+    /* Toasts : en nuit-saison, body.theme-dusk .toast (violet) écrasait la teinte saison par ordre de source → on rétablit */
+    body.theme-winter.theme-dusk .toast { background: rgba(20,40,64,.97) !important; }
+    body.theme-tropic.theme-dusk .toast { background: rgba(12,46,36,.97) !important; }
+
     /* Pastilles colorées : mix NUIT-saison (le mix jour-saison clair éblouirait sur fond sombre) */
     body.theme-winter.theme-dusk .cic, body.theme-winter.theme-dusk .qm-ic, body.theme-winter.theme-dusk .sc-ic, body.theme-winter.theme-dusk .hex, body.theme-winter.theme-dusk .jo-ic, body.theme-winter.theme-dusk .smgem, body.theme-winter.theme-dusk .thumb {
       --ic1: color-mix(in oklab, var(--c1, #FF8A3D) 88%, #2E4A74);
