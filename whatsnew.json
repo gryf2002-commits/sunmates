@@ -1,10 +1,10 @@
 {
-  "candidate": "v447",
+  "candidate": "v448",
   "items": [
-    "🔍 Suite de l'audit design Impeccable — LOTS A2 + B. Toujours dans la palette du kit v445, aucune refonte, le mode nuit par défaut (violet) ne bouge pas.",
-    "🖋️ LOT A2 (contrastes, P0) : les petits libellés corail posés sur un fond corail très pâle (bouton secondaire, étiquette de post, badge d'info, pastille de confiance) passaient à ~2.6:1 (illisibles). Ils utilisent maintenant un corail FONCÉ dédié au texte (~4.2:1) — le corail vif reste pour les fonds, icônes et dégradés. Décliné aussi en bleu (hiver) et lagon (tropiques).",
-    "❄️🌴 LOT B (cohérence des nuits de saison, P1) : la nuit d'HIVER et la nuit de JUNGLE viraient au VIOLET (cartes, champs, tuiles, bulles, notifications, toasts, barre du bas) à cause de couleurs codées en dur dans le thème nuit par défaut. Elles retrouvent enfin leur vraie teinte : navy l'hiver, vert profond aux tropiques.",
-    "📜 La barre de défilement suit aussi la saison maintenant (bleu glacier en hiver, lagon aux tropiques) au lieu du brun/corail hors palette.",
-    "ℹ️ Restent les lots C→G de l'audit (ombres, typo, cibles tactiles, états vides, tirets) — un par un, toujours en préversion d'abord."
+    "🔍 Suite de l'audit design Impeccable — LOT C (ombres + z-index). Nettoyage interne, rien de visible ne bouge à part les 3 ombres ci-dessous.",
+    "🩹 Les 3 dernières ombres rougeâtres encore actives passent au GRIS CHAUD neutre (doctrine DA) : le halo de survol des boutons principaux, l'ombre du bouton d'urgence/danger (le bouton reste rouge par son fond, c'est juste son ombre qui ne « bave » plus en rouge), et l'ombre de survol des blocs d'action sécurité.",
+    "🎯 L'anneau de focus (contour au clic dans un champ) plafonné à l'opacité .16 de la doctrine (au lieu de .18).",
+    "🧱 Z-index : les quelques valeurs « en dur » (minuteur sécurité, chat de groupe, effets météo, eggs, ruban) sont désormais nommées dans l'échelle --z-* — MÊMES valeurs, aucun changement d'ordre d'affichage, juste plus propre et maintenable.",
+    "ℹ️ Restent les lots D→G (typo, cibles tactiles, états vides, tirets) — un par un, toujours en préversion d'abord."
   ]
 }
