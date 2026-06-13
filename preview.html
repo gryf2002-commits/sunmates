@@ -125,7 +125,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=459"></script>
+  <script src="sunmates-badges.js?v=460"></script>
   <script src="sunmates-icons.js?v=445"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
@@ -3876,6 +3876,13 @@
        (La topbar n'est pas un ancêtre de la carte → ce backdrop-filter ne casse PAS le plein écran.) */
     .topbar { background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 80%, transparent) 0%, color-mix(in srgb, var(--bg) 60%, transparent) 58%, transparent 100%) !important;
       -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); }
+    /* Bug Maxime « coupure / barre sombre sous la status-bar en NUIT » : le verre dépoli (ci-dessus, 80% au sommet)
+       laissait le halo violet TRANSPARAÎTRE sous la status-bar (elle = --bg PLEIN/sombre) → marche visible. En nuit,
+       on rend le SOMMET du topbar OPAQUE (var(--bg) plein à 0%) = même couleur EXACTE que la status-bar → fondu invisible ;
+       le verre dépoli (transparence + flou) reste plus bas (30%→100%) là où le contenu défile. Spéc. 0,2,0 + !important
+       gagne sur le .topbar global. Le jour garde son verre 80% (pas de coupure : status-bar claire, halo doux). */
+    body.theme-dusk .topbar, body.theme-winter.theme-dusk .topbar, body.theme-tropic.theme-dusk .topbar {
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 30%, color-mix(in srgb, var(--bg) 62%, transparent) 60%, transparent 100%) !important; }
     body.theme-tropic.theme-dusk #bgFx { background:radial-gradient(120% 50% at 50% -8%, rgba(255,194,61,.16) 0%, rgba(12,29,23,0) 58%), var(--bg); }
     body.theme-tropic.theme-dusk .app-shell { background: transparent !important; }
     body.theme-tropic.theme-dusk .help-cta { background: var(--dcard2); border-color: rgba(92,216,168,.16); color:#E9F7EF; }
