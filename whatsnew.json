@@ -1,10 +1,10 @@
 {
-  "candidate": "v449",
+  "candidate": "v450",
   "items": [
-    "🔍 Suite de l'audit design Impeccable — LOT D (typographie). Choix acté : tes titres gardent leur graisse FINE éditoriale (inchangés).",
-    "🅰️ La graisse 800 de Fraunces (police des titres) n'était pas chargée : les ~7 éléments d'emphase qui la demandent (gros chiffres de stats, titres de panneaux, nom de lieu en grand) tombaient sur du faux-gras synthétique, irrégulier selon le navigateur. Le vrai 800 est maintenant chargé → ces chiffres/titres d'emphase sont nets et homogènes. Tes titres de page (h1–h3) ne bougent pas.",
-    "🔠 Petites MAJUSCULES remontées au plancher de lisibilité (~11px au lieu de ~9px) : badge « bientôt », sous-libellé de compatibilité, étiquettes de type de jeu sur les cartes.",
-    "🧰 Volontairement laissés pour plus tard (churn interne sans effet visible) : l'harmonisation de l'échelle de tailles et la mise en jetons des ~200 arrondis codés en dur.",
-    "ℹ️ Restent les lots E (zones tactiles), F (écrans vides), G (tirets) — un par un, toujours en préversion d'abord."
+    "🔍 Suite de l'audit design Impeccable — LOT E (zones tactiles). On agrandit la surface où le doigt peut appuyer, SANS changer l'apparence des boutons.",
+    "👆 Plusieurs petits boutons ronds (la croix de fermeture des bulles d'info, le « ✕ » des champs de recherche, les flèches d'inspiration carte, la croix de l'onboarding, le bouton « ✓ » des préparatifs) avaient une cible de 24 à 40px — dur à toucher au pouce. Leur zone cliquable passe à 44×44px (recommandation d'accessibilité), mais le rond reste visuellement identique.",
+    "🎯 Méthode : une zone tactile invisible centrée sur le bouton — aucun changement visuel, juste plus facile à viser.",
+    "⏭️ Laissés volontairement pour éviter les clics qui se chevauchent : les boutons « en grappe » (actions d'une bulle de chat, croix d'une étiquette d'envie), les commandes de zoom de carte (standard + on a le pincer-zoomer) et le sélecteur de langue (écran de connexion seulement).",
+    "ℹ️ Restent les lots F (écrans vides) et G (tirets) — toujours en préversion d'abord."
   ]
 }

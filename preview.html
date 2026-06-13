@@ -125,7 +125,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=449"></script>
+  <script src="sunmates-badges.js?v=450"></script>
   <script src="sunmates-icons.js?v=445"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale — jamais depuis
@@ -898,6 +898,18 @@
     /* Bannière de fin d'onboarding (in-page, refermable) */
     .onb-done { display: flex; align-items: center; gap: .7rem; background: var(--accent-grad); color: #fff; border-radius: 16px; padding: .8rem 1rem; margin-bottom: 1rem; box-shadow: 0 10px 24px rgba(45,38,52,.16); }
     .onb-done button { background: rgba(255,255,255,.22); border: 0; color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; flex-shrink: 0; font-weight: 700; display: grid; place-items: center; line-height: 1; padding: 0; font-size: 1rem; }
+
+    /* ============ LOT E : cibles tactiles ≥ 44px ============
+       On agrandit la zone CLIQUABLE sans changer le visuel : un ::after transparent de 44×44
+       centré sur le bouton. Limité aux boutons ISOLÉS (les boutons en grappe — actions de bulle
+       de chat, × de wish-chip — sont exclus : deux zones de 44px se chevaucheraient et se voleraient
+       le clic). Les 3 premiers sont déjà position:absolute (leur ::after se cale dessus tout seul) ;
+       seuls les boutons EN FLUX reçoivent position:relative ci-dessous. */
+    .hm-inspo-nav button, .onb-done button, .prep-go { position: relative; }
+    .popinfo-x::after, .kb-search .kb-clear::after, .search-clear::after,
+    .hm-inspo-nav button::after, .onb-done button::after, .prep-go::after {
+      content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 44px; height: 44px; /* surface tactile minimale, invisible */ }
 
     /* ------------------------- Liste de lieux ----------------------- */
     /* Démo guidée automatique (barre de narration) */
