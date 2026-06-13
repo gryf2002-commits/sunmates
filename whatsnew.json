@@ -1,9 +1,9 @@
 {
-  "candidate": "v455",
+  "candidate": "v456",
   "items": [
-    "🎨 Nuit d'HIVER et nuit de JUNGLE : les tuiles « chaudes » (corail, rouge, or, rose) restaient trop vives et gardaient un halo chaud → elles juraient sur le fond navy/vert. Elles sont maintenant refroidies vers la teinte de la saison, et leur halo est neutre (sombre, plus de rouge). Les tuiles froides (vert/bleu/violet), déjà bonnes, ne bougent pas.",
-    "🏅 Badges et icônes chauds (or, rose) + en-têtes des cartes de jeu : même traitement → plus dans le ton de la saison en mode nuit.",
-    "✅ Vérifié par captures avant/après en nuit d'hiver et nuit de jungle : les tuiles chaudes sont assagies, plus de halo rouge, les familles froides restent distinctes.",
-    "ℹ️ Il restera le lot G (remplacer les tirets longs « — ») pour finir l'audit."
+    "✒️ LOT G de l'audit (le dernier !) : les tirets longs « — » dans les textes de l'app sont remplacés par le point médian « · » (ton séparateur habituel, plus doux et raccord avec la DA). 240 remplacements, en français ET en anglais, sans rien casser des traductions.",
+    "🔢 Gardés tels quels : les « — » qui servent de PLACEHOLDER (une valeur encore vide, ex. une stat « — » avant chargement). Dis-moi si tu veux les passer en « · » ou « – » aussi, c'est un choix à trancher.",
+    "🎉 Avec ce lot G, l'AUDIT IMPECCABLE est COMPLET : lots A, A2, B, C, D, E, F, G tous faits.",
+    "ℹ️ Place ensuite à la suite (passe premium / homogénéisation avec l'œil « UI UX Pro » en conseiller, en restant 100% dans la DA), puis la grosse session ÉCONOMIE."
   ]
 }
