@@ -125,7 +125,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=460"></script>
+  <script src="sunmates-badges.js?v=461"></script>
   <script src="sunmates-icons.js?v=445"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
@@ -1369,6 +1369,11 @@
     .stat-box { flex: 1; min-width: 0; background: var(--accent-soft); border-radius: var(--radius-sm); padding: .9rem .5rem; text-align: center; }
     .stat-box .stat { font-size: 1.2rem; } /* chiffres plus discrets : l'identité (nom/ville) prime */
     .stat-box .lbl { color: var(--muted); font-size: .72rem; margin-top: .2rem; white-space: nowrap; }
+    /* PREMIUM — chiffres tabulaires (UI UX Pro : number-tabular) : les compteurs/XP/streak/prix/niveaux
+       qui CHANGENT cessent de « sauter » en largeur (chaque chiffre prend la même place). Zéro risque
+       layout (au contraire : supprime le micro-jitter). Le faux-appel/feedCount/wg-val l'avaient déjà. */
+    .stat, .nbadge, .segb, .streak-chip, .qm-xp, .sc-xp, .qs-xp, .rit-cnt, .hud-lvl, .xpl-lvl,
+    .xp-banner b, .gh-price, .shop-coins, .pc-stat .pc-n, .conv-bff .conv-pin { font-variant-numeric: tabular-nums; }
 
     /* ----------------------------- Avatars -------------------------- */
     /* background-color sunset = filet de sécurité (P1.11) : si une PHOTO d'avatar échoue/manque,

@@ -1,9 +1,7 @@
 {
-  "candidate": "v460",
+  "candidate": "v461",
   "items": [
-    "🗺️ VRAI fix carte plein écran : le fil et les tuiles « Accès rapides » passaient PAR-DESSUS la carte (ce n'était PAS du cache !). Une animation d'opacité sur le conteneur de la carte emprisonnait sa priorité d'affichage. Réglé : tout le reste de l'Accueil est masqué pendant le plein écran → la carte est seule à l'écran.",
-    "🌙 Plus de « coupure » sombre sous la status-bar en mode NUIT : le haut du bandeau prend EXACTEMENT la couleur de la barre d'état (les 3 nuits : violette, hiver, jungle). Verre dépoli conservé plus bas.",
-    "❄️ Ors de nuit, 2e passage : d'autres textes dorés se baladaient encore sur le navy en nuit d'HIVER (titres de section, bandeau XP, conseil sécurité, « Annuler » de la carte…) → passés en BLEU GLACIER. Gardés dorés volontairement : les SunCoins (monnaie), les étoiles de note et la carte Premium « Gold ».",
-    "📜 CGU : l'âge passe de « 16 ans et plus » à « 18 ans et plus »."
+    "🔢 Premium · chiffres alignés : les compteurs qui changent (stats, badges de notif, XP, série de jours, prix, niveaux) utilisent maintenant des chiffres « tabulaires » → ils ne « sautent » plus en largeur quand le nombre change. Détail discret mais qui fait pro.",
+    "ℹ️ Passe premium : les fondations (focus clavier, mouvement réduit, retours au toucher, jetons de style par mode) étaient déjà solides. Le gros « nettoyage » d'échelle typo/arrondis est du code invisible à l'écran → à voir avec toi si ça vaut le coup."
   ]
 }
