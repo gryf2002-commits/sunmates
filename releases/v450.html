@@ -125,8 +125,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=450"></script>
-  <script src="sunmates-icons.js?v=445"></script>
+  <script src="../sunmates-badges.js?v=450"></script>
+  <script src="../sunmates-icons.js?v=445"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale — jamais depuis
     // la préversion (preview.html) ni une version archivée (releases/…) : elles se testent
@@ -19386,5 +19386,5 @@
     // Au chargement : vérifie s'il y a déjà une session
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
-</body>
+<div style="position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:99999;display:flex;gap:12px;align-items:center;background:rgba(20,12,30,.92);color:#fff;font:700 12px/1 system-ui,sans-serif;padding:9px 14px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:nowrap">🗃️ Version archivée<a href="../index.html" style="color:#FFD15C;text-decoration:none">↩ Revenir à l&#39;app</a></div></body>
 </html>

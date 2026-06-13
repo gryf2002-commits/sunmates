@@ -1,16 +1,92 @@
 [
-  { "v": "v445", "date": "2026-06-13", "note": "Épinglée sur demande — kit DA téléchargeable en .json (fini la copie presse-papier)", "file": "v445.html" },
-  { "v": "v444", "date": "2026-06-13", "note": "Promue après 7 rounds — Espace Pro (bar/auberge), CGU/RGPD, conformité + migrations sondées, Premium honnête, carte FR lisible/fluide, ombres dé-rougies, 42 pays", "file": "v444.html" },
-  { "v": "v443", "date": "2026-06-12", "note": "Passe bugs du soir — mini-jeux en sessions finies, carte star de l'accueil, plaque NIV lisible partout, app collée au téléphone, fix « Tâche inconnue »", "file": "v443.html" },
-  { "v": "v442", "date": "2026-06-12", "note": "Promue après 6 rounds de préversion — kit DA maximal (composants 6 modes), carte fluide thémée, tap-pour-explorer, header fondu, anti-débordement", "file": "v442.html" },
-  { "v": "v441", "date": "2026-06-12", "note": "Fin passe 2 — panneau DA, retour téléphone, préversion, perf célébrations", "file": "v441.html" },
-  { "v": "v439", "date": "2026-06-12", "note": "Fin passe 9 — 43 retours visuels (valise folle, météo, carnet d'adresses…)", "file": "v439.html" },
-  { "v": "v375", "date": "2026-06-10", "note": "Jalon · cadrages DA (safe-areas, cibles tactiles 44px, centre d'aide)", "file": "v375.html" },
-  { "v": "v300", "date": "2026-06-09", "note": "Jalon · grand audit sécurité (fix XSS, anti-élévation de privilèges, perf)", "file": "v300.html" },
-  { "v": "v225", "date": "2026-06-07", "note": "Jalon · HomeMates, récap souvenirs du mode Maison", "file": "v225.html" },
-  { "v": "Étape 150", "date": "2026-06-06", "note": "Jalon · boutique XP & cosmétiques (150ᵉ évolution)", "file": "etape-150.html" },
-  { "v": "Étape 75", "date": "2026-06-05", "note": "Jalon · peaufinage carte plein écran & login (75ᵉ évolution)", "file": "etape-75.html" },
-  { "v": "Coup de pinceau 🎨", "date": "2026-06-03", "note": "12ᵉ évolution · le premier polish DA (dégradés sunset, verre dépoli) — avant : brut", "file": "polish-12.html" },
-  { "v": "v1 🐣", "date": "2026-06-02", "note": "La première interface FONCTIONNELLE (auth, profil, lieux, check-ins) — moche assumé, à comparer !", "file": "v1.html" },
-  { "v": "Genèse 🌱", "date": "2026-06-02", "note": "LA toute première page du projet — pour mesurer le chemin parcouru", "file": "genese.html" }
+  {
+    "v": "v450",
+    "date": "2026-06-13",
+    "note": "Jalon (multiple de 30) · audit Impeccable lots A→E : contrastes WCAG, nuits de saison (navy/jungle), ombres dé-rougies, z-index rangés, Fraunces 800, cibles tactiles 44px",
+    "file": "v450.html"
+  },
+  {
+    "v": "v445",
+    "date": "2026-06-13",
+    "note": "Épinglée sur demande — kit DA téléchargeable en .json (fini la copie presse-papier)",
+    "file": "v445.html"
+  },
+  {
+    "v": "v444",
+    "date": "2026-06-13",
+    "note": "Promue après 7 rounds — Espace Pro (bar/auberge), CGU/RGPD, conformité + migrations sondées, Premium honnête, carte FR lisible/fluide, ombres dé-rougies, 42 pays",
+    "file": "v444.html"
+  },
+  {
+    "v": "v443",
+    "date": "2026-06-12",
+    "note": "Passe bugs du soir — mini-jeux en sessions finies, carte star de l'accueil, plaque NIV lisible partout, app collée au téléphone, fix « Tâche inconnue »",
+    "file": "v443.html"
+  },
+  {
+    "v": "v442",
+    "date": "2026-06-12",
+    "note": "Promue après 6 rounds de préversion — kit DA maximal (composants 6 modes), carte fluide thémée, tap-pour-explorer, header fondu, anti-débordement",
+    "file": "v442.html"
+  },
+  {
+    "v": "v441",
+    "date": "2026-06-12",
+    "note": "Fin passe 2 — panneau DA, retour téléphone, préversion, perf célébrations",
+    "file": "v441.html"
+  },
+  {
+    "v": "v439",
+    "date": "2026-06-12",
+    "note": "Fin passe 9 — 43 retours visuels (valise folle, météo, carnet d'adresses…)",
+    "file": "v439.html"
+  },
+  {
+    "v": "v375",
+    "date": "2026-06-10",
+    "note": "Jalon · cadrages DA (safe-areas, cibles tactiles 44px, centre d'aide)",
+    "file": "v375.html"
+  },
+  {
+    "v": "v300",
+    "date": "2026-06-09",
+    "note": "Jalon · grand audit sécurité (fix XSS, anti-élévation de privilèges, perf)",
+    "file": "v300.html"
+  },
+  {
+    "v": "v225",
+    "date": "2026-06-07",
+    "note": "Jalon · HomeMates, récap souvenirs du mode Maison",
+    "file": "v225.html"
+  },
+  {
+    "v": "Étape 150",
+    "date": "2026-06-06",
+    "note": "Jalon · boutique XP & cosmétiques (150ᵉ évolution)",
+    "file": "etape-150.html"
+  },
+  {
+    "v": "Étape 75",
+    "date": "2026-06-05",
+    "note": "Jalon · peaufinage carte plein écran & login (75ᵉ évolution)",
+    "file": "etape-75.html"
+  },
+  {
+    "v": "Coup de pinceau 🎨",
+    "date": "2026-06-03",
+    "note": "12ᵉ évolution · le premier polish DA (dégradés sunset, verre dépoli) — avant : brut",
+    "file": "polish-12.html"
+  },
+  {
+    "v": "v1 🐣",
+    "date": "2026-06-02",
+    "note": "La première interface FONCTIONNELLE (auth, profil, lieux, check-ins) — moche assumé, à comparer !",
+    "file": "v1.html"
+  },
+  {
+    "v": "Genèse 🌱",
+    "date": "2026-06-02",
+    "note": "LA toute première page du projet — pour mesurer le chemin parcouru",
+    "file": "genese.html"
+  }
 ]
