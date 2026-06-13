@@ -159,10 +159,56 @@
     '✍': 'write', '🙂': 'smile', '🚀': 'rocket', '🎁': 'gift', '💡': 'bulb', '⏱': 'clock', '🔔': 'bell',
     '🛍': 'shop', '💼': 'trip', '🗂': 'layers', '🚪': 'door', '⚙': 'settings', '🎤': 'mic'
   };
+  // ===== Drapeaux pays SVG maison (fiches pays) =====
+  var FLAG_ISO = { '🇵🇹':'PT','🇯🇵':'JP','🇲🇦':'MA','🇮🇸':'IS','🇲🇽':'MX','🇬🇷':'GR','🇻🇳':'VN','🇵🇪':'PE','🇮🇹':'IT','🇹🇭':'TH','🇪🇸':'ES','🇳🇴':'NO','🇨🇴':'CO','🇦🇺':'AU','🇹🇷':'TR','🇺🇸':'US','🇬🇧':'GB','🇮🇩':'ID','🇮🇳':'IN','🇪🇬':'EG','🇩🇪':'DE','🇭🇷':'HR','🇧🇷':'BR','🇨🇦':'CA','🇳🇱':'NL','🇧🇪':'BE','🇨🇭':'CH','🇦🇹':'AT','🇮🇪':'IE','🇵🇱':'PL','🇨🇿':'CZ','🇭🇺':'HU','🇸🇪':'SE','🇩🇰':'DK','🇫🇮':'FI','🇰🇷':'KR','🇵🇭':'PH','🇲🇾':'MY','🇨🇷':'CR','🇦🇪':'AE' };
+  var FB = '<rect width="24" height="18" rx="2.5" fill="none" stroke="rgba(0,0,0,.12)" stroke-width=".5"/></svg>', FH = '<svg viewBox="0 0 24 18" class="smflagsvg">';
+  var FLAGS = {
+    PT: FH+'<rect width="24" height="18" rx="2.5" fill="#da291c"/><path d="M0 2.5A2.5 2.5 0 0 1 2.5 0H9.6v18H2.5A2.5 2.5 0 0 1 0 15.5z" fill="#046a38"/><circle cx="9.6" cy="9" r="3" fill="#ffe000"/><circle cx="9.6" cy="9" r="1.5" fill="#046a38"/>'+FB,
+    JP: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><circle cx="12" cy="9" r="4.5" fill="#bc002d"/>'+FB,
+    MA: FH+'<rect width="24" height="18" rx="2.5" fill="#c1272d"/><circle cx="12" cy="9" r="3.3" fill="none" stroke="#006233" stroke-width="1.1"/>'+FB,
+    IS: FH+'<rect width="24" height="18" rx="2.5" fill="#02529c"/><rect x="6" width="4" height="18" fill="#fff"/><rect y="7" width="24" height="4" fill="#fff"/><rect x="7" width="2" height="18" fill="#dc1e35"/><rect y="8" width="24" height="2" fill="#dc1e35"/>'+FB,
+    MX: FH+'<rect width="24" height="18" rx="2.5" fill="#006847"/><rect x="8" width="8" height="18" fill="#fff"/><rect x="16" width="8" height="18" fill="#ce1126"/><circle cx="12" cy="9" r="1.8" fill="#7a5230"/>'+FB,
+    GR: FH+'<rect width="24" height="18" rx="2.5" fill="#0d5eaf"/><g fill="#fff"><rect y="2" width="24" height="2"/><rect y="6" width="24" height="2"/><rect y="10" width="24" height="2"/><rect y="14" width="24" height="2"/></g><rect width="10" height="10" fill="#0d5eaf"/><rect x="4" width="2" height="10" fill="#fff"/><rect y="4" width="10" height="2" fill="#fff"/>'+FB,
+    VN: FH+'<rect width="24" height="18" rx="2.5" fill="#da251d"/><circle cx="12" cy="9" r="3.2" fill="#ff0"/>'+FB,
+    PE: FH+'<rect width="24" height="18" rx="2.5" fill="#d91023"/><rect x="8" width="8" height="18" fill="#fff"/>'+FB,
+    IT: FH+'<rect width="24" height="18" rx="2.5" fill="#009246"/><rect x="8" width="8" height="18" fill="#fff"/><rect x="16" width="8" height="18" fill="#ce2b37"/>'+FB,
+    TH: FH+'<rect width="24" height="18" rx="2.5" fill="#a51931"/><rect y="3" width="24" height="12" fill="#f4f5f8"/><rect y="6" width="24" height="6" fill="#2d2a4a"/>'+FB,
+    ES: FH+'<rect width="24" height="18" rx="2.5" fill="#aa151b"/><rect y="4.5" width="24" height="9" fill="#f1bf00"/><circle cx="8" cy="9" r="1.6" fill="#aa151b"/>'+FB,
+    NO: FH+'<rect width="24" height="18" rx="2.5" fill="#ba0c2f"/><rect x="6" width="4" height="18" fill="#fff"/><rect y="7" width="24" height="4" fill="#fff"/><rect x="7" width="2" height="18" fill="#00205b"/><rect y="8" width="24" height="2" fill="#00205b"/>'+FB,
+    CO: FH+'<rect width="24" height="18" rx="2.5" fill="#fcd116"/><rect y="9" width="24" height="9" fill="#003893"/><rect y="13.5" width="24" height="4.5" fill="#ce1126"/>'+FB,
+    AU: FH+'<rect width="24" height="18" rx="2.5" fill="#00247d"/><rect width="11" height="8" fill="#012169"/><path d="M0 0L11 8M11 0L0 8" stroke="#fff" stroke-width="1.5"/><path d="M5.5 0V8M0 4H11" stroke="#fff" stroke-width="2"/><path d="M5.5 0V8M0 4H11" stroke="#c8102e" stroke-width=".9"/><circle cx="5.5" cy="13" r="1.1" fill="#fff"/><circle cx="17" cy="5" r=".9" fill="#fff"/><circle cx="20" cy="9" r=".9" fill="#fff"/><circle cx="16" cy="11" r=".9" fill="#fff"/><circle cx="19" cy="13" r=".9" fill="#fff"/>'+FB,
+    TR: FH+'<rect width="24" height="18" rx="2.5" fill="#e30a17"/><circle cx="10" cy="9" r="3.2" fill="#fff"/><circle cx="11.2" cy="9" r="2.5" fill="#e30a17"/><circle cx="14.6" cy="9" r="1.4" fill="#fff"/>'+FB,
+    US: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><g fill="#b22234"><rect width="24" height="1.4"/><rect y="2.8" width="24" height="1.4"/><rect y="5.6" width="24" height="1.4"/><rect y="8.3" width="24" height="1.4"/><rect y="11.1" width="24" height="1.4"/><rect y="13.9" width="24" height="1.4"/><rect y="16.6" width="24" height="1.4"/></g><rect width="10" height="9.7" fill="#3c3b6e"/>'+FB,
+    GB: FH+'<rect width="24" height="18" rx="2.5" fill="#012169"/><path d="M0 0L24 18M24 0L0 18" stroke="#fff" stroke-width="3.6"/><path d="M0 0L24 18M24 0L0 18" stroke="#c8102e" stroke-width="2.2"/><path d="M12 0V18M0 9H24" stroke="#fff" stroke-width="6"/><path d="M12 0V18M0 9H24" stroke="#c8102e" stroke-width="3.6"/>'+FB,
+    ID: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><path d="M0 2.5A2.5 2.5 0 0 1 2.5 0H21.5A2.5 2.5 0 0 1 24 2.5V9H0z" fill="#ce1126"/>'+FB,
+    IN: FH+'<rect width="24" height="18" rx="2.5" fill="#ff9933"/><rect y="6" width="24" height="6" fill="#fff"/><rect y="12" width="24" height="6" fill="#138808"/><circle cx="12" cy="9" r="2.2" fill="none" stroke="#000080" stroke-width=".7"/><circle cx="12" cy="9" r=".5" fill="#000080"/>'+FB,
+    EG: FH+'<rect width="24" height="18" rx="2.5" fill="#ce1126"/><rect y="6" width="24" height="6" fill="#fff"/><rect y="12" width="24" height="6" fill="#000"/><circle cx="12" cy="9" r="1.6" fill="#c09300"/>'+FB,
+    DE: FH+'<rect width="24" height="18" rx="2.5" fill="#000"/><rect y="6" width="24" height="6" fill="#dd0000"/><rect y="12" width="24" height="6" fill="#ffce00"/>'+FB,
+    HR: FH+'<rect width="24" height="18" rx="2.5" fill="#ff0000"/><rect y="6" width="24" height="6" fill="#fff"/><rect y="12" width="24" height="6" fill="#171796"/><g fill="#ff0000"><rect x="10.5" y="6.5" width="1.5" height="1.5"/><rect x="12" y="8" width="1.5" height="1.5"/><rect x="10.5" y="9.5" width="1.5" height="1.5"/></g>'+FB,
+    BR: FH+'<rect width="24" height="18" rx="2.5" fill="#009b3a"/><path d="M12 2.2 22 9 12 15.8 2 9z" fill="#fedf00"/><circle cx="12" cy="9" r="3" fill="#002776"/>'+FB,
+    CA: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><path d="M0 2.5A2.5 2.5 0 0 1 2.5 0H6V18H2.5A2.5 2.5 0 0 1 0 15.5z" fill="#d80621"/><path d="M18 0H21.5A2.5 2.5 0 0 1 24 2.5V15.5A2.5 2.5 0 0 1 21.5 18H18z" fill="#d80621"/><circle cx="12" cy="9" r="2.2" fill="#d80621"/>'+FB,
+    NL: FH+'<rect width="24" height="18" rx="2.5" fill="#21468b"/><rect width="24" height="12" fill="#fff"/><rect width="24" height="6" fill="#ae1c28"/>'+FB,
+    BE: FH+'<rect width="24" height="18" rx="2.5" fill="#000"/><rect x="8" width="8" height="18" fill="#fae042"/><rect x="16" width="8" height="18" fill="#ed2939"/>'+FB,
+    CH: FH+'<rect width="24" height="18" rx="2.5" fill="#d52b1e"/><rect x="10.5" y="4" width="3" height="10" fill="#fff"/><rect x="7" y="7.5" width="10" height="3" fill="#fff"/>'+FB,
+    AT: FH+'<rect width="24" height="18" rx="2.5" fill="#ed2939"/><rect y="6" width="24" height="6" fill="#fff"/>'+FB,
+    IE: FH+'<rect width="24" height="18" rx="2.5" fill="#169b62"/><rect x="8" width="8" height="18" fill="#fff"/><rect x="16" width="8" height="18" fill="#ff883e"/>'+FB,
+    PL: FH+'<rect width="24" height="18" rx="2.5" fill="#dc143c"/><path d="M0 2.5A2.5 2.5 0 0 1 2.5 0H21.5A2.5 2.5 0 0 1 24 2.5V9H0z" fill="#fff"/>'+FB,
+    CZ: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><rect y="9" width="24" height="9" fill="#d7141a"/><path d="M0 0L12 9L0 18z" fill="#11457e"/>'+FB,
+    HU: FH+'<rect width="24" height="18" rx="2.5" fill="#cd2a3e"/><rect y="6" width="24" height="6" fill="#fff"/><rect y="12" width="24" height="6" fill="#436f4d"/>'+FB,
+    SE: FH+'<rect width="24" height="18" rx="2.5" fill="#006aa7"/><rect x="7" width="3" height="18" fill="#fecc00"/><rect y="7.5" width="24" height="3" fill="#fecc00"/>'+FB,
+    DK: FH+'<rect width="24" height="18" rx="2.5" fill="#c8102e"/><rect x="7" width="3" height="18" fill="#fff"/><rect y="7.5" width="24" height="3" fill="#fff"/>'+FB,
+    FI: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><rect x="7" width="3" height="18" fill="#003580"/><rect y="7.5" width="24" height="3" fill="#003580"/>'+FB,
+    KR: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><path d="M12 5.5a3.5 3.5 0 0 1 0 7 1.75 1.75 0 0 1 0-3.5 1.75 1.75 0 0 0 0-3.5z" fill="#cd2e3a"/><path d="M12 5.5a3.5 3.5 0 0 0 0 7 1.75 1.75 0 0 0 0-3.5 1.75 1.75 0 0 1 0-3.5z" fill="#0047a0"/>'+FB,
+    PH: FH+'<rect width="24" height="18" rx="2.5" fill="#0038a8"/><rect y="9" width="24" height="9" fill="#ce1126"/><path d="M0 0L10.4 9L0 18z" fill="#fff"/><circle cx="3" cy="9" r="1.3" fill="#fcd116"/>'+FB,
+    MY: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><g fill="#cc0001"><rect y="1.3" width="24" height="1.3"/><rect y="3.9" width="24" height="1.3"/><rect y="6.4" width="24" height="1.3"/><rect y="9" width="24" height="1.3"/><rect y="11.6" width="24" height="1.3"/><rect y="14.1" width="24" height="1.3"/><rect y="16.7" width="24" height="1.3"/></g><rect width="11" height="10.3" fill="#010066"/><circle cx="5" cy="5" r="2.4" fill="#fc0"/><circle cx="6" cy="5" r="2" fill="#010066"/>'+FB,
+    CR: FH+'<rect width="24" height="18" rx="2.5" fill="#002b7f"/><rect y="3.6" width="24" height="10.8" fill="#fff"/><rect y="6.3" width="24" height="5.4" fill="#ce1126"/>'+FB,
+    AE: FH+'<rect width="24" height="18" rx="2.5" fill="#fff"/><rect x="6" width="18" height="6" fill="#00732f"/><rect x="6" y="12" width="18" height="6" fill="#000"/><path d="M0 2.5A2.5 2.5 0 0 1 2.5 0H6V18H2.5A2.5 2.5 0 0 1 0 15.5z" fill="#ff0000"/>'+FB
+  };
   var RX = null;
   function buildRx() {
-    var keys = Object.keys(EMOJI).map(function (e) { return e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
-    RX = new RegExp('(?:' + keys.join('|') + ')\\uFE0F?', 'gu');
+    var fk = Object.keys(FLAG_ISO).map(function (e) { return e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+    var ek = Object.keys(EMOJI).map(function (e) { return e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+    RX = new RegExp('(?:' + fk.concat(ek).join('|') + ')\\uFE0F?', 'gu'); // drapeaux EN PREMIER (séquences plus longues)
   }
   // Conteneurs à NE PAS toucher (contenu utilisateur, saisie, carte, déjà-converti)
   var SKIP = 'input,textarea,select,script,style,svg,.smji,.smi,[data-smicon],[contenteditable],' +
@@ -188,9 +234,10 @@
         var s = node.nodeValue, frag = document.createDocumentFragment(), last = 0, m, any = false;
         RX.lastIndex = 0;
         while ((m = RX.exec(s))) {
-          var key = EMOJI[m[0].replace('️', '')]; if (!key || !GLYPHS[key]) continue;
+          var raw = m[0], iso = FLAG_ISO[raw.replace('️', '')], span;
+          if (iso && FLAGS[iso]) { span = document.createElement('span'); span.className = 'smflag'; span.innerHTML = FLAGS[iso]; }
+          else { var key = EMOJI[raw.replace('️', '')]; if (!key || !GLYPHS[key]) continue; span = document.createElement('span'); span.className = 'smji'; span.innerHTML = wrap(GLYPHS[key]); }
           if (m.index > last) frag.appendChild(document.createTextNode(s.slice(last, m.index)));
-          var span = document.createElement('span'); span.className = 'smji'; span.innerHTML = wrap(GLYPHS[key]);
           frag.appendChild(span); last = m.index + m[0].length; any = true;
         }
         if (any) { if (last < s.length) frag.appendChild(document.createTextNode(s.slice(last))); node.parentNode.replaceChild(frag, node); }
