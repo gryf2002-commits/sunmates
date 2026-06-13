@@ -1,9 +1,9 @@
 {
-  "candidate": "v456",
+  "candidate": "v457",
   "items": [
-    "✒️ LOT G de l'audit (le dernier !) : les tirets longs « — » dans les textes de l'app sont remplacés par le point médian « · » (ton séparateur habituel, plus doux et raccord avec la DA). 240 remplacements, en français ET en anglais, sans rien casser des traductions.",
-    "🔢 Gardés tels quels : les « — » qui servent de PLACEHOLDER (une valeur encore vide, ex. une stat « — » avant chargement). Dis-moi si tu veux les passer en « · » ou « – » aussi, c'est un choix à trancher.",
-    "🎉 Avec ce lot G, l'AUDIT IMPECCABLE est COMPLET : lots A, A2, B, C, D, E, F, G tous faits.",
-    "ℹ️ Place ensuite à la suite (passe premium / homogénéisation avec l'œil « UI UX Pro » en conseiller, en restant 100% dans la DA), puis la grosse session ÉCONOMIE."
+    "🔝 Séparation en haut (mode JOUR surtout) : le halo chaud du fond était trop intense PILE sous la barre d'état → il créait une bande qui jurait avec elle. Le halo est calmé au sommet (il remonte plus haut et démarre plus doux) : le haut de l'app reste plat, raccord avec la barre d'état ; la chaleur bloom plus bas. Décliné jour / hiver / tropiques.",
+    "🗺️ Plein écran de la carte BLINDÉ : quoi qu'il arrive, la barre du haut et la barre de navigation du bas DISPARAISSENT en plein écran (le bouton « ✕ Fermer » de la carte suffit pour sortir). Fini la carte qui « passe sous » les bandeaux ou les tuiles superposées.",
+    "📱 IMPORTANT : si tu testes depuis l'app installée sur ton écran d'accueil, FERME-la complètement (balaye-la des récents) et rouvre, sinon ton téléphone garde l'ancienne version en cache. Le plus sûr pour vérifier : ouvre le lien preview dans Chrome.",
+    "ℹ️ Note technique : sur Android, la COULEUR de la barre d'état peut tarder à suivre un changement jour/nuit tant que l'app n'est pas relancée (limite du système, pas de l'app)."
   ]
 }
