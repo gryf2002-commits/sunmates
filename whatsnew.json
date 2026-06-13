@@ -3,6 +3,6 @@
   "items": [
     "🪟 Header en verre dépoli : le bas du bandeau avait un bord de flou trop net (une « démarcation »). Il est maintenant ESTOMPÉ en douceur → fondu propre, et la « barre » qui ressautait parfois aux bascules jour/nuit disparaît.",
     "📡 Bandeau « hors-ligne » sur iOS : il restait affiché en permanence à tort (iOS ment souvent sur l'état réseau). Désormais on VÉRIFIE par un vrai test réseau avant de l'afficher, et on re-vérifie au retour dans l'app → fini le bandeau coincé.",
-    "🌦️ Météo : repérée (sous la carte d'accueil) — réorganisation à caler avec toi."
+    "🌦️ Météo plus jolie (mais toujours compacte) : la pastille sous la carte affiche désormais l'icône dans un rond, la température bien marquée, le max du jour (↑26°) et l'UV en mini-badge. Elle reste petite et ne prend pas toute la largeur."
   ]
 }
