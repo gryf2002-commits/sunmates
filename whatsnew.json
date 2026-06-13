@@ -1,9 +1,8 @@
 {
-  "candidate": "v463",
+  "candidate": "v464",
   "items": [
-    "🔒 Sécurité du faux appel : le numéro affiché est maintenant dans la plage OFFICIELLE de fiction (06 39 98…) → ne joindra jamais personne. Écran décroché repensé en icônes sobres (fini les emojis).",
-    "🔎 Partager une activité : tu peux CHERCHER un lieu par son nom → le pin se cale dessus.",
-    "🔁 Bascule « En voyage / À la maison » alignée.",
-    "💎 Chantier premium (Accueil) : les tuiles passent en TONS BIJOU profonds (améthyste, rubis, émeraude, saphir…), plus FINES, avec un reflet adouci, et des ICÔNES SVG sobres au lieu d'emojis. Beaucoup plus haut de gamme et cohérent. On généralise aux autres écrans ensuite."
+    "🎯 Bouton de connexion enfin EXPLICITE : le petit rond « ▶ » devient un bouton PLEINE LARGEUR libellé « Se connecter » / « Créer mon compte » selon l'onglet. Plus visible, plus clair (corrige le point n°1 de l'audit UX : « CTA peu proéminent / pas orienté action »).",
+    "🔆 Proposition de valeur sous le titre : texte renforcé (passe du gris secondaire à l'encre principale) → meilleur contraste et hiérarchie de lecture.",
+    "🇬🇧 Nouveau libellé traduit en anglais (Log in / Create my account)."
   ]
 }
