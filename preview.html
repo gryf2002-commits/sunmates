@@ -126,7 +126,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
   <script src="sunmates-badges.js?v=463"></script>
-  <script src="sunmates-icons.js?v=470"></script>
+  <script src="sunmates-icons.js?v=471"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
     // la préversion (preview.html) ni une version archivée (releases/…) : elles se testent
@@ -3151,20 +3151,23 @@
     /* ═══ DA ICÔNES MAISON v3 : la PASTILLE derrière l'icône suit la DA (sunset doux), JAMAIS blanche,
        déclinée SUBTILEMENT par mode. La couleur de famille vit dans l'ICÔNE (plate colorée), la pastille
        est une surface chaude neutre qui la fait ressortir. Spéc. body + !important pour battre la malléable. ═══ */
+    /* ⚠️ CONTRASTE (retour Maxime « certaines couleurs invisibles selon le mode ») : la pastille reste
+       QUASI-NEUTRE (faible saturation) par mode → une icône de N'IMPORTE quelle teinte ressort toujours
+       (avant : tuile aubergine/navy/verte avalait les icônes violette/bleue/verte). Soupçon de teinte mode seulement. */
     body .tile .thumb, body .cic, body .qico, body .smgem, body .jo-ic, body .cic[data-smicon], body .qico[data-smicon] {
-      background: linear-gradient(160deg, #FFF3E3, #FFE4CC) !important;
+      background: linear-gradient(160deg, #FFF4E8, #FBEAD8) !important;
       box-shadow: 0 5px 13px rgba(120,60,30,.12), inset 0 1px 1px rgba(255,255,255,.75) !important; border: 0 !important; }
     body.theme-dusk .tile .thumb, body.theme-dusk .cic, body.theme-dusk .qico, body.theme-dusk .smgem, body.theme-dusk .jo-ic {
-      background: linear-gradient(160deg, #382A45, #2B2039) !important;
-      box-shadow: 0 5px 13px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.08) !important; }
+      background: linear-gradient(160deg, #343039, #29262F) !important;
+      box-shadow: 0 5px 13px rgba(0,0,0,.32), inset 0 1px 1px rgba(255,255,255,.09) !important; }
     body.theme-winter .tile .thumb, body.theme-winter .cic, body.theme-winter .qico, body.theme-winter .smgem, body.theme-winter .jo-ic {
-      background: linear-gradient(160deg, #ECF3FC, #DBE8F7) !important; }
+      background: linear-gradient(160deg, #F2F4F7, #E7EBF0) !important; }
     body.theme-winter.theme-dusk .tile .thumb, body.theme-winter.theme-dusk .cic, body.theme-winter.theme-dusk .qico, body.theme-winter.theme-dusk .smgem, body.theme-winter.theme-dusk .jo-ic {
-      background: linear-gradient(160deg, #20303F, #17222E) !important; }
+      background: linear-gradient(160deg, #2B2F35, #20242A) !important; }
     body.theme-tropic .tile .thumb, body.theme-tropic .cic, body.theme-tropic .qico, body.theme-tropic .smgem, body.theme-tropic .jo-ic {
-      background: linear-gradient(160deg, #F0F6E6, #E0EFD1) !important; }
+      background: linear-gradient(160deg, #F3F5EE, #E9ECE1) !important; }
     body.theme-tropic.theme-dusk .tile .thumb, body.theme-tropic.theme-dusk .cic, body.theme-tropic.theme-dusk .qico, body.theme-tropic.theme-dusk .smgem, body.theme-tropic.theme-dusk .jo-ic {
-      background: linear-gradient(160deg, #15291E, #102019) !important; }
+      background: linear-gradient(160deg, #2C302C, #212521) !important; }
 
     /* Navigation : icônes vives */
     .bottom-nav { background: #fff7f2; box-shadow: 0 -8px 28px rgba(45,38,52,.10); }
