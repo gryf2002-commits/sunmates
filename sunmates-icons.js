@@ -137,7 +137,26 @@
     rocket: '<path d="M24 4c7 4 11 11 11 20l-4 6H17l-4-6C13 15 17 8 24 4z" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7" stroke-linejoin="round"/><circle cx="24" cy="19" r="4" fill="' + K + '"/><path d="M17 30l-5 4 3-9M31 30l5 4-3-9" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.5" stroke-linejoin="round"/><path d="M21 38l3 6 3-6" fill="#FF8A3D"/>',
     gift: '<rect x="7" y="18" width="34" height="24" rx="3" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7"/><rect x="5" y="12" width="38" height="8" rx="2" fill="' + C.red[0] + '" stroke="' + C.red[1] + '" stroke-width="1.7"/><path d="M24 12V42" stroke="' + K + '" stroke-width="3"/><path d="M24 12c-3-9-12-6-9 0M24 12c3-9 12-6 9 0" fill="none" stroke="' + C.gold[0] + '" stroke-width="3"/>',
     bulb: '<path d="M24 5c8 0 13 6 13 13 0 5-3 8-5 11-1 1.5-1 3-1 4H17c0-1 0-2.5-1-4-2-3-5-6-5-11 0-7 5-13 13-13z" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.7"/><path d="M18 41h12M20 45h8" stroke="' + C.gold[1] + '" stroke-width="2.6" stroke-linecap="round"/>',
-    heartfull: '<path d="M24 41C9 31 6 22 6 16.5 6 11 10 7 15 7c3.5 0 6.5 2 9 5 2.5-3 5.5-5 9-5 5 0 9 4 9 9.5C42 22 39 31 24 41z" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.7" stroke-linejoin="round"/>'
+    heartfull: '<path d="M24 41C9 31 6 22 6 16.5 6 11 10 7 15 7c3.5 0 6.5 2 9 5 2.5-3 5.5-5 9-5 5 0 9 4 9 9.5C42 22 39 31 24 41z" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.7" stroke-linejoin="round"/>',
+    // --- vague 2 (titres/activités) ---
+    home: '<path d="M6 22 24 7l18 15" fill="none" stroke="' + C.coral[1] + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v18a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V20" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7" stroke-linejoin="round"/><rect x="20" y="28" width="8" height="12" fill="' + K + '"/>',
+    film: G('card', 'violet', '<g fill="' + K + '"><rect x="6" y="11" width="4" height="26"/><rect x="38" y="11" width="4" height="26"/><rect x="13" y="6" width="4" height="4" rx="1"/><rect x="13" y="38" width="4" height="4" rx="1"/><rect x="22" y="6" width="4" height="4" rx="1"/><rect x="22" y="38" width="4" height="4" rx="1"/><rect x="31" y="6" width="4" height="4" rx="1"/><rect x="31" y="38" width="4" height="4" rx="1"/></g>'),
+    play: G('target', 'teal', '<path d="M20 16l12 8-12 8z" fill="' + K + '"/>'),
+    sos: '<path d="M24 5c5 6 11 9 17 9 1 14-5 25-17 30C12 39 6 28 7 14c6 0 12-3 17-9z" fill="' + C.red[0] + '" stroke="' + C.red[1] + '" stroke-width="1.7" stroke-linejoin="round"/><rect x="22" y="16" width="4" height="11" rx="2" fill="' + K + '"/><circle cx="24" cy="32" r="2.3" fill="' + K + '"/>',
+    list: G('card', 'gold', '<g stroke="' + K + '" stroke-width="2.6" stroke-linecap="round"><line x1="15" y1="16" x2="33" y2="16"/><line x1="15" y1="24" x2="33" y2="24"/><line x1="15" y1="32" x2="27" y2="32"/></g>'),
+    upload: G('target', 'teal', '<path d="M24 32V15M17 22l7-7 7 7" fill="none" stroke="' + K + '" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>'),
+    refresh: G('target', 'teal', '<path d="M33 18a12 12 0 1 0 2.5 9" fill="none" stroke="' + K + '" stroke-width="3.2" stroke-linecap="round"/><path d="M33 11v8h-8" fill="none" stroke="' + K + '" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>'),
+    image: G('card', 'violet', '<circle cx="17" cy="18" r="3" fill="#FFD15C"/><path d="M9 36l9-10 6 6 7-8 8 12z" fill="' + K + '"/>'),
+    tree: '<path d="M24 6c6 0 11 5 11 11 0 4-2 7-5 9 3 1 6 4 6 8 0 5-5 8-12 8-7 0-12-3-12-8 0-4 3-7 6-8-3-2-5-5-5-9C13 11 18 6 24 6z" fill="' + C.green[0] + '" stroke="' + C.green[1] + '" stroke-width="1.7" stroke-linejoin="round"/><rect x="22" y="36" width="4" height="7" fill="' + C.amber[1] + '"/>',
+    beach: '<path d="M24 9C14 9 6 17 6 27h36C42 17 34 9 24 9z" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7" stroke-linejoin="round"/><path d="M24 9v33" stroke="' + C.amber[1] + '" stroke-width="2.6" stroke-linecap="round"/><circle cx="24" cy="9" r="2.4" fill="#FFD15C"/>',
+    hiking: '<path d="M14 6h7v20l13 7-3 6-17-9z" fill="' + C.amber[0] + '" stroke="' + C.amber[1] + '" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 33h26a4 4 0 0 1 4 4v3H7v-3a4 4 0 0 1 4-4z" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.6" stroke-linejoin="round"/>',
+    cocktail: '<path d="M8 11h32L24 27z" fill="' + C.coral[0] + '" stroke="' + C.coral[1] + '" stroke-width="1.7" stroke-linejoin="round"/><path d="M24 27v13M16 41h16" stroke="' + C.coral[1] + '" stroke-width="2.6" stroke-linecap="round"/><circle cx="33" cy="9" r="2.4" fill="#FFD15C"/>',
+    backpack: '<rect x="10" y="14" width="28" height="28" rx="8" fill="' + C.green[0] + '" stroke="' + C.green[1] + '" stroke-width="1.7"/><path d="M17 14a7 7 0 0 1 14 0" fill="none" stroke="' + C.green[1] + '" stroke-width="2.6"/><rect x="17" y="22" width="14" height="9" rx="2" fill="' + K + '"/>',
+    book: G('card', 'blue', '<path d="M24 13c-3-2-7-2.5-11-2v20c4-.5 8 0 11 2 3-2 7-2.5 11-2V11c-4-.5-8 0-11 2z" fill="' + K + '"/><line x1="24" y1="13" x2="24" y2="33" stroke="' + C.blue[1] + '" stroke-width="1.6"/>'),
+    key: '<circle cx="15" cy="15" r="9" fill="none" stroke="' + C.gold[0] + '" stroke-width="4"/><path d="M20 20 38 38M33 33l4 4M30 36l4 4" stroke="' + C.gold[0] + '" stroke-width="4" stroke-linecap="round" fill="none"/>',
+    bolt: '<path d="M26 4 10 27h11l-3 17 18-25H24z" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.7" stroke-linejoin="round"/>',
+    wave: '<path d="M18 26V9a3 3 0 0 1 6 0v13M24 22V7a3 3 0 0 1 6 0v15M30 23v-9a3 3 0 0 1 6 0v14a11 11 0 0 1-11 11h-3a11 11 0 0 1-9-5l-5-8a3 3 0 0 1 5-3l3 3V14a3 3 0 0 1 6 0v8" fill="' + C.gold[0] + '" stroke="' + C.gold[1] + '" stroke-width="1.6" stroke-linejoin="round"/>',
+    save: G('card', 'blue', '<path d="M14 8h16l6 6v22H12V8z" fill="none"/><rect x="16" y="8" width="14" height="9" fill="' + K + '"/><rect x="16" y="24" width="16" height="11" rx="1" fill="' + K + '"/>')
   };
   GLYPHS.challenge = GLYPHS.quest;
   GLYPHS.mood = GLYPHS.popular;
@@ -157,7 +176,14 @@
     '➖': 'minus', '🗓': 'calendar', '✈': 'plane', '🌅': 'sunset', '🌞': 'sun', '🌙': 'moon', '🌴': 'palm',
     '❄': 'snow', '🪙': 'coin', '🪪': 'idcard', '🗑': 'trash', '📷': 'camera', '📸': 'camera', '🔒': 'lock',
     '✍': 'write', '🙂': 'smile', '🚀': 'rocket', '🎁': 'gift', '💡': 'bulb', '⏱': 'clock', '🔔': 'bell',
-    '🛍': 'shop', '💼': 'trip', '🗂': 'layers', '🚪': 'door', '⚙': 'settings', '🎤': 'mic'
+    '🛍': 'shop', '💼': 'trip', '🗂': 'layers', '🚪': 'door', '⚙': 'settings', '🎤': 'mic',
+    '🏡': 'home', '🏠': 'home', '🎬': 'film', '▶': 'play', '🆘': 'sos', '📋': 'list', '📤': 'upload',
+    '🔄': 'refresh', '🖼': 'image', '🌳': 'tree', '🌲': 'tree', '🏖': 'beach', '🥾': 'hiking', '🍹': 'cocktail',
+    '🎒': 'backpack', '📚': 'book', '📖': 'book', '🗝': 'key', '⚡': 'bolt', '👋': 'wave', '💾': 'save',
+    '🌠': 'star', '📣': 'contact', '🏛': 'aid', '✂': 'write', '📩': 'mail',
+    '☀': 'sun', '🔍': 'search', '📲': 'phone', '🌇': 'sunset', '🌆': 'cityscape', '🍻': 'cocktail', '🍸': 'cocktail',
+    '🌿': 'eco', '😎': 'smile', '😀': 'smile', '🥳': 'party', '🎊': 'party', '⏲': 'clock', '⏰': 'clock', '🔋': 'bolt',
+    '💪': 'flame', '🌡': 'clock', '🗝': 'key', '🔑': 'key', '📕': 'book', '📗': 'book', '✏': 'write', '🖊': 'write'
   };
   // ===== Drapeaux pays SVG maison (fiches pays) =====
   var FLAG_ISO = { '🇵🇹':'PT','🇯🇵':'JP','🇲🇦':'MA','🇮🇸':'IS','🇲🇽':'MX','🇬🇷':'GR','🇻🇳':'VN','🇵🇪':'PE','🇮🇹':'IT','🇹🇭':'TH','🇪🇸':'ES','🇳🇴':'NO','🇨🇴':'CO','🇦🇺':'AU','🇹🇷':'TR','🇺🇸':'US','🇬🇧':'GB','🇮🇩':'ID','🇮🇳':'IN','🇪🇬':'EG','🇩🇪':'DE','🇭🇷':'HR','🇧🇷':'BR','🇨🇦':'CA','🇳🇱':'NL','🇧🇪':'BE','🇨🇭':'CH','🇦🇹':'AT','🇮🇪':'IE','🇵🇱':'PL','🇨🇿':'CZ','🇭🇺':'HU','🇸🇪':'SE','🇩🇰':'DK','🇫🇮':'FI','🇰🇷':'KR','🇵🇭':'PH','🇲🇾':'MY','🇨🇷':'CR','🇦🇪':'AE' };
