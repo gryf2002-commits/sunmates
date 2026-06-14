@@ -8,6 +8,44 @@
   function paint(el,na,sa){var nm=el.getAttribute(na);if(!nm)return;var h=SMIcon(nm,{size:el.getAttribute(sa)||24,title:el.getAttribute('data-title')||''});if(h){el.innerHTML=h;el.setAttribute('data-smicon-done','1');}}
   function SMIconRender(root){root=root||document;var a=root.querySelectorAll('[data-smicon]:not([data-smicon-done])');for(var i=0;i<a.length;i++)paint(a[i],'data-smicon','data-smicon-size');var b=root.querySelectorAll('[data-icon]:not([data-smicon-done])');for(var j=0;j<b.length;j++)paint(b[j],'data-icon','data-size');}
   window.SMIcon=SMIcon;window.SMIconRender=SMIconRender;
-  function boot(){SMIconRender();try{new MutationObserver(function(m){for(var i=0;i<m.length;i++){var ns=m[i].addedNodes;for(var k=0;k<ns.length;k++){var n=ns[k];if(n.nodeType!==1)continue;if(n.querySelectorAll)SMIconRender(n);}}}).observe(document.body,{childList:true,subtree:true});}catch(e){}}
+  // ---- SMIconize : remplace les emojis BRUTS (hors data-smicon) par des emblemes SVG ----
+  var _smBusy=false, _EMORE=null;
+  (function(){try{
+    var keys=Object.keys(ALIAS).filter(function(k){for(var i=0;i<k.length;i++){if(k.charCodeAt(i)>=0x2190)return true;}return false;});
+    keys.sort(function(a,b){return b.length-a.length;});
+    var esc=keys.map(function(k){return k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');});
+    _EMORE=new RegExp('('+esc.join('|')+')\\uFE0F?','g');
+  }catch(e){_EMORE=null;}})();
+  var _SKIP='input,textarea,select,[contenteditable],[data-no-smiconize],.bubble,.fpost-body,.sname,.smeta,.selectable,.bio,.chat-body,.leaflet-container,#homeMap,[data-smicon]';
+  function SMIconize(root){
+    if(window.SM_NO_EMOJIZE||!_EMORE||_smBusy)return;
+    root=root||document.body; if(!root)return;
+    if(root.nodeType===1&&root.closest&&root.closest(_SKIP))return;
+    var W=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+      var p=n.parentNode; if(!p)return 2; var t=p.nodeName;
+      if(t==='SCRIPT'||t==='STYLE'||t==='TEXTAREA'||t==='svg'||t==='SVG')return 2;
+      if(p.closest&&p.closest(_SKIP))return 2;
+      _EMORE.lastIndex=0; return _EMORE.test(n.nodeValue)?1:2;
+    }});
+    var nodes=[],c; while((c=W.nextNode()))nodes.push(c); if(!nodes.length)return;
+    _smBusy=true;
+    try{nodes.forEach(function(n){
+      var v=n.nodeValue; _EMORE.lastIndex=0; if(!_EMORE.test(v))return; _EMORE.lastIndex=0;
+      var frag=document.createDocumentFragment(),last=0,mm;
+      while((mm=_EMORE.exec(v))){
+        if(mm.index>last)frag.appendChild(document.createTextNode(v.slice(last,mm.index)));
+        var nm=resolve(mm[1]), h=nm?SMIcon(nm,{size:'1em'}):null;
+        if(h){var sp=document.createElement('span');sp.className='smemo';sp.setAttribute('data-smicon-done','1');sp.style.cssText='display:inline-flex;vertical-align:-0.14em;line-height:1';sp.innerHTML=h;frag.appendChild(sp);}
+        else frag.appendChild(document.createTextNode(mm[0]));
+        last=mm.index+mm[0].length;
+      }
+      if(last<v.length)frag.appendChild(document.createTextNode(v.slice(last)));
+      if(n.parentNode)n.parentNode.replaceChild(frag,n);
+    });}catch(e){}
+    _smBusy=false;
+  }
+  window.SMIconize=SMIconize;
+  function boot(){SMIconRender();try{SMIconize(document.body);}catch(e){}
+    try{new MutationObserver(function(m){if(_smBusy)return;for(var i=0;i<m.length;i++){var ns=m[i].addedNodes;for(var k=0;k<ns.length;k++){var n=ns[k];if(n.nodeType!==1)continue;if(n.querySelectorAll){SMIconRender(n);SMIconize(n);}}}}).observe(document.body,{childList:true,subtree:true});}catch(e){}}
   if(document.readyState!=='loading')boot();else document.addEventListener('DOMContentLoaded',boot);
 })();
