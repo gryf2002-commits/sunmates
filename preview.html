@@ -126,12 +126,13 @@
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
   <script src="sunmates-badges.js?v=468"></script>
-  <script src="sunmates-icons-v2.js?v=520"></script>
+  <script src="sunmates-icons-v2.js?v=530"></script>
   <style>
-    /* Banque d'icônes v2 « fait main » : emblèmes monochromes posés sur les pastilles-joyaux
-       (couleur + gloss viennent de .cic/.smgem/.thumb, comme les badges). */
+    /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
     .smicon { display: inline-block; vertical-align: middle; }
     button .smicon, .da-emo .smicon { vertical-align: -0.16em; }
+    .smicon-emo { display: inline-block; width: 1.05em; height: 1.05em; vertical-align: -0.16em; line-height: 0; }
+    .smicon-emo svg { width: 100%; height: 100%; display: block; }
   </style>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
@@ -4367,6 +4368,16 @@
       #authView .auth-core .auth-hero { border-radius: 28px 28px 0 0; padding: 2rem 1.5rem 1.6rem; margin: 0; }
       #authView .auth-core .auth-body { background: var(--lp-paper); border-radius: 0 0 28px 28px; box-shadow: var(--lp-shadow-pop); max-width: none; padding: 1.6rem 1.5rem 1.9rem; }
     }
+
+    /* === DA v2 · ICÔNES : tuiles UNIFORMES par mode (1 joyau / mode) + emblème crème. === */
+    .cic[data-smicon], .jo-ic[data-smicon], .smgem, .thumb { --ic1:#FF9A3D; --ic2:#FF4F6D; --emb:#FFF6E9; }
+    .cic[data-smicon], .jo-ic[data-smicon], .smgem, .thumb { color: var(--emb) !important; }
+    .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { color: var(--emb); }
+    body.theme-dusk .cic[data-smicon], body.theme-dusk .jo-ic[data-smicon], body.theme-dusk .smgem, body.theme-dusk .thumb { --ic1:#7A3F9E; --ic2:#3A1E57; --emb:#FFF1DC; }
+    body.theme-winter .cic[data-smicon], body.theme-winter .jo-ic[data-smicon], body.theme-winter .smgem, body.theme-winter .thumb { --ic1:#3E8FD4; --ic2:#245F9E; --emb:#FFFFFF; }
+    body.theme-tropic .cic[data-smicon], body.theme-tropic .jo-ic[data-smicon], body.theme-tropic .smgem, body.theme-tropic .thumb { --ic1:#13A079; --ic2:#0A7355; --emb:#FFFDF0; }
+    body.theme-winter.theme-dusk .cic[data-smicon], body.theme-winter.theme-dusk .jo-ic[data-smicon], body.theme-winter.theme-dusk .smgem, body.theme-winter.theme-dusk .thumb { --ic1:#2E6BA0; --ic2:#14304E; --emb:#EAF6FF; }
+    body.theme-tropic.theme-dusk .cic[data-smicon], body.theme-tropic.theme-dusk .jo-ic[data-smicon], body.theme-tropic.theme-dusk .smgem, body.theme-tropic.theme-dusk .thumb { --ic1:#0E7A5C; --ic2:#073A2C; --emb:#E6FFF5; }
   </style>
 </head>
 <body>
@@ -4829,10 +4840,10 @@
         <!-- Bloc Pro / B2B : 4 tuiles séparées, cliquables → chacune pop son détail (pas de redirect direct) -->
         <div id="authProBlock" class="hidden">
           <div class="grid2 pro-grid">
-            <div class="tile" data-protile="visi"><div class="thumb gold">📈</div><div class="t-name">Visibilité</div><div class="t-meta">Touche pour en savoir +</div></div>
-            <div class="tile" data-protile="badge"><div class="thumb teal">🛟</div><div class="t-name">Badge « Lieu sûr »</div><div class="t-meta">Touche pour en savoir +</div></div>
-            <div class="tile" data-protile="traffic"><div class="thumb coral">🎟️</div><div class="t-name">Plus de trafic</div><div class="t-meta">Touche pour en savoir +</div></div>
-            <div class="tile" data-protile="stats"><div class="thumb indigo">📊</div><div class="t-name">Statistiques</div><div class="t-meta">Touche pour en savoir +</div></div>
+            <div class="tile" data-protile="visi"><div class="thumb gold" data-smicon="trend-up" data-smicon-size="26">📈</div><div class="t-name">Visibilité</div><div class="t-meta">Touche pour en savoir +</div></div>
+            <div class="tile" data-protile="badge"><div class="thumb teal" data-smicon="aid" data-smicon-size="26">🛟</div><div class="t-name">Badge « Lieu sûr »</div><div class="t-meta">Touche pour en savoir +</div></div>
+            <div class="tile" data-protile="traffic"><div class="thumb coral" data-smicon="coupon" data-smicon-size="26">🎟️</div><div class="t-name">Plus de trafic</div><div class="t-meta">Touche pour en savoir +</div></div>
+            <div class="tile" data-protile="stats"><div class="thumb indigo" data-smicon="bar-chart" data-smicon-size="26">📊</div><div class="t-name">Statistiques</div><div class="t-meta">Touche pour en savoir +</div></div>
           </div>
           <button class="btn-primary btn-block" id="authProStart" style="margin-top:1rem;font-size:1.05rem;padding:1rem">🚀 Démarrer, Espace Pro</button>
           <p class="muted" style="text-align:center;font-size:.78rem;margin-top:.6rem">Aucun compte requis : découvre l'offre et envoie ta demande de partenariat.</p>
@@ -5171,14 +5182,14 @@
 
         <div class="section-head"><h3>Accès rapides</h3></div>
         <div class="grid2">
-          <div class="tile" data-goto="connexions"><div class="thumb purp">🤝</div><div class="t-name">Mes Mates</div><div class="t-meta" id="qaMates">Tes compagnons d'aventure</div></div>
-          <div class="tile" data-goto="securite"><div class="thumb red">🛟</div><div class="t-name">Sécurité</div><div class="t-meta">L'esprit tranquille</div></div>
-          <div class="tile" data-goto="lieux"><div class="thumb green">📍</div><div class="t-name">Lieux sûrs</div><div class="t-meta" id="qaLieux">Tes spots à explorer</div></div>
-          <div class="tile" data-goto="jeux"><div class="thumb gold">🎮</div><div class="t-name">Jeux &amp; Quêtes</div><div class="t-meta" id="qaJeux">Joue, gagne, brille ⭐</div></div>
-          <div class="tile" data-goto="jeux" data-jeuxview="jeuxRank"><div class="thumb blue">🏆</div><div class="t-name">Classement</div><div class="t-meta">Vise le sommet</div></div>
-          <div class="tile" data-goto="jeux" data-jeuxview="jeuxCoupons"><div class="thumb teal">🎟️</div><div class="t-name">Coupons</div><div class="t-meta" id="qaCoupons">Des cadeaux à débloquer</div></div>
-          <div class="tile tile-soon" id="goldTile" aria-disabled="true" title="SunMates Gold · bientôt"><div class="thumb gold-soon">👑</div><div class="t-name">Gold</div><div class="t-meta">Le meilleur, bientôt</div></div>
-          <div class="tile" data-goto="profil"><div class="thumb indigo">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Ton aura voyageuse</div></div>
+          <div class="tile" data-goto="connexions"><div class="thumb purp" data-smicon="users" data-smicon-size="26">🤝</div><div class="t-name">Mes Mates</div><div class="t-meta" id="qaMates">Tes compagnons d'aventure</div></div>
+          <div class="tile" data-goto="securite"><div class="thumb red" data-smicon="aid" data-smicon-size="26">🛟</div><div class="t-name">Sécurité</div><div class="t-meta">L'esprit tranquille</div></div>
+          <div class="tile" data-goto="lieux"><div class="thumb green" data-smicon="near" data-smicon-size="26">📍</div><div class="t-name">Lieux sûrs</div><div class="t-meta" id="qaLieux">Tes spots à explorer</div></div>
+          <div class="tile" data-goto="jeux"><div class="thumb gold" data-smicon="games" data-smicon-size="26">🎮</div><div class="t-name">Jeux &amp; Quêtes</div><div class="t-meta" id="qaJeux">Joue, gagne, brille ⭐</div></div>
+          <div class="tile" data-goto="jeux" data-jeuxview="jeuxRank"><div class="thumb blue" data-smicon="rank" data-smicon-size="26">🏆</div><div class="t-name">Classement</div><div class="t-meta">Vise le sommet</div></div>
+          <div class="tile" data-goto="jeux" data-jeuxview="jeuxCoupons"><div class="thumb teal" data-smicon="coupon" data-smicon-size="26">🎟️</div><div class="t-name">Coupons</div><div class="t-meta" id="qaCoupons">Des cadeaux à débloquer</div></div>
+          <div class="tile tile-soon" id="goldTile" aria-disabled="true" title="SunMates Gold · bientôt"><div class="thumb gold-soon" data-smicon="crown" data-smicon-size="26">👑</div><div class="t-name">Gold</div><div class="t-meta">Le meilleur, bientôt</div></div>
+          <div class="tile" data-goto="profil"><div class="thumb indigo" data-smicon="usersolo" data-smicon-size="26">👤</div><div class="t-name">Mon profil</div><div class="t-meta" id="qaProfil">Ton aura voyageuse</div></div>
         </div>
       </div>
 

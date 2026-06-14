@@ -22,6 +22,8 @@
    ============================================================ */
 (function () {
   if (!window.SMIcon) return;
+  var FUN_NATIVE = new Set(["😎", "😉", "😄", "😀", "🙂", "😏", "🥳", "😌", "🤩", "😅", "😴", "🤯", "😇", "😶", "🤷", "🙅", "🙏", "🤙", "👋", "👀", "👁", "💯", "💛", "🤍", "🧡", "❤", "🎉", "🎈", "🥲", "😭", "😍", "🤗", "\U0001faf6", "🤞", "✌", "🤟", "👏", "🙌"].concat(['\u{1F635}\u200D\u{1F4AB}']));
+  function isFun(e){ var b=String(e).replace(/\uFE0F|\uFE0E/g,''); return FUN_NATIVE.has(b)||FUN_NATIVE.has(e); }
   var EMO;
   try { EMO = /(?:\uD83C[\uDDE6-\uDDFF]){2}|\p{Extended_Pictographic}(?:‍\p{Extended_Pictographic})*[️⃣]?/gu; }
   catch (e) { EMO = /(?:\uD83C[\uDDE6-\uDDFF]){2}|[←-⯿☀-➿\uD83C-\uD83E][\uDC00-\uDFFF]?(?:‍[\uD83C-\uD83E][\uDC00-\uDFFF])*[️⃣]?/g; }
@@ -32,6 +34,7 @@
     var frag = null, last = 0, m, any = false;
     while ((m = EMO.exec(t))) {
       var emo = m[0];
+      if (isFun(emo)) continue;
       if (!SMIcon.has(emo)) continue;
       var svg = SMIcon(emo, { size: 20 }); if (!svg) continue;
       if (!frag) frag = document.createDocumentFragment();
