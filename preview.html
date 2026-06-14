@@ -174,7 +174,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=475"></script>
+  <script src="sunmates-badges.js?v=476"></script>
   <script src="sunmates-icons-v2.js?v=540"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -6516,6 +6516,34 @@
 
     /* === HOISTÉ (fix TDZ) : const utilisés par des loaders/render appelés tôt — voir audit. === */
     const I18N_DICT = {
+      // ===== AUTH & MESSAGES D'ERREUR (errFr / _authErr) · curés pour la parité EN HORS-LIGNE =====
+      // (sans ça, ces phrases tombaient sur MyMemory en ligne → flash FR + échec hors-réseau, or
+      //  la persona voyage avec un réseau faible. EN maîtrisé, jamais machine-traduit.)
+      "Oups, ça n'a pas marché. Réessaie dans un instant.": "Oops, that didn't work. Try again in a moment.",
+      "Tu n'as pas les droits pour ça, ou ta session a expiré. Reconnecte-toi.": "You don't have access to this, or your session expired. Sign back in.",
+      "C'est déjà fait 🙂": "Already done 🙂",
+      "Action impossible : l'élément lié n'existe plus.": "Can't do that: the linked item no longer exists.",
+      "Connexion impossible. Vérifie ta connexion et réessaie.": "Can't connect. Check your connection and try again.",
+      "Trop d'actions d'un coup. Patiente un instant et retente.": "Too many actions at once. Wait a moment and retry.",
+      "Ça a pris trop de temps. Réessaie dans un instant.": "That took too long. Try again in a moment.",
+      "Connexion impossible pour l'instant. Réessaie dans un instant.": "Can't sign in right now. Try again in a moment.",
+      "Email ou mot de passe incorrect. Réessaie 🙂": "Wrong email or password. Try again 🙂",
+      "Cette adresse a déjà un compte. Connecte-toi plutôt 👇": "This address already has an account. Sign in instead 👇",
+      "Trop d'essais d'un coup. Patiente une minute et retente.": "Too many attempts at once. Wait a minute and retry.",
+      "Tu dois confirmer ton email avant de te connecter.": "You need to confirm your email before signing in.",
+      "Mot de passe trop court : 8 caractères minimum.": "Password too short: 8 characters minimum.",
+      "Connexion réseau impossible. Vérifie ta connexion et réessaie.": "Network connection failed. Check your connection and try again.",
+      "Cet email n'a pas l'air valide. Vérifie l'adresse.": "This email doesn't look valid. Check the address.",
+      "Remplis l'email et le mot de passe.": "Fill in your email and password.",
+      "Choisis un pseudo (2 à 20 caractères) · c'est lui que les autres verront.": "Pick a username (2 to 20 characters) · it's what others will see.",
+      "Un instant…": "One moment…",
+      "📧 Tu dois confirmer ton email avant de te connecter.": "📧 You need to confirm your email before signing in.",
+      "Renvoyer le mail de confirmation": "Resend the confirmation email",
+      "Envoi…": "Sending…",
+      "📧 Mail de confirmation renvoyé ! Vérifie ta boîte (et les spams).": "📧 Confirmation email resent! Check your inbox (and spam).",
+      "Erreur réseau, réessaie dans un instant.": "Network error, try again in a moment.",
+      "Compte créé ! Bienvenue 🌞": "Account created! Welcome 🌞",
+      "📧 Compte créé ! Ouvre ta boîte mail pour confirmer ton adresse, puis connecte-toi.": "📧 Account created! Open your inbox to confirm your address, then sign in.",
       // ===== LANDING (pré-connexion) · EN maîtrisé, jamais machine-traduit =====
       "Pourquoi": "Why", "L'app": "The app", "Rejoindre": "Join",
       "Seul·e au départ, jamais à l'arrivée ☀️": "Solo at the start, never at the finish ☀️",

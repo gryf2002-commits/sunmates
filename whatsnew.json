@@ -1,7 +1,7 @@
 {
-  "candidate": "v475",
+  "candidate": "v476",
   "items": [
-    "💬 Tous les messages d'erreur passent en français rassurant : fini les messages techniques en anglais (ou le jargon base de données) quand une action échoue (enregistrer le profil, poster, accepter une connexion, acheter, etc.).",
-    "🧭 Erreurs actionnables : « Tu n'as pas les droits ou ta session a expiré, reconnecte-toi », « C'est déjà fait 🙂 », « Connexion impossible, vérifie ta connexion »… selon le cas, au lieu d'un code brut. Le détail technique reste en console pour le debug."
+    "🌍 Version anglaise fiable HORS-LIGNE sur les écrans critiques : les messages de connexion, de confirmation d'email et toutes les erreurs sont désormais traduits en dur (plus de dépendance à une traduction en ligne qui échouait sans réseau, et fini le bref flash en français).",
+    "✈️ Pensé voyage : même avec une connexion faible ou coupée, l'app reste cohérente en anglais là où ça compte le plus (entrée dans l'app + messages d'erreur)."
   ]
 }
