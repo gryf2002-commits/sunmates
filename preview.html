@@ -174,7 +174,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=477"></script>
+  <script src="sunmates-badges.js?v=478"></script>
   <script src="sunmates-icons-v2.js?v=540"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -1376,7 +1376,7 @@
       display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,.4); border: 2.5px solid #fff; transition: transform .15s ease; }
     .epin > span { transform: rotate(45deg); font-size: 17px; line-height: 1; }
     .epin-wrap:hover .epin { transform: rotate(-45deg) scale(1.14); z-index: 600; }
-    .epin-cluster { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; border: 2.5px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+    .epin-cluster { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; border: 2.5px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,.4); text-shadow: 0 1px 2px rgba(0,0,0,.5); } /* a11y : nombre lisible sur fonds clairs (teal/orange/ambre) */
     .epin.me { animation: pinPulse 2s ease-out infinite; }
     @keyframes pinPulse { 0% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(255,90,77,.5); } 70% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 12px rgba(255,90,77,0); } 100% { box-shadow: 0 3px 8px rgba(0,0,0,.32), 0 0 0 0 rgba(255,90,77,0); } }
     /* Marqueur de quête : pulsation dorée pour signaler l'objectif de jeu */
@@ -15620,7 +15620,8 @@
                 cluster.getAllChildMarkers().forEach((m) => { const t = m.smType || "places"; counts[t] = (counts[t] || 0) + 1; });
                 let best = "places", bestN = -1;
                 Object.keys(counts).forEach((t) => { if (counts[t] > bestN) { bestN = counts[t]; best = t; } });
-                return L.divIcon({ html: `<div class="epin-cluster" style="background:${LAYER_COLORS[best]}">${cluster.getChildCount()}</div>`, className: "epin-cluster-wrap", iconSize: [38, 38] });
+                // a11y : on assombrit uniformément le fond (calque noir 26%) → le nombre blanc repasse en contraste AA sur TOUS les calques (orange/teal/ambre), sans perdre la couleur-signal.
+                return L.divIcon({ html: `<div class="epin-cluster" style="background:linear-gradient(rgba(0,0,0,.26),rgba(0,0,0,.26)),${LAYER_COLORS[best]}">${cluster.getChildCount()}</div>`, className: "epin-cluster-wrap", iconSize: [38, 38] });
               },
             })
           : L.layerGroup();

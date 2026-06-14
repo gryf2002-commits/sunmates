@@ -1,7 +1,6 @@
 {
-  "candidate": "v477",
+  "candidate": "v478",
   "items": [
-    "🌍 Écran Sécurité complété en anglais hors-ligne : les derniers libellés non traduits (« J'ai besoin d'aide », le minuteur « bien arrivé·e », la confirmation de rentrée) sont désormais en dur dans le dictionnaire → cohérents même sans réseau.",
-    "🛟 Bonne nouvelle : les conseils de sécurité du jour et les numéros d'urgence par pays étaient déjà bilingues — rien à changer côté réseau pour eux."
+    "🗺️ Compteurs de la carte plus lisibles : les pastilles regroupant plusieurs marqueurs (le petit nombre, ex. « 16 ») avaient un blanc peu lisible sur fond clair (orange/turquoise/ambre). Fond légèrement assombri + ombre du texte → chiffre net, contraste WCAG AA, en gardant la couleur de chaque catégorie."
   ]
 }
