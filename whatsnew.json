@@ -1,11 +1,6 @@
 {
-  "candidate": "v481",
+  "candidate": "v482",
   "items": [
-    "🛟 Sécurité — correctif important : le minuteur « Rentrée en sécurité » se re-vérifie au retour de l'app (les téléphones gèlent les minuteurs en arrière-plan) → l'alerte au cercle ne peut plus être « oubliée ».",
-    "🐞 Stabilité : plus de plantage possible de la fiche profil / des % d'affinité quand des centres d'intérêt sont mal formés.",
-    "👥 Création de groupe fiabilisée : si un mate ne peut pas être ajouté, le groupe et les autres membres sont quand même créés (avant : tout échouait en silence).",
-    "📦 Export de tes données (RGPD) désormais complet (messages envoyés ET reçus).",
-    "🧹 Durcissements internes : cache de traduction borné, bonus quotidien/réponses support retentés après une coupure réseau, aperçus de conversation tronqués.",
-    "📍 Cohérence sécurité : les positions partagées au cercle expirent bien après 1 h (liste, carte et texte alignés)."
+    "💬 Messages non lus enfin fiables : la pastille se vide CONVERSATION PAR CONVERSATION. Avant, ouvrir l'onglet Messages (ou une seule discussion) marquait tout le monde comme lu → on pouvait rater un message. Maintenant, chaque pastille ne disparaît qu'en ouvrant la discussion concernée."
   ]
 }

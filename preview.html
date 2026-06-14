@@ -197,7 +197,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=481"></script>
+  <script src="sunmates-badges.js?v=482"></script>
   <script src="sunmates-icons-v2.js?v=540"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -13861,6 +13861,7 @@
     }
     async function openChat(otherUserId) {
       currentChatUserId = otherUserId;
+      if (typeof markMsgsSeen === "function") markMsgsSeen(otherUserId); // marque CETTE conversation lue (pas les autres)
       if (typeof unhideConv === "function") unhideConv(otherUserId); // rouvrir = ré-afficher dans la liste
       const p = travelerMap[otherUserId] || {};
       // « Traduire » UNIQUEMENT si on SAIT que le Mate ne parle pas ta langue (FR/EN).
@@ -14317,7 +14318,7 @@
             updateNotifBadges();
             if (window.SMSound) SMSound.play("notify"); // ping signature SunMates
             toast("💬", `<b>${escapeHtml(nameById(m.sender_id))}</b> t'a envoyé un message`,
-              () => { goToTab("connexions"); openChat(m.sender_id); markMsgsSeen(); });
+              () => { goToTab("connexions"); openChat(m.sender_id); }); // openChat marque cette conversation lue
             if (!window._pushOn) sysNotify("Nouveau message 💬", nameById(m.sender_id) + " t'a écrit sur SunMates", "connexions"); // sinon le push serveur s'en charge (anti-doublon)
             _refreshConnsSoon(); // débounce : pas un rechargement complet par message
           }
@@ -16540,7 +16541,8 @@
     function showMatesSegment(seg) {
       document.querySelectorAll("[data-mseg]").forEach((b) => b.classList.toggle("active", b.dataset.mseg === seg));
       document.querySelectorAll("[data-msegpanel]").forEach((p) => show(p, p.dataset.msegpanel === seg));
-      if (seg === "messages" && typeof markMsgsSeen === "function") markMsgsSeen();
+      // Ne PLUS tout marquer lu au simple affichage de la liste : on ne marque une conversation
+      // lue qu'à son OUVERTURE (openChat) → la pastille reste tant qu'il y a un chat non ouvert.
     }
     document.querySelectorAll("[data-mseg]").forEach((b) => b.addEventListener("click", () => showMatesSegment(b.dataset.mseg)));
 
@@ -17173,21 +17175,35 @@
     }
 
     // ---- Messages non lus (basé sur un horodatage stocké localement) ----
-    const seenKey = () => "sm_seen_msgs_" + myUserId;
+    const seenKey = () => "sm_seen_msgs_" + myUserId;          // borne globale (1er lancement + limite la requête)
+    const seenMapKey = () => "sm_seen_by_" + myUserId;          // { expéditeur: ISO } → non-lus PAR conversation
+    function _seenMap() { try { return JSON.parse(localStorage.getItem(seenMapKey()) || "{}") || {}; } catch (e) { return {}; } }
+    function _saveSeenMap(m) { try { localStorage.setItem(seenMapKey(), JSON.stringify(m)); } catch (e) {} }
     async function loadUnread() {
       if (!myUserId) return;
       let since = localStorage.getItem(seenKey());
       if (!since) { since = new Date().toISOString(); localStorage.setItem(seenKey(), since); }
       const { data } = await db.from("messages").select("sender_id,content,created_at")
         .eq("recipient_id", myUserId).gt("created_at", since).order("created_at", { ascending: false });
-      unreadList = (data || []).filter((m) => m.sender_id !== myUserId);
+      const seen = _seenMap();
+      // Un message est non-lu s'il est postérieur au dernier « vu » DE SON expéditeur (et plus un
+      // horodatage global) → ouvrir le chat d'Alice ne marque plus les messages de Bob comme lus.
+      unreadList = (data || []).filter((m) => m.sender_id !== myUserId && (!seen[m.sender_id] || m.created_at > seen[m.sender_id]));
       unreadMsgCount = unreadList.length;
       updateNotifBadges();
     }
-    function markMsgsSeen() {
+    // Marque comme lus les messages d'UN expéditeur (conversation ouverte). Sans argument : tout (action explicite).
+    function markMsgsSeen(senderId) {
       if (!myUserId) return;
-      localStorage.setItem(seenKey(), new Date().toISOString());
-      unreadList = []; unreadMsgCount = 0; updateNotifBadges();
+      if (senderId) {
+        const seen = _seenMap(); seen[senderId] = new Date().toISOString(); _saveSeenMap(seen);
+        unreadList = unreadList.filter((u) => u.sender_id !== senderId);
+      } else {
+        localStorage.setItem(seenKey(), new Date().toISOString());
+        const seen = _seenMap(); unreadList.forEach((u) => { seen[u.sender_id] = new Date().toISOString(); }); _saveSeenMap(seen);
+        unreadList = [];
+      }
+      unreadMsgCount = unreadList.length; updateNotifBadges();
     }
     // Filet anti-délai des pastilles (item 20) : le realtime peut être lent/coupé
     // (throttle mobile, onglet en veille, Realtime non activé). On rafraîchit donc
@@ -17268,7 +17284,7 @@
     function openNotifPanel() {
       const items = [];
       pendingRequestsList.forEach((r) => items.push({ e: "📨", h: `<b>${escapeHtml(nameById(r.fromId))}</b> souhaite se connecter`, go: () => { closeNotif(); goToTab("connexions"); } }));
-      unreadList.forEach((u) => items.push({ e: "💬", h: `Nouveau message de <b>${escapeHtml(nameById(u.sender_id))}</b>`, go: () => { closeNotif(); goToTab("connexions"); openChat(u.sender_id); markMsgsSeen(); } }));
+      unreadList.forEach((u) => items.push({ e: "💬", h: `Nouveau message de <b>${escapeHtml(nameById(u.sender_id))}</b>`, go: () => { closeNotif(); goToTab("connexions"); openChat(u.sender_id); } })); // openChat marque cette conversation lue
       (mySuggestions || []).forEach((s) => items.push({ e: "🎯", h: `<b>${escapeHtml(nameById(s.from_user))}</b> te propose : ${escapeHtml(s.quest_title || "une quête")}`, go: () => { closeNotif(); acceptSuggestion(s.id, s.quest_key); } }));
       $("notifList").innerHTML = items.length
         ? items.map((it, i) => `<div class="notif-item" data-n="${i}"><div class="nemoji">${it.e}</div><div class="info"><div class="name">${it.h}</div></div><div class="qarrow">›</div></div>`).join("")
