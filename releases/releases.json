@@ -1,5 +1,11 @@
 [
   {
+    "v": "v470",
+    "date": "2026-06-14",
+    "note": "Icônes v2 (banque Phosphor restylée + tuiles par mode + moteur emoji), emojis fun natifs calés à 38px, contraste joyaux/badges éclairci, fix TDZ (démarrage stable), meta PWA a11y",
+    "file": "v470.html"
+  },
+  {
     "v": "v450",
     "date": "2026-06-13",
     "note": "Jalon (multiple de 30) · audit Impeccable lots A→E : contrastes WCAG, nuits de saison (navy/jungle), ombres dé-rougies, z-index rangés, Fraunces 800, cibles tactiles 44px",
