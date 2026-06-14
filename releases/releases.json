@@ -1,5 +1,11 @@
 [
   {
+    "v": "v472",
+    "date": "2026-06-14",
+    "note": "Ombres gris chaud (fin des reliefs bruns), contraste AA des badges Éco/Top noté, erreurs de connexion en FR rassurant, aria-live sur les toasts (a11y) · preview re-synchronisée sur la prod",
+    "file": "v472.html"
+  },
+  {
     "v": "v471",
     "date": "2026-06-14",
     "note": "DA sticker : icônes pleines recolorées + liséré net, joyaux de mode assagis (suite v470 : emojis 38px, contraste joyaux éclairci)",
