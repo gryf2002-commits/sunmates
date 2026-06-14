@@ -1,5 +1,11 @@
 [
   {
+    "v": "v473",
+    "date": "2026-06-14",
+    "note": "Bandeau consent remonté au-dessus de la nav (ne masque plus le contenu) + délai anti-superposition ; focus clavier renforcé (liséré visible dans les 6 modes)",
+    "file": "v473.html"
+  },
+  {
     "v": "v472",
     "date": "2026-06-14",
     "note": "Ombres gris chaud (fin des reliefs bruns), contraste AA des badges Éco/Top noté, erreurs de connexion en FR rassurant, aria-live sur les toasts (a11y) · preview re-synchronisée sur la prod",
