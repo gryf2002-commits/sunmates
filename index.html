@@ -125,7 +125,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=463"></script>
+  <script src="sunmates-badges.js?v=464"></script>
   <script src="sunmates-icons.js?v=445"></script>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
@@ -1430,7 +1430,9 @@
     .seg button { flex: 1; background: transparent; color: var(--muted); border-radius: 999px; padding: .6rem; margin: 0; }
     .seg button.active { background: var(--accent-grad); color: #fff; }
     .auth-play { display: grid; place-items: center; margin-top: 1.6rem; }
-    .auth-play button { width: 64px; height: 64px; border-radius: 50%; background: var(--accent-grad); color: #fff; font-size: 24px; box-shadow: 0 8px 20px rgba(45,38,52,.16); padding: 0; }
+    /* CTA principal : bouton PLEINE LARGEUR libellé (avant : petit rond « ▶ » peu explicite).
+       Garde le dégradé sunset + l'anneau qui pulse (l'âme SunMates), mais devient clair et proéminent. */
+    .auth-play button { width: 100%; min-height: 54px; border-radius: 999px; background: var(--accent-grad); color: #fff; font-size: 1.06rem; font-weight: 800; letter-spacing: .01em; box-shadow: 0 10px 24px rgba(255,90,77,.28); padding: .9rem 1.4rem; }
 
     /* ----------------------- Barre de nav (bas) --------------------- */
     .bottom-nav {
@@ -2476,9 +2478,9 @@
     .seg button.active { box-shadow: 0 8px 18px rgba(45,38,52,.16); }
     .auth-play button { animation: pulseRing 2.6s ease-out infinite; }
     @keyframes pulseRing {
-      0%   { box-shadow: 0 8px 20px rgba(45,38,52,.16), 0 0 0 0 rgba(255,90,77,.35); }
-      70%  { box-shadow: 0 8px 20px rgba(45,38,52,.16), 0 0 0 18px rgba(255,90,77,0); }
-      100% { box-shadow: 0 8px 20px rgba(45,38,52,.16), 0 0 0 0 rgba(255,90,77,0); }
+      0%   { box-shadow: 0 10px 24px rgba(255,90,77,.28), 0 0 0 0 rgba(255,90,77,.34); }
+      70%  { box-shadow: 0 10px 24px rgba(255,90,77,.28), 0 0 0 14px rgba(255,90,77,0); }
+      100% { box-shadow: 0 10px 24px rgba(255,90,77,.28), 0 0 0 0 rgba(255,90,77,0); }
     }
 
     /* --- Accueil : titre dégradé, vignettes en relief --- */
@@ -4398,7 +4400,7 @@
       </div>
       <div class="auth-title">
         <h1 id="authTitleH">Pars solo, trouve ta bande 🌍</h1>
-        <p class="muted" id="authTitleP">Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.</p>
+        <p id="authTitleP" style="color:var(--text);font-size:.95rem;line-height:1.5;margin-top:.15rem">Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.</p>
       </div>
       <div class="seg">
         <button id="tabLogin" class="active" data-i18n="auth.login">Connexion</button>
@@ -4420,7 +4422,7 @@
           <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" autocomplete="current-password" />
           <button type="button" id="authPwToggle" class="pw-eye" title="Afficher / masquer le mot de passe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
         </div>
-        <div class="auth-play"><button id="authPlay" title="Valider">▶</button></div>
+        <div class="auth-play"><button id="authPlay" aria-label="Se connecter">Se connecter</button></div>
         <div class="msg" id="authMsg" style="text-align:center"></div>
       </div>
 
@@ -6266,6 +6268,9 @@
         if (h) h.textContent = "Pars solo, trouve ta bande 🌍";
         if (p) p.textContent = "Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.";
       }
+      // CTA explicite selon l'onglet (l'EN est géré par le dico I18N_DICT via translateTree).
+      const playBtn = $("authPlay");
+      if (playBtn) playBtn.textContent = (mode === "signup") ? "Créer mon compte" : "Se connecter";
     }
 
     // Extrait un message lisible d'une erreur Supabase (les AuthError ont des props non énumérables → {} sinon).
@@ -17387,6 +17392,9 @@
     // Dictionnaire FR→EN pour la traduction auto (texte d'UI codé en dur).
     // Clés = texte FR EXACT (trimmé) tel qu'affiché. Le contenu utilisateur n'y est pas.
     const I18N_DICT = {
+      // CTA d'accueil : nouveau libellé du bouton de connexion (les autres chaînes de cet écran
+      // sont déjà traduites plus bas dans ce dico).
+      "Se connecter": "Log in",
       "Recherche…": "Searching…", "Aucun lieu trouvé.": "No place found.", "Erreur de recherche.": "Search error.",
       // ===== Passe EN (audit) : chaînes JS statiques manquantes (toasts/modales/confirmations) =====
       // · Flammes / série / joker ·
