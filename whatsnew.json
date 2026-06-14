@@ -1,9 +1,8 @@
 {
-  "candidate": "v492",
+  "candidate": "v493",
   "items": [
-    "🎨 Emblèmes enfin RACCORD avec chaque preset : leur couleur est dérivée des joyaux du thème (fini l'arc-en-ciel identique sur tous les presets). 21 presets = 21 ambiances distinctes et homogènes.",
-    "🛠️ Console DA : bug corrigé (les onglets de catégories ne s'empilent plus) et nouveaux réglages VRAIMENT pilotés : arrondi global, reflet des tuiles, couleurs de badges, confettis/pluie de saison on-off.",
-    "♿ Contraste auto WCAG AA maintenu sur les 21 presets × 6 modes (0 échec mesuré).",
-    "🌙 Rappel : login, nuit, surfaces et carte suivent chaque preset (depuis v491)."
+    "🎨 Homogénéisation TOTALE : ~167 surfaces dorées en dur (tuiles XP, séries, quêtes, badges « vérifié », barres, textes or) suivent ENFIN le preset — fini les tuiles gold figées qui ne bougeaient pas.",
+    "✨ Plus d'emoji brut « qui se balade » : le ☕ d'une quête, le 🔥 d'une série… tous les emojis posés dynamiquement deviennent des emblèmes cohérents (le moteur ré-emblémise aussi les textes mis à jour à la volée).",
+    "♿ Contraste auto WCAG AA maintenu (21 presets × 6 modes, 0 échec)."
   ]
 }

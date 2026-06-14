@@ -1,5 +1,11 @@
 [
   {
+    "v": "v493",
+    "date": "2026-06-14",
+    "note": "Homogénéisation TOTALE des surfaces dorées en dur (retour Maxime « presets toujours randomisés, tuiles gold ne bougent pas ») : ~167 déclarations gameplay-or converties en var(--accent-soft/-grad/-ink/--line) (48 dégradés rgba-ambre, 40 fonds, 34 bordures, 39 textes #B5740E, 6 dégradés solides .ghead/.jo-ic/XP) → tout suit le preset (le branding Premium en hex solides est épargné). EMOJIS : MutationObserver enrichi (sunmates-icons-v2.js) pour ré-emblémiser les emojis posés en textContent/characterData APRÈS le boot (☕ quête, 🔥 série…) → fini les emojis bruts incohérents (testé : 0 brut restant). WCAG AA maintenu (0 échec 21×6). icons ?v=545, badges ?v=493. Reste mineur : textes nuit #ffce8a, badges SMBadge joaillerie, titleSize/globalTexts/rewards/appIcon/logoChoice.",
+    "file": "v493.html"
+  },
+  {
     "v": "v492",
     "date": "2026-06-14",
     "note": "DA cohérence + câblage : emblèmes DÉRIVÉS des joyaux de chaque mode (palette harmonisée par rôle, alerte gardée chaude) → fini l'arc-en-ciel identique sur tous les presets (mesuré : 21/21 presets distincts, dispersion teinte ≤19° sur 20/21). Réglages 'aperçu seul' CÂBLÉS : effects.radius→--radius/-sm/-lg, effects.sheen→--sm-sheen (.cic::before), badges.*→.hex.grad-*, scenes.confetti/saison→gardes window.SM_SCENES. Console : bug onglets de catégories qui s'empilaient CORRIGÉ (enhanceLeft idempotent). WCAG AA maintenu (0 échec 21×6). loader ?v=9, badges ?v=492. Reste 'aperçu seul' : titleSize (risque rem), globalTexts/texts (routage i18n), rewards (éditorial), appIcon (build), logoChoice, keyline.",

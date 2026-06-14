@@ -47,6 +47,6 @@
   }
   window.SMIconize=SMIconize;
   function boot(){SMIconRender();try{SMIconize(document.body);}catch(e){}
-    try{new MutationObserver(function(m){if(_smBusy)return;for(var i=0;i<m.length;i++){var ns=m[i].addedNodes;for(var k=0;k<ns.length;k++){var n=ns[k];if(n.nodeType!==1)continue;if(n.querySelectorAll){SMIconRender(n);SMIconize(n);}}}}).observe(document.body,{childList:true,subtree:true});}catch(e){}}
+    try{new MutationObserver(function(m){if(_smBusy)return;var roots=[];for(var i=0;i<m.length;i++){var mu=m[i];if(mu.type==='characterData'){var pp=mu.target&&mu.target.parentNode;if(pp&&pp.nodeType===1&&roots.indexOf(pp)<0)roots.push(pp);continue;}var ns=mu.addedNodes;for(var k=0;k<ns.length;k++){var n=ns[k];if(n.nodeType===1){if(n.querySelectorAll){SMIconRender(n);SMIconize(n);}}else if(n.nodeType===3&&n.parentNode&&n.parentNode.nodeType===1&&roots.indexOf(n.parentNode)<0){roots.push(n.parentNode);}}}for(var r=0;r<roots.length;r++){try{SMIconize(roots[r]);}catch(e){}}}).observe(document.body,{childList:true,subtree:true,characterData:true});}catch(e){}}
   if(document.readyState!=='loading')boot();else document.addEventListener('DOMContentLoaded',boot);
 })();
