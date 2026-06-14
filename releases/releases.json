@@ -1,5 +1,11 @@
 [
   {
+    "v": "v487",
+    "date": "2026-06-14",
+    "note": "Fix : le pull-to-refresh (roulette) ré-applique la DA publiée (applyPublishedDA() appelée par render ET refreshCurrentTab, plus seulement au login). Avant, seul un reload complet actualisait la DA.",
+    "file": "v487.html"
+  },
+  {
     "v": "v486",
     "date": "2026-06-14",
     "note": "DA cowork complète : 21 presets + couleur de police + BANQUE D'ICÔNES RECOLORABLE (296 emblèmes var(--icc), vraies couleurs par catégorie) + icônes app/PWA/favicon sunset + flux test fiabilisé (brouillon prioritaire au reload, boutons Recharger/Annuler). icons-v2 ?v=541, loader ?v=4, SW bump pour rafraîchir les PWA.",
