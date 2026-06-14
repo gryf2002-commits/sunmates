@@ -93,6 +93,29 @@
           el.dataset.kbd = "added";
         });
       }
+      // Champs de formulaire : un placeholder n'est PAS un label accessible (WCAG 1.3.1/4.1.2).
+      // On pose un aria-label tiré du placeholder/title quand aucun label n'existe. data-lbl="ph"
+      // = géré par nous → resynchronisé avec la langue (le placeholder change en EN via applyI18n).
+      function lblEnhance(root) {
+        if (!root || !root.querySelectorAll) return;
+        var ins = (root.matches && root.matches("input,textarea,select")) ? [root] : [];
+        var f = root.querySelectorAll("input,textarea,select");
+        for (var i = 0; i < f.length; i++) ins.push(f[i]);
+        ins.forEach(function (el) {
+          if (el.type === "hidden") return;
+          var ph = el.getAttribute("placeholder") || el.getAttribute("title");
+          var prev = el.previousElementSibling;
+          var sibLbl = (prev && prev.tagName === "LABEL" && prev.textContent.trim()) ? prev.textContent.trim() : "";
+          if (el.dataset.lbl === "ph") { if (ph) el.setAttribute("aria-label", ph); return; }   // resync langue (placeholder)
+          if (el.dataset.lbl === "sib") { if (sibLbl) el.setAttribute("aria-label", sibLbl); return; } // resync langue (label voisin)
+          if (el.getAttribute("aria-label") || el.getAttribute("aria-labelledby")) return;
+          if (el.labels && el.labels.length) return;                                            // a un <label for> associé
+          if (el.id && document.querySelector('label[for="' + el.id + '"]')) return;
+          if (ph) { el.setAttribute("aria-label", ph); el.dataset.lbl = "ph"; return; }
+          if (sibLbl) { el.setAttribute("aria-label", sibLbl); el.dataset.lbl = "sib"; }          // <label>Genre</label><select> non associé
+        });
+      }
+      window._smSyncLabels = function () { try { lblEnhance(document); } catch (e) {} };
       // Entrée/Espace sur un élément qu'on a équipé → clic (et on empêche le scroll de la barre d'espace).
       document.addEventListener("keydown", function (e) {
         if (e.key !== "Enter" && e.key !== " " && e.key !== "Spacebar") return;
@@ -101,12 +124,12 @@
         e.preventDefault();
         el.click();
       });
-      kbEnhance(document);
+      kbEnhance(document); lblEnhance(document);
       try {
         var mo = new MutationObserver(function (muts) {
           for (var i = 0; i < muts.length; i++) {
             var add = muts[i].addedNodes;
-            for (var j = 0; j < add.length; j++) if (add[j].nodeType === 1) kbEnhance(add[j]);
+            for (var j = 0; j < add.length; j++) if (add[j].nodeType === 1) { kbEnhance(add[j]); lblEnhance(add[j]); }
           }
         });
         mo.observe(document.body, { childList: true, subtree: true });
@@ -174,7 +197,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=479"></script>
+  <script src="sunmates-badges.js?v=480"></script>
   <script src="sunmates-icons-v2.js?v=540"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4479,7 +4502,7 @@
       <div class="picker-head"><h3 style="margin:0">✂️ Cadre ta photo</h3><button id="cropCancel" class="btn-ghost" style="padding:.3rem .7rem">✕</button></div>
       <p class="muted" style="font-size:.78rem;margin:.2rem 0 .5rem">Glisse pour positionner, zoome · puis publie.</p>
       <div id="cropStage" class="crop-stage"><img id="cropImg" alt="" draggable="false" /><div class="crop-ring"></div></div>
-      <div class="crop-zoom"><span>➖</span><input type="range" id="cropZoom" min="1" max="3" step="0.01" value="1" /><span>➕</span></div>
+      <div class="crop-zoom"><span>➖</span><input type="range" id="cropZoom" min="1" max="3" step="0.01" value="1" aria-label="Zoom de la photo" /><span>➕</span></div>
       <button class="btn-primary btn-block" id="cropApply" style="margin-top:.6rem">✅ Recadrer &amp; publier</button>
       <div class="msg" id="cropMsg" style="text-align:center"></div>
     </div>
@@ -4524,7 +4547,7 @@
   <!-- ===== Faux appel (sortie de secours pour voyageur solo) ===== -->
   <div id="fakeCall" class="fakecall hidden">
     <div class="fc-inner">
-      <input type="file" accept="audio/*" id="fcSoundFile" style="display:none" />
+      <input type="file" accept="audio/*" id="fcSoundFile" style="display:none" aria-label="Choisir un son personnalisé pour le faux appel" />
       <div class="fc-top">
         <div class="fc-avatar" id="fcAvatar">📞</div>
         <div class="fc-name" id="fcName">Maman</div>
@@ -5701,7 +5724,7 @@
                 <div class="avatar lg" id="pAvatarPreview">😎</div>
                 <div style="flex:1">
                   <button type="button" id="pAvatarPick" class="btn-accent" style="cursor:pointer;padding:.6rem 1rem">📷 Choisir une photo</button>
-                  <input id="pAvatarFile" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none" />
+                  <input id="pAvatarFile" type="file" accept="image/*" aria-label="Choisir une photo de profil" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none" />
                   <div class="msg" id="avatarMsg" style="margin-top:.3rem"></div>
                 </div>
               </div>
@@ -19376,6 +19399,7 @@
       document.querySelectorAll("[data-i18n]").forEach((el) => { const k = el.getAttribute("data-i18n"); const v = t(k); if (v) el.textContent = v; });
       document.querySelectorAll("[data-i18n-ph]").forEach((el) => { const v = t(el.getAttribute("data-i18n-ph")); if (v) el.setAttribute("placeholder", v); });
       if (currentLang === "en") translateTree(document.body); else restoreFr();
+      if (window._smSyncLabels) window._smSyncLabels(); // aria-label des champs = placeholder dans la bonne langue
     }
     // ====================== TRADUCTION AUTO (dictionnaire FR→EN) ======================
     // Couvre tout le texte d'UI codé en dur (statique + généré), sans toucher au contenu

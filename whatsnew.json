@@ -1,6 +1,7 @@
 {
-  "candidate": "v479",
+  "candidate": "v480",
   "items": [
-    "🌍 Dernier détail EN hors-ligne : les fenêtres du minuteur « Rentrée en sécurité » (texte explicatif avec mots en gras) sont maintenant traduites d'un bloc, donc nettes en anglais même sans réseau. L'écran Sécurité est désormais 100% bilingue hors-ligne."
+    "♿ Champs de formulaire étiquetés pour les lecteurs d'écran : les zones de saisie qui n'avaient qu'un texte d'exemple (placeholder) reçoivent maintenant un vrai libellé accessible (aria-label), synchronisé avec la langue. Navigation au lecteur d'écran nettement plus claire.",
+    "🎉 v480 — petit jalon : on archive cette version comme étape de l'évolution de SunMates."
   ]
 }
