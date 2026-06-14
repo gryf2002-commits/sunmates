@@ -47,7 +47,12 @@
     return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2];
   }
   function _ratio(a,b){var L1=_lum(a),L2=_lum(b),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+0.05)/(lo+0.05);}
-  function _bestAccent(j1,j2,page){return _ratio(j1,page)>=_ratio(j2,page)?j1:j2;}
+  function _toC(c,bg,target){ // pousse c vers noir/blanc jusqu'a atteindre le ratio WCAG vs bg
+    var dest=_lum(bg)>0.4?'#000000':'#ffffff', out=c, t=0;
+    while(_ratio(out,bg)<target && t<16){ out=_mix(out,dest,0.08); t++; }
+    return out;
+  }
+  function _bestAccent(j1,j2,page){var c=_ratio(j1,page)>=_ratio(j2,page)?j1:j2;return _toC(c,page,4.5);}
   function _card(page){return _lum(page)>0.4?_mix(page,'#ffffff',0.6):_mix(page,'#ffffff',0.08);}
 
   function applyTokens(T) {
@@ -63,23 +68,34 @@
       if (m.page || m.ink) {
         var pg = m.page || '#ffffff', ink = m.ink || '#222222';
         var ang = (m.angle != null ? m.angle : 160);
-        var grad = 'linear-gradient(' + ang + 'deg,' + m.j1 + ',' + m.j2 + ')';
-        var acc = _bestAccent(m.j1, m.j2, pg);
+        var grad = m.j3 ? ('linear-gradient(' + ang + 'deg,' + m.j1 + ',' + m.j3 + ',' + m.j2 + ')')
+                        : ('linear-gradient(' + ang + 'deg,' + m.j1 + ',' + m.j2 + ')');
+        var acc = _bestAccent(m.j1, m.j2, pg);          // accent garanti >=4.5:1 sur la page
+        var accInk = _toC(acc, pg, 4.6);                // texte d'accent lisible
+        var muted = _toC(_mix(ink, pg, 0.40), pg, 4.5); // texte secondaire WCAG
+        var text = _mix(ink, pg, 0.16);
+        var card = _card(pg);
         var sc = (T.scenes && T.scenes.accent) || acc;
+        var btnTxt = _lum(_mix(m.j1, m.j2, 0.5)) > 0.62 ? '#2a1c10' : '#ffffff'; // texte CTA lisible sur le degrade
         css += sel + '{';
         css += '--bg:' + pg + ';';
-        css += '--ink:' + ink + ';';
-        css += '--text:' + _mix(ink, pg, 0.16) + ';';
-        css += '--muted:' + _mix(ink, pg, 0.42) + ';';
+        css += '--bg-grad:radial-gradient(135% 90% at 50% -10%,' + _mix(pg, acc, 0.10) + ' 0%,' + pg + ' 60%);';
+        css += '--ink:' + ink + ';--ink-warm:' + ink + ';';
+        css += '--text:' + text + ';';
+        css += '--muted:' + muted + ';';
         css += '--line:' + _mix(ink, pg, 0.86) + ';';
-        css += '--card:' + _card(pg) + ';';
+        css += '--card:' + card + ';--paper:' + _mix(pg, ink, 0.03) + ';';
+        // surfaces "sombres" (cartes/nav/feed en nuit & saison) derivees du preset -> la nuit suit la DA
+        css += '--dcard:' + _mix(pg, ink, 0.06) + ';--dcard2:' + _mix(pg, ink, 0.04) + ';--dcard3:' + _mix(pg, ink, 0.10) + ';--dcard4:' + _mix(pg, ink, 0.02) + ';--dcard5:' + pg + ';';
         css += '--cream:' + _mix(pg, acc, 0.06) + ';';
-        css += '--accent:' + acc + ';';
+        css += '--accent:' + acc + ';--accent-ink:' + accInk + ';';
         css += '--accent-2:' + m.j1 + ';--accent-3:' + m.j2 + ';';
         css += '--accent-grad:' + grad + ';';
         css += '--accent-soft:' + _rgba(acc, 0.14) + ';';
         css += '--ring:0 0 0 4px ' + _rgba(acc, 0.18) + ';';
-        css += '--sm-scene-accent:' + sc + ';';
+        css += '--sm-scene-accent:' + sc + ';--sm-btn-text:' + btnTxt + ';';
+        // ecran de connexion / landing (namespace --lp-*) : suit le preset au lieu de rester sunset
+        css += '--lp-bg:' + pg + ';--lp-paper:' + card + ';--lp-ink:' + ink + ';--lp-text:' + text + ';--lp-muted:' + muted + ';--lp-accent:' + acc + ';--lp-grad:' + grad + ';';
         css += '}\n';
       }
     });
@@ -94,9 +110,11 @@
     }
     css += '.brand .mark svg line,.brand .mark svg path,.brand .mark svg polyline{stroke:var(--sm-logo,#fff);}\n';
     css += '.brand .mark svg circle,.brand .mark svg polygon{fill:var(--sm-logo,#fff);}\n';
+    // texte des CTA : suit --sm-btn-text (auto par mode, lisible sur le degrade), surchargeable par comp.btnText
+    css += '.btn-primary,.fc-send,button.cta{color:var(--sm-btn-text,#fff);}\n';
     if (T.comp) {
       var ct = '';
-      if (T.comp.btnText) ct += '.btn-primary,.fc-send,button.cta,.su-call{color:' + T.comp.btnText + ';}\n';
+      if (T.comp.btnText) ct += '.btn-primary,.fc-send,button.cta,.su-call{color:' + T.comp.btnText + ' !important;}\n';
       if (T.comp.chipText) ct += '.chip.active{color:' + T.comp.chipText + ';}\n';
       inject('sm-da-comp', ct);
     }
@@ -117,6 +135,14 @@
         css += '[data-smicon]{--icc:' + ((T.icon && T.icon.mono) || '#FFF6E9') + ';}\n';
       } else if (_cm === 'themed' && T.iconColors) {
         Object.keys(T.iconColors).forEach(function (c) { css += '[data-smicon="' + c + '"]{--icc:' + T.iconColors[c] + ';}\n'; });
+        // variante par mode : couleurs d'emblemes propres a chaque mode (si perMode actif)
+        if (T.icon && T.icon.perMode && T.iconColorsByMode) {
+          Object.keys(T.iconColorsByMode).forEach(function (mk) {
+            var mm = T.modes[mk]; if (!mm) return;
+            var msel = modeSelector(mm), byc = T.iconColorsByMode[mk] || {};
+            Object.keys(byc).forEach(function (c) { css += msel + ' [data-smicon="' + c + '"]{--icc:' + byc[c] + ';}\n'; });
+          });
+        }
       }
       css += '.cic[data-smicon] svg,[data-smicon] .smicon,[data-smicon] svg{color:var(--icc, currentColor);}\n';
     }

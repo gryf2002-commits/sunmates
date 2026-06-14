@@ -1,5 +1,11 @@
 [
   {
+    "v": "v491",
+    "date": "2026-06-14",
+    "note": "DA refonte profonde : le loader dérive enfin TOUTES les variables manquantes par preset (--accent-ink, --bg-grad, --dcard*, --lp-* login, --ink-warm) + accent/muted/CTA garantis WCAG AA (≥4.5:1) → mesuré 21 presets × 6 modes = 0 échec. Login + nuit + surfaces + carte suivent le preset (avant figés sunset). Carte : « feuille » dérivée de la DA (eau/verdure réalistes). Emblème play ▶ + alias 🆘/🆙 (0 orphelin critique). Console habillée sunset + mode icônes « Thémée ». loader ?v=8, icons ?v=544, badges ?v=491.",
+    "file": "v491.html"
+  },
+  {
     "v": "v490",
     "date": "2026-06-14",
     "note": "DA wave 6 : pilotage icônes (colorMode natural/mono + style native/banque), marqueurs carte auto-contraste, console refondue (onglets + recherche + couleurs rapides) et panneau Avancé RÉPARÉ (da-console.html n'est plus tronqué : 302 lignes, finit par </html>). loader ?v=7.",

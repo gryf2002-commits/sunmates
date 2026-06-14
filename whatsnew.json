@@ -1,8 +1,10 @@
 {
-  "candidate": "v490",
+  "candidate": "v491",
   "items": [
-    "🎨 DA — pilotage des icônes : mode couleur « naturel » (couleurs designées) ou « mono » (une couleur, contraste piloté), et style « natif » (emojis système) vs banque SVG.",
-    "📍 Marqueurs de carte en auto-contraste (fini le « toujours blanc »).",
-    "🧰 Console DA refondue : barre d'onglets (Couleurs · Icônes · Typo · Contenu · Avancé) + recherche, cases couleurs rapides, et le panneau Avancé (typo/contraste/logos/icône-app/images) RÉPARÉ (il était tronqué)."
+    "🎨 DA vraiment complète : chaque preset pilote enfin l'écran de connexion, la nuit, les surfaces et la carte (avant, tout ça restait figé en sunset).",
+    "♿ Contraste auto WCAG AA : sur les 21 presets × 6 modes, textes et accents toujours lisibles (même en pastel clair) — fini les accents quasi invisibles.",
+    "🗺️ La carte suit la DA publiée (fond/quartiers/bâtiments/texte), eau & verdure restent réalistes.",
+    "▶️ Emblèmes complétés (lecture ▶, secours 🆘…) — plus d'emoji orphelin au milieu des icônes.",
+    "🧰 Console DA habillée « sunset » + mode d'icônes « Thémée » (une couleur par catégorie, raccord DA)."
   ]
 }

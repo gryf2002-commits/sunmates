@@ -61,7 +61,7 @@
         b.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:var(--z-consent,5500);width:calc(100% - 1.6rem);max-width:430px;background:var(--card,#fff);color:var(--ink,#1d2230);border:1px solid var(--line,#f0e2da);border-radius:18px;box-shadow:0 18px 50px rgba(45,38,52,.22);padding:.9rem 1rem;font:600 .85rem/1.45 Manrope,system-ui,sans-serif";
         b.innerHTML = '🍪 <b>' + txt.title + '</b><br>' + txt.body
           + '<div style="display:flex;gap:.5rem;margin-top:.6rem">'
-          + '<button id="consentYes" style="flex:1;border:0;border-radius:999px;padding:.55rem;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#FFC93C,#FF8A3D,#FF5A4D);color:#fff">' + txt.yes + '</button>'
+          + '<button id="consentYes" style="flex:1;border:0;border-radius:999px;padding:.55rem;font-weight:800;cursor:pointer;background:var(--accent-grad,linear-gradient(135deg,#FFC93C,#FF8A3D,#FF5A4D));color:var(--sm-btn-text,#fff)">' + txt.yes + '</button>'
           + '<button id="consentNo" style="flex:1;border:1.5px solid var(--line,#f0e2da);border-radius:999px;padding:.55rem;font-weight:800;cursor:pointer;background:transparent;color:inherit">' + txt.no + '</button></div>';
         document.body.appendChild(b);
         function done(v) { try { localStorage.setItem("sm_consent_analytics", v); } catch (e) {} b.remove(); if (v === "yes") window._phInit(); }
@@ -197,8 +197,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=490"></script>
-  <script src="sunmates-icons-v2.js?v=543"></script>
+  <script src="sunmates-badges.js?v=491"></script>
+  <script src="sunmates-icons-v2.js?v=544"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
     .smicon { display: inline-block; vertical-align: middle; }
@@ -2992,7 +2992,7 @@
       color: var(--text);
       background: radial-gradient(130% 80% at 50% -8%, #3b2550 0%, #2a1c3e 34%, #20182f 64%, #171026 100%);
     }
-    body.theme-dusk .app-shell { background: radial-gradient(120% 55% at 50% -12%, rgba(255,150,110,.30) 0%, rgba(255,150,110,0) 58%), var(--bg) !important; }
+    body.theme-dusk .app-shell { background: radial-gradient(120% 55% at 50% -12%, var(--accent-soft, rgba(255,150,110,.22)) 0%, transparent 58%), var(--bg) !important; }
     body.theme-dusk .card { background: linear-gradient(180deg, var(--dcard2,#241b36) 0%, var(--dcard5,#1f1830) 100%) !important; border-color: rgba(255,255,255,.07) !important; box-shadow: 0 14px 34px rgba(0,0,0,.42) !important; }
     body.theme-dusk input, body.theme-dusk textarea, body.theme-dusk select,
     body.theme-dusk .search input { background: #2b2240 !important; color: #ede6f2; border-color: rgba(255,255,255,.13) !important; }
@@ -8348,6 +8348,7 @@
           try { SMDA.apply(window.SM_DA_TOKENS); } catch (e) {}
           try { SMDA.applyStrings(window.SM_DA_STRINGS); if (typeof applyI18n === "function") applyI18n(); } catch (e) {}
         }
+        try { if (typeof smRefreshMapTheme === "function") smRefreshMapTheme(); } catch (e) {} // la carte suit la DA publiée
         try { subscribeDA(); } catch (e) {}
       } catch (e) {}
     }
@@ -15260,14 +15261,41 @@
         rail: "#D8D3AE", aeroway: "#E9EDCE", boundary: "#C2BC8F", text: "#4F6A4A", halo: "#FDFBE8",
       },
     };
+    function _smMixHex(a, b, t) { // melange 2 couleurs hex (t=0→a, 1→b) pour teinter la carte
+      function h(x){x=String(x||'').trim();if(x[0]==='#')x=x.slice(1);if(x.length===3)x=x[0]+x[0]+x[1]+x[1]+x[2]+x[2];var n=parseInt(x,16);return x.length===6&&!isNaN(n)?[(n>>16)&255,(n>>8)&255,n&255]:null;}
+      var A=h(a),B=h(b); if(!A||!B) return a;
+      return '#'+[0,1,2].map(function(i){var v=Math.round(A[i]+(B[i]-A[i])*t);return (v<16?'0':'')+Math.max(0,Math.min(255,v)).toString(16);}).join('');
+    }
     function smActiveMapPalette() {
       const b = document.body.classList;
       // #9 : la NUIT prime · en « nuit d'hiver / nuit tropicale », la carte passe en palette
       // nuit (sinon une carte claire éblouit sur l'app sombre).
-      if (b.contains("theme-dusk")) return SM_MAP_PALETTES.dusk;
-      if (b.contains("theme-winter")) return SM_MAP_PALETTES.winter;
-      if (b.contains("theme-tropic")) return SM_MAP_PALETTES.tropic;
-      return SM_MAP_PALETTES.day;
+      let base = SM_MAP_PALETTES.day;
+      if (b.contains("theme-dusk")) base = SM_MAP_PALETTES.dusk;
+      else if (b.contains("theme-winter")) base = SM_MAP_PALETTES.winter;
+      else if (b.contains("theme-tropic")) base = SM_MAP_PALETTES.tropic;
+      // DA publiée → la "feuille" de la carte (fond/quartiers/bâtiments/texte/halo) suit le
+      // preset, eau & verdure restent réalistes (demande Maxime). Sinon : palette d'origine.
+      try {
+        if (window.SM_DA_TOKENS) {
+          const cs = getComputedStyle(document.body);
+          const bg = cs.getPropertyValue('--bg').trim();
+          const ink = cs.getPropertyValue('--ink').trim();
+          const card = (cs.getPropertyValue('--card').trim()) || bg;
+          if (/^#?[0-9a-f]{3,6}$/i.test(bg) && /^#?[0-9a-f]{3,6}$/i.test(ink)) {
+            const P = Object.assign({}, base);
+            P.bg = _smMixHex(bg, base.water, 0.04);
+            P.residential = _smMixHex(bg, ink, 0.05);
+            P.building = _smMixHex(card, ink, 0.10);
+            P.sand = _smMixHex(bg, base.sand, 0.45);
+            P.casing = _smMixHex(bg, ink, 0.12);
+            P.text = ink;
+            P.halo = _smMixHex(bg, card, 0.5);
+            return P;
+          }
+        }
+      } catch (e) {}
+      return base;
     }
     const _smGlMaps = []; // cartes GL vivantes → re-teintées au changement de thème
     function smRefreshMapTheme() { _smGlMaps.forEach((m) => _smRecolorStyle(m)); }
@@ -15302,7 +15330,7 @@
             if (/rail|transit/.test(id)) { set(ly.id, "line-color", P.rail); return; }
             if (/aeroway|runway|taxiway/.test(id)) { set(ly.id, "line-color", P.aeroway); return; }
             const casing = /casing|outline/.test(id);
-            if (/motorway|trunk/.test(id)) set(ly.id, "line-color", casing ? "#F2C386" : P.motorway);
+            if (/motorway|trunk/.test(id)) set(ly.id, "line-color", casing ? P.casing : P.motorway);
             else if (/primary|secondary|tertiary|major|highway/.test(id)) set(ly.id, "line-color", casing ? P.casing : P.roadMajor);
             else if (/minor|service|street|road|path|track|pedestrian|bridge|tunnel|link/.test(id)) set(ly.id, "line-color", casing ? P.casing : P.roadMinor);
             return;
@@ -20401,6 +20429,6 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- DA pilotée (console cowork) : applique les tokens/strings publiés. APRÈS le script app (i18nT défini, SMDA exposé avant render). -->
-  <script src="sunmates-da-loader.js?v=7"></script>
+  <script src="sunmates-da-loader.js?v=8"></script>
 </body>
 </html>
