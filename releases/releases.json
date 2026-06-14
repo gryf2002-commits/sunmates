@@ -1,5 +1,11 @@
 [
   {
+    "v": "v476",
+    "date": "2026-06-14",
+    "note": "Parité EN HORS-LIGNE sur les écrans critiques : auth, confirmation d'email et messages errFr/_authErr curés dans I18N_DICT (plus de dépendance à MyMemory en ligne, fini le flash FR)",
+    "file": "v476.html"
+  },
+  {
     "v": "v475",
     "date": "2026-06-14",
     "note": "errFr généralisé : ~40 error.message bruts (anglais/SQL Supabase) remplacés par des messages FR rassurants et actionnables (droits/session, doublon, réseau, rate-limit…) ; détail technique en console",
