@@ -32,3 +32,32 @@ _*.js
 _*.json
 _*.png
 _*.html
+# === À AJOUTER à ton .gitignore (ou renomme ce fichier en .gitignore s'il n'existe pas) ===
+
+# Sources d'icônes Phosphor : INUTILES au runtime (la banque sunmates-icons-v2.js
+# embarque déjà les SVG inline). On les garde sur le disque pour de futurs restylages,
+# mais on ne les pousse pas (sinon +18 000 fichiers dans le repo).
+SVGs/
+SVGs Flat/
+PNGs/
+Fonts/
+
+# Artefacts de génération / QA de la banque d'icônes
+batch_*.json
+out_*.json
+icons_merged.json
+icons_bank_v3.json
+icon_master.json
+phos_map.json
+ICON_SPEC_v2.md
+ICON_REDO_HINTS.md
+ICON_REDO2_HINTS.md
+ICON_REDO3_HINTS.md
+qa_*.png
+qa_*.svg
+index.html.SAVE-icons
+
+# Previews de design (optionnel : retire ces lignes si tu veux les versionner)
+icones-preview.html
+icones-contexte.html
+icones-modes.html
