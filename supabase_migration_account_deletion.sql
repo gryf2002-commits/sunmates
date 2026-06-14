@@ -3,7 +3,9 @@
 -- Une RPC sécurisée que l'utilisateur appelle pour SUPPRIMER son propre compte :
 -- efface ses données dans toutes les tables connues PUIS son compte Auth.
 -- Best-effort par table (ignore une table/colonne absente → robuste sur ce schéma).
--- À exécuter dans le SQL Editor de Supabase.
+-- ⚠️ VERSION CANONIQUE & COMPLÈTE de sm_delete_my_account (supersede la copie plus ancienne et
+--    incomplète de supabase_migration_security_fixes.sql). C'est « create or replace » → sûr à
+--    relancer. À EXÉCUTER EN DERNIER dans le SQL Editor de Supabase pour écraser toute version périmée.
 -- ============================================================================
 
 create or replace function sm_delete_my_account()
@@ -30,9 +32,23 @@ begin
   begin delete from locations_realtime where user_id = uid; exception when others then null; end;
   begin delete from trips where user_id = uid; exception when others then null; end;
   begin delete from quest_suggestions where from_user = uid or to_user = uid; exception when others then null; end;
-  begin delete from reports where reporter = uid or reported = uid; exception when others then null; end;
-  begin delete from vouches where voucher = uid or vouched = uid; exception when others then null; end;
+  begin delete from reports where reporter = uid or reported_user = uid; exception when others then null; end; -- FIX : la colonne est « reported_user »
+  begin delete from vouches where voucher = uid or vouchee = uid; exception when others then null; end; -- FIX : la colonne est « vouchee » (pas « vouched »)
   begin delete from place_reviews where user_id = uid; exception when others then null; end;
+  -- Tables ajoutées depuis (groupes, badges, coupons, journal solo, activités carte, sessions de groupe).
+  -- La plupart cascadent déjà via auth.users, mais on les efface aussi explicitement (robustesse si le
+  -- delete auth.users échoue) — best-effort, un bloc par table.
+  begin delete from group_messages where sender_id = uid; exception when others then null; end;
+  begin delete from group_members where user_id = uid; exception when others then null; end;
+  begin delete from group_chats where creator = uid; exception when others then null; end;
+  begin delete from user_badges where user_id = uid; exception when others then null; end;
+  begin delete from user_coupons where user_id = uid; exception when others then null; end;
+  begin delete from user_solo_log where user_id = uid; exception when others then null; end;
+  begin delete from map_activities where creator = uid; exception when others then null; end;
+  begin delete from quest_group_runs where initiator = uid or partner = uid; exception when others then null; end;
+  -- Fichiers uploadés (avatars, notes vocales) : storage.objects ne cascade PAS sur auth.users → on les
+  -- supprime explicitement, sinon les photos/audios de l'utilisateur restent dans les buckets (fuite RGPD).
+  begin delete from storage.objects where owner = uid; exception when others then null; end;
   begin delete from profiles_private where id = uid; exception when others then null; end;
   begin delete from profiles where id = uid; exception when others then null; end;
   -- Le compte Auth lui-même (efface définitivement l'identité de connexion).

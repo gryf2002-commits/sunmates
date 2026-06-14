@@ -69,7 +69,7 @@ begin
   begin delete from locations_realtime where user_id = uid; exception when others then null; end;
   begin delete from trips where user_id = uid; exception when others then null; end;
   begin delete from reports where reporter = uid or reported_user = uid; exception when others then null; end;
-  begin delete from vouches where voucher = uid or vouched = uid; exception when others then null; end;
+  begin delete from vouches where voucher = uid or vouchee = uid; exception when others then null; end; -- FIX : « vouchee » (pas « vouched »). NB : version CANONIQUE & complète = supabase_migration_account_deletion.sql (à lancer en DERNIER).
   begin delete from place_reviews where user_id = uid; exception when others then null; end;
   begin delete from profiles_private where id = uid; exception when others then null; end;
   begin delete from profiles where id = uid; exception when others then null; end;
