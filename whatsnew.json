@@ -1,7 +1,7 @@
 {
-  "candidate": "v484",
+  "candidate": "v485",
   "items": [
-    "🎛️ Console DA — leviers activés : les bascules d'effets (sans reflet / miroir / sans ombre) agissent maintenant sur l'app, et les polices choisies dans la console sont vraiment chargées (Google Fonts), avec repli système propre.",
-    "ℹ️ La recoloration des emblèmes par catégorie reste en attente d'une banque d'icônes en monochrome (les emblèmes actuels sont multi-couleurs « joaillerie » : les forcer en une seule couleur les aplatirait). À faire côté banque d'icônes."
+    "🔄 Console DA : bouton « Recharger la page » dans l'admin (après « Tester en live ») → indispensable pour voir le rendu complet (polices, textes) une fois le JSON collé.",
+    "🎨 3ᵉ levier activé (couleur des emblèmes) : si tu définis des couleurs d'emblèmes dans la console, les pictos prennent cette couleur (rendu monochrome assumé). Opt-in : tant que tu ne touches à rien, les joyaux multi-couleurs d'origine restent intacts."
   ]
 }

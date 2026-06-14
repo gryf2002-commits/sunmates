@@ -74,6 +74,9 @@
     document.body.classList.toggle('sm-no-polish', e.polish === false);
     document.body.classList.toggle('sm-mirror', !!e.mirror);
     document.body.classList.toggle('sm-no-shadow', e.shadow === false);
+    // LEVER 3 (opt-in) : on n'active la recoloration des emblèmes (--icc, rendu mono) QUE si des couleurs
+    // d'emblèmes sont définies → sinon les joyaux multi-couleurs restent intacts par défaut.
+    document.body.classList.toggle('sm-icc', !!(T.iconColors && Object.keys(T.iconColors).length));
     if (T.a11y) document.documentElement.style.fontSize = ((T.a11y.fontScale || 100) / 100 * 16) + 'px';
   }
   // ---- Textes : override de i18nT (clé = FR d'origine) ----
