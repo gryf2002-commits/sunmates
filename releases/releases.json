@@ -1,5 +1,11 @@
 [
   {
+    "v": "v488",
+    "date": "2026-06-14",
+    "note": "DA cowork COUVERTURE : loader variable-cœur (--bg/--ink/--accent dérivés des tokens → la DA pilote vraiment l'app, plus 1%) + SMIconize (460 emojis orphelins → emblèmes recolorables) + vague 2 (recolor marqueurs carte, banque d'images, versions/rollback, live-push, console↔admin). index re-exporté propre (tail intact). loader ?v=5, icons ?v=542. ⚠️ versions+live-push nécessitent da-history.sql + Realtime sur da_tokens/da_strings.",
+    "file": "v488.html"
+  },
+  {
     "v": "v487",
     "date": "2026-06-14",
     "note": "Fix : le pull-to-refresh (roulette) ré-applique la DA publiée (applyPublishedDA() appelée par render ET refreshCurrentTab, plus seulement au login). Avant, seul un reload complet actualisait la DA.",
