@@ -1,8 +1,8 @@
 {
-  "candidate": "v488",
+  "candidate": "v489",
   "items": [
-    "🎨 DA pilotée VRAIMENT partout (cowork) : le fond, le texte, les accents, les CTA, les cartes suivent maintenant la DA publiée (variables-cœur dérivées des tokens). Avant, ~1% bougeait.",
-    "✨ Emojis « orphelins » remplacés par les emblèmes recolorables (titres, boutons, placeholders) — le contenu utilisateur (messages, bios) reste intact.",
-    "🧩 Vague 2 : recolor des marqueurs de carte, banque d'images, versions/rollback de la DA, live-push (sans recharger), et console qui alimente l'admin sans copier-coller. (Live-push + versions nécessitent 2 manips Supabase.)"
+    "🎨 DA encore plus complète : la NUIT suit maintenant la DA (cartes/posts/champs/feed ne sont plus figés), plus de tuiles décoratives pilotées (en-têtes lieux, badges).",
+    "🎛️ Réglages qui agissent VRAIMENT : forme des tuiles (squircle/cercle/arrondi), tailles, couleur des logos, et couleurs d'emblèmes assorties à chaque preset.",
+    "🧰 Console : 21 presets retravaillés (chacun restyle toute l'app de façon cohérente), cases couleurs rapides sous chaque sélecteur, et une section « Emojis » (tout convertir en emblèmes on/off + liste d'emojis à garder natifs)."
   ]
 }

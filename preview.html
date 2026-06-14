@@ -197,8 +197,8 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=488"></script>
-  <script src="sunmates-icons-v2.js?v=542"></script>
+  <script src="sunmates-badges.js?v=489"></script>
+  <script src="sunmates-icons-v2.js?v=543"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
     .smicon { display: inline-block; vertical-align: middle; }
@@ -660,7 +660,7 @@
     .pcard .pcard-chip { font-size: .72rem; font-weight: 800; padding: .26rem .55rem; border-radius: 999px; box-shadow: 0 3px 8px rgba(0,0,0,.2); white-space: nowrap; }
     .pcard .pcard-chips-l { position: absolute; top: .6rem; left: .6rem; z-index: 2; display: flex; gap: .3rem; flex-wrap: wrap; }
     .pcard .pcard-rate, .pcard .pcard-new { position: absolute; top: .6rem; right: .6rem; z-index: 2; }
-    .pcard-eco { background: linear-gradient(135deg,#4ED8B8,#179E8C); color: #06352D; } /* DA : turquoise bijou (pas de vert émeraude vif) · texte teal foncé ≥4.8:1 (loi de contraste, ANNONCÉ) */
+    .pcard-eco { background: var(--accent-grad); color: #fff; } /* DA : turquoise bijou (pas de vert émeraude vif) · texte teal foncé ≥4.8:1 (loi de contraste, ANNONCÉ) */
     /* « Sois le·la 1er·ère à checker ! » = vrai bouton (lance le check-in), plus un texte gris décoratif */
     .pcard-firstck { border: 0; background: none; padding: 0; font: inherit; font-weight: 800; color: var(--accent); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
     .pcard-top { background: var(--accent-grad); color: #4A2A08; } /* texte ambre foncé ≥5:1 (avant : blanc ~1.6:1, échec AA) · ANNONCÉ */
@@ -1493,7 +1493,7 @@
     #profileAvatar { cursor: pointer; } /* tap → photo en grand */
     #verifBadge { flex-shrink: 0; }
     /* Logo « vérifié » rond aux couleurs SunMates (sans le mot, partout dans l'app) */
-    .vchip { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg,#FFC93C,#FF8A3D 60%,#17a99b); color: #fff; font-size: 10px; font-weight: 900; line-height: 1; vertical-align: middle; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+    .vchip { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--accent-grad); color: #fff; font-size: 10px; font-weight: 900; line-height: 1; vertical-align: middle; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
     .vchip.lg { width: 20px; height: 20px; font-size: 12px; }
 
     .msg { margin-top: .7rem; font-size: .88rem; min-height: 1.1rem; font-weight: 500; }
@@ -1550,16 +1550,16 @@
     .gcard:active { transform: scale(.98); }
     .gcard .ghead { height: 84px; background: var(--accent-grad); position: relative; background-size: cover; background-position: center; display: grid; place-items: center; }
     .gcard .ghead::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.35)); } /* lisibilité photo */
-    .gcard .ghead.green { background: linear-gradient(135deg,#4ED8B8,#179E8C); } /* DA : turquoise (pas de vert vif) */
+    .gcard .ghead.green { background: var(--accent-grad); } /* DA : turquoise (pas de vert vif) */
     .gcard .ghead.blue  { background: linear-gradient(135deg,#9D86FF,#5E3FE0); } /* DA : indigo nuit (pas de bleu ciel) */
     .gcard .ghead.purp  { background: linear-gradient(135deg,#b9a6ff,#7c5cff); }
     /* Têtes colorées des mini-jeux intégrés (pas de photo → dégradé plein, emoji centré) */
-    .gcard .ghead.gh-gold   { background: linear-gradient(135deg,#ffd98a,#f0a93a); }
-    .gcard .ghead.gh-teal   { background: linear-gradient(135deg,#7fe3d3,#17a99b); }
-    .gcard .ghead.gh-indigo { background: linear-gradient(135deg,#9FA8FF,#5B63E0); }
-    .gcard .ghead.gh-coral  { background: linear-gradient(135deg,#FFB37A,#FF6F3D); }
-    .gcard .ghead.gh-purp   { background: linear-gradient(135deg,#C77DFF,#8A4FE0); }
-    .gcard .ghead.gh-rose   { background: linear-gradient(135deg,#FF9CC2,#F0568F); }
+    .gcard .ghead.gh-gold { background: var(--accent-grad); }
+    .gcard .ghead.gh-teal { background: var(--accent-grad); }
+    .gcard .ghead.gh-indigo { background: var(--accent-grad); }
+    .gcard .ghead.gh-coral { background: var(--accent-grad); }
+    .gcard .ghead.gh-purp { background: var(--accent-grad); }
+    .gcard .ghead.gh-rose { background: var(--accent-grad); }
     /* Cartes jeux/quêtes (pas de photo) : on retire le voile SOMBRE (qui ternissait/floutait
        l'emoji) → juste un léger reflet clair en haut pour le volume « gemme ». */
     .gcard.gcard-play .ghead::after { background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0) 58%); }
@@ -3264,11 +3264,11 @@
       background: radial-gradient(120% 70% at 50% -6%, #FF7A3D40 0%, #6A2A6E 24%, #34164F 52%, #190E2E 100%);
     }
     body.theme-dusk .app-shell { background: transparent !important; } /* #3+#4 : halo nuit porté par #bgFx (fixe) */
-    body.theme-dusk .card, body.theme-dusk .post, body.theme-dusk .pf-section { background: linear-gradient(180deg,#2A1846,#22123A) !important; border-color: rgba(255,255,255,.08) !important; }
-    body.theme-dusk input, body.theme-dusk textarea, body.theme-dusk select, body.theme-dusk .search input { background: #2E1B4C !important; color: #f3e9f3; }
+    body.theme-dusk .card, body.theme-dusk .post, body.theme-dusk .pf-section { background: var(--card) !important; border-color: rgba(255,255,255,.08) !important; }
+    body.theme-dusk input, body.theme-dusk textarea, body.theme-dusk select, body.theme-dusk .search input { background: var(--cream) !important; color: var(--ink); }
     body.theme-dusk .feed-card, body.theme-dusk .pcell, body.theme-dusk .pprompt, body.theme-dusk .stat-box,
-    body.theme-dusk .dstat, body.theme-dusk .tile, body.theme-dusk .gcard, body.theme-dusk .chip,
-    body.theme-dusk .mseg, body.theme-dusk .coupon, body.theme-dusk .reco { background: #2E1B4C !important; }
+    body.theme-dusk .dstat, body.theme-dusk .gcard, body.theme-dusk .chip,
+    body.theme-dusk .mseg, body.theme-dusk .coupon, body.theme-dusk .reco { background: var(--cream) !important; }
     /* P2.8 : FIL homogène en nuit · les posts rejoignent la MÊME famille violette que les cartes
        (avant : brun délavé #241b35 posé à côté de cartes #2A1846 = patchwork), un cran plus
        clair que la tuile principale (le composer, dégradé sombre) pour bien les distinguer. */
@@ -3276,7 +3276,7 @@
     body.theme-dusk:not(.theme-winter):not(.theme-tropic) .fpost-empty { background: #271642; border-color: rgba(255,255,255,.14); }
     body.theme-dusk .bottom-nav { background: #190e2e; }
     body.theme-dusk .topbar { background: linear-gradient(#190e2e 62%, rgba(25,14,46,0)); border-bottom: 0; }
-    body.theme-dusk .bubble.them { background: #2E1B4C; color: #f3e9f3; }
+    body.theme-dusk .bubble.them { background: var(--cream); color: var(--ink); }
     body.theme-dusk .iconbtn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); }
     body.theme-dusk .notif-card, body.theme-dusk .picker-card { background: #22123A; }
     body.theme-dusk .nbadge { background: color-mix(in srgb, var(--accent) 65%, var(--bg)); } /* Lot A : en nuit l'encre est claire → on assombrit vers le fond du mode (3.8-5.4:1 dans les 3 nuits) */
@@ -20399,6 +20399,6 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- DA pilotée (console cowork) : applique les tokens/strings publiés. APRÈS le script app (i18nT défini, SMDA exposé avant render). -->
-  <script src="sunmates-da-loader.js?v=5"></script>
+  <script src="sunmates-da-loader.js?v=6"></script>
 </body>
 </html>
