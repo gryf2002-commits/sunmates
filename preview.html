@@ -69,6 +69,50 @@
         document.getElementById("consentNo").addEventListener("click", function () { done("no"); });
       }, 1400);
     });
+
+    // ===== Accessibilité clavier : rendre les éléments cliquables (souvent des <div>) atteignables =====
+    // Beaucoup d'éléments tappables ne sont pas des <button>/<a> natifs → invisibles au clavier.
+    // Ce shim leur pose tabindex + role=button et mappe Entrée/Espace sur le clic. Gardes :
+    //  - on ne touche jamais un conteneur déjà dans (ou contenant) un élément focusable → pas de double-focus ;
+    //  - on n'agit au clavier QUE sur les éléments qu'on a nous-mêmes équipés (dataset.kbd === "added")
+    //    → aucun risque de double-déclenchement avec un éventuel handler maison.
+    document.addEventListener("DOMContentLoaded", function () {
+      var KBD_SEL = ".cat-tile,.jeux-open,.tile,.gcard,.qrow,.bitem,.coupon,.person,.stat-click,.matepick,.notif-item,.feed-card,.pcard,.reco,.trip-mate,.fpost-top,.pc-stat";
+      function kbEnhance(root) {
+        if (!root || !root.querySelectorAll) return;
+        var list = (root.matches && root.matches(KBD_SEL)) ? [root] : [];
+        var found = root.querySelectorAll(KBD_SEL);
+        for (var i = 0; i < found.length; i++) list.push(found[i]);
+        list.forEach(function (el) {
+          if (el.dataset.kbd) return;                                                              // déjà vu
+          if (el.closest("a,button")) { el.dataset.kbd = "seen"; return; }                          // déjà dans un focusable natif
+          if (el.querySelector("a,button,input,select,textarea,[tabindex]")) { el.dataset.kbd = "seen"; return; } // contient un interactif
+          if (el.hasAttribute("tabindex")) { el.dataset.kbd = "seen"; return; }                      // déjà focusable / géré
+          el.setAttribute("tabindex", "0");
+          if (!el.getAttribute("role")) el.setAttribute("role", "button");
+          el.dataset.kbd = "added";
+        });
+      }
+      // Entrée/Espace sur un élément qu'on a équipé → clic (et on empêche le scroll de la barre d'espace).
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter" && e.key !== " " && e.key !== "Spacebar") return;
+        var el = document.activeElement;
+        if (!el || !el.dataset || el.dataset.kbd !== "added") return;
+        e.preventDefault();
+        el.click();
+      });
+      kbEnhance(document);
+      try {
+        var mo = new MutationObserver(function (muts) {
+          for (var i = 0; i < muts.length; i++) {
+            var add = muts[i].addedNodes;
+            for (var j = 0; j < add.length; j++) if (add[j].nodeType === 1) kbEnhance(add[j]);
+          }
+        });
+        mo.observe(document.body, { childList: true, subtree: true });
+      } catch (e) {}
+    });
+
     // Helper unique : trace un événement sans JAMAIS planter l'app si PostHog est bloqué.
     window.track = function (name, props) {
       try { if (window.posthog && posthog.capture) posthog.capture(name, props || {}); } catch (e) {}
@@ -130,7 +174,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=473"></script>
+  <script src="sunmates-badges.js?v=474"></script>
   <script src="sunmates-icons-v2.js?v=540"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */

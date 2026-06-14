@@ -1,7 +1,7 @@
 {
-  "candidate": "v473",
+  "candidate": "v474",
   "items": [
-    "🍪 Bandeau de consentement repositionné AU-DESSUS de la barre de navigation : il ne masque plus le contenu ni les onglets, et il apparaît en douceur (petit délai) pour ne plus se superposer à la pop « Installer ».",
-    "⌨️ Focus clavier renforcé : l'anneau de mise au point gagne un liséré clair → bien visible dans les 6 modes (jour/nuit/saisons), même sur un élément déjà corail. Meilleure navigation au clavier."
+    "⌨️ Navigation 100% clavier : les tuiles, lignes et cartes cliquables (qui n'étaient pas de vrais boutons) deviennent atteignables au clavier (Tab) et s'activent avec Entrée ou Espace → gros gain d'accessibilité, et pratique sur clavier physique.",
+    "🛡️ Sûr par construction : les éléments qui contiennent déjà un bouton/lien ne sont pas modifiés (pas de double-sélection), et le suivi des contenus ajoutés est automatique (listes, fil, cartes générées après connexion)."
   ]
 }
