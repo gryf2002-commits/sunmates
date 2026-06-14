@@ -125,8 +125,14 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=465"></script>
-  <script src="sunmates-icons.js?v=445"></script>
+  <script src="sunmates-badges.js?v=466"></script>
+  <script src="sunmates-icons-v2.js?v=520"></script>
+  <style>
+    /* Banque d'icônes v2 « fait main » : emblèmes monochromes posés sur les pastilles-joyaux
+       (couleur + gloss viennent de .cic/.smgem/.thumb, comme les badges). */
+    .smicon { display: inline-block; vertical-align: middle; }
+    button .smicon, .da-emo .smicon { vertical-align: -0.16em; }
+  </style>
   <script>
     // P2.10/P2.11 : le service worker ne s'enregistre QUE sur la page principale · jamais depuis
     // la préversion (preview.html) ni une version archivée (releases/…) : elles se testent
@@ -4097,6 +4103,229 @@
     .set-toggle .st-lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .trav-tags span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* tags de voyageur */
   </style>
+
+  <!-- ============================================================
+       SM-2026 · SEO / partage social / données structurées
+       (statique dans le <head> : lisible par les moteurs et les
+       aperçus de lien, même avant l'exécution du JS).
+       ============================================================ -->
+  <meta name="description" content="SunMates, l'app sociale des voyageurs solo : repère les voyageurs et les lieux sûrs autour de toi, lance des activités, relève des quêtes et pars l'esprit tranquille. Pars solo, trouve ta bande." />
+  <meta name="keywords" content="voyage solo, rencontrer des voyageurs, app voyageurs solo, voyager seul, sécurité voyage, carte voyageurs, quêtes voyage, communauté voyage, solo travel, meet travelers" />
+  <meta name="author" content="SunMates" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://sunmatesapp.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SunMates" />
+  <meta property="og:title" content="SunMates · Pars solo, trouve ta bande ☀️" />
+  <meta property="og:description" content="Repère les voyageurs et les lieux sûrs autour de toi, lance des activités, relève des quêtes ensemble. Le solo, c'est juste le début de l'histoire." />
+  <meta property="og:image" content="https://sunmatesapp.com/shot_accueil.jpg" />
+  <meta property="og:url" content="https://sunmatesapp.com/" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SunMates · Pars solo, trouve ta bande ☀️" />
+  <meta name="twitter:description" content="L'app sociale des voyageurs solo : repère qui est autour, relève des quêtes, pars l'esprit tranquille." />
+  <meta name="twitter:image" content="https://sunmatesapp.com/shot_accueil.jpg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SunMates",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "Web, Android, iOS",
+    "url": "https://sunmatesapp.com/",
+    "description": "App sociale « sécurité d'abord » pour les voyageurs solo : carte vivante des voyageurs et des lieux sûrs, activités, quêtes gamifiées, partage de position au cercle de confiance.",
+    "inLanguage": ["fr", "en"],
+    "image": "https://sunmatesapp.com/icon-512.png",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+    "author": { "@type": "Organization", "name": "SunMates", "url": "https://sunmatesapp.com/" }
+  }
+  </script>
+
+  <!-- ============================================================
+       SM-2026 · Couche DESKTOP (app) + LANDING (pré-connexion)
+       100% ADDITIVE & GATÉE :
+       · Desktop : @media (min-width:900px) scopé #appView → le mobile
+         et l'app installée ne bougent pas d'un pixel.
+       · Landing : scopée #authView (vue UNIQUEMENT déconnecté·e),
+         classes lp-* (aucune collision avec l'app), palette marketing
+         fixe (indépendante du thème), responsive mobile + desktop.
+       ============================================================ -->
+  <style id="sm2026">
+    /* ---------- D1 · DESKTOP de l'app (≥900px, #appView seulement) ---------- */
+    @media (min-width: 900px) {
+      #appView.app-shell { max-width: 1180px; }
+      /* La barre du bas devient un VRAI rail de navigation latéral gauche. */
+      #appView > .bottom-nav {
+        left: max(0px, calc(50vw - 590px)); right: auto; bottom: auto; top: 0;
+        transform: none;
+        width: 220px; max-width: 220px; height: 100dvh;
+        flex-direction: column; justify-content: flex-start; align-items: stretch;
+        gap: .2rem; padding: 1.3rem .7rem calc(1.3rem + env(safe-area-inset-bottom, 0px));
+        border-radius: 0 22px 22px 0; box-shadow: 8px 0 30px rgba(20,20,40,.06);
+        overflow-y: auto;
+      }
+      #appView > .bottom-nav button {
+        flex: 0 0 auto; flex-direction: row; justify-content: flex-start;
+        gap: .85rem; width: 100%; padding: .72rem .9rem; border-radius: 14px;
+        font-size: .96rem; font-weight: 700;
+      }
+      #appView > .bottom-nav button .nav-lbl { display: block; font-size: .96rem; }
+      #appView > .bottom-nav button { color: var(--text); }
+      #appView > .bottom-nav button .ni svg { width: 23px; height: 23px; }
+      #appView > .bottom-nav button.active { background: var(--accent-soft); color: var(--accent); }
+      #appView > .bottom-nav button.active .ni { transform: none; }
+      #appView > .bottom-nav button:hover { background: var(--accent-soft); }
+      #appView > .bottom-nav .navbadge { margin-left: auto; }
+      /* Le contenu se cale à droite du rail, en colonne lisible centrée. */
+      #appView > .topbar { padding-left: calc(220px + 1.6rem); padding-right: 1.6rem; }
+      #appView > #goldPreviewBanner, #appView > #safeTimerBar { margin-left: 220px; }
+      #appView > main { padding-left: calc(220px + 2rem); padding-right: 2rem; padding-bottom: 3rem; }
+      #appView > main > .tab-panel { max-width: 720px; margin-left: auto; margin-right: auto; }
+    }
+    @media (min-width: 1280px) {
+      #appView.app-shell { max-width: 1240px; }
+      #appView > .bottom-nav { left: max(0px, calc(50vw - 620px)); }
+      #appView > main > .tab-panel { max-width: 760px; }
+    }
+
+    /* ---------- D2 · LANDING pré-connexion (#authView) ---------- */
+    #authView.auth-wrap {
+      --lp-bg: #fbeee9;
+      --lp-bg-grad: radial-gradient(125% 85% at 50% -12%, #ffe6d2 0%, #fdeee7 42%, #fbe9e4 100%);
+      --lp-paper: #fffaf3;
+      --lp-accent: #FF5A4D;
+      --lp-grad: linear-gradient(135deg, #FFC93C 0%, #FF8A3D 45%, #FF5A4D 100%);
+      --lp-sunset: linear-gradient(180deg, #ffb27e 0%, #ff8f6e 42%, #FF5A4D 100%);
+      --lp-ink: #2a1f2e; --lp-text: #5b4b57; --lp-muted: #9a8b95;
+      --lp-line: rgba(244,101,94,.14);
+      --lp-shadow: 0 14px 40px rgba(45,38,52,.12);
+      --lp-shadow-pop: 0 22px 60px rgba(45,38,52,.20);
+      display: block; min-height: 100dvh;
+      background: var(--lp-bg-grad), var(--lp-bg);
+      color: var(--lp-text); line-height: 1.6; overflow-x: hidden;
+      font-family: "Manrope", system-ui, -apple-system, sans-serif;
+    }
+    #authView .lp { width: 100%; }
+    #authView .lp h1, #authView .lp h2, #authView .lp h3 { font-family: "Fraunces", Georgia, serif; color: var(--lp-ink); line-height: 1.12; margin: 0; }
+    #authView .lp p { margin: 0; }
+    #authView .lp a { color: inherit; text-decoration: none; }
+    #authView .lp-wrap { width: min(1080px, 90vw); margin: 0 auto; }
+
+    /* nav */
+    #authView .lp-nav { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(255,250,243,.80); border-bottom: 1px solid var(--lp-line); }
+    #authView .lp-nav-inner { width: min(1080px, 90vw); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem 0; }
+    #authView .lp-brand { display: flex; align-items: center; gap: .5rem; font-family: "Fraunces", serif; font-weight: 700; font-size: 1.25rem; color: var(--lp-ink); }
+    #authView .lp-brand .lp-logo { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--lp-grad); box-shadow: var(--lp-shadow); font-size: 1.05rem; }
+    #authView .lp-nav-links { display: flex; align-items: center; gap: 1.1rem; }
+    #authView .lp-link { font-weight: 600; color: var(--lp-text); font-size: .95rem; }
+    #authView .lp-link:hover { color: var(--lp-accent); }
+
+    /* sélecteur de langue */
+    #authView .lp-lang { display: inline-flex; gap: .15rem; background: var(--lp-paper); border-radius: 999px; padding: .2rem; box-shadow: var(--lp-shadow); }
+    #authView .lp-lang button { background: transparent; border: 0; padding: .35rem .6rem; border-radius: 999px; font-weight: 700; font-size: .8rem; color: var(--lp-muted); cursor: pointer; }
+    #authView .lp-lang button.active { background: var(--lp-grad); color: #fff; }
+
+    /* boutons */
+    #authView .lp-btn { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; cursor: pointer; border: none; font-family: "Manrope", sans-serif; font-weight: 700; font-size: 1rem; padding: .8rem 1.4rem; border-radius: 999px; transition: transform .15s ease, box-shadow .2s ease; }
+    #authView .lp-btn-primary { background: var(--lp-grad); color: #fff; box-shadow: var(--lp-shadow-pop); }
+    #authView .lp-btn-primary:hover { transform: translateY(-2px); }
+    #authView .lp-btn-ghost { background: var(--lp-paper); color: var(--lp-ink); box-shadow: var(--lp-shadow); }
+    #authView .lp-btn-ghost:hover { transform: translateY(-2px); }
+    #authView .lp-btn-sm { padding: .55rem 1rem; font-size: .9rem; }
+
+    /* hero */
+    #authView .lp-hero { padding: clamp(2.4rem, 6vw, 5rem) 0 clamp(2rem, 5vw, 4rem); }
+    #authView .lp-hero-grid { width: min(1080px, 90vw); margin: 0 auto; display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+    #authView .lp-eyebrow { display: inline-flex; align-items: center; gap: .4rem; background: var(--lp-paper); color: #b23a2e; font-weight: 700; font-size: .82rem; padding: .4rem .9rem; border-radius: 999px; box-shadow: var(--lp-shadow); margin-bottom: 1.1rem; }
+    #authView .lp-h1 { font-size: clamp(2.3rem, 6.2vw, 4rem); font-weight: 900; letter-spacing: -.02em; color: var(--lp-ink); }
+    #authView .lp-grad { background: var(--lp-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    #authView .lp-lede { font-size: clamp(1.05rem, 2.2vw, 1.2rem); margin: 1.2rem 0 1.7rem; max-width: 38ch; color: var(--lp-text); }
+    #authView .lp-cta { display: flex; gap: .8rem; flex-wrap: wrap; }
+    #authView .lp-trust { margin-top: 1.1rem; font-size: .9rem; color: var(--lp-muted); }
+
+    /* maquettes téléphone */
+    #authView .lp-phone-stage { display: flex; justify-content: center; position: relative; }
+    #authView .lp-phone-stage::before { content: ""; position: absolute; inset: -10% -6%; background: radial-gradient(60% 60% at 60% 30%, rgba(255,138,61,.28), transparent 70%); filter: blur(12px); z-index: 0; }
+    #authView .lp-phone { position: relative; z-index: 1; width: min(280px, 72vw); aspect-ratio: 390/844; background: #1d2230; border-radius: 40px; padding: 8px; box-shadow: var(--lp-shadow-pop), 0 0 0 1px rgba(0,0,0,.05); }
+    #authView .lp-phone img { width: 100%; height: 100%; object-fit: cover; border-radius: 33px; display: block; }
+
+    /* sections */
+    #authView .lp-sec { padding: clamp(2.2rem, 6vw, 4.2rem) 0; }
+    #authView .lp-sec-head { text-align: center; max-width: 46ch; margin: 0 auto clamp(1.6rem, 4vw, 2.6rem); }
+    #authView .lp-sec-head h2 { font-size: clamp(1.7rem, 4.4vw, 2.5rem); font-weight: 700; }
+    #authView .lp-sec-head p { margin-top: .7rem; color: var(--lp-text); }
+
+    /* 3 piliers */
+    #authView .lp-pillars { width: min(1080px, 90vw); margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    #authView .lp-pillar { background: var(--lp-paper); border-radius: 22px; padding: 1.6rem; box-shadow: var(--lp-shadow); border: 1px solid var(--lp-line); transition: transform .2s ease, box-shadow .2s ease; }
+    #authView .lp-pillar:hover { transform: translateY(-4px); box-shadow: var(--lp-shadow-pop); }
+    #authView .lp-ico { width: 54px; height: 54px; border-radius: 14px; display: grid; place-items: center; font-size: 1.6rem; margin-bottom: 1rem; }
+    #authView .lp-ico.sun { background: linear-gradient(135deg, #ffd15c, #ff8a3d); }
+    #authView .lp-ico.purp { background: linear-gradient(135deg, #b3a0ff, #7a5cff); }
+    #authView .lp-ico.game { background: linear-gradient(135deg, #ffb274, #ff5a4d); }
+    #authView .lp-pillar h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: .5rem; }
+    #authView .lp-pillar p { font-size: .95rem; }
+
+    /* galerie captures */
+    #authView .lp-gallery { width: min(1080px, 90vw); margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 2.5rem); align-items: start; }
+    #authView .lp-shot { text-align: center; }
+    #authView .lp-shot .lp-phone { margin: 0 auto .9rem; }
+    #authView .lp-cap { font-size: .92rem; color: var(--lp-text); max-width: 28ch; margin: 0 auto; }
+    #authView .lp-cap b { color: var(--lp-ink); }
+
+    /* étapes */
+    #authView .lp-steps { width: min(1080px, 90vw); margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    #authView .lp-step { text-align: center; padding: 1rem; }
+    #authView .lp-num { width: 46px; height: 46px; border-radius: 50%; background: var(--lp-grad); color: #fff; font-family: "Fraunces", serif; font-weight: 700; font-size: 1.3rem; display: grid; place-items: center; margin: 0 auto .8rem; box-shadow: var(--lp-shadow); }
+    #authView .lp-step h3 { font-size: 1.1rem; margin-bottom: .35rem; }
+    #authView .lp-step p { font-size: .9rem; }
+
+    /* carte « rejoindre » (formulaire d'auth existant) */
+    #authView .lp-join { background: var(--lp-sunset); }
+    #authView .lp-join .lp-sec-head h2, #authView .lp-join .lp-sec-head p { color: #fff; }
+    #authView .lp-join-card { width: min(460px, 92vw); margin: 0 auto; background: var(--lp-paper); border-radius: 28px; padding: 1.5rem 1.4rem 1.8rem; box-shadow: var(--lp-shadow-pop); }
+    #authView .lp-join-card .auth-title { text-align: center; }
+    #authView .lp-join-card .auth-title h1 { font-size: 1.5rem; color: var(--lp-ink); }
+    #authView .lp-join-card .auth-title p { color: var(--lp-text); font-size: .95rem; margin-top: .25rem; }
+
+    /* FAQ */
+    #authView .lp-faq { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: .8rem; }
+    #authView .lp-faq details { background: var(--lp-paper); border-radius: 14px; padding: 1rem 1.2rem; box-shadow: var(--lp-shadow); border: 1px solid var(--lp-line); cursor: pointer; }
+    #authView .lp-faq summary { font-weight: 700; color: var(--lp-ink); list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    #authView .lp-faq summary::-webkit-details-marker { display: none; }
+    #authView .lp-faq summary::after { content: "+"; font-size: 1.4rem; color: var(--lp-accent); transition: transform .2s; }
+    #authView .lp-faq details[open] summary::after { transform: rotate(45deg); }
+    #authView .lp-faq details p { margin-top: .7rem; font-size: .95rem; color: var(--lp-text); }
+
+    /* CTA final */
+    #authView .lp-final-card { width: min(1080px, 90vw); margin: 0 auto; text-align: center; background: var(--lp-sunset); color: #fff; border-radius: 28px; padding: clamp(2.4rem, 6vw, 4rem) 1.5rem; box-shadow: var(--lp-shadow-pop); }
+    #authView .lp-final-card h2 { color: #fff; font-size: clamp(1.7rem, 4.4vw, 2.5rem); font-weight: 700; }
+    #authView .lp-final-card p { margin: .9rem auto 1.6rem; max-width: 42ch; opacity: .96; }
+    #authView .lp-final-card .lp-btn-ghost { background: #fff; color: #b23a2e; }
+
+    /* pied de page */
+    #authView .lp-footer { padding: 2.4rem 0 3rem; border-top: 1px solid var(--lp-line); }
+    #authView .lp-footer-inner { width: min(1080px, 90vw); margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+    #authView .lp-foot-links { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+    #authView .lp-foot-links a { color: var(--lp-text); font-weight: 600; font-size: .92rem; }
+    #authView .lp-foot-links a:hover { color: var(--lp-accent); }
+    #authView .lp-copy { font-size: .85rem; color: var(--lp-muted); }
+
+    /* responsive landing */
+    @media (max-width: 860px) {
+      #authView .lp-hero-grid { grid-template-columns: 1fr; text-align: center; }
+      #authView .lp-eyebrow, #authView .lp-lede { margin-inline: auto; }
+      #authView .lp-cta { justify-content: center; }
+      #authView .lp-pillars { grid-template-columns: 1fr; }
+      #authView .lp-gallery { grid-template-columns: 1fr; max-width: 320px; gap: 3rem; }
+      #authView .lp-steps { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) { #authView .lp-link { display: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      #authView .lp-btn, #authView .lp-pillar { transition: none !important; }
+    }
+  </style>
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -4406,66 +4635,180 @@
   <!-- ============ ÉCRAN CONNEXION / INSCRIPTION ============ -->
   <!-- hidden au boot : on ne révèle login OU app qu'une fois l'état d'auth connu (anti-flash) -->
   <section id="authView" class="auth-wrap hidden">
-    <div class="auth-hero">
-      <div class="logo-badge"><svg viewBox="0 0 64 64" width="48" height="48">
-        <defs><linearGradient id="sunG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD15C"/><stop offset="0.55" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF4F6D"/></linearGradient></defs>
-        <g stroke="#FF8A3D" stroke-width="3.4" stroke-linecap="round">
-          <line x1="32" y1="6" x2="32" y2="13"/>
-          <line x1="14" y1="14" x2="19" y2="19"/><line x1="50" y1="14" x2="45" y2="19"/>
-          <line x1="7" y1="33" x2="14" y2="33"/><line x1="50" y1="33" x2="57" y2="33"/>
-        </g>
-        <circle cx="32" cy="33" r="13" fill="url(#sunG)"/>
-        <path d="M10 47h44" stroke="#FF4F6D" stroke-width="3.4" stroke-linecap="round"/>
-        <path d="M17 53h30" stroke="#FFB52E" stroke-width="3" stroke-linecap="round" opacity=".8"/>
-      </svg></div>
-      <div class="logo-text">SUNMATES</div>
-      <div class="logo-tag">Seul·e au départ, jamais à l'arrivée ☀️</div>
-    </div>
-    <div class="auth-body">
-      <!-- Langue choisissable AVANT la connexion (le choix est mémorisé pour toute l'app) -->
-      <div class="auth-lang">
-        <button type="button" data-lang="fr">🇫🇷 FR</button>
-        <button type="button" data-lang="en">🇬🇧 EN</button>
-      </div>
-      <div class="auth-title">
-        <h1 id="authTitleH">Pars solo, trouve ta bande 🌍</h1>
-        <p id="authTitleP" style="color:var(--text);font-size:.95rem;line-height:1.5;margin-top:.15rem">Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.</p>
-      </div>
-      <div class="seg">
-        <button id="tabLogin" class="active" data-i18n="auth.login">Connexion</button>
-        <button id="tabSignup">Inscription</button>
-        <button id="tabPro">💼 Pro</button>
-      </div>
+    <!-- LANDING (vue déconnecté·e) : marketing complet + formulaire d'auth intégré.
+         Classes lp-* (cf. <style id="sm2026">). Tous les ids du formulaire sont conservés. -->
+    <div class="lp">
+      <!-- ---------- Barre du haut ---------- -->
+      <header class="lp-nav">
+        <div class="lp-nav-inner">
+          <a class="lp-brand" href="#lp-top"><span class="lp-logo">☀️</span> SunMates</a>
+          <nav class="lp-nav-links">
+            <a class="lp-link" href="#lp-why">Pourquoi</a>
+            <a class="lp-link" href="#lp-app">L'app</a>
+            <a class="lp-link" href="#lp-faq">FAQ</a>
+            <div class="lp-lang">
+              <button type="button" data-lang="fr">FR</button>
+              <button type="button" data-lang="en">EN</button>
+            </div>
+            <a class="lp-btn lp-btn-primary lp-btn-sm" href="#lp-join">Rejoindre</a>
+          </nav>
+        </div>
+      </header>
 
-      <!-- Formulaire voyageur (Connexion / Inscription) -->
-      <div id="authForm">
-        <label>Email</label>
-        <input id="authEmail" type="email" placeholder="chloe@exemple.com" />
-        <!-- P2.5 : pseudo choisi DÈS l'inscription (sinon c'était le début de l'email qui s'affichait partout) -->
-        <div id="authPseudoWrap" class="hidden">
-          <label>Pseudo</label>
-          <input id="authPseudo" type="text" maxlength="20" placeholder="Chloé l'exploratrice" autocomplete="nickname" />
-        </div>
-        <label>Mot de passe</label>
-        <div style="position:relative">
-          <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" autocomplete="current-password" />
-          <button type="button" id="authPwToggle" class="pw-eye" title="Afficher / masquer le mot de passe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
-        </div>
-        <div class="auth-play"><button id="authPlay" aria-label="Se connecter">Se connecter</button></div>
-        <div class="msg" id="authMsg" style="text-align:center"></div>
-      </div>
+      <main id="lp-top">
+        <!-- ---------- Hero ---------- -->
+        <section class="lp-hero">
+          <div class="lp-hero-grid">
+            <div>
+              <span class="lp-eyebrow">☀️ Ton aventure solo commence ici</span>
+              <h1 class="lp-h1"><span class="lp-grad">Pars solo, trouve ta bande.</span></h1>
+              <p class="lp-lede">Explore une ville, croise des voyageurs comme toi, relève des quêtes ensemble. Le solo, c'est juste le début de l'histoire.</p>
+              <div class="lp-cta">
+                <a class="lp-btn lp-btn-primary" href="#lp-join" onclick="try{setAuthMode('signup')}catch(e){}">Rejoindre l'aventure →</a>
+                <a class="lp-btn lp-btn-ghost" href="#lp-how">Voir comment ça marche</a>
+              </div>
+              <p class="lp-trust">🗺️ Repère les lieux et les voyageurs autour de toi, et pars l'esprit tranquille.</p>
+            </div>
+            <div class="lp-phone-stage">
+              <div class="lp-phone"><img src="shot_accueil.jpg" alt="L'accueil de SunMates : une carte avec les lieux sûrs et les voyageurs autour de toi" width="390" height="844" loading="eager" /></div>
+            </div>
+          </div>
+        </section>
 
-      <!-- Bloc Pro / B2B : 4 tuiles séparées, cliquables → chacune pop son détail (pas de redirect direct) -->
-      <div id="authProBlock" class="hidden">
-        <div class="grid2 pro-grid">
-          <div class="tile" data-protile="visi"><div class="thumb gold">📈</div><div class="t-name">Visibilité</div><div class="t-meta">Touche pour en savoir +</div></div>
-          <div class="tile" data-protile="badge"><div class="thumb teal">🛟</div><div class="t-name">Badge « Lieu sûr »</div><div class="t-meta">Touche pour en savoir +</div></div>
-          <div class="tile" data-protile="traffic"><div class="thumb coral">🎟️</div><div class="t-name">Plus de trafic</div><div class="t-meta">Touche pour en savoir +</div></div>
-          <div class="tile" data-protile="stats"><div class="thumb indigo">📊</div><div class="t-name">Statistiques</div><div class="t-meta">Touche pour en savoir +</div></div>
+        <!-- ---------- 3 piliers ---------- -->
+        <section id="lp-why" class="lp-sec">
+          <div class="lp-sec-head"><h2>Pourquoi tu vas adorer</h2></div>
+          <div class="lp-pillars">
+            <article class="lp-pillar">
+              <div class="lp-ico sun">🗺️</div>
+              <h3>Explore autour de toi</h3>
+              <p>Une carte vivante te montre les lieux qui valent le détour et les voyageurs dans le coin. Tu n'as jamais voyagé seul·e, tu ne le savais juste pas encore.</p>
+            </article>
+            <article class="lp-pillar">
+              <div class="lp-ico purp">🤝</div>
+              <h3>Trouve ta bande</h3>
+              <p>Croise des gens qui vibrent comme toi, connecte, et transforme un café partagé en souvenirs de voyage. L'amitié, version golden hour.</p>
+            </article>
+            <article class="lp-pillar">
+              <div class="lp-ico game">🎮</div>
+              <h3>Joue, gagne, brille</h3>
+              <p>Quêtes, badges, coupons, classement : chaque sortie te rapporte de l'XP. Voyager devient un terrain de jeu.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ---------- Aperçu (vraies captures) ---------- -->
+        <section id="lp-app" class="lp-sec">
+          <div class="lp-sec-head">
+            <h2>Jette un œil à l'intérieur</h2>
+            <p>De vraies captures de l'app, pas des promesses.</p>
+          </div>
+          <div class="lp-gallery">
+            <figure class="lp-shot">
+              <div class="lp-phone"><img src="shot_accueil.jpg" alt="Carte d'accueil de SunMates" loading="lazy" /></div>
+              <figcaption class="lp-cap"><b>Toute la carte à portée de pouce.</b> Repère les lieux et les voyageurs autour de toi.</figcaption>
+            </figure>
+            <figure class="lp-shot">
+              <div class="lp-phone"><img src="shot_jeux.jpg" alt="Onglet Jeux : quêtes, badges, coupons et classement" loading="lazy" /></div>
+              <figcaption class="lp-cap"><b>Quêtes, badges et coupons.</b> Transforme chaque sortie en partie à gagner.</figcaption>
+            </figure>
+            <figure class="lp-shot">
+              <div class="lp-phone"><img src="shot_profil.jpg" alt="Profil avec XP, Mates et check-ins" loading="lazy" /></div>
+              <figcaption class="lp-cap"><b>Ton aventure en chiffres.</b> XP, Mates et check-ins qui s'accumulent.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- ---------- Comment ça marche ---------- -->
+        <section id="lp-how" class="lp-sec">
+          <div class="lp-sec-head"><h2>En 3 temps, tu es lancé·e</h2></div>
+          <div class="lp-steps">
+            <div class="lp-step"><div class="lp-num">1</div><h3>Crée ton profil</h3><p>Quelques infos, ta vibe, et te voilà sur la carte.</p></div>
+            <div class="lp-step"><div class="lp-num">2</div><h3>Explore et connecte</h3><p>Repère les lieux et les voyageurs autour de toi, lance le premier hello.</p></div>
+            <div class="lp-step"><div class="lp-num">3</div><h3>Relève des quêtes</h3><p>Check-in, défis, badges : amuse-toi et fais grimper ton XP avec ta bande.</p></div>
+          </div>
+        </section>
+
+        <!-- ---------- Rejoindre : formulaire d'auth (ids conservés) ---------- -->
+        <section id="lp-join" class="lp-sec lp-join">
+          <div class="lp-sec-head"><h2>Prêt·e à embarquer ?</h2><p>Crée ton compte en 30 secondes, c'est gratuit.</p></div>
+          <div class="lp-join-card">
+            <div class="auth-title">
+              <h1 id="authTitleH">Pars solo, trouve ta bande 🌍</h1>
+              <p id="authTitleP">Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.</p>
+            </div>
+            <div class="seg">
+              <button id="tabLogin" class="active" data-i18n="auth.login">Connexion</button>
+              <button id="tabSignup">Inscription</button>
+              <button id="tabPro">💼 Pro</button>
+            </div>
+
+            <!-- Formulaire voyageur (Connexion / Inscription) -->
+            <div id="authForm">
+              <label>Email</label>
+              <input id="authEmail" type="email" placeholder="chloe@exemple.com" />
+              <!-- P2.5 : pseudo choisi DÈS l'inscription (sinon c'était le début de l'email qui s'affichait partout) -->
+              <div id="authPseudoWrap" class="hidden">
+                <label>Pseudo</label>
+                <input id="authPseudo" type="text" maxlength="20" placeholder="Chloé l'exploratrice" autocomplete="nickname" />
+              </div>
+              <label>Mot de passe</label>
+              <div style="position:relative">
+                <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" autocomplete="current-password" />
+                <button type="button" id="authPwToggle" class="pw-eye" title="Afficher / masquer le mot de passe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
+              </div>
+              <div class="auth-play"><button id="authPlay" aria-label="Se connecter">Se connecter</button></div>
+              <div class="msg" id="authMsg" style="text-align:center"></div>
+            </div>
+
+            <!-- Bloc Pro / B2B : 4 tuiles séparées, cliquables → chacune pop son détail (pas de redirect direct) -->
+            <div id="authProBlock" class="hidden">
+              <div class="grid2 pro-grid">
+                <div class="tile" data-protile="visi"><div class="thumb gold">📈</div><div class="t-name">Visibilité</div><div class="t-meta">Touche pour en savoir +</div></div>
+                <div class="tile" data-protile="badge"><div class="thumb teal">🛟</div><div class="t-name">Badge « Lieu sûr »</div><div class="t-meta">Touche pour en savoir +</div></div>
+                <div class="tile" data-protile="traffic"><div class="thumb coral">🎟️</div><div class="t-name">Plus de trafic</div><div class="t-meta">Touche pour en savoir +</div></div>
+                <div class="tile" data-protile="stats"><div class="thumb indigo">📊</div><div class="t-name">Statistiques</div><div class="t-meta">Touche pour en savoir +</div></div>
+              </div>
+              <button class="btn-primary btn-block" id="authProStart" style="margin-top:1rem;font-size:1.05rem;padding:1rem">🚀 Démarrer, Espace Pro</button>
+              <p class="muted" style="text-align:center;font-size:.78rem;margin-top:.6rem">Aucun compte requis : découvre l'offre et envoie ta demande de partenariat.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- FAQ ---------- -->
+        <section id="lp-faq" class="lp-sec">
+          <div class="lp-sec-head"><h2>Les questions qu'on nous pose</h2></div>
+          <div class="lp-faq">
+            <details open><summary>C'est une appli de dating ?</summary><p>Non ! Ici on cherche des potes de voyage, pas un date. SunMates, c'est l'amitié et les aventures partagées.</p></details>
+            <details><summary>Je voyage seul·e, je vais vraiment rencontrer du monde ?</summary><p>Carrément. La carte te montre les voyageurs et les lieux autour de toi, un message, un café, et c'est parti.</p></details>
+            <details><summary>Ça sert à quoi, les quêtes et les badges ?</summary><p>À pimenter le voyage. Tu gagnes de l'XP, tu débloques des badges et des coupons, et tu grimpes au classement avec ta bande.</p></details>
+            <details><summary>Et mes données ?</summary><p>Elles restent les tiennes. Tu choisis ce que tu partages, et tu voyages tranquille.</p></details>
+          </div>
+        </section>
+
+        <!-- ---------- CTA final ---------- -->
+        <section class="lp-sec">
+          <div class="lp-final-card">
+            <h2>Ta bande t'attend quelque part</h2>
+            <p>Une nouvelle ville, des visages à découvrir, des quêtes à relever, il ne manque plus que toi.</p>
+            <a class="lp-btn lp-btn-ghost" href="#lp-join" onclick="try{setAuthMode('signup')}catch(e){}">Rejoindre l'aventure ☀️</a>
+          </div>
+        </section>
+      </main>
+
+      <!-- ---------- Pied de page ---------- -->
+      <footer class="lp-footer">
+        <div class="lp-footer-inner">
+          <a class="lp-brand" href="#lp-top"><span class="lp-logo">☀️</span> SunMates</a>
+          <nav class="lp-foot-links">
+            <a href="#lp-join">Rejoindre</a>
+            <a href="#lp-why">Pourquoi</a>
+            <a href="#lp-faq">FAQ</a>
+            <a href="mailto:gryf2002@gmail.com">Contact</a>
+          </nav>
+          <p class="lp-copy">SunMates, pars solo, trouve ta bande ☀️</p>
         </div>
-        <button class="btn-primary btn-block" id="authProStart" style="margin-top:1rem;font-size:1.05rem;padding:1rem">🚀 Démarrer, Espace Pro</button>
-        <p class="muted" style="text-align:center;font-size:.78rem;margin-top:.6rem">Aucun compte requis : découvre l'offre et envoie ta demande de partenariat.</p>
-      </div>
+      </footer>
     </div>
   </section>
 
@@ -17421,6 +17764,56 @@
     // Dictionnaire FR→EN pour la traduction auto (texte d'UI codé en dur).
     // Clés = texte FR EXACT (trimmé) tel qu'affiché. Le contenu utilisateur n'y est pas.
     const I18N_DICT = {
+      // ===== LANDING (pré-connexion) · EN maîtrisé, jamais machine-traduit =====
+      "Pourquoi": "Why", "L'app": "The app", "Rejoindre": "Join",
+      "☀️ Ton aventure solo commence ici": "☀️ Your solo adventure starts here",
+      "Pars solo, trouve ta bande.": "Travel solo, find your crew.",
+      "Explore une ville, croise des voyageurs comme toi, relève des quêtes ensemble. Le solo, c'est juste le début de l'histoire.": "Explore a city, cross paths with travellers like you, take on quests together. Going solo is just the start of the story.",
+      "Rejoindre l'aventure →": "Join the adventure →",
+      "Voir comment ça marche": "See how it works",
+      "🗺️ Repère les lieux et les voyageurs autour de toi, et pars l'esprit tranquille.": "🗺️ Spot the places and travellers around you, and set off with peace of mind.",
+      "Pourquoi tu vas adorer": "Why you'll love it",
+      "Explore autour de toi": "Explore around you",
+      "Une carte vivante te montre les lieux qui valent le détour et les voyageurs dans le coin. Tu n'as jamais voyagé seul·e, tu ne le savais juste pas encore.": "A living map shows you the places worth the detour and the travellers nearby. You've never really travelled alone, you just didn't know it yet.",
+      "Trouve ta bande": "Find your crew",
+      "Croise des gens qui vibrent comme toi, connecte, et transforme un café partagé en souvenirs de voyage. L'amitié, version golden hour.": "Meet people who vibe like you, connect, and turn a shared coffee into travel memories. Friendship, golden-hour edition.",
+      "Joue, gagne, brille": "Play, win, shine",
+      "Quêtes, badges, coupons, classement : chaque sortie te rapporte de l'XP. Voyager devient un terrain de jeu.": "Quests, badges, coupons, leaderboards: every outing earns you XP. Travel becomes a playground.",
+      "Jette un œil à l'intérieur": "Take a look inside",
+      "De vraies captures de l'app, pas des promesses.": "Real screenshots of the app, not promises.",
+      "Toute la carte à portée de pouce.": "The whole map at your fingertips.",
+      "Repère les lieux et les voyageurs autour de toi.": "Spot the places and travellers around you.",
+      "Quêtes, badges et coupons.": "Quests, badges and coupons.",
+      "Transforme chaque sortie en partie à gagner.": "Turn every outing into a game to win.",
+      "Ton aventure en chiffres.": "Your adventure in numbers.",
+      "XP, Mates et check-ins qui s'accumulent.": "XP, Mates and check-ins that add up.",
+      "En 3 temps, tu es lancé·e": "Three steps and you're off",
+      "Crée ton profil": "Create your profile",
+      "Quelques infos, ta vibe, et te voilà sur la carte.": "A few details, your vibe, and you're on the map.",
+      "Explore et connecte": "Explore and connect",
+      "Repère les lieux et les voyageurs autour de toi, lance le premier hello.": "Spot the places and travellers around you, send the first hello.",
+      "Relève des quêtes": "Take on quests",
+      "Check-in, défis, badges : amuse-toi et fais grimper ton XP avec ta bande.": "Check-ins, challenges, badges: have fun and grow your XP with your crew.",
+      "Prêt·e à embarquer ?": "Ready to hop on?",
+      "Crée ton compte en 30 secondes, c'est gratuit.": "Create your account in 30 seconds, it's free.",
+      "Pars solo, trouve ta bande 🌍": "Travel solo, find your crew 🌍",
+      "Repère les voyageurs autour de toi, propose un café ou une virée, et repars avec des potes.": "Spot travellers around you, suggest a coffee or an outing, and leave with a crew.",
+      "Les questions qu'on nous pose": "The questions we get asked",
+      "C'est une appli de dating ?": "Is it a dating app?",
+      "Non ! Ici on cherche des potes de voyage, pas un date. SunMates, c'est l'amitié et les aventures partagées.": "No! Here you look for travel buddies, not a date. SunMates is friendship and shared adventures.",
+      "Je voyage seul·e, je vais vraiment rencontrer du monde ?": "I travel solo, will I really meet people?",
+      "Carrément. La carte te montre les voyageurs et les lieux autour de toi, un message, un café, et c'est parti.": "Absolutely. The map shows you the travellers and places around you, a message, a coffee, and you're off.",
+      "Ça sert à quoi, les quêtes et les badges ?": "What are quests and badges for?",
+      "À pimenter le voyage. Tu gagnes de l'XP, tu débloques des badges et des coupons, et tu grimpes au classement avec ta bande.": "To spice up the trip. You earn XP, unlock badges and coupons, and climb the leaderboard with your crew.",
+      "Et mes données ?": "What about my data?",
+      "Elles restent les tiennes. Tu choisis ce que tu partages, et tu voyages tranquille.": "They stay yours. You choose what you share, and you travel with peace of mind.",
+      "Ta bande t'attend quelque part": "Your crew is waiting somewhere",
+      "Une nouvelle ville, des visages à découvrir, des quêtes à relever, il ne manque plus que toi.": "A new city, faces to discover, quests to take on, all that's missing is you.",
+      "Rejoindre l'aventure ☀️": "Join the adventure ☀️",
+      "SunMates, pars solo, trouve ta bande ☀️": "SunMates, travel solo, find your crew ☀️",
+      "Inscription": "Sign up",
+      "Se connecter": "Log in",
+      "Créer mon compte": "Create my account",
       // CTA d'accueil : nouveau libellé du bouton de connexion (les autres chaînes de cet écran
       // sont déjà traduites plus bas dans ce dico).
       "Se connecter": "Log in",

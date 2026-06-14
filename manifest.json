@@ -1,7 +1,8 @@
 {
+  "id": "/",
   "name": "SunMates — voyager solo, en sécurité",
   "short_name": "SunMates",
-  "description": "L'app sociale « sécurité d'abord » pour les voyageurs solo.",
+  "description": "L'app sociale « sécurité d'abord » pour les voyageurs solo : repère qui est autour, lance des activités, relève des quêtes et pars l'esprit tranquille.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
@@ -20,5 +21,10 @@
     { "name": "Découvrir des Mates", "short_name": "Découvrir", "url": "./?tab=connexions", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Mes messages", "short_name": "Messages", "url": "./?tab=connexions&seg=messages", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Quêtes & jeux", "short_name": "Jeux", "url": "./?tab=jeux", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ],
+  "screenshots": [
+    { "src": "shot_accueil.jpg", "sizes": "780x1688", "type": "image/jpeg", "form_factor": "narrow", "label": "La carte vivante : repère les lieux et les voyageurs autour de toi" },
+    { "src": "shot_jeux.jpg", "sizes": "780x1688", "type": "image/jpeg", "form_factor": "narrow", "label": "Quêtes, badges et coupons : voyager devient un jeu" },
+    { "src": "shot_profil.jpg", "sizes": "780x1688", "type": "image/jpeg", "form_factor": "narrow", "label": "Ton aventure en chiffres : XP, Mates et check-ins" }
   ]
 }
