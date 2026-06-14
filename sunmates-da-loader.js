@@ -52,6 +52,14 @@
     }
     // 3) Tailles & effets (exposés en variables, à consommer côté CSS app si besoin)
     if (T.sizes) css += ':root{--sm-tile:' + (T.sizes.tile || 74) + 'px;--sm-icon:' + (T.sizes.iconTile || 38) + 'px;}\n';
+    // 3bis) Couleurs de police (titres / corps / méta) — variables + mapping prudent (seulement si définies)
+    if (T.typo) {
+      var tc = T.typo.titleColor, bc = T.typo.bodyColor, mc = T.typo.metaColor, tcss = '';
+      if (tc) { css += ':root{--sm-title:' + tc + ';}\n'; tcss += 'h1,h2,h3,.feature h2,.brand b,.logo-text,.t-name,.sname{color:' + tc + ';}\n'; }
+      if (bc) { css += ':root{--sm-body:' + bc + ';}\n'; tcss += 'body,.bubble,.fpost-body{color:' + bc + ';}\n'; }
+      if (mc) { css += ':root{--sm-meta:' + mc + ';}\n'; tcss += '.smeta,.muted,.sub,.meta,.hint,.small{color:' + mc + ';}\n'; }
+      inject('sm-da-typo', tcss);
+    }
     inject('sm-da-vars', css);
     // 4) Polices
     if (T.fonts) {
