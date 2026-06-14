@@ -36,12 +36,25 @@ select.sm{font-size:.74rem;border:1px solid var(--line);border-radius:6px;paddin
 .ovgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px;margin-top:8px}.ovgrid button{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:6px;cursor:pointer}
 </style></head><body>
 <header><h1>🎨 Studio DA SunMates</h1><p class=sub>Tout est câblé et se reflète dans l'aperçu. Preview autonome — l'app n'est pas modifiée.</p></header>
+<details open style="margin:10px 14px;border:1px solid #e3d8cc;border-radius:12px;background:#fff8ef;color:#3a2a1f">
+  <summary style="cursor:pointer;padding:10px 14px;font-weight:800;list-style:none">📖 Mode d'emploi <span style="font-weight:500;opacity:.7">(clique pour replier)</span></summary>
+  <div style="padding:0 14px 12px;font-size:13px;line-height:1.65">
+    <b>1.</b> Choisis un <b>Preset</b> (ou « + Nouveau ») et édite à gauche : couleurs/joyaux par mode, polices, tailles, effets, logos, textes. L'aperçu bouge en direct.<br>
+    <b>2.</b> Passe d'un <b>mode</b> à l'autre (jour / nuit / saisons) avec les onglets pour régler chacun.<br>
+    <b>3.</b> Quand c'est beau : <b>📋 Copier JSON</b> (ou 💾 JSON pour télécharger le fichier).<br>
+    <b>4.</b> Dans l'app : <b>Profil → Admin → 🎨 DA → « 🎛️ Console DA pilotée »</b>, puis <b>colle</b> le JSON.<br>
+    <b>5.</b> <b>🧪 Tester en live</b> = aperçu pour toi seul·e (recharge l'app pour voir). <b>🚀 Publier pour tous</b> = tout le monde l'a au prochain chargement.<br>
+    <hr style="border:0;border-top:1px solid #ece0d2;margin:8px 0">
+    <b>✅ Pilotable maintenant :</b> joyaux par mode · polices (chargées automatiquement) · effets (sans ombre / sans reflet / miroir) · textes.<br>
+    <b>⏳ Pas encore :</b> couleur des emblèmes par catégorie (emblèmes multi-couleurs « joaillerie » → il faut d'abord une banque d'icônes monochrome). Et les changements s'appliquent <b>au prochain chargement</b> (pas en direct sur les sessions déjà ouvertes).
+  </div>
+</details>
 <div class=bar>
 <label class=small>Preset</label><select id=presetSel></select>
 <button id=pNew>+ Nouveau</button><button id=pDup>Dupliquer</button><button id=pRen>Renommer</button><button id=pDel class=danger>Suppr</button>
 <label class=btn>⬆ Importer<input type=file id=imp accept=application/json style=display:none></label>
 <span class=sp></span><span id=modeTabs></span>
-<button id=expJson>💾 JSON</button><button id=expCss>📋 CSS</button>
+<button id=expJson>💾 JSON</button><button id=expCopy>📋 Copier JSON</button><button id=expCss>📋 CSS</button>
 </div>
 <div class=wrap><div id=left></div><div>
 <div class=stage><h3 id=stTitle>Aperçu</h3><div class=grid id=preview></div><p class=small id=cnote style=margin-top:8px></p></div>
@@ -158,6 +171,7 @@ document.getElementById('pRen').onclick=function(){var n=prompt("Nom :",T.name);
 document.getElementById('pDel').onclick=function(){if(Object.keys(P).length<2)return;if(confirm("Supprimer "+CUR+" ?")){delete P[CUR];CUR=Object.keys(P)[0];T=normalize(P[CUR]);renderAll();}};
 document.getElementById('imp').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var o=normalize(JSON.parse(r.result));var n=(o.name||'Import')+' '+Date.now();o.name=n;P[n]=o;CUR=n;T=o;curMode=Object.keys(T.modes)[0];renderAll();}catch(x){alert('JSON invalide');}};r.readAsText(f);};
 document.getElementById('expJson').onclick=function(){var b=new Blob([JSON.stringify(T,null,1)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='sunmates-tokens.json';a.click();};
+document.getElementById('expCopy').onclick=function(){navigator.clipboard.writeText(JSON.stringify(T,null,1)).then(function(){alert('JSON copié ✅\nColle-le dans l\'app : Profil → Admin → 🎨 DA → « Console DA pilotée » → Publier.');}).catch(function(){alert('Copie impossible — utilise 💾 JSON (téléchargement).');});};
 document.getElementById('expCss').onclick=function(){var css='';Object.keys(T.modes).forEach(function(k){var m=T.modes[k];var sel=m.class?('body.'+m.class.split(' ').join('.')):'body';css+=sel+'{--sm-j1:'+m.j1+';--sm-j2:'+m.j2+'}\n';});Object.keys(T.iconColors).forEach(function(c){css+='[data-smicon=\"'+c+'\"]{--icc:'+T.iconColors[c]+'}\n';});navigator.clipboard.writeText(css).then(function(){alert('CSS copié.');});};
 function renderAll(){renderPresetSel();renderModeTabs();renderControls();renderPreview();}
 renderAll();
