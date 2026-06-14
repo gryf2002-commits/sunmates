@@ -1,8 +1,9 @@
 {
-  "candidate": "v493",
+  "candidate": "v494",
   "items": [
-    "🎨 Homogénéisation TOTALE : ~167 surfaces dorées en dur (tuiles XP, séries, quêtes, badges « vérifié », barres, textes or) suivent ENFIN le preset — fini les tuiles gold figées qui ne bougeaient pas.",
-    "✨ Plus d'emoji brut « qui se balade » : le ☕ d'une quête, le 🔥 d'une série… tous les emojis posés dynamiquement deviennent des emblèmes cohérents (le moteur ré-emblémise aussi les textes mis à jour à la volée).",
-    "♿ Contraste auto WCAG AA maintenu (21 presets × 6 modes, 0 échec)."
+    "🏅 Les médaillons de badges (joaillerie) suivent ENFIN le preset : l'art ciselé est préservé, mais la teinte tourne vers la DA de chaque mode (Sunset ≈ inchangé, un thème bleu vire les badges au bleu).",
+    "🧰 Console DA fidèle : l'aperçu rend désormais EXACTEMENT comme l'app (mêmes couleurs dérivées des joyaux) — fini l'impression que « les presets ne sont pas à jour ».",
+    "🎨 Derniers dégradés or gameplay (badge vérifié, tag quête, bouton onboarding, filtre carte…) passés sur l'accent du preset.",
+    "♿ Contraste WCAG AA maintenu (21 presets × 6 modes, 0 échec)."
   ]
 }

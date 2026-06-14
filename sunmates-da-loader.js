@@ -121,6 +121,10 @@
         // ecran de connexion / landing (namespace --lp-*) : suit le preset au lieu de rester sunset
         css += '--lp-bg:' + pg + ';--lp-paper:' + card + ';--lp-ink:' + ink + ';--lp-text:' + text + ';--lp-muted:' + muted + ';--lp-accent:' + acc + ';--lp-grad:' + grad + ';';
         css += '}\n';
+        // Badges joaillerie (SMBadge) : on PRÉSERVE l'art ciselé (dégradés/relief) mais on
+        // tourne la teinte vers la DA du mode -> les médaillons suivent le preset (Sunset ≈ inchangé).
+        var _bh = Math.round(_rgb2hsl(m.j1)[0] - 38); // 38 = teinte "sunset" native de l'art des badges
+        css += sel + ' .smbadge-svg,' + sel + ' .sm-badge svg{filter:hue-rotate(' + _bh + 'deg);}\n';
       }
     });
     // Formes + tailles des tuiles + couleur des logos (consommation globale par le CSS)
@@ -265,5 +269,8 @@
     return null;
   };
   window.SMDA = { apply: applyTokens, applyStrings: applyStrings, boot: boot,
+    // dérivateurs exposés pour que l'APERÇU de la console rende EXACTEMENT comme l'app
+    deriveIcc: _deriveIcc, iccRole: _iccRole, bestAccent: _bestAccent, card: _card,
+    toC: _toC, mix: _mix, rgb2hsl: _rgb2hsl, badgeHueShift: function (j1) { return Math.round(_rgb2hsl(j1)[0] - 38); },
     saveDraft: function (t, strings) { try { localStorage.setItem('sm_da_live', JSON.stringify(t)); if (strings) localStorage.setItem('sm_strings_live', JSON.stringify(strings)); } catch (e) {} } };
 })();

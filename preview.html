@@ -197,7 +197,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=493"></script>
+  <script src="sunmates-badges.js?v=494"></script>
   <script src="sunmates-icons-v2.js?v=545"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -644,7 +644,7 @@
     .fpost-txt span { font-size: .98rem; font-weight: 800; }
     .fpost-spark { font-size: 1.15rem; opacity: .9; }
     .grad-0 { background: linear-gradient(120deg,#FF8A3D,#FF5A4D); }
-    .grad-1 { background: linear-gradient(120deg,#FFC93C,#ff8a3d); }
+    .grad-1 { background: var(--accent-grad); }
     .grad-2 { background: linear-gradient(120deg,#b9a6ff,#7c5cff); }
     .grad-3 { background: linear-gradient(120deg,#ffd15c,#f4a11e); }
     .fpost-empty { text-align: center; padding: 1.6rem 1rem; background: var(--card); border: 1px dashed var(--line); border-radius: 18px; }
@@ -1025,7 +1025,7 @@
     .ad-text { font-size: .86rem; color: rgba(255,255,255,.88); line-height: 1.45; margin: .25rem 0 .7rem; }
     .ad-ctrl { display: flex; gap: .5rem; }
     .ad-ctrl button { flex: 1; background: rgba(255,255,255,.12); color: #fff; border: 0; border-radius: 12px; padding: .6rem; font-weight: 800; cursor: pointer; font-size: .9rem; }
-    .ad-ctrl #adPause { flex: 2; background: linear-gradient(135deg,#FFC93C,#ff7e5f 60%,#FF5A4D); }
+    .ad-ctrl #adPause { flex: 2; background: var(--accent-grad); }
     .ad-ctrl button:hover { filter: brightness(1.1); }
 
     /* Parcours de démo MVP (admin) */
@@ -1370,7 +1370,7 @@
     .onb-dots i.on { width: 26px; border-radius: 999px; background: linear-gradient(90deg,#ffd15c,#ff7e5f); }
     .onb-actions { display: flex; gap: .7rem; }
     .onb-actions button { flex: 1; padding: .9rem; border-radius: 999px; font-weight: 800; cursor: pointer; border: 0; font-size: .95rem; }
-    .onb-next { background: linear-gradient(135deg,#FFC93C,#ff7e5f 60%,#FF5A4D); color: #fff; box-shadow: 0 10px 24px rgba(45,38,52,.16); }
+    .onb-next { background: var(--accent-grad); color: var(--sm-btn-text,#fff); box-shadow: 0 10px 24px rgba(45,38,52,.16); }
     .onb-next:hover { transform: translateY(-2px); }
     .onb-prev { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.18); flex: 0 0 32%; }
 
@@ -1401,7 +1401,7 @@
     .homemap-filters .chip.cl-mates.active     { background: #7a5cff; color: #fff; box-shadow: 0 4px 12px rgba(122,92,255,.32); }
     .homemap-filters .chip.cl-acts.active      { background: #ff9f1c; color: #fff; box-shadow: 0 4px 12px rgba(255,159,28,.32); }
     .homemap-filters .chip.cl-checkins.active  { background: #17a99b; color: #fff; box-shadow: 0 4px 12px rgba(23,169,155,.32); } /* DA : teal, pas de vert vif */
-    .homemap-filters .chip.cl-quests.active    { background: #E8961F; color: #fff; box-shadow: 0 4px 12px var(--line); }
+    .homemap-filters .chip.cl-quests.active    { background: var(--accent); color: var(--sm-btn-text,#fff); box-shadow: 0 4px 12px var(--line); }
     /* Marqueurs personnalisés (pastilles emoji colorées) */
     .epin { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
       display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,.4); border: 2.5px solid #fff; transition: transform .15s ease; }
@@ -1416,7 +1416,7 @@
     @media (prefers-reduced-motion: reduce){ .epin.quest, .epin.me { animation: none; } }
     .mappop-mini { text-align: center; }
     .mappop-mini b { font-size: .9rem; }
-    .mappop-quest .mq-tag { display:inline-block; font-weight:800; font-size:.68rem; color:#fff; background:linear-gradient(135deg,#FFC93C,#FF8A3D); padding:.12rem .5rem; border-radius:999px; margin-bottom:.25rem; }
+    .mappop-quest .mq-tag { display:inline-block; font-weight:800; font-size:.68rem; color:var(--sm-btn-text,#fff); background:var(--accent-grad); padding:.12rem .5rem; border-radius:999px; margin-bottom:.25rem; }
     .mappop-quest .mq-rew { margin:.35rem 0 .1rem; font-weight:800; font-size:.78rem; color:var(--accent-ink); }
     .mappop-btn { display: block; width: 100%; margin-top: 6px; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: .4rem .6rem; cursor: pointer; font-weight: 700; font-size: .8rem; }
     .mappop-btn.alt { background: #7a5cff; }
@@ -2189,8 +2189,8 @@
     .tph-chip { font-size: .72rem; font-weight: 800; padding: .28rem .6rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
     .tph-match { background: rgba(255,90,77,.94); color: #fff; }
     /* Badge « Vérifié » = preuve de sécurité clé → doré plein bien VISIBLE (jour + nuit) */
-    .tph-verif { background: linear-gradient(135deg,#FFD15C,#E8961F); color: #5a3d00; font-weight: 800; box-shadow: 0 2px 8px var(--line); }
-    body.theme-dusk .tph-verif { background: linear-gradient(135deg,#FFD15C,#E8961F); color: #4a3000; }
+    .tph-verif { background: var(--accent-grad); color: var(--sm-btn-text,#fff); font-weight: 800; box-shadow: 0 2px 8px var(--line); }
+    body.theme-dusk .tph-verif { background: var(--accent-grad); color: var(--sm-btn-text,#fff); }
     .tph-online { background: var(--accent-soft); color: #6b4a00; }
     .tp-hero .dh-name { font-size: 1.6rem; }
     /* Stats de la fiche profil : chiffre en accent */
@@ -2410,7 +2410,7 @@
     .sv-brand { font-weight: 800; letter-spacing: .14em; text-transform: uppercase; font-size: .78rem; color: #FFE2A6; }
     .sv-avatar { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,.25); display: grid; place-items: center; font-size: 32px; font-weight: 800; margin: .9rem auto .5rem; border: 3px solid #FFD98A; box-shadow: 0 6px 18px rgba(0,0,0,.25); background-size: cover; background-position: center; }
     .sv-name { font-size: 1.5rem; font-weight: 900; font-family: "Fraunces", serif; text-shadow: 0 2px 8px rgba(0,0,0,.18); }
-    .sv-level { display: inline-block; margin-top: .4rem; font-size: .78rem; font-weight: 800; background: linear-gradient(135deg,#FFD15C,#F4A11E); color: #5a3d00; padding: .22rem .7rem; border-radius: 999px; box-shadow: 0 3px 8px rgba(0,0,0,.2); }
+    .sv-level { display: inline-block; margin-top: .4rem; font-size: .78rem; font-weight: 800; background: var(--accent-grad); color: var(--sm-btn-text,#fff); padding: .22rem .7rem; border-radius: 999px; box-shadow: 0 3px 8px rgba(0,0,0,.2); }
     .sv-tag { font-size: .8rem; opacity: .92; margin-top: .4rem; letter-spacing: .02em; }
     .sv-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin: 1.1rem 0 .6rem; }
     .sv-stat { background: rgba(40,12,40,.28); border: 1px solid rgba(255,221,138,.35); border-radius: 14px; padding: .65rem .3rem; }
@@ -20431,6 +20431,6 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- DA pilotée (console cowork) : applique les tokens/strings publiés. APRÈS le script app (i18nT défini, SMDA exposé avant render). -->
-  <script src="sunmates-da-loader.js?v=9"></script>
+  <script src="sunmates-da-loader.js?v=10"></script>
 </body>
 </html>
