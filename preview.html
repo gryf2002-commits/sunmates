@@ -125,7 +125,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=467"></script>
+  <script src="sunmates-badges.js?v=468"></script>
   <script src="sunmates-icons-v2.js?v=520"></script>
   <style>
     /* Banque d'icônes v2 « fait main » : emblèmes monochromes posés sur les pastilles-joyaux
@@ -4244,7 +4244,7 @@
     }
 
     /* nav */
-    #authView .lp-nav { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(255,250,243,.80); border-bottom: 1px solid var(--lp-line); }
+    #authView .lp-nav { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(28,20,44,.82); border-bottom: 1px solid var(--lp-line); }
     #authView .lp-nav-inner { width: min(1080px, 90vw); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem 0; }
     #authView .lp-brand { display: flex; align-items: center; gap: .5rem; font-family: "Fraunces", serif; font-weight: 700; font-size: 1.25rem; color: var(--lp-ink); }
     #authView .lp-brand .lp-logo { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--lp-grad); box-shadow: var(--lp-shadow); font-size: 1.05rem; }
@@ -4268,7 +4268,7 @@
     /* hero */
     #authView .lp-hero { padding: clamp(2.4rem, 6vw, 5rem) 0 clamp(2rem, 5vw, 4rem); }
     #authView .lp-hero-grid { width: min(1080px, 90vw); margin: 0 auto; display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
-    #authView .lp-eyebrow { display: inline-flex; align-items: center; gap: .4rem; background: var(--lp-paper); color: #b23a2e; font-weight: 700; font-size: .82rem; padding: .4rem .9rem; border-radius: 999px; box-shadow: var(--lp-shadow); margin-bottom: 1.1rem; }
+    #authView .lp-eyebrow { display: inline-flex; align-items: center; gap: .4rem; background: var(--lp-paper); color: #ffb4a4; border: 1px solid var(--lp-line); font-weight: 700; font-size: .82rem; padding: .4rem .9rem; border-radius: 999px; box-shadow: var(--lp-shadow); margin-bottom: 1.1rem; }
     #authView .lp-h1 { font-size: clamp(2.3rem, 6.2vw, 4rem); font-weight: 900; letter-spacing: -.02em; color: var(--lp-ink); }
     #authView .lp-grad { background: var(--lp-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
     #authView .lp-lede { font-size: clamp(1.05rem, 2.2vw, 1.2rem); margin: 1.2rem 0 1.7rem; max-width: 38ch; color: var(--lp-text); }
@@ -4278,7 +4278,7 @@
     /* maquettes téléphone */
     #authView .lp-phone-stage { display: flex; justify-content: center; position: relative; }
     #authView .lp-phone-stage::before { content: ""; position: absolute; inset: -10% -6%; background: radial-gradient(60% 60% at 60% 30%, rgba(255,138,61,.28), transparent 70%); filter: blur(12px); z-index: 0; }
-    #authView .lp-phone { position: relative; z-index: 1; width: min(280px, 72vw); aspect-ratio: 390/844; background: #1d2230; border-radius: 40px; padding: 8px; box-shadow: var(--lp-shadow-pop), 0 0 0 1px rgba(0,0,0,.05); }
+    #authView .lp-phone { position: relative; z-index: 1; width: min(280px, 72vw); aspect-ratio: 390/844; background: #0f0a1c; border-radius: 40px; padding: 8px; box-shadow: var(--lp-shadow-pop), 0 0 0 1px rgba(255,255,255,.09); }
     #authView .lp-phone img { width: 100%; height: 100%; object-fit: cover; border-radius: 33px; display: block; }
 
     /* sections */
@@ -4333,7 +4333,7 @@
     #authView .lp-final-card { width: min(1080px, 90vw); margin: 0 auto; text-align: center; background: var(--lp-sunset); color: #fff; border-radius: 28px; padding: clamp(2.4rem, 6vw, 4rem) 1.5rem; box-shadow: var(--lp-shadow-pop); }
     #authView .lp-final-card h2 { color: #fff; font-size: clamp(1.7rem, 4.4vw, 2.5rem); font-weight: 700; }
     #authView .lp-final-card p { margin: .9rem auto 1.6rem; max-width: 42ch; opacity: .96; }
-    #authView .lp-final-card .lp-btn-ghost { background: #fff; color: #b23a2e; }
+    #authView .lp-final-card .lp-btn-ghost { background: rgba(255,255,255,.16); color: #fff; border: 1px solid rgba(255,255,255,.55); }
 
     /* pied de page */
     #authView .lp-footer { padding: 2.4rem 0 3rem; border-top: 1px solid var(--lp-line); }
@@ -13758,7 +13758,7 @@
             map.removeLayer(lyr); _smRasterBase().addTo(map);
           } catch (e) {}
         };
-        setTimeout(_watchdog, 8000);
+        setTimeout(_watchdog, 14000); // v468 : + de patience pour le fond vectoriel (sinon repli raster = carte qui ne suit plus les modes)
         return lyr;
       }
       return _smRasterBase();
@@ -14083,7 +14083,12 @@
             const _fsTouchUp = (ev) => { if (!ev.touches || ev.touches.length === 0) { window._smFsTouching = false; _doUpdate(); } };
             el.addEventListener("touchend", _fsTouchUp, { passive: true });
             el.addEventListener("touchcancel", _fsTouchUp, { passive: true });
+            const _smMoveCoarse = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
             homeLeaf.on("move", () => {
+              // Desktop (souris) : PAS de resynchro GL en continu pendant le drag — c'était une
+              // surcharge GPU (re-render plein canvas ~11×/s) ressentie comme « chargement infini ».
+              // moveend/zoomend recalent le fond proprement à la fin du geste. (v468)
+              if (!_smMoveCoarse) return;
               const fs = document.querySelector(".homemap-card.fs");
               if (fs && window._smFsTouching) {
                 // Longue glissade : on ne resynchronise QUE si on approche du bord de la marge.

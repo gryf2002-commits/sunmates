@@ -1,9 +1,9 @@
 {
-  "candidate": "v467",
+  "candidate": "v468",
   "items": [
-    "📱 Mobile : on retrouve la PAGE DE CONNEXION HISTORIQUE (sombre), exactement comme avant. La landing ne s'affiche plus sur téléphone / PWA quand on se déconnecte, place au formulaire qu'on aimait.",
-    "🌙 Landing desktop : refonte complète EN MODE SOMBRE par défaut, avec un CTA « Rejoindre » qui te suit tout au long de la page (barre du haut collante + bouton flottant).",
-    "🎨 Vrais visuels SunMates : le logo et les icônes des piliers sont désormais nos VRAIS SVG maison (fini les emojis génériques).",
-    "🖥️ Desktop de l'app plus agréable : colonne de contenu élargie (moins de scroll, moins de vide), navigation plus fluide, arrière-plans nettoyés."
+    "🛠️ Correctif MAJEUR « chargement infini » : le service worker pouvait rester bloqué si le serveur répondait lentement après un déploiement. Il bascule maintenant sur la coquille en cache au bout de 6 s → l'app se charge toujours (et l'icône hors-ligne est corrigée).",
+    "🌙 Landing desktop 100% sombre et lisible : barre du haut sombre (fini le bandeau crème), étiquette « ton aventure » et bouton du bas repassés en clair lisible sur fond foncé.",
+    "🗺️ Carte sur desktop : fini la surcharge GPU pendant qu'on déplace la carte à la souris (qui plombait les perfs), et le fond vectoriel a plus de temps pour charger → il suit de nouveau les modes (jour/nuit/saisons).",
+    "🖥️ Desktop : navigation et arrière-plans peaufinés."
   ]
 }

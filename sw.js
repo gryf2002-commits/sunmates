@@ -3,7 +3,7 @@
 // cache à la volée les libs CDN et les images (avatars, tuiles de carte) en
 // "stale-while-revalidate" (on sert le cache tout de suite, on rafraîchit en fond).
 // Les écritures Supabase (POST/PATCH…) ne sont jamais touchées.
-const VER = "v467";
+const VER = "v468";
 const SHELL_CACHE = "sunmates-shell-" + VER;   // coquille (versionnée → purge à chaque déploiement)
 const RUNTIME = "sunmates-rt-" + VER;          // libs CDN/fonts (regénéré par version, re-précaché à l'install)
 // #15/#8 : cache MÉDIA STABLE (NON versionné) → avatars, photos (quêtes/check-ins), tuiles de carte.
@@ -11,7 +11,7 @@ const RUNTIME = "sunmates-rt-" + VER;          // libs CDN/fonts (regénéré pa
 // fini le rechargement de toutes les images/tuiles à chaque MAJ de version. Borné en taille (LRU).
 const MEDIA = "sunmates-media";
 const MEDIA_MAX = 350;
-const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./sunmates-badges.js", "./sunmates-icons.js",
+const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./sunmates-badges.js", "./sunmates-icons-v2.js",
   "./icon-192.png", "./icon-512.png", "./icon-180.png", "./icon-maskable-512.png", "./badge-96.png"];
 // Libs CDN précachées dès l'install → carte/QR/etc. dispo INSTANTANÉMENT et hors-ligne (cache plus "lourd" mais + fluide).
 const CDN_PRECACHE = [
@@ -75,11 +75,26 @@ self.addEventListener("fetch", (e) => {
 
   const url = new URL(req.url);
 
-  // 1) Navigation : réseau d'abord (pour avoir la dernière version), repli coquille hors-ligne.
-  // cache:"no-store" → on BYPASSE le cache HTTP du navigateur ET le CDN GitHub Pages/Fastly
-  //   (qui peuvent servir un index.html périmé plusieurs minutes) → on a TOUJOURS le HTML le plus frais.
+  // 1) Navigation : réseau d'abord (dernière version), MAIS avec un GARDE-FOU de TIMEOUT.
+  // cache:"no-store" → on bypasse le cache HTTP du navigateur + le CDN GitHub Pages/Fastly.
+  //   ⚠️ BUG « chargement infini » corrigé (v468) : sans timeout, si l'edge est lent juste
+  //   après un déploiement, la requête réseau ne résout NI ne rejette → la page tournait à
+  //   l'infini. On court-circuite désormais après 6 s en servant la coquille en cache (toujours
+  //   la version courante : précachée fraîche à l'install). Hors-ligne → repli immédiat aussi.
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req.url, { cache: "no-store" }).catch(() => caches.match("./index.html")));
+    e.respondWith((async () => {
+      const fallback = () => caches.match("./index.html").then((c) => c || fetch(req.url).catch(() => new Response("", { status: 504 })));
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 6000);
+        const res = await fetch(req.url, { cache: "no-store", signal: ctrl.signal });
+        clearTimeout(timer);
+        if (res && res.ok) { const c = res.clone(); caches.open(SHELL_CACHE).then((cc) => cc.put("./index.html", c)).catch(() => {}); }
+        return res;
+      } catch (e) {
+        return fallback();
+      }
+    })());
     return;
   }
 
