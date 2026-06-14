@@ -1,5 +1,11 @@
 [
   {
+    "v": "v489",
+    "date": "2026-06-14",
+    "note": "DA cowork vagues 3-5 : la NUIT suit la DA (surfaces theme-dusk → var(--card)/--cream), réglages consommés (forme tuiles/tailles/logo), 21 presets retravaillés cohérents, couleurs d'emblèmes par preset, console (couleurs rapides + section emojis toggle). loader ?v=6, icons ?v=543.",
+    "file": "v489.html"
+  },
+  {
     "v": "v488",
     "date": "2026-06-14",
     "note": "DA cowork COUVERTURE : loader variable-cœur (--bg/--ink/--accent dérivés des tokens → la DA pilote vraiment l'app, plus 1%) + SMIconize (460 emojis orphelins → emblèmes recolorables) + vague 2 (recolor marqueurs carte, banque d'images, versions/rollback, live-push, console↔admin). index re-exporté propre (tail intact). loader ?v=5, icons ?v=542. ⚠️ versions+live-push nécessitent da-history.sql + Realtime sur da_tokens/da_strings.",
