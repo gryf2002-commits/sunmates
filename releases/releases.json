@@ -1,5 +1,11 @@
 [
   {
+    "v": "v490",
+    "date": "2026-06-14",
+    "note": "DA wave 6 : pilotage icônes (colorMode natural/mono + style native/banque), marqueurs carte auto-contraste, console refondue (onglets + recherche + couleurs rapides) et panneau Avancé RÉPARÉ (da-console.html n'est plus tronqué : 302 lignes, finit par </html>). loader ?v=7.",
+    "file": "v490.html"
+  },
+  {
     "v": "v489",
     "date": "2026-06-14",
     "note": "DA cowork vagues 3-5 : la NUIT suit la DA (surfaces theme-dusk → var(--card)/--cream), réglages consommés (forme tuiles/tailles/logo), 21 presets retravaillés cohérents, couleurs d'emblèmes par preset, console (couleurs rapides + section emojis toggle). loader ?v=6, icons ?v=543.",

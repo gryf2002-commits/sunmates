@@ -197,7 +197,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=489"></script>
+  <script src="sunmates-badges.js?v=490"></script>
   <script src="sunmates-icons-v2.js?v=543"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -440,30 +440,30 @@
     .act-tile .ic { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; font-size: 1.15rem; flex-shrink: 0; }
     .act-tile .lbl { flex: 1; }
     .act-tile .arr { opacity: .45; font-size: 1.2rem; font-weight: 800; }
-    .act-challenge { background: #efeaff; color: #6a4bff; border-color: #ddd3ff; }
+    .act-challenge { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     .act-challenge .ic { background: #ddd3ff; }
     .act-challenge:hover { box-shadow: 0 8px 18px rgba(45,38,52,.22); }
-    .act-bff { background: #fff6e8; color: #b9740a; border-color: #ffe6c2; }
+    .act-bff { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     .act-bff .ic { background: #ffe6c2; }
     .act-bff:hover { box-shadow: 0 8px 18px rgba(255,178,116,.3); }
     .act-block { background: #fef2f2; color: #dc2626; border-color: #fbd5d5; }
     .act-block .ic { background: #fbd5d5; }
     .act-block:hover { box-shadow: 0 8px 18px rgba(45,38,52,.16); } /* Lot C : ombre dé-rougie → gris chaud (doctrine) */
-    body.theme-dusk .act-challenge { background: rgba(122,92,255,.18); color: #c9bcff; border-color: rgba(122,92,255,.34); }
+    body.theme-dusk .act-challenge { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     body.theme-dusk .act-challenge .ic { background: rgba(122,92,255,.34); }
-    body.theme-dusk .act-bff { background: rgba(255,178,116,.16); color: #ffce9b; border-color: rgba(255,178,116,.32); }
+    body.theme-dusk .act-bff { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     body.theme-dusk .act-bff .ic { background: rgba(255,178,116,.32); }
     body.theme-dusk .act-block { background: rgba(239,68,68,.15); color: #ff9b9b; border-color: rgba(239,68,68,.32); }
     body.theme-dusk .act-block .ic { background: rgba(239,68,68,.32); }
-    .act-map { background: #fff3e2; color: #bf6a00; border-color: #ffe2bd; }
+    .act-map { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     .act-map .ic { background: #ffe2bd; }
     .act-map:hover { box-shadow: 0 8px 18px rgba(255,159,28,.25); }
-    .act-teal { background: #fdeceb; color: #d6483a; border-color: #f8d2cd; }
+    .act-teal { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     .act-teal .ic { background: #f8d2cd; }
     .act-teal:hover { box-shadow: 0 8px 18px rgba(45,38,52,.22); }
-    body.theme-dusk .act-map { background: rgba(255,159,28,.16); color: #ffce93; border-color: rgba(255,159,28,.32); }
+    body.theme-dusk .act-map { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     body.theme-dusk .act-map .ic { background: rgba(255,159,28,.32); }
-    body.theme-dusk .act-teal { background: rgba(255,90,77,.16); color: #ffb0a6; border-color: rgba(255,90,77,.32); }
+    body.theme-dusk .act-teal { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
     body.theme-dusk .act-teal .ic { background: rgba(255,90,77,.32); }
 
     /* ---- Rangée de tuiles colorées (catégories Lieux / navigation Jeux) ---- */
@@ -15451,13 +15451,15 @@
     let _questTodoOnly = false;                              // n'afficher que les quêtes pas encore accomplies
     let homeMeMarker = null;
 
+    // Glyphe lisible sur la pastille : clair si fond foncé, encre foncée si fond clair (auto-contraste).
+    function _epinInk(bg){try{var h=String(bg).trim();if(h[0]!=='#')return '#fff';h=h.slice(1);if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];var n=parseInt(h,16);var r=(n>>16)&255,g=(n>>8)&255,b=n&255;var L=(0.299*r+0.587*g+0.114*b)/255;return L>0.62?'#3a2418':'#fff';}catch(e){return '#fff';}}
     // Pastille emoji colorée comme marqueur (au lieu du marqueur bleu par défaut).
     function epinIcon(emoji, bg, extra) {
       // 🎅 Décembre : les pastilles mettent leur bonnet (clin d'œil saisonnier, zéro réglage).
       const xmas = (new Date().getMonth() === 11) ? '<span class="epin-xmas">🎅</span>' : "";
       return L.divIcon({
         className: "epin-wrap",
-        html: `<div class="epin ${extra || ""}" style="background:${bg}">${(window.SMIcon && SMIcon.has(emoji)) ? ('<span class="epin-ic" style="--icc:#fff;display:inline-flex;width:18px;height:18px;align-items:center;justify-content:center">' + SMIcon(emoji, { size: 18 }) + '</span>') : ('<span>' + emoji + '</span>')}${xmas}</div>`,
+        html: `<div class="epin ${extra || ""}" style="background:${bg}">${(window.SMIcon && SMIcon.has(emoji)) ? ('<span class="epin-ic" style="--icc:'+_epinInk(bg)+';display:inline-flex;width:18px;height:18px;align-items:center;justify-content:center">' + SMIcon(emoji, { size: 18 }) + '</span>') : ('<span>' + emoji + '</span>')}${xmas}</div>`,
         iconSize: [32, 32], iconAnchor: [16, 30], popupAnchor: [0, -28],
       });
     }
@@ -20399,6 +20401,6 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- DA pilotée (console cowork) : applique les tokens/strings publiés. APRÈS le script app (i18nT défini, SMDA exposé avant render). -->
-  <script src="sunmates-da-loader.js?v=6"></script>
+  <script src="sunmates-da-loader.js?v=7"></script>
 </body>
 </html>

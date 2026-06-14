@@ -102,14 +102,22 @@
     }
     try { window.SM_IMGBANK = T.imgBank || null; } catch (e) {}
     try {
-      window.SM_NO_EMOJIZE = !!(T.emoji && T.emoji.off);
+      var _st = (T.icon && T.icon.style) || 'fill';
+      window.SM_ICON_STYLE = _st;
+      try { localStorage.setItem('sm_icon_style', _st); } catch (e) {}
+      document.body.classList.toggle('sm-native', _st === 'native');
+      window.SM_NO_EMOJIZE = (_st === 'native') || !!(T.emoji && T.emoji.off);
       window.SM_EMOJI_KEEP = new Set((T.emoji && T.emoji.keepNative) || []);
       if (window.SMIconize) window.SMIconize(document.body);
     } catch (e) {}
-    if (T.iconColors) {
-      Object.keys(T.iconColors).forEach(function (c) {
-        css += '[data-smicon="' + c + '"]{--icc:' + T.iconColors[c] + ';}\n';
-      });
+    var _cm = (T.icon && T.icon.colorMode) || 'natural';
+    var _styl = (T.icon && T.icon.style) || 'fill';
+    if (_styl !== 'native') {
+      if (_cm === 'mono') {
+        css += '[data-smicon]{--icc:' + ((T.icon && T.icon.mono) || '#FFF6E9') + ';}\n';
+      } else if (_cm === 'themed' && T.iconColors) {
+        Object.keys(T.iconColors).forEach(function (c) { css += '[data-smicon="' + c + '"]{--icc:' + T.iconColors[c] + ';}\n'; });
+      }
       css += '.cic[data-smicon] svg,[data-smicon] .smicon,[data-smicon] svg{color:var(--icc, currentColor);}\n';
     }
     if (T.sizes) css += ':root{--sm-tile:' + (T.sizes.tile || 74) + 'px;--sm-icon:' + (T.sizes.iconTile || 38) + 'px;}\n';
