@@ -1,5 +1,11 @@
 [
   {
+    "v": "v480 🎉",
+    "date": "2026-06-14",
+    "note": "Jalon (multiple de 30) · a11y formulaires : 100% des champs ont un nom accessible (aria-label via placeholder / label voisin / explicite, synchronisé avec la langue). Clôt la grande passe debrief UX/DA/a11y/contenu (v472→v480)",
+    "file": "v480.html"
+  },
+  {
     "v": "v479",
     "date": "2026-06-14",
     "note": "Écran Sécurité 100% bilingue hors-ligne : corps des modales du minuteur « Rentrée en sécurité » enveloppés dans i18nT (clé FR-avec-balises → EN, sans fragmentation)",
