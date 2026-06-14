@@ -1,5 +1,11 @@
 [
   {
+    "v": "v482",
+    "date": "2026-06-14",
+    "note": "Chasse aux bugs lot 2 : messages non lus suivis PAR conversation (sm_seen_by) — fini le marquage global qui pouvait faire rater un message d'un autre expéditeur",
+    "file": "v482.html"
+  },
+  {
     "v": "v481",
     "date": "2026-06-14",
     "note": "Chasse aux bugs lot 1 : minuteur sécurité ré-armé au retour d'arrière-plan (P0), fix crash fiche profil (jaccard non-string), création de groupe robuste (créateur+mates individuels), export RGPD complet, positions cercle expirent à 1 h, durcissements (cache trad borné, retries réseau)",
