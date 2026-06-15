@@ -288,7 +288,7 @@
       if (!getTokens() && window.db && window.db.from) {
         // 1 seule ligne (id entier) → on prend la plus récente, schéma-agnostique.
         window.db.from('da_tokens').select('tokens').order('updated_at', { ascending: false }).limit(1)
-          .then(function (r) { var row = r && r.data && r.data[0]; if (row && row.tokens) { try { applyTokens(row.tokens); } catch (e) {} } })
+          .then(function (r) { var row = r && r.data && r.data[0]; if (row && row.tokens && row.tokens.publishedLive) { try { applyTokens(row.tokens); } catch (e) {} } }) // n'applique QUE les DA publiées volontairement (garde-fou anti vieille ligne)
           .catch(function () {});
       }
     } catch (e) {}

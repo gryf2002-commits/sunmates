@@ -232,7 +232,7 @@
     pub.style.cssText='width:100%;margin-top:8px;border:0;border-radius:9px;padding:10px;font-weight:800;cursor:pointer;background:#1f9d6b;color:#fff';
     pub.onclick=function(){if(!confirm('Publier cette DA pour TOUS les utilisateurs ?'))return;pub.textContent='Publication…';
       var DB=_db();
-      try{if(DB&&DB.from){DB.from('da_tokens').upsert({id:1,tokens:T,updated_at:new Date().toISOString()}).then(function(r){
+      try{if(DB&&DB.from){DB.from('da_tokens').upsert({id:1,tokens:Object.assign({},T,{publishedLive:true}),updated_at:new Date().toISOString()}).then(function(r){
         pub.textContent=(r&&r.error)?('Erreur : '+(r.error.message||'?')):'Publié pour tous ✓';setTimeout(function(){pub.textContent='🌍 Publier pour TOUS';},2600);});}
       else{pub.textContent='Base indisponible';alert('Client Supabase indisponible — connecte-toi en admin et vérifie que la migration da_tokens est lancée.');setTimeout(function(){pub.textContent='🌍 Publier pour TOUS';},2600);}}catch(e){pub.textContent='Erreur';}};
     P.appendChild(pub);
