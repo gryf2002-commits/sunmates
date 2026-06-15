@@ -80,7 +80,7 @@
     css+='.hex{background:'+bg(B.exploration)+'}\n.hex.grad-violet{background:'+bg(B.social)+'}\n.hex.grad-teal{background:'+bg(B.securite)+'}\n.hex.grad-gold{background:'+bg(B.accomplissement)+'}\n';
     // overrides ciblés (clic)
     Object.keys(T.overrides).forEach(function(key){var o=T.overrides[key],pa=key.split('||'),mk=pa[0],sel=pa[1];
-      var cls=(T.modes[mk]&&T.modes[mk].class||'').trim();var pre='body'+(cls?'.'+cls.split(/\s+/).join('.'):'')+' ';
+      var cls=(T.modes[mk]&&T.modes[mk].class||'').trim();var pre='html body.sm-da-on'+(cls?'.'+cls.split(/\s+/).join('.'):'')+' ';
       var d='';if(o.j1)d+='--ic1:'+o.j1+' !important;--ic2:'+(o.j2||o.j1)+' !important;background-image:linear-gradient(160deg,'+o.j1+','+(o.j2||o.j1)+') !important;';
       if(o.scale)d+='transform:scale('+o.scale+');'; // taille par élément (clic) — fond + emoji ensemble, pas de désync
       if(o.textColor)d+='color:'+o.textColor+' !important;';
@@ -116,7 +116,7 @@
     var pal=[];Object.keys(T.modes).forEach(function(k){[T.modes[k].j1,T.modes[k].j2].forEach(function(c){if(c&&pal.indexOf(c)<0)pal.push(c);});});
     var swh=pal.slice(0,10).map(function(c){return "<button class=dasw data-c='"+c+"' title='"+c+"' style='width:24px;height:24px;border-radius:6px;border:1px solid #0007;background:"+c+";cursor:pointer'></button>";}).join('');
     var p=document.createElement('div');p.className='smda-pop';p.id='smdaPop';
-    p.style.cssText='position:fixed;z-index:2147483647;left:'+Math.min(ev.clientX,innerWidth-262)+'px;top:'+Math.max(8,Math.min(ev.clientY,innerHeight-280))+'px;background:#1d1830;color:#f3ecf6;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px;width:248px;font:13px Manrope,sans-serif;box-shadow:0 16px 40px -10px #000';
+    p.style.cssText='position:fixed;z-index:2147483647;left:'+Math.min(ev.clientX,innerWidth-262)+'px;top:'+Math.max(8,Math.min(ev.clientY,innerHeight-280))+'px;background:#1d1830;color:#f3ecf6;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px;width:248px;font:13px Manrope,sans-serif;box-shadow:0 16px 40px -10px #000;touch-action:none';
     p.innerHTML="<b id=dphdr style='display:block;font-size:12px;word-break:break-all;cursor:move;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:6px'>⠿ "+sel+" <span style='color:#a99fbe;font-weight:400'>(glisse-moi)</span></b>"
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Palette du preset (1 clic)</div><div style='display:flex;flex-wrap:wrap;gap:5px'>"+swh+"</div>"
       +"<div style='display:flex;align-items:center;gap:8px;margin:9px 0'>Fond J1 <input type=color id=dj1 value='"+(ov.j1||m.j1)+"' style='width:38px;height:30px'> J2 <input type=color id=dj2 value='"+(ov.j2||m.j2)+"' style='width:38px;height:30px'> Texte <input type=color id=dtc value='"+(ov.textColor||'#161b29')+"' style='width:38px;height:30px'><button id=dtcRm style='padding:5px 8px' title='Retirer couleur texte'>✕</button></div>"
