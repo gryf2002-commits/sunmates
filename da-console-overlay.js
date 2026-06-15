@@ -222,8 +222,16 @@
     ex.style.cssText='width:100%;margin-top:12px;border:0;border-radius:9px;padding:9px;font-weight:800;cursor:pointer;background:#FF7A4D;color:#221';
     ex.onclick=function(){try{navigator.clipboard.writeText(JSON.stringify(T,null,1));}catch(e){}ex.textContent='Copié ✓';setTimeout(function(){ex.textContent='Copier le JSON';},1200);};
     P.appendChild(ex);
+    // PUBLIER POUR TOUS : upsert la DA dans Supabase da_tokens → tous les utilisateurs la reçoivent au prochain chargement.
+    var pub=document.createElement('button');pub.textContent='🌍 Publier pour TOUS';
+    pub.style.cssText='width:100%;margin-top:8px;border:0;border-radius:9px;padding:10px;font-weight:800;cursor:pointer;background:#1f9d6b;color:#fff';
+    pub.onclick=function(){if(!confirm('Publier cette DA pour TOUS les utilisateurs ?'))return;pub.textContent='Publication…';
+      try{if(window.db&&window.db.from){window.db.from('da_tokens').upsert({id:'live',tokens:T,updated_at:new Date().toISOString()}).then(function(r){
+        pub.textContent=(r&&r.error)?('Erreur : '+(r.error.message||'?')):'Publié pour tous ✓';setTimeout(function(){pub.textContent='🌍 Publier pour TOUS';},2600);});}
+      else{pub.textContent='Base indisponible';alert('window.db absent — la publication nécessite la session admin connectée + la migration da_tokens.');setTimeout(function(){pub.textContent='🌍 Publier pour TOUS';},2600);}}catch(e){pub.textContent='Erreur';}};
+    P.appendChild(pub);
     var hh=document.createElement('div');hh.style.cssText='font-size:11px;color:#a99fbe;margin-top:8px';
-    hh.textContent='Aperçu = la vraie app, en live. Publier pour tous : via l\'admin (upsert da_tokens).';P.appendChild(hh);}
+    hh.textContent='Aperçu = la vraie app en live (ta vue). « Publier pour TOUS » écrit la DA en base (admin) → tout le monde la reçoit au prochain chargement.';P.appendChild(hh);}
 
   // ---- Mode TEXTE SEUL (sans emoji) : retire les emojis du texte + masque les pastilles d'icônes ----
   var _txtOnly=false,_txtObs=null;

@@ -280,7 +280,18 @@
     if (!vars) return s;
     return s.replace(/\{(\w+)\}/g, function (_, k) { return vars[k] != null ? vars[k] : '{' + k + '}'; });
   }
-  function boot() { try { applyTokens(getTokens()); } catch (e) {} try { applyStrings(getStrings()); } catch (e) {} }
+  function boot() {
+    try { applyTokens(getTokens()); } catch (e) {} try { applyStrings(getStrings()); } catch (e) {}
+    // DA PUBLIÉE POUR TOUS : si aucun brouillon local (admin en test), on va chercher la DA publiée
+    // en base (da_tokens id='live') et on l'applique → tous les utilisateurs reçoivent la DA publiée.
+    try {
+      if (!getTokens() && window.db && window.db.from) {
+        window.db.from('da_tokens').select('tokens').eq('id', 'live').maybeSingle()
+          .then(function (r) { if (r && r.data && r.data.tokens) { try { applyTokens(r.data.tokens); } catch (e) {} } })
+          .catch(function () {});
+      }
+    } catch (e) {}
+  }
   if (document.readyState !== 'loading') boot(); else document.addEventListener('DOMContentLoaded', boot);
   // Banque d'images pilotable : renvoie l'URL configuree pour une categorie/mot-cle
   // si c'est une vraie URL (http...), sinon null (l'app garde son repli).

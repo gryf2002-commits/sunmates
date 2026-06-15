@@ -197,7 +197,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=510"></script>
+  <script src="sunmates-badges.js?v=511"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -6549,6 +6549,7 @@
     const SUPABASE_URL = "https://ihiwuharxkmkzaxixhae.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_-Q0evGrgq76Fp-YWLNA1Qg_jsOXEIcn";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    try { window.db = db; } catch (e) {} // exposé pour le loader DA (fetch da_tokens) + la console « Publier pour tous »
     let currentLang = localStorage.getItem("sm_lang") || "fr"; // déclaré tôt (utilisé par renderSafetyTip/updateStreak appelés avant le bloc i18n)
 
     /* === HOISTÉ (fix TDZ) : const utilisés par des loaders/render appelés tôt — voir audit. === */
@@ -20354,10 +20355,10 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=7"></script>
+  <script src="sunmates-da-loader.js?v=8"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
-  <script src="da-console-overlay.js?v=8"></script>
+  <script src="da-console-overlay.js?v=9"></script>
 </body>
 </html>
