@@ -80,7 +80,7 @@
     css+='.hex{background:'+bg(B.exploration)+'}\n.hex.grad-violet{background:'+bg(B.social)+'}\n.hex.grad-teal{background:'+bg(B.securite)+'}\n.hex.grad-gold{background:'+bg(B.accomplissement)+'}\n';
     // overrides ciblés (clic)
     Object.keys(T.overrides).forEach(function(key){var o=T.overrides[key],pa=key.split('||'),mk=pa[0],sel=pa[1];
-      var cls=(T.modes[mk]&&T.modes[mk].class||'').trim();var pre='html body.sm-da-on'+(cls?'.'+cls.split(/\s+/).join('.'):'')+' ';
+      var cls=(T.modes[mk]&&T.modes[mk].class||'').trim();var pre='html body'+(cls?'.'+cls.split(/\s+/).join('.'):'')+' ';
       var d='';
       if(o.bg){var bd=mix(o.bg,'#000',0.18);d+='background:linear-gradient(160deg,'+o.bg+','+bd+') !important;--ic1:'+o.bg+' !important;--ic2:'+bd+' !important;';} // UNE couleur → fond visible sur tout (tuile, bouton, texte-conteneur)
       else if(o.j1)d+='--ic1:'+o.j1+' !important;--ic2:'+(o.j2||o.j1)+' !important;background-image:linear-gradient(160deg,'+o.j1+','+(o.j2||o.j1)+') !important;';
@@ -106,8 +106,8 @@
       if(first)return '.'+first;}cur=cur.parentElement;}
     return null;}
   document.addEventListener('click',function(ev){if(!editMode)return;if(ev.target.closest&&ev.target.closest('#smdaPanel,#smdaBtn,.smda-pop'))return;
-    var sel=selFor(ev.target);if(!sel)return;ev.preventDefault();ev.stopPropagation();popEdit(sel,ev,ev.target);},true);
-  function popEdit(sel,ev,el){closePop();var key=curMode+'||'+sel,ov=T.overrides[key]||{},m=T.modes[curMode];
+    var sel=selFor(ev.target);if(!sel)return;ev.preventDefault();ev.stopPropagation();try{popEdit(sel,ev,ev.target);}catch(e){console.warn('[SMDA popEdit]',e);}},true);
+  function popEdit(sel,ev,el){closePop();var key=curMode+'||'+sel,ov=T.overrides[key]||{},m=(T.modes&&T.modes[curMode])||{j1:'#FF8A3D',j2:'#FF5A4D'};
     // élément porteur d'emoji (l'élément cliqué ou un ancêtre proche), sinon l'élément cliqué (pour AJOUTER)
     var host=el,h=el;for(var i=0;i<6&&h;i++){if(h.textContent){_EMO.lastIndex=0;if(_EMO.test(h.textContent)){host=h;break;}}h=h.parentElement;}
     var curEmo='';if(host){_EMO.lastIndex=0;var mm=(host.textContent||'').match(_EMO);curEmo=mm?mm[0]:'';}
@@ -130,21 +130,24 @@
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Taille de CET élément (fond + emoji ensemble)</div><input type=range id=dsz min=50 max=170 value='"+Math.round((ov.scale||1)*100)+"' style='width:100%'>"
       +"<div style='display:flex;gap:6px;margin-top:10px'><button id=dok style='flex:1;padding:7px'>Fermer</button><button id=drm style='flex:1;padding:7px'>Tout retirer</button></div>";
     document.body.appendChild(p);
-    function sv(){T.overrides[key]=Object.assign(T.overrides[key]||{},{bg:p.querySelector('#dbg').value});delete T.overrides[key].j1;delete T.overrides[key].j2;injectExtra();apply();}
-    p.querySelector('#dbg').oninput=sv;
-    p.querySelector('#dbgRm').onclick=function(){if(T.overrides[key]){delete T.overrides[key].bg;delete T.overrides[key].j1;delete T.overrides[key].j2;}injectExtra();apply();};
-    Array.prototype.forEach.call(p.querySelectorAll('.dasw'),function(b){b.onclick=function(){var c=b.getAttribute('data-c');p.querySelector('#dbg').value=c;sv();};});
-    p.querySelector('#demoOk').onclick=function(){var e=p.querySelector('#demo').value.trim();if(e&&host)_setEmoji(host,e);};
-    p.querySelector('#demoRm').onclick=function(){if(host)_setEmoji(host,'');p.querySelector('#demo').value='';};
-    p.querySelector('#dtxtOk').onclick=function(){if(host)_setText(host,p.querySelector('#dtxt').value);};
-    p.querySelector('#dsz').oninput=function(){var s=(+p.querySelector('#dsz').value)/100;T.overrides[key]=T.overrides[key]||{};T.overrides[key].scale=s;injectExtra();apply();};
-    p.querySelector('#dtc').oninput=function(){T.overrides[key]=Object.assign(T.overrides[key]||{},{textColor:p.querySelector('#dtc').value});injectExtra();apply();};
-    p.querySelector('#dtcRm').onclick=function(){if(T.overrides[key])delete T.overrides[key].textColor;injectExtra();apply();};
-    (function(){var hdr=p.querySelector('#dphdr');if(!hdr)return;var dx=0,dy=0,dn=false;
+    function Q(s){return p.querySelector(s);}
+    function ov_(){return (T.overrides[key]=T.overrides[key]||{});}
+    function refresh(){try{injectExtra();}catch(e){}try{apply();}catch(e){}}
+    function sv(){var v=Q('#dbg');if(!v)return;ov_().bg=v.value;delete T.overrides[key].j1;delete T.overrides[key].j2;refresh();}
+    var _dbg=Q('#dbg');if(_dbg)_dbg.oninput=sv;
+    var _dbgRm=Q('#dbgRm');if(_dbgRm)_dbgRm.onclick=function(){var o=T.overrides[key];if(o){delete o.bg;delete o.j1;delete o.j2;}refresh();};
+    Array.prototype.forEach.call(p.querySelectorAll('.dasw'),function(b){b.onclick=function(){var c=b.getAttribute('data-c');if(_dbg)_dbg.value=c;sv();};});
+    var _demoOk=Q('#demoOk');if(_demoOk)_demoOk.onclick=function(){var e=Q('#demo');if(e&&e.value.trim()&&host)_setEmoji(host,e.value.trim());};
+    var _demoRm=Q('#demoRm');if(_demoRm)_demoRm.onclick=function(){if(host)_setEmoji(host,'');var e=Q('#demo');if(e)e.value='';};
+    var _dtxtOk=Q('#dtxtOk');if(_dtxtOk)_dtxtOk.onclick=function(){var t=Q('#dtxt');if(host&&t)_setText(host,t.value);};
+    var _dsz=Q('#dsz');if(_dsz)_dsz.oninput=function(){ov_().scale=(+_dsz.value)/100;refresh();};
+    var _dtc=Q('#dtc');if(_dtc)_dtc.oninput=function(){ov_().textColor=_dtc.value;refresh();};
+    var _dtcRm=Q('#dtcRm');if(_dtcRm)_dtcRm.onclick=function(){if(T.overrides[key])delete T.overrides[key].textColor;refresh();};
+    (function(){var hdr=Q('#dphdr');if(!hdr)return;var dx=0,dy=0,dn=false;
       hdr.addEventListener('pointerdown',function(e){dn=true;var r=p.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;try{hdr.setPointerCapture(e.pointerId);}catch(x){}});
       hdr.addEventListener('pointermove',function(e){if(!dn)return;p.style.left=Math.max(2,Math.min(innerWidth-60,e.clientX-dx))+'px';p.style.top=Math.max(2,Math.min(innerHeight-40,e.clientY-dy))+'px';});
       hdr.addEventListener('pointerup',function(){dn=false;});})();
-    p.querySelector('#dok').onclick=closePop;p.querySelector('#drm').onclick=function(){delete T.overrides[key];injectExtra();apply();closePop();};}
+    var _dok=Q('#dok');if(_dok)_dok.onclick=closePop;var _drm=Q('#drm');if(_drm)_drm.onclick=function(){delete T.overrides[key];refresh();closePop();};}
   function closePop(){var e=document.getElementById('smdaPop');if(e)e.remove();}
 
   // ---- UI (launcher + panel) ----
