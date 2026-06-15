@@ -24,7 +24,8 @@
     else if(k==='tropiques'){j1=mix(TRO[0],a,.2);j2=mix(TRO[1],b,.2);}
     else if(k==='tropiques-nuit'){j1=mix(TRO[0],a,.2);j2=mix('#063F2E',b,.18);}
     M[k]={label:LAB[k],page:pg,ink:ink,j1:j1,j2:j2,angle:160,class:cls};});return M;}
-  var PRESETS={'☀️ Sunset':['#FF9A4D','#FF5A6E','Fraunces','Manrope','squircle'],
+  var PRESETS={'🌅 Radiant Horizon':['#FF8A3D','#FF3A2D','Fraunces','Manrope','squircle'],
+    '☀️ Sunset':['#FF9A4D','#FF5A6E','Fraunces','Manrope','squircle'],
     '🌌 Néon nuit':['#18E0C8','#6A5CFF','Poppins','Manrope','squircle'],
     '🌸 Pastel':['#FFC2D6','#B5A8FF','Quicksand','Quicksand','rounded'],
     '🌴 Lagon':['#2BD4A8','#0E9E8C','Baloo 2','Nunito','squircle'],
@@ -36,7 +37,7 @@
     if(lite){Object.keys(M).forEach(function(k){M[k].page='#F4F5F7';M[k].ink='#16181D';M[k].j1='#E0563E';M[k].j2='#E0563E';});}
     return {preset:n,modes:M,
     icon:{style:'fill',colorMode:lite?'mono':'natural',mono:lite?'#E0563E':'#FFF6E9'},fonts:{heading:p[2],body:p[3]},
-    effects:{shape:p[4],polish:!lite,mirror:false,shadow:!lite},sizes:{tile:74,iconTile:38},
+    effects:{shape:p[4],polish:!lite,mirror:false,shadow:!lite,radius:22,sheen:60},sizes:{tile:74,iconTile:38},
     badges:{exploration:['#FF8A3D','#FF5A4D'],social:['#9B7BFF','#6638D6'],securite:['#34C98F','#0E9E6B'],accomplissement:['#FFD15C','#E0901E']},
     logos:{},scenes:{accent:p[0],confetti:true},typo:{titleColor:'',bodyColor:'',metaColor:''},
     comp:{btnText:'#ffffff',chipText:'#ffffff'},emoji:{off:false},grads:{},iconColors:{},glyph:{},rewards:[],appIcon:{c1:p[0],c2:p[1],glyph:'sun'},imgBank:{},a11y:{fontScale:100},globalTexts:{},overrides:{}};}
@@ -123,6 +124,7 @@
     P.appendChild(cr('Joyau 2',function(){return m.j2},function(v){m.j2=v;}));
     P.appendChild(cr('Fond page',function(){return m.page},function(v){m.page=v;}));
     P.appendChild(cr('Encre',function(){return m.ink},function(v){m.ink=v;}));
+    P.appendChild(rg('Angle dégradé',function(){return m.angle==null?160:m.angle},function(v){m.angle=v;},0,360));
     P.appendChild(H('Icônes'));
     P.appendChild(sg('Style',[['fill','Plein'],['line','Trait'],['duo','Duo'],['native','Natif']],function(){return T.icon.style},function(v){T.icon.style=v;}));
     P.appendChild(sg('Couleur',[['natural','Nat.'],['mono','Unie']],function(){return T.icon.colorMode},function(v){T.icon.colorMode=v;}));
@@ -147,6 +149,8 @@
     P.appendChild(H('Logo du mode'));
     P.appendChild(cr('Logo '+LAB[curMode],function(){return T.logos[curMode]||m.ink},function(v){T.logos[curMode]=v;}));
     P.appendChild(H('Effets & scènes'));
+    P.appendChild(rg('Arrondi (radius)',function(){return T.effects.radius==null?22:T.effects.radius},function(v){T.effects.radius=v;},0,40));
+    P.appendChild(rg('Reflet (sheen)',function(){return T.effects.sheen==null?60:T.effects.sheen},function(v){T.effects.sheen=v;},0,100));
     P.appendChild(tg('Gloss',function(){return T.effects.polish},function(v){T.effects.polish=v;}));
     P.appendChild(tg('Miroir',function(){return T.effects.mirror},function(v){T.effects.mirror=v;}));
     P.appendChild(tg('Ombre',function(){return T.effects.shadow},function(v){T.effects.shadow=v;}));
@@ -195,13 +199,26 @@
     hh.textContent='Aperçu = la vraie app, en live. Publier pour tous : via l\'admin (upsert da_tokens).';P.appendChild(hh);}
 
   function mountUI(){if(document.getElementById('smdaBtn'))return;
-    var btn=el("<button id=smdaBtn title='Console DA (admin)'>✦ DA</button>");
-    btn.style.cssText='position:fixed;z-index:2147483646;right:16px;bottom:16px;background:#FF7A4D;color:#221;border:0;border-radius:999px;padding:11px 16px;font:800 14px Manrope,sans-serif;cursor:pointer;box-shadow:0 10px 30px -8px #000';
-    btn.onclick=function(){open=!open;document.getElementById('smdaPanel').style.transform=open?'translateX(0)':'translateX(110%)';};
+    // Style tactile du panneau (gros inputs/boutons sur téléphone)
+    var ps=document.getElementById('sm-da-ui');if(!ps){ps=document.createElement('style');ps.id='sm-da-ui';document.head.appendChild(ps);
+      ps.textContent='#smdaPanel input[type=color]{width:38px;height:32px;min-width:38px;padding:0;border:1px solid #333;border-radius:6px;background:#0d0a14}'
+        +'#smdaPanel input[type=text],#smdaPanel input[type=number]{font-size:14px;padding:7px;min-width:64px}'
+        +'#smdaPanel select{font-size:14px;padding:6px}#smdaPanel button{min-height:36px}'
+        +'#smdaPanel input[type=range]{height:28px}#smdaPanel label{font-size:13px}';}
+    var btn=el("<button id=smdaBtn title='Console DA — glisse pour déplacer, tape pour ouvrir'>✦ DA</button>");
+    // Par défaut AU-DESSUS de la barre de nav (ne couvre plus l'onglet Profil). Déplaçable.
+    btn.style.cssText='position:fixed;z-index:2147483646;right:14px;bottom:calc(86px + env(safe-area-inset-bottom,0px));background:#FF7A4D;color:#221;border:0;border-radius:999px;padding:12px 16px;font:800 14px Manrope,sans-serif;cursor:grab;box-shadow:0 10px 30px -8px #000;touch-action:none;user-select:none;-webkit-user-select:none';
+    try{var sp=JSON.parse(localStorage.getItem('sm_da_btn_pos')||'null');if(sp){btn.style.left=sp.x+'px';btn.style.top=sp.y+'px';btn.style.right='auto';btn.style.bottom='auto';}}catch(e){}
+    // Drag + tap : bouge >6px = glissé (repositionne + mémorise) ; sinon = tap (ouvre/ferme)
+    var dx=0,dy=0,sx=0,sy=0,moved=false,down=false;
+    btn.addEventListener('pointerdown',function(e){down=true;moved=false;var r=btn.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;sx=e.clientX;sy=e.clientY;try{btn.setPointerCapture(e.pointerId);}catch(x){}});
+    btn.addEventListener('pointermove',function(e){if(!down)return;if(Math.abs(e.clientX-sx)>6||Math.abs(e.clientY-sy)>6)moved=true;if(moved){var x=Math.max(4,Math.min(innerWidth-58,e.clientX-dx)),y=Math.max(4,Math.min(innerHeight-58,e.clientY-dy));btn.style.left=x+'px';btn.style.top=y+'px';btn.style.right='auto';btn.style.bottom='auto';}});
+    btn.addEventListener('pointerup',function(e){if(!down)return;down=false;if(moved){try{localStorage.setItem('sm_da_btn_pos',JSON.stringify({x:parseInt(btn.style.left,10),y:parseInt(btn.style.top,10)}));}catch(x){}}else{open=!open;document.getElementById('smdaPanel').style.transform=open?'translateX(0)':'translateX(110%)';}});
     document.body.appendChild(btn);
     var pan=el("<div id=smdaPanel></div>");
-    pan.style.cssText='position:fixed;z-index:2147483646;top:0;right:0;width:330px;height:100vh;background:#15121c;border-left:1px solid rgba(255,255,255,.12);box-shadow:-20px 0 60px -20px #000;transform:translateX(110%);transition:transform .25s;overflow:auto;padding:14px;font-family:Manrope,sans-serif;color:#f3ecf6';
-    pan.innerHTML="<div style='display:flex;justify-content:space-between;align-items:center'><b>Console DA</b><button id=smdaClose style='background:none;border:0;color:#fff;font-size:18px;cursor:pointer'>×</button></div><div id=smdaBody></div>";
+    // Mobile : largeur quasi pleine, hauteur dynamique (dvh), padding bas safe-area, scroll fluide.
+    pan.style.cssText='position:fixed;z-index:2147483646;top:0;right:0;width:min(340px,94vw);max-width:100vw;height:100vh;height:100dvh;background:#15121c;border-left:1px solid rgba(255,255,255,.12);box-shadow:-20px 0 60px -20px #000;transform:translateX(110%);transition:transform .25s;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px;padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));font-family:Manrope,sans-serif;color:#f3ecf6';
+    pan.innerHTML="<div style='display:flex;justify-content:space-between;align-items:center;position:sticky;top:-14px;background:#15121c;padding:8px 0;margin:-4px 0 4px;z-index:1'><b>Console DA</b><button id=smdaClose style='background:none;border:0;color:#fff;font-size:28px;line-height:1;cursor:pointer;padding:0 8px'>×</button></div><div id=smdaBody></div>";
     document.body.appendChild(pan);
     pan.querySelector('#smdaClose').onclick=function(){open=false;pan.style.transform='translateX(110%)';};
     build_panel();}
