@@ -41,7 +41,8 @@
     badges:{exploration:['#FF8A3D','#FF5A4D'],social:['#9B7BFF','#6638D6'],securite:['#34C98F','#0E9E6B'],accomplissement:['#FFD15C','#E0901E']},
     logos:{},scenes:{accent:p[0],confetti:true},typo:{titleColor:'',bodyColor:'',metaColor:''},
     comp:{btnText:'#ffffff',chipText:'#ffffff'},emoji:{off:false},grads:{},iconColors:{},glyph:{},rewards:[],appIcon:{c1:p[0],c2:p[1],glyph:'sun'},imgBank:{},a11y:{fontScale:100},globalTexts:{},overrides:{}};}
-  var T=build('☀️ Sunset'),curMode='jour',editMode=false,open=false;
+  // On RECHARGE le dernier état (preset choisi + retouches) depuis localStorage → fini le retour à zéro.
+  var T=(function(){try{var d=localStorage.getItem('sm_da_live');if(d){var o=JSON.parse(d);if(o&&o.modes&&o.preset)return o;}}catch(e){}return build('🌅 Radiant Horizon');})(),curMode='jour',editMode=false,open=false;
 
   var SEL='.thumb,.cic,.jo-ic,.qm-ic,.sc-ic,.smgem,.hex,.tile,.cat-tile,.pcard,.gcard,.ghead,.lb-row,.coupon,.tcard,.btn-primary,.chip,.brand .mark,.feature,.vchip,.mark-pro,.avail-badge,.rate-top';
   var SCREENS=[['accueil','Accueil'],['lieux','Lieux'],['jeux','Jeux'],['connexions','Mates'],['securite','Sécu'],['profil','Profil']];
@@ -79,17 +80,28 @@
       if(first)return '.'+first;}cur=cur.parentElement;}
     return null;}
   document.addEventListener('click',function(ev){if(!editMode)return;if(ev.target.closest&&ev.target.closest('#smdaPanel,#smdaBtn,.smda-pop'))return;
-    var sel=selFor(ev.target);if(!sel)return;ev.preventDefault();ev.stopPropagation();popEdit(sel,ev);},true);
-  function popEdit(sel,ev){closePop();var key=curMode+'||'+sel,ov=T.overrides[key]||{},m=T.modes[curMode];
+    var sel=selFor(ev.target);if(!sel)return;ev.preventDefault();ev.stopPropagation();popEdit(sel,ev,ev.target);},true);
+  function popEdit(sel,ev,el){closePop();var key=curMode+'||'+sel,ov=T.overrides[key]||{},m=T.modes[curMode];
+    // élément porteur d'emoji (l'élément cliqué ou un ancêtre proche), sinon l'élément cliqué (pour AJOUTER)
+    var host=el,h=el;for(var i=0;i<6&&h;i++){if(h.textContent){_EMO.lastIndex=0;if(_EMO.test(h.textContent)){host=h;break;}}h=h.parentElement;}
+    var curEmo='';if(host){_EMO.lastIndex=0;var mm=(host.textContent||'').match(_EMO);curEmo=mm?mm[0]:'';}
+    // PALETTE DU PRESET (couleurs dans le thème, pas du hasard) : les joyaux de tous les modes
+    var pal=[];Object.keys(T.modes).forEach(function(k){[T.modes[k].j1,T.modes[k].j2].forEach(function(c){if(c&&pal.indexOf(c)<0)pal.push(c);});});
+    var swh=pal.slice(0,10).map(function(c){return "<button class=dasw data-c='"+c+"' title='"+c+"' style='width:24px;height:24px;border-radius:6px;border:1px solid #0007;background:"+c+";cursor:pointer'></button>";}).join('');
     var p=document.createElement('div');p.className='smda-pop';p.id='smdaPop';
-    p.style.cssText='position:fixed;z-index:2147483647;left:'+Math.min(ev.clientX,innerWidth-232)+'px;top:'+Math.min(ev.clientY,innerHeight-170)+'px;background:#1d1830;color:#f3ecf6;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px;width:220px;font:13px Manrope,sans-serif;box-shadow:0 16px 40px -10px #000';
+    p.style.cssText='position:fixed;z-index:2147483647;left:'+Math.min(ev.clientX,innerWidth-262)+'px;top:'+Math.max(8,Math.min(ev.clientY,innerHeight-280))+'px;background:#1d1830;color:#f3ecf6;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px;width:248px;font:13px Manrope,sans-serif;box-shadow:0 16px 40px -10px #000';
     p.innerHTML="<b style='font-size:12px;word-break:break-all'>"+sel+"</b>"
-      +"<div style='display:flex;align-items:center;gap:6px;margin:6px 0'>Joyau1 <input type=color id=dj1 value='"+(ov.j1||m.j1)+"'> Joyau2 <input type=color id=dj2 value='"+(ov.j2||m.j2)+"'></div>"
-      +"<div style='display:flex;gap:6px'><button id=dok style='flex:1'>OK</button><button id=drm style='flex:1'>Retirer</button></div>";
+      +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Palette du preset (1 clic)</div><div style='display:flex;flex-wrap:wrap;gap:5px'>"+swh+"</div>"
+      +"<div style='display:flex;align-items:center;gap:8px;margin:9px 0'>J1 <input type=color id=dj1 value='"+(ov.j1||m.j1)+"' style='width:42px;height:32px'> J2 <input type=color id=dj2 value='"+(ov.j2||m.j2)+"' style='width:42px;height:32px'></div>"
+      +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Emoji "+(curEmo?'(actuel '+curEmo+')':'(aucun — en ajouter)')+"</div>"
+      +"<div style='display:flex;gap:6px;align-items:center'><input type=text id=demo value='"+curEmo+"' placeholder='colle/écris un emoji' style='flex:1;font-size:18px;text-align:center;background:#0d0a14;color:#fff;border:1px solid #333;border-radius:6px;padding:5px'><button id=demoOk style='padding:7px 10px'>Poser</button></div>"
+      +"<div style='display:flex;gap:6px;margin-top:10px'><button id=dok style='flex:1;padding:7px'>Fermer</button><button id=drm style='flex:1;padding:7px'>Retirer couleur</button></div>";
     document.body.appendChild(p);
-    function sv(){T.overrides[key]={j1:p.querySelector('#dj1').value,j2:p.querySelector('#dj2').value};injectExtra();}
+    function sv(){T.overrides[key]={j1:p.querySelector('#dj1').value,j2:p.querySelector('#dj2').value};injectExtra();apply();}
     p.querySelector('#dj1').oninput=sv;p.querySelector('#dj2').oninput=sv;
-    p.querySelector('#dok').onclick=closePop;p.querySelector('#drm').onclick=function(){delete T.overrides[key];injectExtra();closePop();};}
+    Array.prototype.forEach.call(p.querySelectorAll('.dasw'),function(b){b.onclick=function(){var c=b.getAttribute('data-c');p.querySelector('#dj1').value=c;p.querySelector('#dj2').value=mix(c,'#000',0.22);sv();};});
+    p.querySelector('#demoOk').onclick=function(){var e=p.querySelector('#demo').value.trim();if(e&&host)_setEmoji(host,e);};
+    p.querySelector('#dok').onclick=closePop;p.querySelector('#drm').onclick=function(){delete T.overrides[key];injectExtra();apply();closePop();};}
   function closePop(){var e=document.getElementById('smdaPop');if(e)e.remove();}
 
   // ---- UI (launcher + panel) ----
@@ -212,6 +224,11 @@
   // ---- Mode TEXTE SEUL (sans emoji) : retire les emojis du texte + masque les pastilles d'icônes ----
   var _txtOnly=false,_txtObs=null;
   var _EMO=/[←-⇿⌀-➿⤀-⥿⬀-⯿️‍\u{1F000}-\u{1FAFF}]/gu;
+  var _EMO1=new RegExp(_EMO.source,'u'); // version non-globale → remplace seulement le 1er emoji
+  // remplace (ou ajoute) l'emoji d'un élément, en direct dans le DOM
+  function _setEmoji(host,emo){if(!host)return;var w=document.createTreeWalker(host,NodeFilter.SHOW_TEXT,null),n;
+    while(n=w.nextNode()){_EMO.lastIndex=0;if(_EMO.test(n.nodeValue)){n.nodeValue=n.nodeValue.replace(_EMO1,emo);return;}}
+    var f=host.firstChild;if(f&&f.nodeType===3)f.nodeValue=emo+' '+f.nodeValue;else host.insertBefore(document.createTextNode(emo+' '),host.firstChild||null);}
   function _txtCss(){if(document.getElementById('sm-da-textonly'))return;var s=document.createElement('style');s.id='sm-da-textonly';
     s.textContent='body.sm-text-only [data-smicon],body.sm-text-only .cic,body.sm-text-only .jo-ic,body.sm-text-only .qm-ic,body.sm-text-only .sc-ic,body.sm-text-only .smgem{display:none!important}'
       +'body.sm-text-only .tile,body.sm-text-only .cat-tile,body.sm-text-only .gp-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}';
