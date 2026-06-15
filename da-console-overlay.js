@@ -100,7 +100,7 @@
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Palette du preset (1 clic)</div><div style='display:flex;flex-wrap:wrap;gap:5px'>"+swh+"</div>"
       +"<div style='display:flex;align-items:center;gap:8px;margin:9px 0'>J1 <input type=color id=dj1 value='"+(ov.j1||m.j1)+"' style='width:42px;height:32px'> J2 <input type=color id=dj2 value='"+(ov.j2||m.j2)+"' style='width:42px;height:32px'></div>"
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Emoji "+(curEmo?'(actuel '+curEmo+')':'(aucun — en ajouter)')+"</div>"
-      +"<div style='display:flex;gap:6px;align-items:center'><input type=text id=demo value='"+curEmo+"' placeholder='colle/écris un emoji' style='flex:1;font-size:18px;text-align:center;background:#0d0a14;color:#fff;border:1px solid #333;border-radius:6px;padding:5px'><button id=demoOk style='padding:7px 10px'>Poser</button></div>"
+      +"<div style='display:flex;gap:6px;align-items:center'><input type=text id=demo value='"+curEmo+"' placeholder='colle/écris un emoji' style='flex:1;font-size:18px;text-align:center;background:#0d0a14;color:#fff;border:1px solid #333;border-radius:6px;padding:5px'><button id=demoOk style='padding:7px 10px'>Poser</button><button id=demoRm style='padding:7px 9px' title='Retirer emoji'>✕</button></div>"
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Taille de CET élément (fond + emoji ensemble)</div><input type=range id=dsz min=50 max=170 value='"+Math.round((ov.scale||1)*100)+"' style='width:100%'>"
       +"<div style='display:flex;gap:6px;margin-top:10px'><button id=dok style='flex:1;padding:7px'>Fermer</button><button id=drm style='flex:1;padding:7px'>Tout retirer</button></div>";
     document.body.appendChild(p);
@@ -108,6 +108,7 @@
     p.querySelector('#dj1').oninput=sv;p.querySelector('#dj2').oninput=sv;
     Array.prototype.forEach.call(p.querySelectorAll('.dasw'),function(b){b.onclick=function(){var c=b.getAttribute('data-c');p.querySelector('#dj1').value=c;p.querySelector('#dj2').value=mix(c,'#000',0.22);sv();};});
     p.querySelector('#demoOk').onclick=function(){var e=p.querySelector('#demo').value.trim();if(e&&host)_setEmoji(host,e);};
+    p.querySelector('#demoRm').onclick=function(){if(host)_setEmoji(host,'');p.querySelector('#demo').value='';};
     p.querySelector('#dsz').oninput=function(){var s=(+p.querySelector('#dsz').value)/100;T.overrides[key]=T.overrides[key]||{};T.overrides[key].scale=s;injectExtra();apply();};
     p.querySelector('#dok').onclick=closePop;p.querySelector('#drm').onclick=function(){delete T.overrides[key];injectExtra();apply();closePop();};}
   function closePop(){var e=document.getElementById('smdaPop');if(e)e.remove();}

@@ -53,6 +53,11 @@ button:active{transform:scale(.97)}
 .bdot{position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:#e8402b;border:1.5px solid #fff}
 .rounded-jewel.jw,.jw{transition:transform .14s,box-shadow .2s}
 input:focus{outline:2px solid rgba(181,36,31,.35);outline-offset:1px}
+/* MOBILE : plein écran (fini le "téléphone dans un téléphone") */
+@media(max-width:480px){
+  body{padding:0!important;display:block!important;background:#faf8ff!important}
+  #phone{width:100%!important;max-width:100%!important;height:100vh!important;height:100dvh!important;max-height:none!important;border-radius:0!important;box-shadow:none!important}
+}
 </style>
 </head>
 <body class="bg-[#efe7f0] min-h-screen grid place-items-center p-4 font-body text-on-background">
@@ -320,6 +325,7 @@ input:focus{outline:2px solid rgba(181,36,31,.35);outline-offset:1px}
       <button class="w-full flex items-center gap-3 bg-surface-container-low rounded-[14px] px-3.5 py-3.5 text-title mb-2.5" data-go="guide"><span class="material-symbols-outlined text-primary">palette</span>Guide des ambiances</button>
       <button class="w-full flex items-center gap-3 bg-surface-container-low rounded-[14px] px-3.5 py-3.5 text-title mb-2.5" data-go="livre"><span class="material-symbols-outlined text-primary">menu_book</span>Livre blanc &amp; démo</button>
       <button class="w-full flex items-center gap-3 bg-surface-container-low rounded-[14px] px-3.5 py-3.5 text-title mb-2.5" id="reonb"><span class="material-symbols-outlined text-primary">waving_hand</span>Revoir l'onboarding</button>
+      <button class="w-full flex items-center gap-3 bg-surface-container-low rounded-[14px] px-3.5 py-3.5 text-title mb-2.5" id="exitLite"><span class="material-symbols-outlined text-primary">logout</span>Quitter le mode lite</button>
       <button class="w-full flex items-center gap-3 bg-surface-container-low rounded-[14px] px-3.5 py-3.5 text-title mb-2.5" id="logout"><span class="material-symbols-outlined text-primary">login</span>Se déconnecter</button>
       <button id="closeSheet" class="w-full bg-white border border-outline-variant/50 rounded-[14px] py-3 text-label">Fermer</button>
     </div>
@@ -377,7 +383,7 @@ $$('[data-seg=mates]>button').forEach(function(b){b.onclick=function(){var v=b.d
 /* leaflet */
 var map;function tl(m){L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);}
 function pin(c){return L.divIcon({className:'',html:'<div style="width:26px;height:26px;border-radius:50% 50% 50% 0;background:'+c+';transform:rotate(-45deg);box-shadow:0 4px 8px rgba(0,0,0,.35);border:2px solid #fff"></div>',iconSize:[26,26],iconAnchor:[13,24]});}
-function initMap(){if(map||!window.L||!$('#map'))return;map=L.map('map',{zoomControl:false,attributionControl:false}).setView([38.7169,-9.139],13);tl(map);[[38.722,-9.139,'#b5241f','Café Copenhague'],[38.711,-9.136,'#9B7BFF','Maya'],[38.715,-9.129,'#FFC23D','Quête'],[38.708,-9.142,'#0FA37C','Jardim']].forEach(function(p){L.marker([p[0],p[1]],{icon:pin(p[2])}).addTo(map).bindPopup(p[3]);});}
+function initMap(){if(map||!window.L||!$('#map'))return;map=L.map('map',{zoomControl:false,attributionControl:false}).setView([38.7169,-9.139],13);tl(map);[[38.722,-9.139,'#b5241f','☕ Café Copenhague'],[38.711,-9.136,'#9B7BFF','🧑 Maya · à 200m'],[38.715,-9.129,'#FFC23D','🎯 Quête : Le Louvre secret'],[38.708,-9.142,'#0FA37C','🌿 Jardim (éco)'],[38.719,-9.133,'#b5241f','☕ L\'Escale Éco'],[38.713,-9.145,'#9B7BFF','🧑 Leo · actif'],[38.705,-9.135,'#0FA37C','🛟 Point sûr 24/7'],[38.717,-9.150,'#FFC23D','🎉 Sunset Yoga · ce soir'],[38.709,-9.128,'#9B7BFF','🧑 Anya'],[38.724,-9.144,'#b5241f','☕ Le Comptoir Solaire']].forEach(function(p){L.marker([p[0],p[1]],{icon:pin(p[2])}).addTo(map).bindPopup(p[3]);});}
 $('#around').onclick=function(){if(map)map.flyTo([38.7169,-9.139],15);toast('On recentre autour de toi 📍');};
 /* chat */
 var CH={Lina:[['them','Coucou ! Prête pour notre session d\'exploration ce soir ? 🌙 J\'ai repéré quelques spots sympas.'],['me','Grave ! On se retrouve à quel endroit sur la map ? 🗺️']],Elena:[['them','Seeking travel buddies ! 🏄']],David:[['them','On teste un marché demain ?']]};
@@ -394,6 +400,7 @@ $('#sosBtn').onclick=function(){var m=$('#sosModal');m.classList.remove('hidden'
 $('#sosClose').onclick=function(){var m=$('#sosModal');m.classList.add('hidden');m.classList.remove('flex');toast('Alerte annulée');};
 $('#menuBtn').onclick=function(){var s=$('#sheet');s.classList.remove('hidden');s.classList.add('flex');};
 $('#closeSheet').onclick=function(){var s=$('#sheet');s.classList.add('hidden');s.classList.remove('flex');};
+$('#exitLite').onclick=function(){toast('Sortie du mode lite…');try{window.close();}catch(e){}setTimeout(function(){location.href='index.html';},150);};
 
 $('#logout').onclick=function(){$('#sheet').classList.add('hidden');$('#sheet').classList.remove('flex');$('#cnx').classList.remove('hidden');$('#cnx').classList.add('flex');};
 /* onboarding */
