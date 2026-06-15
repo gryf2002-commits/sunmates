@@ -5,6 +5,10 @@
    dégradés accent/sunset, + clic-recolor ciblé. Bouton flottant ✦ DA. */
 (function(){
   "use strict";
+  // Client Supabase : window.db si exposé (preview), sinon on en crée un (clé anon PUBLIQUE ;
+  // la session admin connectée est réutilisée via le storage) → la console marche partout.
+  var _SB_URL='https://ihiwuharxkmkzaxixhae.supabase.co',_SB_KEY='sb_publishable_-Q0evGrgq76Fp-YWLNA1Qg_jsOXEIcn';
+  function _db(){try{if(window.db&&window.db.from)return window.db;if(window.supabase&&window.supabase.createClient)return window.supabase.createClient(_SB_URL,_SB_KEY);}catch(e){}return null;}
   function isAdmin(){try{if(typeof window.isAdmin==='function'&&window.isAdmin!==arguments.callee)return !!window.isAdmin();}catch(e){}
     try{return !!(window.myProfile&&window.myProfile.is_admin);}catch(e){return false;}}
   function hx(h){h=String(h||'').replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];var n=parseInt(h,16);return[(n>>16)&255,(n>>8)&255,n&255];}
@@ -226,9 +230,10 @@
     var pub=document.createElement('button');pub.textContent='🌍 Publier pour TOUS';
     pub.style.cssText='width:100%;margin-top:8px;border:0;border-radius:9px;padding:10px;font-weight:800;cursor:pointer;background:#1f9d6b;color:#fff';
     pub.onclick=function(){if(!confirm('Publier cette DA pour TOUS les utilisateurs ?'))return;pub.textContent='Publication…';
-      try{if(window.db&&window.db.from){window.db.from('da_tokens').upsert({id:1,tokens:T,updated_at:new Date().toISOString()}).then(function(r){
+      var DB=_db();
+      try{if(DB&&DB.from){DB.from('da_tokens').upsert({id:1,tokens:T,updated_at:new Date().toISOString()}).then(function(r){
         pub.textContent=(r&&r.error)?('Erreur : '+(r.error.message||'?')):'Publié pour tous ✓';setTimeout(function(){pub.textContent='🌍 Publier pour TOUS';},2600);});}
-      else{pub.textContent='Base indisponible';alert('window.db absent — la publication nécessite la session admin connectée + la migration da_tokens.');setTimeout(function(){pub.textContent='🌍 Publier pour TOUS';},2600);}}catch(e){pub.textContent='Erreur';}};
+      else{pub.textContent='Base indisponible';alert('Client Supabase indisponible — connecte-toi en admin et vérifie que la migration da_tokens est lancée.');setTimeout(function(){pub.textContent='🌍 Publier pour TOUS';},2600);}}catch(e){pub.textContent='Erreur';}};
     P.appendChild(pub);
     var hh=document.createElement('div');hh.style.cssText='font-size:11px;color:#a99fbe;margin-top:8px';
     hh.textContent='Aperçu = la vraie app en live (ta vue). « Publier pour TOUS » écrit la DA en base (admin) → tout le monde la reçoit au prochain chargement.';P.appendChild(hh);}
