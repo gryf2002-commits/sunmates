@@ -217,7 +217,11 @@
       +'body.sm-text-only .tile,body.sm-text-only .cat-tile,body.sm-text-only .gp-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}';
     document.head.appendChild(s);}
   function _strip(t){if(!t||t.nodeType!==3)return;var p=t.parentNode;if(p&&p.closest&&p.closest('#smdaPanel,#smdaBtn,#smdaPop'))return;
-    var v=t.nodeValue;if(!v)return;_EMO.lastIndex=0;if(!_EMO.test(v))return;t.nodeValue=v.replace(_EMO,'').replace(/[ \t]{2,}/g,' ');}
+    var v=t.nodeValue;if(!v)return;_EMO.lastIndex=0;if(!_EMO.test(v))return;
+    var stripped=v.replace(_EMO,'').replace(/[ \t]{2,}/g,' ');
+    // emoji SEUL (icône sans texte) → on le GARDE : sinon l'élément perd tout son sens (nav, SOS, statut…)
+    if(!stripped.replace(/\s/g,''))return;
+    t.nodeValue=stripped;}
   function _stripAll(root){try{var w=document.createTreeWalker(root||document.body,NodeFilter.SHOW_TEXT,null);var n;while(n=w.nextNode())_strip(n);}catch(e){}}
   function setTextOnly(on){_txtOnly=on;_txtCss();document.body.classList.toggle('sm-text-only',on);
     if(on){_stripAll(document.body);
