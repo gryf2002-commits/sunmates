@@ -89,7 +89,17 @@
       var m = T.modes[k], sel = modeSelector(m);
       // TOUTES les tuiles (cic/jo-ic/qm-ic/sc-ic/smgem/thumb, avec ou sans data-smicon) suivent
       // les joyaux du preset, dans TOUS les modes. !important pour battre les blocs nuit/saison en dur.
-      ['.cic', '.jo-ic', '.qm-ic', '.sc-ic', '.smgem', '.thumb'].forEach(function (cl) {
+      // Tuiles/emblèmes : on GARDE l'identité par FAMILLE (corail solo, violet jeux…) mais on
+      // décale chaque famille vers la teinte du preset → distinctes ET suivent la DA (pas aplaties).
+      // (n'écrit que --ic1/--ic2 = le dégradé ; aucun filtre → les emojis dans les tuiles intacts.)
+      var _sh = _rgb2hsl(m.j1)[0] - 24; // 24 ≈ teinte sunset de base des familles de tuiles
+      function _shift(hex){var h=_rgb2hsl(hex);return _hsl2hex(h[0]+_sh,h[1],h[2]);}
+      var _FAM={green:['#2BC4A8','#128F7C'],blue:['#5E74E8','#3641B8'],purp:['#9B7BFF','#6638D6'],coral:['#FF9A5C','#E8631F'],lime:['#FFC93C','#D98414'],indigo:['#8A5CFF','#5028B0'],rose:['#FF6FA5','#D63A78'],gold:['#FFC93C','#E8961F'],teal:['#4ED8B8','#149E8C'],red:['#FF5A4D','#C9281F']};
+      Object.keys(_FAM).forEach(function(f){css += sel+' .thumb.'+f+'{--ic1:'+_shift(_FAM[f][0])+' !important;--ic2:'+_shift(_FAM[f][1])+' !important;}\n';});
+      var _CIC={'c-green':['#4ED8B8','#149E8C'],'c-blue':['#9D86FF','#5E3FE0'],'c-purp':['#b9a6ff','#7c5cff'],'c-gold':['#FFD15C','#F4A11E'],'c-pink':['#ffa7d1','#ff5e9f']};
+      Object.keys(_CIC).forEach(function(c){css += sel+' .cic.'+c+'{--ic1:'+_shift(_CIC[c][0])+' !important;--ic2:'+_shift(_CIC[c][1])+' !important;}\n';});
+      // emblèmes/gems « mono » (jeux/scènes/gemme de mode) : suivent directement le preset
+      ['.jo-ic', '.qm-ic', '.sc-ic', '.smgem'].forEach(function (cl) {
         css += sel + ' ' + cl + '{--ic1:' + m.j1 + ' !important;--ic2:' + m.j2 + ' !important;}\n';
       });
       if (T.logos && T.logos[k]) css += sel + '{--sm-logo:' + T.logos[k] + ';}\n';
