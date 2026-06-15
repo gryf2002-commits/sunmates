@@ -1,0 +1,35 @@
+/* ============================================================
+   SunMates — version LISSÉE (beta OFF) — body.sm-lite
+   PAS un thème gris : on GARDE toute la DA sunset (couleurs,
+   joyaux, dégradés). On rend juste l'app plus SIMPLE & calme :
+   - masque les blocs beta (déjà géré par data-beta + betaOn)
+   - réduit les effets décoratifs lourds (anims, gros sheen)
+   - aère un peu (lisibilité), arrondis cohérents
+   Le rouge danger/SOS est conservé.
+   Inclure : <link rel="stylesheet" href="sunmates-lite.css">
+   (inerte tant que <body> n'a pas la classe sm-lite)
+   ============================================================ */
+
+/* 1) calmer le mouvement (sobre & accessible) — sans tout figer */
+body.sm-lite .float,body.sm-lite .pulse,body.sm-lite .shine,
+body.sm-lite [class*="anim-"],body.sm-lite .confetti{animation:none !important;}
+body.sm-lite *{transition-duration:.16s !important;}
+
+/* 2) alléger les effets « jeu vidéo » trop chargés (on garde les couleurs !) */
+body.sm-lite .smgem::after,body.sm-lite .cic::after,body.sm-lite [class*="sheen"]{opacity:.5 !important;}
+body.sm-lite .badge.secret,body.sm-lite .easter,body.sm-lite .retro-fx{display:none !important;}
+
+/* 3) masquer tout ce qui est expérimental (sécurité : double de data-beta) */
+body.sm-lite [data-beta]{display:none !important;}
+
+/* 4) lisibilité : un peu plus d'air + arrondis homogènes (DA conservée) */
+body.sm-lite .card,body.sm-lite .pcard,body.sm-lite .gcard,body.sm-lite .tile{
+  border-radius:20px !important;}
+body.sm-lite .section,body.sm-lite .stack > * + *{margin-top:14px;}
+
+/* 5) navigation simplifiée : libellés toujours visibles sous les icônes */
+body.sm-lite .tabbar .lbl,body.sm-lite .bottomnav .lbl{display:block !important;font-weight:700;}
+
+/* 6) garde-fous sémantiques (ne jamais neutraliser le danger) */
+body.sm-lite .su-call,body.sm-lite .su-sos,body.sm-lite .act-block,body.sm-lite .danger{
+  filter:none !important;}
