@@ -123,6 +123,9 @@
     var et=document.createElement('button');et.textContent=(editMode?'✏️ Édition ON (clique un élément)':'✏️ Éditer au clic');
     et.style.cssText='width:100%;border:1px solid #333;border-radius:9px;padding:7px;cursor:pointer;margin-bottom:6px;background:'+(editMode?'#18E0C8':'transparent')+';color:'+(editMode?'#073':'#fff');
     et.onclick=function(){editMode=!editMode;build_panel();};P.appendChild(et);
+    var to=document.createElement('button');to.textContent=_txtOnly?'🅰 Texte seul : ON (recharge pour annuler)':'🅰 Texte seul (sans emoji)';
+    to.style.cssText='width:100%;border:1px solid #333;border-radius:9px;padding:7px;cursor:pointer;margin-bottom:6px;background:'+(_txtOnly?'#FFD15C':'transparent')+';color:'+(_txtOnly?'#221':'#fff');
+    to.onclick=function(){var n=!_txtOnly;setTextOnly(n);if(n)build_panel();};P.appendChild(to);
     P.appendChild(H('Presets'));var pb=document.createElement('div');pb.style.cssText='display:flex;flex-wrap:wrap;gap:4px';
     Object.keys(PRESETS).forEach(function(n){var b=document.createElement('button');b.textContent=n;
       b.style.cssText='border:1px solid #333;border-radius:999px;padding:4px 8px;font-size:11px;cursor:pointer;background:'+(n===T.preset?'#FF7A4D':'transparent')+';color:'+(n===T.preset?'#221':'#fff');
@@ -205,6 +208,23 @@
     P.appendChild(ex);
     var hh=document.createElement('div');hh.style.cssText='font-size:11px;color:#a99fbe;margin-top:8px';
     hh.textContent='Aperçu = la vraie app, en live. Publier pour tous : via l\'admin (upsert da_tokens).';P.appendChild(hh);}
+
+  // ---- Mode TEXTE SEUL (sans emoji) : retire les emojis du texte + masque les pastilles d'icônes ----
+  var _txtOnly=false,_txtObs=null;
+  var _EMO=/[←-⇿⌀-➿⤀-⥿⬀-⯿️‍\u{1F000}-\u{1FAFF}]/gu;
+  function _txtCss(){if(document.getElementById('sm-da-textonly'))return;var s=document.createElement('style');s.id='sm-da-textonly';
+    s.textContent='body.sm-text-only [data-smicon],body.sm-text-only .cic,body.sm-text-only .jo-ic,body.sm-text-only .qm-ic,body.sm-text-only .sc-ic,body.sm-text-only .smgem{display:none!important}'
+      +'body.sm-text-only .tile,body.sm-text-only .cat-tile,body.sm-text-only .gp-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}';
+    document.head.appendChild(s);}
+  function _strip(t){if(!t||t.nodeType!==3)return;var p=t.parentNode;if(p&&p.closest&&p.closest('#smdaPanel,#smdaBtn,#smdaPop'))return;
+    var v=t.nodeValue;if(!v)return;_EMO.lastIndex=0;if(!_EMO.test(v))return;t.nodeValue=v.replace(_EMO,'').replace(/[ \t]{2,}/g,' ');}
+  function _stripAll(root){try{var w=document.createTreeWalker(root||document.body,NodeFilter.SHOW_TEXT,null);var n;while(n=w.nextNode())_strip(n);}catch(e){}}
+  function setTextOnly(on){_txtOnly=on;_txtCss();document.body.classList.toggle('sm-text-only',on);
+    if(on){_stripAll(document.body);
+      try{_txtObs=new MutationObserver(function(ms){ms.forEach(function(m){if(m.type==='characterData')_strip(m.target);
+        (m.addedNodes||[]).forEach(function(nd){if(nd.nodeType===3)_strip(nd);else if(nd.nodeType===1)_stripAll(nd);});});});
+        _txtObs.observe(document.body,{childList:true,subtree:true,characterData:true});}catch(e){}
+    }else{if(_txtObs){try{_txtObs.disconnect();}catch(e){}_txtObs=null;}try{location.reload();}catch(e){}}}
 
   function mountUI(){if(document.getElementById('smdaBtn'))return;
     // Style tactile du panneau (gros inputs/boutons sur téléphone)
