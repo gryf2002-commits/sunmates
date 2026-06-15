@@ -1,0 +1,169 @@
+/* SunMates — base & composants signature (DA coucher de soleil).
+   Pas de @apply (non supporté par le CDN Play en CSS externe) → CSS pur. */
+
+:root {
+  --accent: #FF5A4D;
+  --accent-ink: #C23A2D;
+  --amber: #FFC93C;
+  --mango: #FF8A3D;
+  --ink: #39203A;
+  --text: #5B4455;
+  --muted: #7F6878;
+  --line: #F6E3D6;
+  --teal: #14C2B8;
+  --grape: #B25CC9;
+}
+
+* { -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: #FFF4E6;
+  background-image: radial-gradient(125% 90% at 50% -10%, #FFE9C4 0%, #FFD3A6 45%, #FFC0A0 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, .font-display { font-family: 'Fraunces', Georgia, serif; }
+::selection { background: #FFD3A6; color: #39203A; }
+
+/* ---- Barre de défilement thémée (jamais blanche système) ---- */
+@media (min-width: 768px) {
+  * { scrollbar-color: rgba(255,90,77,.55) transparent; scrollbar-width: thin; }
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,90,77,.5);
+    border-radius: 99px; border: 3px solid transparent; background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,90,77,.72); background-clip: padding-box; }
+}
+
+/* ---- Texte dégradé sunset (décoratif, tons assez foncés pour rester lisibles) ---- */
+.text-sunset {
+  background: linear-gradient(120deg, #FF7A3D 0%, #FF4F6D 52%, #B25CC9 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ---- Tuile-joyau : la brique visuelle phare de SunMates ---- */
+.gem {
+  position: relative; display: grid; place-items: center;
+  border-radius: 18px; color: #fff; overflow: hidden; isolation: isolate;
+  background: linear-gradient(150deg, var(--c1, #FF8A3D), var(--c2, #FF5A4D));
+  box-shadow: 0 12px 24px rgba(255,90,77,.26),
+              inset 0 1px 0 rgba(255,255,255,.55),
+              inset 0 -8px 16px rgba(120,30,20,.16);
+}
+.gem::after { /* gloss bombé du dessus */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0) 46%);
+}
+.gem > * { position: relative; z-index: 1; }
+.gem.teal   { --c1: #34C98F; --c2: #1F9E8C; box-shadow: 0 12px 24px rgba(20,194,184,.26), inset 0 1px 0 rgba(255,255,255,.5), inset 0 -8px 16px rgba(10,80,70,.18); }
+.gem.violet { --c1: #9B7BFF; --c2: #6638D6; box-shadow: 0 12px 24px rgba(123,92,255,.28), inset 0 1px 0 rgba(255,255,255,.5), inset 0 -8px 16px rgba(50,20,120,.20); }
+.gem.gold   { --c1: #FFD15C; --c2: #E8961F; box-shadow: 0 12px 24px rgba(232,150,31,.28), inset 0 1px 0 rgba(255,255,255,.6), inset 0 -8px 16px rgba(150,90,10,.18); }
+.gem.bronze { --c1: #E8A33A; --c2: #B25A12; }
+.gem.rose   { --c1: #FF6FA5; --c2: #D63A78; }
+
+/* ---- Carte premium (verre chaud) ---- */
+.card-soft {
+  background: rgba(255,255,255,.86);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 16px 38px rgba(45,38,52,.10), 0 3px 10px rgba(40,25,35,.05);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+
+/* ---- Lien souligné animé ---- */
+.lnk { position: relative; }
+.lnk::after {
+  content: ""; position: absolute; left: 0; right: 100%; bottom: -3px; height: 2px;
+  background: linear-gradient(90deg, #FF7A3D, #FF4F6D); transition: right .28s ease;
+}
+.lnk:hover::after { right: 0; }
+
+/* ---- Focus visible (anneau corail) ---- */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: none; box-shadow: 0 0 0 4px rgba(255,90,77,.28); border-radius: 12px;
+}
+
+/* ---- Survol : léger lift + retour tactile ---- */
+.lift { transition: transform .25s ease, box-shadow .25s ease; }
+.lift:hover { transform: translateY(-4px); }
+.lift:active { transform: scale(.985); }
+
+/* ---- Soleil décoratif qui tourne ---- */
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spin-slow 26s linear infinite; }
+
+/* ---- Reveal au scroll : caché UNIQUEMENT si l'anim JS est active ---- */
+.js-anim .reveal { opacity: 0; transform: translateY(22px); will-change: transform, opacity; }
+
+/* ---- Respect total de prefers-reduced-motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .spin-slow { animation: none; }
+  .js-anim .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ============================================================
+   FX « zinzin » — voyage × rencontre × fun
+   ============================================================ */
+
+/* Dégradé sunset animé — la golden hour qui respire */
+.bg-sunset-anim {
+  background: linear-gradient(120deg, #FFC93C, #FF8A3D, #FF4F6D, #B25CC9, #FF8A3D);
+  background-size: 300% 300%;
+  animation: goldenhour 16s ease infinite;
+}
+@keyframes goldenhour { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* Marquee infinie (destinations) */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.marquee-track { display: flex; gap: 14px; width: max-content; animation: marquee 36s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.dchip {
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.78);
+  padding: .6rem 1.1rem; font-weight: 700; color: #39203A; box-shadow: 0 8px 18px rgba(45,38,52,.08);
+}
+
+/* Épingle qui pulse (carte des lieux) */
+.pin-pulse { position: relative; }
+.pin-pulse::before {
+  content: ""; position: absolute; inset: -6px; border-radius: inherit;
+  border: 2px solid currentColor; opacity: .55; animation: pinpulse 2.2s ease-out infinite;
+}
+@keyframes pinpulse { 0% { transform: scale(.7); opacity: .55; } 100% { transform: scale(1.9); opacity: 0; } }
+
+/* Balayage de brillance (badges) — signature SunMates */
+.shimmer { position: relative; overflow: hidden; }
+.shimmer::before {
+  content: ""; position: absolute; top: -60%; left: -40%; width: 40%; height: 220%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: rotate(18deg); animation: shine 3.6s ease-in-out infinite;
+}
+@keyframes shine { 0%, 55% { left: -40%; } 100% { left: 130%; } }
+
+/* Carte verre pour poser du contenu sur un fond sombre/dégradé */
+.glass-d {
+  background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+
+/* Mur UGC en colonnes (masonry léger) */
+.ugc-wall { column-gap: 1rem; }
+.ugc-wall > * { break-inside: avoid; margin-bottom: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-sunset-anim, .marquee-track, .pin-pulse::before, .shimmer::before { animation: none !important; }
+  .bg-sunset-anim { background-position: 0 50%; }
+}
