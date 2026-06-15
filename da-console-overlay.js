@@ -83,6 +83,7 @@
       var cls=(T.modes[mk]&&T.modes[mk].class||'').trim();var pre='body'+(cls?'.'+cls.split(/\s+/).join('.'):'')+' ';
       var d='';if(o.j1)d+='--ic1:'+o.j1+' !important;--ic2:'+(o.j2||o.j1)+' !important;background-image:linear-gradient(160deg,'+o.j1+','+(o.j2||o.j1)+') !important;';
       if(o.scale)d+='transform:scale('+o.scale+');'; // taille par élément (clic) — fond + emoji ensemble, pas de désync
+      if(o.textColor)d+='color:'+o.textColor+' !important;';
       if(d)css+=pre+sel+'{'+d+'}\n';});
     st.textContent=css;}
 
@@ -116,9 +117,9 @@
     var swh=pal.slice(0,10).map(function(c){return "<button class=dasw data-c='"+c+"' title='"+c+"' style='width:24px;height:24px;border-radius:6px;border:1px solid #0007;background:"+c+";cursor:pointer'></button>";}).join('');
     var p=document.createElement('div');p.className='smda-pop';p.id='smdaPop';
     p.style.cssText='position:fixed;z-index:2147483647;left:'+Math.min(ev.clientX,innerWidth-262)+'px;top:'+Math.max(8,Math.min(ev.clientY,innerHeight-280))+'px;background:#1d1830;color:#f3ecf6;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px;width:248px;font:13px Manrope,sans-serif;box-shadow:0 16px 40px -10px #000';
-    p.innerHTML="<b style='font-size:12px;word-break:break-all'>"+sel+"</b>"
+    p.innerHTML="<b id=dphdr style='display:block;font-size:12px;word-break:break-all;cursor:move;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:6px'>⠿ "+sel+" <span style='color:#a99fbe;font-weight:400'>(glisse-moi)</span></b>"
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Palette du preset (1 clic)</div><div style='display:flex;flex-wrap:wrap;gap:5px'>"+swh+"</div>"
-      +"<div style='display:flex;align-items:center;gap:8px;margin:9px 0'>J1 <input type=color id=dj1 value='"+(ov.j1||m.j1)+"' style='width:42px;height:32px'> J2 <input type=color id=dj2 value='"+(ov.j2||m.j2)+"' style='width:42px;height:32px'></div>"
+      +"<div style='display:flex;align-items:center;gap:8px;margin:9px 0'>Fond J1 <input type=color id=dj1 value='"+(ov.j1||m.j1)+"' style='width:38px;height:30px'> J2 <input type=color id=dj2 value='"+(ov.j2||m.j2)+"' style='width:38px;height:30px'> Texte <input type=color id=dtc value='"+(ov.textColor||'#161b29')+"' style='width:38px;height:30px'><button id=dtcRm style='padding:5px 8px' title='Retirer couleur texte'>✕</button></div>"
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Emoji "+(curEmo?'(actuel '+curEmo+')':'(aucun — en ajouter)')+"</div>"
       +"<div style='display:flex;gap:6px;align-items:center'><input type=text id=demo value='"+curEmo+"' placeholder='colle/écris un emoji' style='flex:1;font-size:18px;text-align:center;background:#0d0a14;color:#fff;border:1px solid #333;border-radius:6px;padding:5px'><button id=demoOk style='padding:7px 10px'>Poser</button><button id=demoRm style='padding:7px 9px' title='Retirer emoji'>✕</button></div>"
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Texte de CET élément</div>"
@@ -126,13 +127,19 @@
       +"<div style='margin:9px 0 4px;font-size:11px;color:#a99fbe'>Taille de CET élément (fond + emoji ensemble)</div><input type=range id=dsz min=50 max=170 value='"+Math.round((ov.scale||1)*100)+"' style='width:100%'>"
       +"<div style='display:flex;gap:6px;margin-top:10px'><button id=dok style='flex:1;padding:7px'>Fermer</button><button id=drm style='flex:1;padding:7px'>Tout retirer</button></div>";
     document.body.appendChild(p);
-    function sv(){T.overrides[key]={j1:p.querySelector('#dj1').value,j2:p.querySelector('#dj2').value};injectExtra();apply();}
+    function sv(){T.overrides[key]=Object.assign(T.overrides[key]||{},{j1:p.querySelector('#dj1').value,j2:p.querySelector('#dj2').value});injectExtra();apply();}
     p.querySelector('#dj1').oninput=sv;p.querySelector('#dj2').oninput=sv;
     Array.prototype.forEach.call(p.querySelectorAll('.dasw'),function(b){b.onclick=function(){var c=b.getAttribute('data-c');p.querySelector('#dj1').value=c;p.querySelector('#dj2').value=mix(c,'#000',0.22);sv();};});
     p.querySelector('#demoOk').onclick=function(){var e=p.querySelector('#demo').value.trim();if(e&&host)_setEmoji(host,e);};
     p.querySelector('#demoRm').onclick=function(){if(host)_setEmoji(host,'');p.querySelector('#demo').value='';};
     p.querySelector('#dtxtOk').onclick=function(){if(host)_setText(host,p.querySelector('#dtxt').value);};
     p.querySelector('#dsz').oninput=function(){var s=(+p.querySelector('#dsz').value)/100;T.overrides[key]=T.overrides[key]||{};T.overrides[key].scale=s;injectExtra();apply();};
+    p.querySelector('#dtc').oninput=function(){T.overrides[key]=Object.assign(T.overrides[key]||{},{textColor:p.querySelector('#dtc').value});injectExtra();apply();};
+    p.querySelector('#dtcRm').onclick=function(){if(T.overrides[key])delete T.overrides[key].textColor;injectExtra();apply();};
+    (function(){var hdr=p.querySelector('#dphdr');if(!hdr)return;var dx=0,dy=0,dn=false;
+      hdr.addEventListener('pointerdown',function(e){dn=true;var r=p.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;try{hdr.setPointerCapture(e.pointerId);}catch(x){}});
+      hdr.addEventListener('pointermove',function(e){if(!dn)return;p.style.left=Math.max(2,Math.min(innerWidth-60,e.clientX-dx))+'px';p.style.top=Math.max(2,Math.min(innerHeight-40,e.clientY-dy))+'px';});
+      hdr.addEventListener('pointerup',function(){dn=false;});})();
     p.querySelector('#dok').onclick=closePop;p.querySelector('#drm').onclick=function(){delete T.overrides[key];injectExtra();apply();closePop();};}
   function closePop(){var e=document.getElementById('smdaPop');if(e)e.remove();}
 
