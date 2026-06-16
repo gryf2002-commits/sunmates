@@ -14,6 +14,12 @@
   function hx(h){h=String(h||'').replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];var n=parseInt(h,16);return[(n>>16)&255,(n>>8)&255,n&255];}
   function hex(a){return '#'+a.map(function(v){v=Math.max(0,Math.min(255,Math.round(v)));return (v<16?'0':'')+v.toString(16);}).join('');}
   function mix(a,b,t){var A=hx(a),B=hx(b);return hex([A[0]+(B[0]-A[0])*t,A[1]+(B[1]-A[1])*t,A[2]+(B[2]-A[2])*t]);}
+  // Luminance relative WCAG (0=noir,1=blanc) — utilisée par l'auto-contraste. Préfère le helper du
+  // loader (window.SMDA) s'il est dispo, sinon repli local. (Avant : `lum` n'existait PAS → le bouton
+  // « Auto-contraste texte » plantait avec ReferenceError et ne faisait RIEN.)
+  function lum(c){try{if(window.SMDA&&window.SMDA.mix){/* SMDA n'expose pas lum directement */}}catch(e){}
+    var A=hx(c);var s=A.map(function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});
+    return 0.2126*s[0]+0.7152*s[1]+0.0722*s[2];}
 
   var PAGES={jour:['#fbeee9','#1d2230',''],nuit:['#171026','#f3ecf6','theme-dusk'],
     hiver:['#EAF3FB','#1E3A52','theme-winter'],'hiver-nuit':['#0E2036','#EAF6FF','theme-winter theme-dusk'],
@@ -73,8 +79,11 @@
     if(!T2.modes||typeof T2.modes!=='object')T2.modes=base.modes;
     // tout mode manquant → on le dérive du squelette (popEdit/setMode/build_panel supposent les 6)
     MK.forEach(function(k){if(!T2.modes[k]||typeof T2.modes[k]!=='object')T2.modes[k]=base.modes[k];});
-    ['icon','fonts','effects','sizes','badges','logos','scenes','typo','comp','emoji','iconColors','a11y','globalTexts'].forEach(function(k){
+    ['icon','fonts','effects','sizes','badges','logos','scenes','typo','comp','emoji','iconColors','a11y','globalTexts','appIcon','imgBank'].forEach(function(k){
       if(!T2[k]||typeof T2[k]!=='object')T2[k]=base[k];});
+    // badges : chaque famille doit être un couple [clair,foncé] (sinon cr badges plante sur [0]/[1])
+    ['exploration','social','securite','accomplissement'].forEach(function(f){
+      if(!Array.isArray(T2.badges[f])||T2.badges[f].length<2)T2.badges[f]=base.badges[f];});
     if(!Array.isArray(T2.rewards))T2.rewards=[];
     return T2;}
   // On RECHARGE le dernier état (preset choisi + retouches) depuis localStorage → fini le retour à zéro.
@@ -86,7 +95,10 @@
   function injectExtra(){var d=document,st=d.getElementById('sm-da-extra');if(!st){st=d.createElement('style');st.id='sm-da-extra';d.head.appendChild(st);}
     var css='';MK.forEach(function(k){var m=T.modes[k],cls=(m.class||'').trim();
       var pre='body'+(cls?'.'+cls.split(/\s+/).join('.'):':not(.theme-dusk):not(.theme-winter):not(.theme-tropic)');
-      var ag='linear-gradient(135deg,'+m.j1+','+mix(m.j1,m.j2,.5)+','+m.j2+')';
+      // angle PILOTÉ par le réglage du mode (avant : 135deg en dur ici → le curseur « Angle dégradé »
+      // ne touchait QUE le loader et était écrasé par ce !important. On lit m.angle pour rester cohérent.)
+      var _ang=(m.angle==null?160:m.angle);
+      var ag='linear-gradient('+_ang+'deg,'+m.j1+','+mix(m.j1,m.j2,.5)+','+m.j2+')';
       css+=pre+'{--accent-grad:'+ag+' !important;--sunset-grad:'+ag+' !important;}\n';
       // pins carte génériques → couleur du mode (les pins « toi »/.me et « quête »/.quest gardent leur sémantique)
       css+=pre+' .epin:not(.me):not(.quest){--epin:'+m.j2+' !important;}\n';});
@@ -257,7 +269,7 @@
     P.appendChild(rg('Angle dégradé',function(){return m.angle==null?160:m.angle},function(v){m.angle=v;},0,360));
     P.appendChild(H('Icônes'));
     P.appendChild(sg('Style',[['fill','Plein'],['line','Trait'],['duo','Duo'],['native','Natif']],function(){return T.icon.style},function(v){T.icon.style=v;}));
-    P.appendChild(sg('Couleur',[['natural','Nat.'],['mono','Unie']],function(){return T.icon.colorMode},function(v){T.icon.colorMode=v;}));
+    P.appendChild(sg('Couleur',[['natural','Auto'],['mono','Unie'],['themed','Par cat.']],function(){return T.icon.colorMode},function(v){T.icon.colorMode=v;}));
     if(T.icon.colorMode==='mono')P.appendChild(cr('Couleur unie',function(){return T.icon.mono},function(v){T.icon.mono=v;}));
     P.appendChild(sg('Forme',[['squircle','Squir.'],['circle','Cercle'],['rounded','Arr.']],function(){return T.effects.shape},function(v){T.effects.shape=v;}));
     P.appendChild(rg('Taille tuile',function(){return T.sizes.tile},function(v){T.sizes.tile=v;},48,110));
@@ -286,16 +298,16 @@
     P.appendChild(tg('Ombre',function(){return T.effects.shadow},function(v){T.effects.shadow=v;}));
     P.appendChild(cr('Accent scène',function(){return T.scenes.accent},function(v){T.scenes.accent=v;}));
     P.appendChild(H('Emojis'));
-    P.appendChild(tg('Emblèmes SVG (sinon natif)',function(){return !T.emoji.off},function(v){T.emoji.off=!v;}));
+    P.appendChild(tg('Forcer les emojis natifs (📍)',function(){return !!T.emoji.off},function(v){T.emoji.off=v;}));
+    P.appendChild(tg('Confettis / scènes',function(){return T.scenes.confetti!==false},function(v){T.scenes.confetti=v;}));
     function det(t,fill){var dd=document.createElement('details');dd.style.margin='4px 0';
       var s=document.createElement('summary');s.textContent=t;s.style.cssText='cursor:pointer;font-size:12px;color:#a99fbe;margin:6px 0';dd.appendChild(s);
       var bd=document.createElement('div');fill(bd);dd.appendChild(bd);return dd;}
-    function toC(bg){return (function(){try{return (0.2126*0+0)>1;}catch(e){return false;}})()?'#000':'#000';}
     var ICATS=['quest','games','medal','coupon','rank','shop','coffee','eco','near','rating','popular','trip','users','crown','phone','signal','alert','aid','chat','search'];
     P.appendChild(H('Couleurs d\u2019ic\u00f4nes (par cat\u00e9gorie)'));
     P.appendChild(det('Ouvrir la palette d\u2019embl\u00e8mes',function(b){
       ICATS.forEach(function(c){b.appendChild(cr(c,function(){return T.iconColors[c]||m.j2},function(v){T.iconColors[c]=v;T.icon.colorMode='themed';}));});}));
-    P.appendChild(det('R\u00e9compenses',function(b){
+    P.appendChild(det('R\u00e9compenses (export / publi\u00e9)',function(b){
       (T.rewards||[]).forEach(function(rw,i){var r=el("<div style='border:1px solid #333;border-radius:8px;padding:6px;margin:4px 0'></div>");
         var nm=el("<input type=text value='"+(rw.name||'')+"' placeholder='Nom' style='width:100%;background:#0d0a14;color:#fff;border:1px solid #333;border-radius:6px;padding:4px;margin-bottom:4px'>");nm.onchange=function(){rw.name=nm.value;};
         var xp=el("<input type=number value='"+(rw.xp||0)+"' style='width:70px;background:#0d0a14;color:#fff;border:1px solid #333;border-radius:6px;padding:4px'>");xp.onchange=function(){rw.xp=+xp.value;};
@@ -303,7 +315,7 @@
         r.appendChild(nm);r.appendChild(xp);r.appendChild(del);b.appendChild(r);});
       var add=el("<button style='border:1px solid #333;background:transparent;color:#fff;border-radius:8px;padding:5px;cursor:pointer'>+ Ajouter</button>");
       add.onclick=function(){T.rewards.push({name:'Nouvelle',xp:50,state:'unlocked'});build_panel();};b.appendChild(add);}));
-    P.appendChild(det('Ic\u00f4ne app / PWA',function(b){
+    P.appendChild(det('Ic\u00f4ne app / PWA (export / publi\u00e9)',function(b){
       b.appendChild(cr('D\u00e9grad\u00e9 haut',function(){return T.appIcon.c1},function(v){T.appIcon.c1=v;}));
       b.appendChild(cr('D\u00e9grad\u00e9 bas',function(){return T.appIcon.c2},function(v){T.appIcon.c2=v;}));
       b.appendChild(se('Glyphe',['sun','moon','near','crown','heart','star'],function(){return T.appIcon.glyph},function(v){T.appIcon.glyph=v;}));}));

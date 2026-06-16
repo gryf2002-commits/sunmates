@@ -40,7 +40,20 @@ tailwind.config={theme:{extend:{
 .photo{background-size:cover;background-position:center}
 .cf{position:absolute;width:9px;height:14px;z-index:60;pointer-events:none;border-radius:2px}
 .chip{padding:8px 13px;border-radius:999px;font-size:13px;font-weight:700}
-
+/* hero bandeau réutilisable (impact + respiration en tête d'écran) */
+.hero{position:relative;border-radius:26px;overflow:hidden;color:#fff;padding:20px;background:linear-gradient(135deg,#ff5a4d 0%,#b5241f 100%)}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 85% -10%,rgba(255,209,92,.55),transparent 55%);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.hero .eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.92}
+/* mini-stat pill sur fond hero */
+.hstat{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:10px 12px;backdrop-filter:blur(2px)}
+/* tuile stat douce */
+.stat{background:#fff;border:1px solid rgba(227,190,185,.45);border-radius:20px;padding:14px 10px;text-align:center;box-shadow:0 10px 26px rgba(45,38,52,.06)}
+/* section label discret */
+.sect{font-family:Fraunces,serif;font-weight:800}
+/* carte compacte (réduit la fatigue de scroll vs grandes cartes) */
+.minicard{background:#fff;border:1px solid rgba(227,190,185,.45);border-radius:20px;box-shadow:0 10px 26px rgba(45,38,52,.06);overflow:hidden;transition:transform .14s,box-shadow .2s}
+.minicard:active{transform:scale(.985)}
 .screen{animation:scrn .3s cubic-bezier(.2,.8,.2,1)}
 @keyframes scrn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 button{transition:transform .12s,opacity .15s,box-shadow .2s,background .2s}
@@ -78,15 +91,14 @@ input:focus{outline:2px solid rgba(181,36,31,.35);outline-offset:1px}
       </div>
       <!-- À LA MAISON -->
       <div data-pane="home-maison">
-        <div class="text-center mb-4"><span class="material-symbols-outlined text-primary" style="font-size:34px">home</span>
-          <h1 class="font-display text-h1 mt-1">De retour chez toi</h1>
-          <p class="text-secondary text-body">Prends le temps de te ressourcer.</p></div>
-        <div class="rounded-jewel cream p-4">
-          <div class="flex items-center justify-between mb-3"><b class="font-display text-h2">Ta progression solo</b><span class="bg-white rounded-full px-2.5 py-1 text-label">🔥 1</span></div>
-          <div class="grid grid-cols-3 text-center">
-            <div><div class="font-display text-[22px] text-primary">12</div><div class="text-body text-secondary">Défis relevés</div></div>
-            <div><div class="font-display text-[22px] text-ok">3/5</div><div class="text-body text-secondary">Rituels du jour</div></div>
-            <div><div class="font-display text-[22px]" style="color:#E0901E">450</div><div class="text-body text-secondary">XP gagné</div></div>
+        <div class="hero mb-4">
+          <div class="eyebrow">🌅 Bonjour Chloé</div>
+          <h1 class="font-display text-[28px] leading-tight mt-1">De retour chez toi</h1>
+          <p class="text-body mt-1" style="opacity:.92">Prends le temps de te ressourcer.</p>
+          <div class="grid grid-cols-3 gap-2 mt-4">
+            <div class="hstat text-center"><div class="font-display text-[22px] leading-none">12</div><div class="text-[11px] mt-1" style="opacity:.85">Défis</div></div>
+            <div class="hstat text-center"><div class="font-display text-[22px] leading-none">3/5</div><div class="text-[11px] mt-1" style="opacity:.85">Rituels</div></div>
+            <div class="hstat text-center"><div class="font-display text-[22px] leading-none">450</div><div class="text-[11px] mt-1" style="opacity:.85">XP</div></div>
           </div>
         </div>
         <h2 class="font-display text-h2 mt-5 mb-2.5">Rituels du jour</h2>
@@ -120,11 +132,19 @@ input:focus{outline:2px solid rgba(181,36,31,.35);outline-offset:1px}
 
     <!-- LIEUX (jour) -->
     <section class="screen hidden" data-s="lieux">
-      <h1 class="font-display text-display text-primary mt-2 mb-1">Lieux Sûrs</h1>
-      <p class="text-secondary text-body mb-3">Découvre des spots validés par la commu' pour chiller et rencontrer des Mates en toute sérénité.</p>
+      <div class="hero mt-2 mb-3">
+        <div class="eyebrow">Validés par la commu'</div>
+        <h1 class="font-display text-[30px] leading-tight mt-1">Lieux sûrs<br>autour de toi</h1>
+        <div class="flex items-center gap-2 mt-3">
+          <span class="hstat flex items-center gap-1.5 text-label"><span class="material-symbols-outlined" style="font-size:16px">verified</span>5 spots</span>
+          <span class="hstat flex items-center gap-1.5 text-label"><span class="material-symbols-outlined" style="font-size:16px">eco</span>3 éco</span>
+          <span class="hstat flex items-center gap-1.5 text-label"><span class="material-symbols-outlined" style="font-size:16px">near_me</span>3 proches</span>
+        </div>
+      </div>
       <div class="rounded-jewel cream p-3 flex items-center gap-3 mb-3"><span class="icobox" style="background:linear-gradient(150deg,#FF8A5C,#FF4F6D)"><span class="material-symbols-outlined">local_cafe</span></span><div class="flex-1"><div class="text-label text-primary">MON SPOT ACTUEL · Café cosy à Lisbonne</div><div class="text-body text-secondary">Tu es là depuis 45 min. Parfait pour un matcha.</div></div><button data-toast="Modifier ton spot" class="material-symbols-outlined text-secondary" style="font-size:18px">edit</button></div>
       <label class="flex items-center gap-2.5 bg-white border border-outline-variant/50 rounded-full px-4 py-3 mb-3"><span class="material-symbols-outlined text-secondary">search</span><input id="srchLieux" data-search="lieux" class="flex-1 bg-transparent outline-none text-body" placeholder="Rechercher un lieu, une ambiance"></label>
       <div class="flex gap-2 mb-4"><button class="lfilter chip text-white on" style="background:linear-gradient(135deg,#ff5a4d,#b5241f)">TOUS</button><button class="lfilter chip bg-white border border-outline-variant/50">🌿 ÉCO</button><button class="lfilter chip bg-white border border-outline-variant/50">📍 PRÈS DE MOI</button></div>
+      <div id="lieuxEmpty" class="hidden rounded-jewel cream p-5 text-center mb-4"><div class="text-3xl mb-1">🔍</div><b class="sect text-title">Aucun lieu trouvé</b><p class="text-body text-secondary mt-1">Essaie un autre mot-clé ou enlève les filtres.</p></div>
       <div class="lieu-card rounded-jewel overflow-hidden jw mb-4" data-name="l'escale éco café vegan" data-eco="1" data-nearby="1">
         <div class="h-40 photo relative" style="background-image:url(https://picsum.photos/seed/escale/600/360)"><span class="absolute top-3 left-3 bg-white/90 rounded-full px-2.5 py-1 text-label">⭐ 4.8</span><button class="heart absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 grid place-items-center text-primary">♡</button></div>
         <div class="p-4"><div class="flex items-center justify-between"><b class="font-display text-h2">L'Escale Éco</b><div class="flex -space-x-2" id="escav"></div></div>
@@ -133,47 +153,47 @@ input:focus{outline:2px solid rgba(181,36,31,.35);outline-offset:1px}
           <button data-checkin class="w-full bg-sunset text-white rounded-[14px] py-3 text-label mt-3 flex items-center justify-center gap-1.5"><span class="material-symbols-outlined" style="font-size:18px">check_circle</span>Check-in ici (+20 XP)</button>
         </div>
       </div>
-      <div class="lieu-card rounded-jewel overflow-hidden jw mb-4" data-name="le comptoir solaire auberge espace chill" data-eco="0" data-nearby="0" data-rating="4.9" data-dist="Centre historique, 850m" data-tags="AUBERGE · ESPACE CHILL" data-desc="Une auberge solaire au cœur du centre historique. Patio ombragé, terrasse sur le toit et soirées rencontres tous les jeudis. Idéal pour poser ses valises entre deux explorations.">
-        <div class="h-40 photo relative" style="background-image:url(https://picsum.photos/seed/comptoir/600/360)"><span class="absolute top-3 left-3 bg-white/90 rounded-full px-2.5 py-1 text-label">⭐ 4.9</span><span class="absolute top-3 left-20 bg-sunset text-white rounded-full px-2.5 py-1 text-[11px] font-extrabold">★ TOP CHOIX</span><button class="heart absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 grid place-items-center text-primary">♡</button></div>
-        <div class="p-4"><b class="font-display text-h2">Le Comptoir Solaire</b>
-          <div class="text-body text-secondary mt-1 flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:15px">place</span>Centre historique, 850m</div>
-          <div class="flex gap-2 mt-2.5"><span class="chip bg-surface-container text-[11px] py-1">AUBERGE</span><span class="chip bg-surface-container text-[11px] py-1">ESPACE CHILL</span></div>
-          <button data-detail class="w-full bg-white border border-outline-variant/50 text-primary rounded-[14px] py-3 text-label mt-3">Voir les détails</button>
-        </div>
+      <h2 class="sect text-h2 mt-1 mb-3 flex items-center gap-2">À deux pas <span class="text-label text-secondary font-body">par distance</span></h2>
+      <div class="grid gap-3">
+      <div class="lieu-card minicard flex gap-3 p-2.5 items-center" data-name="le comptoir solaire auberge espace chill" data-eco="0" data-nearby="0" data-rating="4.9" data-dist="Centre historique, 850m" data-tags="AUBERGE · ESPACE CHILL" data-desc="Une auberge solaire au cœur du centre historique. Patio ombragé, terrasse sur le toit et soirées rencontres tous les jeudis. Idéal pour poser ses valises entre deux explorations.">
+        <div class="w-[72px] h-[72px] rounded-[16px] photo relative flex-none" style="background-image:url(https://picsum.photos/seed/comptoir/300/300)"><span class="absolute -top-1.5 -left-1.5 bg-sunset text-white rounded-full px-1.5 py-0.5 text-[9px] font-extrabold">★ TOP</span></div>
+        <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><b class="font-display text-title truncate">Le Comptoir Solaire</b><span class="text-label flex-none">⭐ 4.9</span></div>
+          <div class="text-body text-secondary flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined" style="font-size:14px">place</span>Centre historique · 850m</div>
+          <div class="flex gap-1.5 mt-1.5"><span class="chip bg-surface-container text-[10px] py-0.5">AUBERGE</span><span class="chip bg-surface-container text-[10px] py-0.5">CHILL</span></div></div>
+        <button data-detail class="w-9 h-9 rounded-full bg-surface-container text-primary grid place-items-center flex-none"><span class="material-symbols-outlined" style="font-size:20px">chevron_right</span></button>
       </div>
-      <div class="lieu-card rounded-jewel overflow-hidden jw mb-4" data-name="la ruche co-living coliving nomades wifi" data-eco="1" data-nearby="1" data-rating="4.7" data-dist="Bairro Alto, 400m" data-tags="CO-LIVING · ÉCO · NOMADES" data-desc="Co-living éco-responsable pour nomades digitaux. Panneaux solaires, potager partagé, espaces de coworking lumineux et une vraie communauté de voyageur·ses au long cours.">
-        <div class="h-40 photo relative" style="background-image:url(https://picsum.photos/seed/ruche/600/360)"><span class="absolute top-3 left-3 bg-white/90 rounded-full px-2.5 py-1 text-label">⭐ 4.7</span><button class="heart absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 grid place-items-center text-primary">♡</button></div>
-        <div class="p-4"><b class="font-display text-h2">La Ruche Co-Living</b>
-          <div class="text-body text-secondary mt-1 flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:15px">place</span>Bairro Alto, 400m</div>
-          <div class="flex gap-2 mt-2.5 flex-wrap"><span class="chip bg-surface-container text-[11px] py-1">CO-LIVING</span><span class="chip bg-surface-container text-[11px] py-1">🌿 ÉCO</span><span class="chip bg-surface-container text-[11px] py-1">COWORKING</span></div>
-          <button data-checkin class="w-full bg-sunset text-white rounded-[14px] py-3 text-label mt-3 flex items-center justify-center gap-1.5"><span class="material-symbols-outlined" style="font-size:18px">check_circle</span>Check-in ici (+20 XP)</button>
-        </div>
+      <div class="lieu-card minicard flex gap-3 p-2.5 items-center" data-name="la ruche co-living coliving nomades wifi" data-eco="1" data-nearby="1" data-rating="4.7" data-dist="Bairro Alto, 400m" data-tags="CO-LIVING · ÉCO · NOMADES" data-desc="Co-living éco-responsable pour nomades digitaux. Panneaux solaires, potager partagé, espaces de coworking lumineux et une vraie communauté de voyageur·ses au long cours.">
+        <div class="w-[72px] h-[72px] rounded-[16px] photo flex-none" style="background-image:url(https://picsum.photos/seed/ruche/300/300)"></div>
+        <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><b class="font-display text-title truncate">La Ruche Co-Living</b><span class="text-label flex-none">⭐ 4.7</span></div>
+          <div class="text-body text-secondary flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined" style="font-size:14px">place</span>Bairro Alto · 400m</div>
+          <div class="flex gap-1.5 mt-1.5"><span class="chip bg-surface-container text-[10px] py-0.5">CO-LIVING</span><span class="chip bg-surface-container text-[10px] py-0.5">🌿 ÉCO</span></div></div>
+        <button data-detail class="w-9 h-9 rounded-full bg-surface-container text-primary grid place-items-center flex-none"><span class="material-symbols-outlined" style="font-size:20px">chevron_right</span></button>
       </div>
-      <div class="lieu-card rounded-jewel overflow-hidden jw mb-4" data-name="atelier matcha salon de thé thé calme" data-eco="1" data-nearby="0" data-rating="4.6" data-dist="Alfama, 1.2 km" data-tags="SALON DE THÉ · ÉCO · CALME" data-desc="Petit salon de thé bio niché dans les ruelles d'Alfama. Matcha cérémonie, pâtisseries véganes et coin lecture au calme. Le spot parfait pour souffler en solo.">
-        <div class="h-40 photo relative" style="background-image:url(https://picsum.photos/seed/matcha/600/360)"><span class="absolute top-3 left-3 bg-white/90 rounded-full px-2.5 py-1 text-label">⭐ 4.6</span><button class="heart absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 grid place-items-center text-primary">♡</button></div>
-        <div class="p-4"><b class="font-display text-h2">L'Atelier Matcha</b>
-          <div class="text-body text-secondary mt-1 flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:15px">place</span>Alfama, 1.2 km</div>
-          <div class="flex gap-2 mt-2.5 flex-wrap"><span class="chip bg-surface-container text-[11px] py-1">SALON DE THÉ</span><span class="chip bg-surface-container text-[11px] py-1">🌿 ÉCO</span><span class="chip bg-surface-container text-[11px] py-1">CALME</span></div>
-          <button data-detail class="w-full bg-white border border-outline-variant/50 text-primary rounded-[14px] py-3 text-label mt-3">Voir les détails</button>
-        </div>
+      <div class="lieu-card minicard flex gap-3 p-2.5 items-center" data-name="atelier matcha salon de thé thé calme" data-eco="1" data-nearby="0" data-rating="4.6" data-dist="Alfama, 1.2 km" data-tags="SALON DE THÉ · ÉCO · CALME" data-desc="Petit salon de thé bio niché dans les ruelles d'Alfama. Matcha cérémonie, pâtisseries véganes et coin lecture au calme. Le spot parfait pour souffler en solo.">
+        <div class="w-[72px] h-[72px] rounded-[16px] photo flex-none" style="background-image:url(https://picsum.photos/seed/matcha/300/300)"></div>
+        <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><b class="font-display text-title truncate">L'Atelier Matcha</b><span class="text-label flex-none">⭐ 4.6</span></div>
+          <div class="text-body text-secondary flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined" style="font-size:14px">place</span>Alfama · 1.2 km</div>
+          <div class="flex gap-1.5 mt-1.5"><span class="chip bg-surface-container text-[10px] py-0.5">SALON DE THÉ</span><span class="chip bg-surface-container text-[10px] py-0.5">🌿 ÉCO</span></div></div>
+        <button data-detail class="w-9 h-9 rounded-full bg-surface-container text-primary grid place-items-center flex-none"><span class="material-symbols-outlined" style="font-size:20px">chevron_right</span></button>
       </div>
-      <div class="lieu-card rounded-jewel overflow-hidden jw" data-name="hostel lumière auberge jeunesse rooftop social" data-eco="0" data-nearby="1" data-rating="4.5" data-dist="Cais do Sodré, 300m" data-tags="AUBERGE · ROOFTOP · SOCIAL" data-desc="Auberge animée à deux pas du fleuve. Rooftop avec vue coucher de soleil, apéros communautaires et tableau des sorties du jour. Parfait pour rencontrer d'autres Mates.">
-        <div class="h-40 photo relative" style="background-image:url(https://picsum.photos/seed/lumiere/600/360)"><span class="absolute top-3 left-3 bg-white/90 rounded-full px-2.5 py-1 text-label">⭐ 4.5</span><button class="heart absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 grid place-items-center text-primary">♡</button></div>
-        <div class="p-4"><b class="font-display text-h2">Hostel Lumière</b>
-          <div class="text-body text-secondary mt-1 flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:15px">place</span>Cais do Sodré, 300m</div>
-          <div class="flex gap-2 mt-2.5 flex-wrap"><span class="chip bg-surface-container text-[11px] py-1">AUBERGE</span><span class="chip bg-surface-container text-[11px] py-1">ROOFTOP</span><span class="chip bg-surface-container text-[11px] py-1">SOCIAL</span></div>
-          <button data-detail class="w-full bg-white border border-outline-variant/50 text-primary rounded-[14px] py-3 text-label mt-3">Voir les détails</button>
-        </div>
+      <div class="lieu-card minicard flex gap-3 p-2.5 items-center" data-name="hostel lumière auberge jeunesse rooftop social" data-eco="0" data-nearby="1" data-rating="4.5" data-dist="Cais do Sodré, 300m" data-tags="AUBERGE · ROOFTOP · SOCIAL" data-desc="Auberge animée à deux pas du fleuve. Rooftop avec vue coucher de soleil, apéros communautaires et tableau des sorties du jour. Parfait pour rencontrer d'autres Mates.">
+        <div class="w-[72px] h-[72px] rounded-[16px] photo flex-none" style="background-image:url(https://picsum.photos/seed/lumiere/300/300)"></div>
+        <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><b class="font-display text-title truncate">Hostel Lumière</b><span class="text-label flex-none">⭐ 4.5</span></div>
+          <div class="text-body text-secondary flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined" style="font-size:14px">place</span>Cais do Sodré · 300m</div>
+          <div class="flex gap-1.5 mt-1.5"><span class="chip bg-surface-container text-[10px] py-0.5">AUBERGE</span><span class="chip bg-surface-container text-[10px] py-0.5">ROOFTOP</span></div></div>
+        <button data-detail class="w-9 h-9 rounded-full bg-surface-container text-primary grid place-items-center flex-none"><span class="material-symbols-outlined" style="font-size:20px">chevron_right</span></button>
+      </div>
       </div>
     </section>
 
     <!-- JEUX (hub) -->
     <section class="screen hidden" data-s="jeux">
-      <h1 class="font-display text-display text-primary mt-2 mb-3">Jeux &amp; Quêtes</h1>
-      <div class="rounded-jewel jw p-4 mb-3">
-        <div class="flex items-center gap-2.5"><b class="text-title">Max</b><span class="text-label px-2.5 py-1 rounded-full text-[#3a2410]" style="background:linear-gradient(150deg,#FFD15C,#FF8A3D)">NIV 3</span><span class="ml-auto text-label tabular-nums"><span id="xptxt">10/100</span> XP</span></div>
-        <div class="h-2.5 rounded-full bg-surface-container mt-2.5 overflow-hidden"><i id="xpbar" class="block h-full bg-sunset" style="width:10%"></i></div>
-        <div class="text-body text-secondary mt-1.5">Explorateur de l'Inconnu · 90 XP avant le niveau 4</div>
+      <div class="hero mt-2 mb-3">
+        <div class="flex items-center gap-2.5"><div class="eyebrow flex-1">Jeux &amp; Quêtes</div><span class="hstat text-label py-1 px-2.5">NIV 3</span></div>
+        <h1 class="font-display text-[26px] leading-tight mt-1">Explorateur de l'Inconnu</h1>
+        <div class="flex items-center justify-between mt-3 mb-1.5 text-label"><span style="opacity:.9">Progression</span><span class="tabular-nums"><span id="xptxt">10/100</span> XP</span></div>
+        <div class="h-2.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,.22)"><i id="xpbar" class="block h-full" style="width:10%;background:linear-gradient(90deg,#FFD15C,#fff)"></i></div>
+        <div class="text-[12px] mt-2" style="opacity:.85">90 XP avant le niveau 4 🚀</div>
       </div>
       <div class="grid grid-cols-3 gap-3" id="jeuxtiles"></div>
       <h2 class="text-label text-secondary uppercase tracking-wide mt-6 mb-3">Quête du jour</h2>
@@ -264,16 +284,18 @@ input:focus{outline:2px solid rgba(181,36,31,.35);outline-offset:1px}
 
     <!-- PROFIL (alt) -->
     <section class="screen hidden" data-s="profil">
-      <div class="text-center mt-3">
-        <div class="relative inline-block"><div class="w-24 h-24 rounded-full photo mx-auto" style="background-image:url(https://picsum.photos/seed/chloe/200/200)"></div><span class="absolute -top-2 left-1/2 -translate-x-1/2 text-2xl">👑</span></div>
-        <h1 class="font-display text-h1 mt-2">Chloé, 26</h1>
-        <span class="inline-flex items-center gap-1 mt-1 text-label px-3 py-1 rounded-full text-[#3a2410]" style="background:linear-gradient(150deg,#FFD15C,#FF8A3D)">✓ VÉRIFIÉ</span>
+      <div class="hero mt-2 mb-4 flex items-center gap-4">
+        <div class="relative flex-none"><div class="w-20 h-20 rounded-full photo" style="background-image:url(https://picsum.photos/seed/chloe/200/200);border:3px solid rgba(255,255,255,.5)"></div><span class="absolute -top-2 left-1/2 -translate-x-1/2 text-xl">👑</span></div>
+        <div class="flex-1 min-w-0">
+          <h1 class="font-display text-[24px] leading-tight">Chloé, 26</h1>
+          <span class="inline-flex items-center gap-1 mt-1.5 text-label px-2.5 py-1 rounded-full text-[#3a2410]" style="background:linear-gradient(150deg,#FFD15C,#FF8A3D)">✓ VÉRIFIÉ</span>
+        </div>
       </div>
-      <div class="grid grid-cols-2 gap-3 mt-5">
-        <div class="rounded-jewel jw p-4 text-center"><span class="material-symbols-outlined text-primary">favorite</span><div class="font-display text-[22px] mt-1">950</div><div class="text-body text-secondary">Confiance</div></div>
-        <div class="rounded-jewel jw p-4 text-center"><span class="material-symbols-outlined" style="color:#E0901E">military_tech</span><div class="font-display text-[22px] mt-1">1240</div><div class="text-body text-secondary">XP</div></div>
-        <div class="rounded-jewel jw p-4 text-center"><span class="material-symbols-outlined" style="color:#6638D6">group</span><div class="font-display text-[22px] mt-1">12</div><div class="text-body text-secondary">Mates</div></div>
-        <div class="rounded-jewel jw p-4 text-center"><span class="material-symbols-outlined text-primary">place</span><div class="font-display text-[22px] mt-1">8</div><div class="text-body text-secondary">Check-ins</div></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="stat"><span class="material-symbols-outlined text-primary">favorite</span><div class="font-display text-[22px] mt-1">950</div><div class="text-body text-secondary">Confiance</div></div>
+        <div class="stat"><span class="material-symbols-outlined" style="color:#E0901E">military_tech</span><div class="font-display text-[22px] mt-1">1240</div><div class="text-body text-secondary">XP</div></div>
+        <div class="stat"><span class="material-symbols-outlined" style="color:#6638D6">group</span><div class="font-display text-[22px] mt-1">12</div><div class="text-body text-secondary">Mates</div></div>
+        <div class="stat"><span class="material-symbols-outlined text-primary">place</span><div class="font-display text-[22px] mt-1">8</div><div class="text-body text-secondary">Check-ins</div></div>
       </div>
       <div class="rounded-jewel jw p-4 mt-3">
         <div class="flex items-center justify-between"><b class="font-display text-h2">Profil complété</b><b class="font-display text-[18px]" style="color:#E0901E">85%</b></div>
@@ -515,8 +537,9 @@ $$('.ngseg button').forEach(function(b){b.addEventListener('click',function(){$$
 // jeux tiles / ambs / chapitres / catalogue / admin sont déjà en data-toast -> re-scan (éléments générés)
 $$('[data-toast]').forEach(function(b){if(b._t)return;b._t=1;b.addEventListener('click',function(e){e.stopPropagation();toast(b.getAttribute('data-toast'));});});
 // filtrage lieux (recherche + ÉCO)
-function filterLieux(){var q=($('#srchLieux')?$('#srchLieux').value:'').toLowerCase();var af=document.querySelector('.lfilter.on');var eco=af&&/ÉCO/.test(af.textContent);var near=af&&/PRÈS/.test(af.textContent);
- $$('.lieu-card').forEach(function(c){var n=(c.dataset.name||'');var ok=(!q||n.indexOf(q)>=0)&&(!eco||c.dataset.eco==='1')&&(!near||c.dataset.nearby==='1');c.style.display=ok?'':'none';});}
+function filterLieux(){var q=($('#srchLieux')?$('#srchLieux').value:'').toLowerCase();var af=document.querySelector('.lfilter.on');var eco=af&&/ÉCO/.test(af.textContent);var near=af&&/PRÈS/.test(af.textContent);var shown=0;
+ $$('.lieu-card').forEach(function(c){var n=(c.dataset.name||'');var ok=(!q||n.indexOf(q)>=0)&&(!eco||c.dataset.eco==='1')&&(!near||c.dataset.nearby==='1');c.style.display=ok?'':'none';if(ok)shown++;});
+ var emp=$('#lieuxEmpty');if(emp)emp.classList.toggle('hidden',shown>0);}
 if($('#srchLieux'))$('#srchLieux').addEventListener('input',filterLieux);
 $$('.lfilter').forEach(function(f){f.addEventListener('click',filterLieux);});
 // recherches autres : Enter -> toast

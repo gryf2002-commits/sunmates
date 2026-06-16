@@ -197,7 +197,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=524"></script>
+  <script src="sunmates-badges.js?v=525"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4178,6 +4178,83 @@
     .set-toggle > :first-child { min-width: 0; }                                                      /* le libellé rétrécit, l'interrupteur reste à droite */
     .set-toggle .st-lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .trav-tags span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* tags de voyageur */
+
+    /* ===================================================================
+       PASSE REFONTE VISUELLE 2026 · rythme & respiration (CSS PUR, ADDITIF)
+       Objectif : « moins de scroll à l'arrache », plus impactant mais
+       reposant. Aucune nouvelle couleur (variables DA réutilisées), aucun
+       changement de structure/JS. Tout est scopé aux 6 onglets de contenu
+       (.tab-panel / .secu-view / .jeux-view / .mates-view) pour ne PAS
+       toucher la carte Leaflet, l'auth, l'onboarding ni les modales.
+       Sûr en mode nuit/saisons : on n'utilise que --accent, --ink, --muted,
+       --line, --card, --radius… qui se ré-thématisent déjà par mode.
+       =================================================================== */
+
+    /* 1) HÉROS DE PAGE : chaque onglet s'ouvre sur un vrai titre + sous-titre
+          aéré (au lieu d'un h1 collé à un mur de contenu). On renforce la
+          hiérarchie typo sans changer les tailles existantes. */
+    .tab-panel > h1, .secu-view > h1, .jeux-view > h1, .mates-view > h1 { margin-bottom: .15rem; }
+    .tab-panel > h1 + .muted, .secu-view > h1 + .muted,
+    .jeux-view > h1 + .muted, .mates-view > h1 + .muted {
+      max-width: 34ch; margin-left: auto; margin-right: auto;
+      line-height: 1.4; margin-bottom: 1.15rem;
+    }
+
+    /* 2) RYTHME DES SECTIONS : les légendes de section (.jnav-cap) et les
+          en-têtes (.section-head h3) gagnent un petit repère sunset à gauche
+          → les sections se lisent comme des « chapitres » distincts, l'œil
+          se repère et le scroll paraît structuré (moins lassant). */
+    .tab-panel .jnav-cap, .jeux-view .jnav-cap, .secu-view .jnav-cap {
+      display: flex; align-items: center; gap: .5rem; margin-top: 1.25rem;
+    }
+    .tab-panel .jnav-cap::before, .jeux-view .jnav-cap::before, .secu-view .jnav-cap::before {
+      content: ""; width: 3px; height: .82em; border-radius: 999px;
+      background: var(--accent-grad); flex: 0 0 auto; opacity: .9;
+    }
+    .secu-view .section-head > h3, .tab-panel .section-head > h3 {
+      position: relative; padding-left: .72rem;
+    }
+    .secu-view .section-head > h3::before, .tab-panel .section-head > h3::before {
+      content: ""; position: absolute; left: 0; top: .14em; bottom: .14em;
+      width: 3px; border-radius: 999px; background: var(--accent-grad); opacity: .85;
+    }
+    /* Un peu plus d'air avant chaque bloc « Accès rapides / Trouver de l'aide »
+       en Sécurité → la longue page respire et se segmente visuellement. */
+    .secu-view .section-head { margin-top: 1.5rem; margin-bottom: .55rem; }
+
+    /* 3) CARTES : respiration cohérente entre cartes empilées sur les onglets
+          de contenu + lift de survol homogène (déjà présent sur .card via
+          .card transition ; ici on harmonise juste l'amplitude, doux). */
+    .secu-view > .card, .jeux-view > .card { margin-bottom: 1.05rem; }
+    .tab-panel .card:hover, .secu-view .card:hover, .jeux-view .card:hover {
+      transform: translateY(-2px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tab-panel .card:hover, .secu-view .card:hover, .jeux-view .card:hover { transform: none; }
+    }
+
+    /* 4) GRILLES DE TUILES : la grille doit sembler VOULUE, pas tassée.
+          Libellés sur 2 lignes max proprement (fini les hauteurs inégales /
+          débordements), petit gain de présence verticale, méta lisible. */
+    .secu-view .grid2 .tile, .tab-panel[data-panel="accueil"] .grid2 .tile {
+      display: flex; flex-direction: column;
+    }
+    .secu-view .grid2 .tile .t-name, .tab-panel[data-panel="accueil"] .grid2 .tile .t-name {
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; line-height: 1.22; min-height: 2.2em;
+    }
+    .secu-view .grid2 .tile .t-meta, .tab-panel[data-panel="accueil"] .grid2 .tile .t-meta {
+      margin-top: auto;
+    }
+
+    /* 5) CARTES « TUILE » de catégories (Lieux/Jeux) : transition de survol
+          douce pour cohérence avec le reste (sans toucher au câblage actif). */
+    #lieuxCats .cat-tile, .jeux-view .cat-tile { transition: transform .12s ease; }
+    #lieuxCats .cat-tile:hover, .jeux-view .cat-tile:hover { transform: translateY(-2px); }
+    @media (prefers-reduced-motion: reduce) {
+      #lieuxCats .cat-tile:hover, .jeux-view .cat-tile:hover { transform: none; }
+    }
+    /* Fin passe refonte visuelle 2026 */
   </style>
 
   <!-- ============================================================
@@ -20362,6 +20439,6 @@
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
-  <script src="da-console-overlay.js?v=21"></script>
+  <script src="da-console-overlay.js?v=22"></script>
 </body>
 </html>
