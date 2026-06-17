@@ -621,8 +621,9 @@ body.sm-lite #profSegNav { display: none !important; }                          
 
 /* Boutons primaires : CORAIL PLAT garanti (bave résiduelle = .btn-primary l.3201 en var(--accent-grad)
    !important rendait encore un dégradé). On force background-image:none. */
+/* CORAIL PLAT : seulement les boutons PRIMAIRES (PAS .btn-block générique → sinon tous les
+   boutons ghost des Réglages deviennent corail illisibles · régression v539 corrigée). */
 body.sm-lite .btn-primary,
-body.sm-lite .btn-block,
 body.sm-lite .auth-play button,
 body.sm-lite #authPlay { background-color: var(--accent) !important; background-image: none !important; box-shadow: none !important; }
 
@@ -697,9 +698,12 @@ body.sm-lite .tab-panel[data-panel="accueil"] #weatherChip { align-self: center;
 
 /* BAVE : logo soleil + avatars rendaient encore un dégradé (brouillon DA en localStorage) malgré
    l'aplatissement du token → on FORCE le corail plat (background-image:none), comme les boutons. */
-body.sm-lite .brand .mark,
-body.sm-lite .avatar,
-body.sm-lite .hm-mate .avatar { background-image: none !important; background-color: var(--accent) !important; box-shadow: none !important; }
+/* BAVE logo : corail plat. ⚠️ PAS les .avatar (background-image porte la PHOTO des gens → on la
+   tuait · régression « Mates sans photos » corrigée). La console DA étant gatée (v546), les avatars
+   sans photo retombent plats via le token de toute façon. */
+body.sm-lite .brand .mark { background-image: none !important; background-color: var(--accent) !important; box-shadow: none !important; }
+/* Avatar SANS photo : fond corail plat sans toucher au background-image (donc photos préservées). */
+body.sm-lite .avatar { background-color: var(--accent) !important; }
 
 /* DOUBLE-CARRÉ : la boîte d'icône (.thumb) crée un 2e carré derrière l'emoji → on la rend
    TRANSPARENTE (l'emoji posé directement dans la tuile = un seul carré). */
@@ -728,6 +732,22 @@ body.sm-lite #secuHelp { display: block !important; margin-top: var(--stack-md);
 body.sm-lite #secuHelp > .backbtn,
 body.sm-lite #secuHelp > h1,
 body.sm-lite #secuHome #needHelpBtn { display: none !important; }
+
+/* ============================================================
+   PEAUFINAGE v547 — régressions + retours Maxime (double-carré Lieux, météo, SOS).
+   ============================================================ */
+/* DOUBLE-CARRÉ Lieux : la boîte d'icône .cic (Ton ambiance / Le top du coin) → TRANSPARENTE
+   (l'icône posée direct dans la tuile = un seul carré). */
+body.sm-lite .cat-tile .cic { background: transparent !important; box-shadow: none !important; filter: none !important; color: var(--ink) !important; }
+body.sm-lite .cat-tile .cic::before,
+body.sm-lite .cat-tile .cic::after { content: none !important; display: none !important; background: none !important; }
+
+/* MÉTÉO : PLEINE LARGEUR (Maxime la veut sur la largeur, pas une pilule centrée). */
+body.sm-lite #weatherChip.weather-chip { display: flex !important; width: 100% !important; max-width: none !important; margin: 0 0 .6rem !important; justify-content: flex-start; }
+
+/* SOS visuel (#sosLogo) : non-cliquable en Lite (la bascule de vue est inerte, un clic ne faisait
+   plus rien → on retire l'affordance de clic. Les vraies actions 112/Alerte sont juste en dessous). */
+body.sm-lite #sosLogo { pointer-events: none !important; cursor: default !important; }
 
 /* (Intro Lieux : reformulation « sans classement » reportée à une passe JS propre —
    le swap CSS ::after cassait la mise en page. Le texte original reste pour l'instant.) */
