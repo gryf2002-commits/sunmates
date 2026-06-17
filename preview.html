@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=553"></script>
+  <script src="sunmates-badges.js?v=554"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=553">
+  <link rel="stylesheet" href="sunmates-lite.css?v=554">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -8718,7 +8718,7 @@
       // PERF : revenir sur Jeux ne re-télécharge PAS tout si les données ont <60 s (re-rendu
       // des grilles évité = switch net) ; le pull-to-refresh et les actions de jeu rechargent, eux.
       if (target === "jeux" && typeof showJeuxView === "function") { showJeuxView("jeuxHome"); if (changed && typeof loadGameData === "function" && myUserId && Date.now() - (window._gameLoadedAt || 0) > 60000) loadGameData(); }
-      if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }
+      if (target === "connexions" && typeof showMatesView === "function") { showMatesView("matesHome"); if (typeof showMatesSegment === "function") showMatesSegment((typeof betaOn === "function" && !betaOn()) ? "discover" : "messages"); }
       if (target === "securite" && typeof showSecuView === "function") showSecuView("secuHome");
       if (target === "profil") { const sc = $("settingsCard"), pm = $("profMain"); if (sc) sc.classList.add("hidden"); if (pm) pm.classList.remove("hidden"); }
       window.scrollTo(0, 0); // PERF : retour haut INSTANTANÉ (le scroll animé donnait une impression de lenteur au switch)
@@ -20287,6 +20287,52 @@
             else if (k === "lieux") { goToTab("lieux"); }
             else if (k === "spot") { goToTab("lieux"); setTimeout(function () { const sc = document.getElementById("spotCard"); if (sc) sc.open = true; }, 150); }
           });
+        } catch (e) {}
+        // v554 — Mates : « Partager » collé au compteur (wrapper flex) + segment Messages retiré (→ header).
+        try {
+          const mh = document.getElementById("matesHome");
+          const stat = document.getElementById("matesStatBtn");
+          const inv = document.getElementById("inviteFriendsBtn");
+          if (mh && stat && inv && !mh.querySelector(".lite-materow")) {
+            const row = document.createElement("div"); row.className = "lite-materow";
+            stat.parentNode.insertBefore(row, stat); row.appendChild(stat); row.appendChild(inv);
+          }
+          // Si le segment actif est « Messages » (retiré en Lite), basculer sur « Découvrir ».
+          if (typeof showMatesSegment === "function") {
+            const act = document.querySelector('.mseg [data-mseg].active');
+            if (act && act.dataset.mseg === "messages") showMatesSegment("discover");
+          }
+        } catch (e) {}
+        // v554 — Header : raccourci « Messages » à côté de la cloche (ouvre la vue messages de Mates).
+        try {
+          const bell = document.getElementById("notifBell");
+          if (bell && !document.getElementById("liteMsgBtn")) {
+            const b = document.createElement("button");
+            b.className = "iconbtn"; b.id = "liteMsgBtn"; b.title = "Messages"; b.setAttribute("aria-label", "Mes messages");
+            b.innerHTML = '<span data-smicon="chat" data-smicon-size="22">💬</span>';
+            bell.parentNode.insertBefore(b, bell);
+            b.addEventListener("click", function () {
+              goToTab("connexions");
+              setTimeout(function () { if (typeof showMatesSegment === "function") showMatesSegment("messages"); }, 120);
+            });
+          }
+        } catch (e) {}
+        // v554 — Profil : ouvrir d'office l'édition (« ça fait plus complet ») ; carte raccourcis retirée en CSS.
+        try {
+          let _edOpened = false;
+          const openEd = function () {
+            if (_edOpened) return;
+            const pp = document.querySelector('.tab-panel[data-panel="profil"]');
+            if (!pp || pp.classList.contains("hidden") || getComputedStyle(pp).display === "none") return;
+            if (typeof showProfileSegment === "function") { showProfileSegment("edit"); _edOpened = true; }
+          };
+          document.querySelectorAll('[data-tab="profil"]').forEach(function (el) { el.addEventListener("click", function () { setTimeout(openEd, 150); }); });
+          setTimeout(openEd, 400);
+        } catch (e) {}
+        // v554 — Sécurité : « Accès rapides » (bas) → « Outils de sécurité » (l'intitulé « rapide » n'avait pas de sens).
+        try {
+          const sh = document.getElementById("secuHome");
+          if (sh) { const h = Array.prototype.slice.call(sh.querySelectorAll(".section-head h3")).find(function (x) { return /Acc[eè]s rapides/i.test(x.textContent); }); if (h) h.textContent = "Outils de sécurité"; }
         } catch (e) {}
         strip();
       })();
