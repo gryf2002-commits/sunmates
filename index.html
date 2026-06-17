@@ -7,14 +7,14 @@
     (function () { try { var s = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true; if (s) location.replace("app.html" + location.search + location.hash); } catch (e) {} })();
     try { if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) document.documentElement.classList.add("anim"); } catch (e) {}
   </script>
-  <title>SunMates — Pars solo, trouve ta bande</title>
-  <meta name="description" content="L'appli qui allège le voyage solo. Rencontre des voyageurs comme toi, explore au soleil, repars avec une bande. La tranquillité d'esprit en prime, gratuite." />
+  <title>SunMates — Le voyage en solo a enfin du monde dedans</title>
+  <meta name="description" content="L'appli pour les gens qui partent seuls et finissent rarement leur soirée comme ça. On te montre qui traîne dans le coin. La suite, c'est ton affaire." />
   <link rel="canonical" href="https://sunmatesapp.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_FR" />
   <meta property="og:site_name" content="SunMates" />
-  <meta property="og:title" content="SunMates — Pars solo, trouve ta bande" />
-  <meta property="og:description" content="Rencontre des voyageurs comme toi, explore au soleil, repars avec une bande. Le solo, c'est juste le début." />
+  <meta property="og:title" content="SunMates — Le voyage en solo a enfin du monde dedans" />
+  <meta property="og:description" content="On te montre qui traîne dans le coin. Tu fais le premier pas, ou pas. La suite, c'est ton affaire." />
   <meta property="og:url" content="https://sunmatesapp.com/" />
   <meta property="og:image" content="https://sunmatesapp.com/sm-joie.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -25,15 +25,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="sm-hero.jpg" fetchpriority="high" />
   <script type="application/ld+json">
-  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs comme toi, explore au soleil et repars avec une bande. La tranquillité est gratuite pour tous.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
+  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs autour de toi pendant un voyage solo. Gratuit.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
   </script>
   <style>
-    /* ============================================================
-       SunMates — vitrine « Golden Hour » v2 (énergie vacation/leisure).
-       Inspiration vacation.inc : photos candides de GENS, grain, stickers,
-       marquees, son opt-in, ton joueur. DA SunMates : nuit prune + sunset
-       corail/or, Fraunces + Manrope. Sécurité = ton sobre (contraste assumé).
-       ============================================================ */
+    /* SunMates — vitrine v3 « énergie vacation » : vidéo, témoignages, POV, lecteur son,
+       voix distinctive. DA SunMates : nuit prune + sunset corail/or, Fraunces + Manrope.
+       Zéro tiret cadratin, zéro point décoratif (· réservé à l'inclusif). */
     :root {
       --bg: #190E2E; --bg-2: #1F1138; --surface: #271641; --surface-2: #32204F;
       --ink: #FCEFE9; --muted: #C9B7E0; --line: rgba(255,255,255,.10); --line-strong: rgba(255,255,255,.18);
@@ -43,7 +40,7 @@
       --r: 22px; --r-sm: 14px; --r-lg: 30px;
       --shadow: 0 22px 60px rgba(8,4,18,.45);
       --shadow-pop: 0 34px 80px rgba(178,36,80,.32), 0 8px 22px rgba(8,4,18,.45);
-      --maxw: 1180px; --z-nav: 50; --z-skip: 90; --z-grain: 60; --z-sound: 55;
+      --maxw: 1180px; --z-nav: 50; --z-skip: 90; --z-grain: 60; --z-player: 55;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
@@ -52,14 +49,11 @@
     h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
     p { margin: 0; }
     a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
+    img, video { max-width: 100%; display: block; }
     ::selection { background: var(--accent); color: #2a0d12; }
     .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
     section { position: relative; }
-
-    /* grain global (vacation.inc) : alive, jamais cliquable */
-    body::after { content: ""; position: fixed; inset: 0; z-index: var(--z-grain); pointer-events: none; opacity: .045; mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    body::after { content: ""; position: fixed; inset: 0; z-index: var(--z-grain); pointer-events: none; opacity: .045; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
     .skip { position: fixed; top: -120px; left: 16px; z-index: var(--z-skip); background: var(--accent); color: #2a0d12; font-weight: 800; padding: .7rem 1.1rem; border-radius: 12px; transition: top .15s ease; }
     .skip:focus { top: 16px; }
@@ -87,26 +81,24 @@
     @media (max-width: 860px) { .nav-links { display: none; } }
     @media (max-width: 560px) { .wrap { padding: 0 16px; } .nav-start .lbl-full { display: none; } .nav-start .lbl-short { display: inline; } }
 
-    /* HERO photo candide plein cadre */
+    /* HERO vidéo */
     .hero { position: relative; min-height: 94vh; min-height: 94dvh; display: flex; align-items: center; overflow: hidden; }
-    .hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-    .hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; transform: scale(1.05); }
-    .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(20,9,38,.94) 0%, rgba(20,9,38,.72) 40%, rgba(20,9,38,.34) 74%, rgba(20,9,38,.55) 100%), linear-gradient(0deg, rgba(20,9,38,.88) 0%, rgba(20,9,38,0) 48%); }
+    .hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #120720; }
+    .hero-media img, .hero-media video { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+    .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(20,9,38,.94) 0%, rgba(20,9,38,.72) 40%, rgba(20,9,38,.34) 74%, rgba(20,9,38,.55) 100%), linear-gradient(0deg, rgba(20,9,38,.9) 0%, rgba(20,9,38,0) 50%); }
     .hero-in { position: relative; z-index: 2; padding: 92px 0 72px; }
-    .hero-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-weight: 700; font-size: .82rem; letter-spacing: .04em; color: var(--gold); background: rgba(255,209,92,.12); border: 1px solid rgba(255,209,92,.30); padding: .42rem .85rem; border-radius: 999px; margin-bottom: 1.4rem; }
-    .hero h1 { font-size: clamp(2.9rem, 7.4vw, 5.4rem); font-weight: 900; max-width: 14ch; }
-    .hero h1 .grad { color: var(--gold); font-style: italic; font-weight: 700; }
-    .hero .lead { color: #ECE2F5; font-size: clamp(1.08rem, 1.7vw, 1.28rem); margin: 1.5rem 0 2rem; max-width: 35ch; text-shadow: 0 1px 16px rgba(8,4,18,.6); }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-weight: 700; font-size: .8rem; letter-spacing: .03em; color: var(--gold); background: rgba(255,209,92,.12); border: 1px solid rgba(255,209,92,.30); padding: .42rem .85rem; border-radius: 999px; margin-bottom: 1.4rem; }
+    .hero h1 { font-size: clamp(2.7rem, 6.6vw, 5rem); font-weight: 900; max-width: 15ch; }
+    .hero h1 .grad { font-style: italic; font-weight: 700; color: var(--gold); }
+    .hero .lead { color: #ECE2F5; font-size: clamp(1.08rem, 1.7vw, 1.28rem); margin: 1.5rem 0 2rem; max-width: 38ch; text-shadow: 0 1px 16px rgba(8,4,18,.6); }
     .hero-cta { display: flex; flex-wrap: wrap; gap: .9rem; }
-    /* sticker/seal sunset rotatif (vacation.inc) */
     .seal { position: absolute; z-index: 2; right: clamp(16px, 5vw, 80px); top: 50%; transform: translateY(-50%); width: clamp(96px, 12vw, 148px); height: clamp(96px, 12vw, 148px); display: grid; place-items: center; }
     .seal svg { width: 100%; height: 100%; }
     .seal .seal-core { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font-family: "Fraunces", serif; font-weight: 900; color: #2a0d12; font-size: clamp(.62rem, 1vw, .8rem); line-height: 1.05; padding: 22%; }
-    @media (max-width: 760px) { .seal { right: 14px; top: auto; bottom: 13%; transform: none; width: 82px; height: 82px; } }
+    @media (max-width: 760px) { .seal { right: 14px; top: auto; bottom: 13%; transform: none; width: 80px; height: 80px; } }
 
-    /* MARQUEE ticker (cartes postales) */
     .ticker { background: var(--sunset); color: #2a0d12; overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(0,0,0,.12); border-bottom: 1px solid rgba(0,0,0,.12); }
-    .ticker-track { display: inline-flex; align-items: center; gap: 0; will-change: transform; }
+    .ticker-track { display: inline-flex; align-items: center; will-change: transform; }
     .ticker-track span { font-family: "Fraunces", serif; font-weight: 800; font-style: italic; font-size: 1.05rem; padding: .7rem 1.4rem; display: inline-flex; align-items: center; gap: 1.4rem; }
     .ticker-track span::after { content: "☀"; font-style: normal; opacity: .7; }
 
@@ -115,24 +107,19 @@
     .h2 { font-size: clamp(2rem, 4vw, 3.1rem); font-weight: 900; }
     .sub { color: var(--muted); font-size: 1.1rem; margin-top: 1rem; max-width: 56ch; }
 
-    /* trust chips */
     .trust { padding: 8px 0 0; }
     .trust-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
     .chip { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; box-shadow: var(--shadow); }
     .chip .k { font-family: "Fraunces", serif; font-weight: 900; font-size: 1.7rem; color: var(--gold); }
-    /* dégradé-texte UNIQUEMENT si supporté (sinon couleur pleine, jamais invisible) */
-    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
-      .hero h1 .grad, .chip .k { background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-    }
     .chip .v { color: var(--muted); font-size: .9rem; font-weight: 600; margin-top: .2rem; }
     @media (max-width: 720px) { .trust-row { grid-template-columns: repeat(2, 1fr); } }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) { .chip .k { background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; } }
 
-    /* spotlight */
     .spot { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
     .phone-stage { position: relative; display: grid; place-items: center; }
     .phone-stage::before { content: ""; position: absolute; width: 86%; height: 86%; border-radius: 50%; background: var(--sunset); filter: blur(70px); opacity: .34; z-index: 0; }
     .phone { position: relative; z-index: 1; width: min(290px, 78vw); aspect-ratio: 9 / 19.5; background: #0c0814; border-radius: 42px; padding: 9px; box-shadow: var(--shadow-pop); border: 1px solid rgba(255,255,255,.08); }
-    .phone img { width: 100%; height: 100%; object-fit: cover; border-radius: 34px; }
+    .phone img, .phone video { width: 100%; height: 100%; object-fit: cover; border-radius: 34px; }
     .spot-list { list-style: none; padding: 0; margin: 1.8rem 0 2rem; display: grid; gap: 1.1rem; }
     .spot-list li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
     .spot-list .ic { width: 44px; height: 44px; border-radius: 13px; background: var(--sunset-soft); border: 1px solid var(--line-strong); display: grid; place-items: center; flex: none; }
@@ -141,25 +128,24 @@
     .spot-list .d { color: var(--muted); font-size: .98rem; margin-top: .15rem; }
     @media (max-width: 760px) { .spot { grid-template-columns: 1fr; } }
 
-    /* bande photo (atmosphère joie) */
-    .photoband { position: relative; min-height: 76vh; display: flex; align-items: center; overflow: hidden; }
+    /* bande média (vidéo ou photo) plein cadre */
+    .photoband { position: relative; min-height: 76vh; display: flex; align-items: center; overflow: hidden; background: #120720; }
     .photoband .pb-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-    .photoband .pb-media img { width: 100%; height: 100%; object-fit: cover; }
+    .photoband .pb-media img, .photoband .pb-media video { width: 100%; height: 100%; object-fit: cover; }
     .photoband .pb-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.86), rgba(20,9,38,.35) 55%, rgba(20,9,38,.62)); }
-    .photoband .pb-in { position: relative; z-index: 2; text-align: center; max-width: 20ch; margin: 0 auto; padding: 80px 0; }
+    .photoband .pb-in { position: relative; z-index: 2; text-align: center; max-width: 22ch; margin: 0 auto; padding: 80px 0; }
     .photoband h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; }
-    .photoband p { color: #ECE2F5; font-size: clamp(1.05rem, 2vw, 1.25rem); margin-top: 1.1rem; max-width: 30ch; margin-left: auto; margin-right: auto; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
+    .photoband p { color: #ECE2F5; font-size: clamp(1.05rem, 2vw, 1.25rem); margin-top: 1.1rem; max-width: 32ch; margin-left: auto; margin-right: auto; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
 
-    /* MARQUEE de moments (photos qui défilent) */
+    /* marquee moments (photos + 1 POV vidéo) */
     .moments { padding: clamp(48px, 7vw, 84px) 0; overflow: hidden; }
     .moments .mhead { text-align: center; margin-bottom: 36px; }
     .moments-track { display: flex; gap: 18px; width: max-content; will-change: transform; }
-    .moment { width: clamp(220px, 26vw, 300px); aspect-ratio: 4/5; border-radius: var(--r); overflow: hidden; flex: none; box-shadow: var(--shadow); border: 1px solid var(--line); }
-    .moment img { width: 100%; height: 100%; object-fit: cover; }
-    /* reduced-motion : pas de défilement -> on enroule pour que TOUTES les photos restent visibles (pas de strip coupé). */
+    .moment { width: clamp(220px, 26vw, 300px); aspect-ratio: 4/5; border-radius: var(--r); overflow: hidden; flex: none; box-shadow: var(--shadow); border: 1px solid var(--line); position: relative; }
+    .moment img, .moment video { width: 100%; height: 100%; object-fit: cover; }
+    .moment .mtag { position: absolute; left: 12px; bottom: 12px; z-index: 2; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #2a0d12; background: var(--gold); padding: .25rem .55rem; border-radius: 999px; }
     @media (prefers-reduced-motion: reduce) { .moments { overflow: visible; } .moments-track { flex-wrap: wrap; width: auto; justify-content: center; } }
 
-    /* bento */
     .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 48px; }
     .cell { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; transition: transform .2s cubic-bezier(.16,1,.3,1), border-color .2s ease; position: relative; overflow: hidden; }
     .cell:hover { transform: translateY(-4px); border-color: var(--line-strong); }
@@ -169,12 +155,13 @@
     .cell.wide { grid-column: span 3; }
     .cell.third { grid-column: span 2; }
     .cell.feat { grid-column: span 3; background: linear-gradient(150deg, #2a1840, #3a1d3e); border-color: rgba(255,138,69,.28); }
-    .cell.feat .glow { background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .cell.feat .glow { color: var(--gold); }
     .cell.photo { grid-column: span 3; min-height: 220px; color: #fff; border: 0; }
     .cell.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
     .cell.photo .ph-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.9), rgba(20,9,38,.25)); }
     .cell.photo .ph-in { position: relative; z-index: 2; }
     @media (max-width: 900px) { .bento { grid-template-columns: repeat(2, 1fr); } .cell, .cell.wide, .cell.third, .cell.feat, .cell.photo { grid-column: span 2; } }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) { .cell.feat .glow { background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; } }
 
     .preview { text-align: center; }
     .preview .phone-stage { margin: 48px auto 0; }
@@ -184,21 +171,18 @@
     .pp .bar { width: 38px; height: 4px; border-radius: 4px; background: var(--sunset); margin-bottom: 1rem; }
     @media (max-width: 720px) { .preview-points { grid-template-columns: 1fr; gap: 22px; } }
 
-    .story { background: linear-gradient(180deg, var(--bg), var(--bg-2)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-    .story-acts { display: grid; gap: 52px; margin-top: 52px; }
-    .act { display: grid; grid-template-columns: 64px 1fr; gap: 28px; align-items: start; max-width: 760px; }
-    .act .num { font-family: "Fraunces", serif; font-weight: 900; font-size: 2.2rem; background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-    .act h3 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin-bottom: .6rem; }
-    .act p { color: var(--muted); font-size: 1.08rem; }
-    .act:nth-child(even) { margin-left: auto; }
-    @media (max-width: 760px) { .act { grid-template-columns: 40px 1fr; gap: 16px; } .act:nth-child(even) { margin-left: 0; } }
+    /* témoignages (marquee de cartes) */
+    .testi { padding: clamp(56px, 8vw, 100px) 0; overflow: hidden; }
+    .testi .mhead { text-align: center; margin-bottom: 40px; }
+    .testi-track { display: flex; gap: 20px; width: max-content; will-change: transform; }
+    .tcard { width: clamp(280px, 32vw, 360px); flex: none; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 26px; box-shadow: var(--shadow); }
+    .tcard q { display: block; font-family: "Fraunces", serif; font-size: 1.18rem; line-height: 1.4; quotes: "« " " »"; }
+    .tcard q::before { content: open-quote; } .tcard q::after { content: close-quote; }
+    .tcard .who { margin-top: 18px; display: flex; align-items: center; gap: .7rem; color: var(--muted); font-size: .92rem; font-weight: 600; }
+    .tcard .av { width: 34px; height: 34px; border-radius: 50%; background: var(--sunset); display: grid; place-items: center; color: #2a0d12; font-weight: 900; font-family: "Fraunces", serif; flex: none; }
+    .tcard .who b { color: var(--ink); font-weight: 800; }
 
-    .quote { text-align: center; max-width: 820px; margin: 0 auto; }
-    .quote blockquote { font-family: "Fraunces", serif; font-weight: 500; font-style: italic; font-size: clamp(1.5rem, 3.4vw, 2.3rem); line-height: 1.3; margin: 0; }
-    .quote .cite { margin-top: 1.6rem; color: var(--muted); font-weight: 600; }
-    .quote .cite b { color: var(--ink); font-style: normal; }
-
-    .final { position: relative; min-height: 72vh; display: flex; align-items: center; overflow: hidden; text-align: center; }
+    .final { position: relative; min-height: 72vh; display: flex; align-items: center; overflow: hidden; text-align: center; background: #120720; }
     .final .pb-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
     .final .pb-media img { width: 100%; height: 100%; object-fit: cover; }
     .final .pb-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.92), rgba(20,9,38,.5) 55%, rgba(20,9,38,.78)); }
@@ -206,32 +190,34 @@
     .final h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; }
     .final p { color: #ECE2F5; margin: 1.1rem auto 2rem; max-width: 44ch; font-size: 1.1rem; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
 
-    footer { padding: 64px 0 48px; border-top: 1px solid var(--line); }
+    footer { padding: 64px 0 96px; border-top: 1px solid var(--line); }
     .foot-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px; align-items: flex-start; }
     .foot-links { display: flex; gap: 2rem; flex-wrap: wrap; }
     .foot-links a { color: var(--muted); font-weight: 600; font-size: .95rem; }
     .foot-links a:hover { color: var(--ink); }
-    .foot-note { color: var(--muted); font-size: .86rem; margin-top: 28px; max-width: 52ch; }
+    .foot-note { color: var(--muted); font-size: .86rem; margin-top: 28px; max-width: 54ch; }
     .foot-postcard { font-family: "Fraunces", serif; font-style: italic; color: var(--gold); margin-top: 14px; }
 
-    /* TOGGLE SON (opt-in, défaut off) */
-    .sound { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-sound); display: inline-flex; align-items: center; gap: .55rem; padding: .55rem .85rem; border-radius: 999px; background: rgba(25,14,46,.78); border: 1px solid var(--line-strong); color: var(--ink); font-weight: 700; font-size: .85rem; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: var(--shadow); }
-    .sound:hover { border-color: var(--accent); }
-    .sound .wf { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
-    .sound .wf i { width: 2.5px; height: 30%; background: var(--gold); border-radius: 2px; }
-    .sound.on .wf i { animation: wf 1s ease-in-out infinite; }
-    .sound .wf i:nth-child(2){animation-delay:.15s} .sound .wf i:nth-child(3){animation-delay:.3s} .sound .wf i:nth-child(4){animation-delay:.45s}
+    /* LECTEUR SON (radio) : play + canal + volume + waveform */
+    .player { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-player); display: inline-flex; align-items: center; gap: .65rem; padding: .5rem .7rem; border-radius: 999px; background: rgba(25,14,46,.82); border: 1px solid var(--line-strong); color: var(--ink); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: var(--shadow); font-size: .85rem; }
+    .player button { background: none; border: 0; color: inherit; cursor: pointer; font: inherit; }
+    .pl-toggle { width: 30px; height: 30px; border-radius: 50%; background: var(--sunset); color: #2a0d12; display: grid; place-items: center; font-size: .8rem; flex: none; }
+    .pl-chan { font-weight: 700; white-space: nowrap; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+    .pl-chan:hover { color: var(--gold); }
+    .wf { display: inline-flex; align-items: flex-end; gap: 2px; height: 16px; }
+    .wf i { width: 2.5px; height: 25%; background: var(--gold); border-radius: 2px; }
+    .player.on .wf i { animation: wf 1s ease-in-out infinite; }
+    .wf i:nth-child(2){animation-delay:.13s} .wf i:nth-child(3){animation-delay:.27s} .wf i:nth-child(4){animation-delay:.4s} .wf i:nth-child(5){animation-delay:.53s}
     @keyframes wf { 0%,100%{height:25%} 50%{height:100%} }
-    @media (prefers-reduced-motion: reduce) { .sound.on .wf i { animation: none; height: 60%; } }
+    .pl-vol { width: 64px; accent-color: var(--gold); cursor: pointer; }
+    @media (prefers-reduced-motion: reduce) { .player.on .wf i { animation: none; height: 60%; } }
+    @media (max-width: 560px) { .player .pl-chan, .player .wf { display: none; } }
 
-    /* reveal piloté GSAP (visible par défaut) */
     .reveal { opacity: 1; }
     html.anim .reveal { opacity: 0; }
     @media (prefers-reduced-motion: reduce) { html.anim .reveal { opacity: 1; } }
 
     @media (prefers-reduced-motion: no-preference) {
-      .hero-media img { animation: kenburns 20s ease-in-out infinite alternate; }
-      @keyframes kenburns { from { transform: scale(1.05); } to { transform: scale(1.14) translateY(-1.5%); } }
       .phone-stage::before { animation: breathe 7s ease-in-out infinite; }
       @keyframes breathe { 0%,100% { transform: scale(1); opacity: .34; } 50% { transform: scale(1.06); opacity: .5; } }
       .seal { animation: wobble 6s ease-in-out infinite; }
@@ -245,113 +231,78 @@
 
   <header class="nav">
     <div class="wrap nav-in">
-      <a href="#main" class="brand" aria-label="SunMates, accueil">
-        <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>
-        Sun<b>Mates</b>
-      </a>
-      <nav class="nav-links" aria-label="Navigation principale">
-        <a href="#rencontres">Rencontres</a>
-        <a href="#fonctions">Fonctions</a>
-        <a href="#apercu">L'app</a>
-        <a href="#histoire">Histoire</a>
-      </nav>
-      <div class="nav-cta">
-        <a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Commencer, c'est gratuit</span><span class="lbl-short">Embarque</span></a>
-      </div>
+      <a href="#main" class="brand" aria-label="SunMates, accueil"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>Sun<b>Mates</b></a>
+      <nav class="nav-links" aria-label="Navigation principale"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#temoignages">Témoignages</a><a href="#apercu">L'app</a></nav>
+      <div class="nav-cta"><a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Embarque, c'est gratuit</span><span class="lbl-short">Embarque</span></a></div>
     </div>
   </header>
 
   <main id="main">
 
-    <!-- HERO : photo candide (amies qui rient au crépuscule) -->
+    <!-- HERO vidéo -->
     <section class="hero">
-      <div class="hero-media"><img src="sm-hero.jpg" alt="Deux amies qui rient au bord de l'eau au coucher de soleil, sacs sur l'épaule." width="1500" height="2250" fetchpriority="high" /></div>
+      <div class="hero-media"><video id="heroVid" autoplay muted loop playsinline preload="metadata" poster="sm-hero.jpg"><source src="https://videos.pexels.com/video-files/7147268/7147268-sd_960_540_30fps.mp4" type="video/mp4" /></video></div>
       <div class="hero-scrim" aria-hidden="true"></div>
       <div class="seal reveal" aria-hidden="true">
         <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,209,92,.9)" stroke-width="2" stroke-dasharray="3 4"/><circle cx="50" cy="50" r="40" fill="url(#sg)"/><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD15C"/><stop offset="1" stop-color="#FF5570"/></linearGradient></defs></svg>
         <span class="seal-core">Soleil<br>inclus ☀</span>
       </div>
       <div class="wrap hero-in">
-        <span class="hero-eyebrow reveal"><span aria-hidden="true">☀️</span> L'appli qui allège le voyage solo</span>
-        <h1 class="reveal">Pars solo,<br /><span class="grad">trouve ta bande.</span></h1>
-        <p class="lead reveal">Rencontre des voyageurs comme toi, explore au soleil, et repars avec une bande. Le solo, c'est juste le début de l'histoire.</p>
+        <span class="hero-eyebrow reveal"><span aria-hidden="true">☀️</span> Département des belles rencontres imprévues</span>
+        <h1 class="reveal">Le voyage en solo a enfin <span class="grad">du monde dedans.</span></h1>
+        <p class="lead reveal">L'appli pour les gens qui partent seuls et finissent rarement leur soirée comme ça.</p>
         <div class="hero-cta reveal">
-          <a href="app.html" class="btn btn-primary">Commencer, c'est gratuit</a>
+          <a href="app.html" class="btn btn-primary">Embarque, c'est gratuit</a>
           <a href="#rencontres" class="btn btn-ghost">Comment ça marche</a>
         </div>
       </div>
     </section>
 
-    <!-- TICKER cartes postales -->
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track" id="ticker"><span>Pars solo</span><span>Trouve ta bande</span><span>Le soleil t'attend</span><span>Rencontre du monde</span><span>Voyage l'esprit léger</span><span>Des lieux qui ont une âme</span></div>
-    </div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"><span>Aucun plan B requis</span><span>La table est mise pour une personne de plus</span><span>Le coin est plus petit que tu crois</span><span>Quelqu'un dans le coin pense exactement pareil</span><span>Le solo, mais avec témoins</span></div></div>
 
-    <!-- TRUST CHIPS -->
     <section class="trust band" style="padding-bottom:0">
       <div class="wrap trust-row reveal">
         <div class="chip"><div class="k">42</div><div class="v">Pays dans la communauté</div></div>
         <div class="chip"><div class="k">22</div><div class="v">Badges faits main</div></div>
         <div class="chip"><div class="k">FR / EN</div><div class="v">Même hors-ligne</div></div>
-        <div class="chip"><div class="k">0 €</div><div class="v">La tranquillité, pour tous</div></div>
+        <div class="chip"><div class="k">0 €</div><div class="v">Tout ce qui compte, gratuit</div></div>
       </div>
     </section>
 
     <!-- RENCONTRES -->
     <section id="rencontres" class="band">
       <div class="wrap spot">
-        <div class="phone-stage reveal" id="tiltPhone">
-          <div class="phone"><img src="showcase-home.jpg" width="290" height="628" alt="Écran d'accueil de SunMates : carte vivante des voyageurs et des lieux autour de toi." loading="lazy" /></div>
-        </div>
+        <div class="phone-stage reveal" id="tiltPhone"><div class="phone"><img src="showcase-home.jpg" width="290" height="628" alt="Écran d'accueil de SunMates : carte vivante des voyageurs et des lieux autour de toi." loading="lazy" /></div></div>
         <div class="reveal">
-          <span class="seclabel">Rencontres</span>
-          <h2 class="h2">Rencontre les bonnes personnes.</h2>
-          <p class="sub">Pas une app de dating : une app d'appartenance. Tu vois qui voyage autour de toi, en temps réel, et tu choisis qui rejoindre.</p>
+          <span class="seclabel">Qui est autour</span>
+          <h2 class="h2">Qui traîne dans le coin.</h2>
+          <p class="sub">On te montre les autres voyageurs à portée de café. Tu fais le premier pas, ou pas. Aucune pression.</p>
           <ul class="spot-list">
-            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><div class="t">Vois qui est autour de toi</div><div class="d">La carte révèle en direct les voyageurs et les lieux proches. Lance ta journée, croise du monde.</div></div></li>
-            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span><div><div class="t">Des affinités, pas du hasard</div><div class="d">Centres d'intérêt, style de voyage, langues : tu repères les profils qui te ressemblent vraiment.</div></div></li>
-            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><div><div class="t">Un score de confiance, pas un like</div><div class="d">Vérification, check-ins et recommandations entre voyageurs. Tu sais à qui tu as affaire.</div></div></li>
+            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><div class="t">En direct, autour de toi</div><div class="d">La carte révèle qui voyage et quels lieux bougent à deux rues. Lance ta journée, croise du monde.</div></div></li>
+            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span><div><div class="t">Des affinités, pas du hasard</div><div class="d">Mêmes centres d'intérêt, même façon de voyager, mêmes langues. Tu repères vite les gens de ta vibe.</div></div></li>
+            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><div><div class="t">Un score de confiance, pas un like</div><div class="d">L'appli te dit qui est dans le coin, pas qui est célibataire. Profils vérifiés, check-ins, recommandations.</div></div></li>
           </ul>
-          <a href="app.html" class="btn btn-primary">Commencer, c'est gratuit</a>
+          <a href="app.html" class="btn btn-primary">Embarque, c'est gratuit</a>
         </div>
       </div>
     </section>
 
-    <!-- BANDE PHOTO : la joie -->
+    <!-- BANDE VIDÉO -->
     <section class="photoband">
-      <div class="pb-media"><img src="sm-joie.jpg" alt="Une bande d'amis qui trinquent sur un rooftop ensoleillé." loading="lazy" width="1500" height="844" /></div>
+      <div class="pb-media"><video class="bandVid" muted loop playsinline preload="none" poster="sm-joie.jpg"><source data-src="https://videos.pexels.com/video-files/3252985/3252985-sd_960_540_25fps.mp4" type="video/mp4" /></video></div>
       <div class="pb-scrim" aria-hidden="true"></div>
-      <div class="wrap"><div class="pb-in reveal">
-        <h2>On était trois inconnus.</h2>
-        <p>Et puis les rires se sont accrochés. Une bande, née en route.</p>
-      </div></div>
-    </section>
-
-    <!-- MARQUEE de moments -->
-    <section class="moments">
-      <div class="wrap mhead reveal"><span class="seclabel">Vos moments</span><h2 class="h2">Le voyage, à hauteur d'amitié.</h2></div>
-      <div class="moments-track" id="moments">
-        <div class="moment"><img src="sm-rencontre.jpg" alt="Deux voyageurs qui se prennent en photo, sacs à dos, dans une rue." loading="lazy" width="600" height="750" /></div>
-        <div class="moment"><img src="sm-moment1.jpg" alt="Deux amis bras levés sur la plage, pleins de joie." loading="lazy" width="600" height="750" /></div>
-        <div class="moment"><img src="sm-friends.jpg" alt="Un groupe d'amis qui rit ensemble au soleil." loading="lazy" width="600" height="750" /></div>
-        <div class="moment"><img src="sm-moment2.jpg" alt="Trois amis qui font un selfie en voyage dans une ville." loading="lazy" width="600" height="750" /></div>
-        <div class="moment"><img src="sm-moment3.jpg" alt="Des amis qui regardent le coucher de soleil ensemble." loading="lazy" width="600" height="750" /></div>
-        <div class="moment"><img src="sm-cafe.jpg" alt="Intérieur d'un café chaleureux aux tons bois." loading="lazy" width="600" height="750" /></div>
-      </div>
+      <div class="wrap"><div class="pb-in reveal"><h2>Ça continue après le check-out.</h2><p>Les soirées finissent, les groupes restent. La prochaine escale aussi se prépare à plusieurs.</p></div></div>
     </section>
 
     <!-- FONCTIONS -->
     <section id="fonctions" class="band">
       <div class="wrap">
-        <div class="reveal" style="max-width:60ch">
-          <h2 class="h2">Tout ce qu'il faut pour partir léger.</h2>
-          <p class="sub">Explorer, jouer, se poser dans des lieux qui ont une âme. Et la tranquillité d'esprit en prime, toujours gratuite.</p>
-        </div>
+        <div class="reveal" style="max-width:62ch"><h2 class="h2">Des prétextes pour sortir, surtout.</h2><p class="sub">Officiellement, c'est une appli de voyage. Officieusement, une collection d'excuses pour dire bonjour.</p></div>
         <div class="bento">
-          <div class="cell feat reveal"><span class="tag">Lieux sûrs</span><h3 class="glow">Une carte chaude et lisible, jour comme nuit.</h3><p>Cafés et co-livings validés par la communauté. Check-in par code sur place, anti-triche : pas de points volés.</p></div>
+          <div class="cell feat reveal"><span class="tag">Les lieux</span><h3 class="glow">Les bons endroits, sans le guide qui parle trop.</h3><p>Les coins où ça se passe vraiment, repérés par des gens qui y étaient hier. Check-in par code sur place, anti-triche.</p></div>
           <div class="cell photo reveal"><img src="sm-cafe.jpg" alt="Café chaleureux aux tons bois et lumière douce." loading="lazy" width="1400" height="2100" /><div class="ph-scrim" aria-hidden="true"></div><div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div></div>
-          <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Jeu &amp; badges</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou en groupe, XP, et 22 emblèmes faits main à débloquer. Le jeu ne touche jamais au score de confiance.</p></div>
-          <div class="cell third reveal"><span class="tag">Multilingue</span><h3>FR / EN, hors-ligne</h3><p>Toute l'app dans les deux langues, même sans réseau.</p></div>
+          <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Le jeu</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour dire bonjour, validée par la science.</p></div>
+          <div class="cell third reveal"><span class="tag">Sans frontières</span><h3>FR / EN, hors-ligne</h3><p>Toute l'appli dans les deux langues, même quand le réseau te lâche.</p></div>
           <div class="cell third reveal"><span class="tag">Tranquillité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage ta position avec ton cercle de confiance, quand tu veux. Gratuit, pour tout le monde.</p></div>
         </div>
       </div>
@@ -370,23 +321,29 @@
       </div>
     </section>
 
-    <!-- HISTOIRE -->
-    <section id="histoire" class="band story">
-      <div class="wrap">
-        <div class="reveal" style="max-width:60ch"><span class="seclabel">L'histoire</span><h2 class="h2">Seul·e au départ, jamais à l'arrivée.</h2></div>
-        <div class="story-acts">
-          <div class="act reveal"><div class="num" aria-hidden="true">1</div><div><h3>L'appel de l'horizon</h3><p>Ce matin où la routine pèse trop et où le billet devient une évidence. Tu n'attends plus personne pour partir.</p></div></div>
-          <div class="act reveal"><div class="num" aria-hidden="true">2</div><div><h3>Un sourire, et tout bascule</h3><p>Une terrasse, deux cafés, une langue qu'on bricole. La première personne qui devient un repère.</p></div></div>
-          <div class="act reveal"><div class="num" aria-hidden="true">3</div><div><h3>Une bande, née en route</h3><p>Des verres qui s'entrechoquent, des fous rires qu'on n'explique pas, et l'envie de continuer le voyage ensemble.</p></div></div>
-        </div>
+    <!-- MARQUEE moments (POV vidéo + photos) -->
+    <section class="moments">
+      <div class="wrap mhead reveal"><span class="seclabel">Vos moments</span><h2 class="h2">Le voyage, à hauteur d'amitié.</h2></div>
+      <div class="moments-track" id="moments">
+        <div class="moment"><span class="mtag">POV</span><video class="momVid" muted loop playsinline preload="none" poster="sm-rencontre.jpg"><source data-src="https://videos.pexels.com/video-files/12879703/12879703-sd_540_960_24fps.mp4" type="video/mp4" /></video></div>
+        <div class="moment"><img src="sm-moment1.jpg" alt="Deux amis bras levés sur la plage, pleins de joie." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-friends.jpg" alt="Un groupe d'amis qui rit ensemble au soleil." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-moment2.jpg" alt="Trois amis qui font un selfie en voyage dans une ville." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-rencontre.jpg" alt="Deux voyageurs qui se prennent en photo dans une rue." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-moment3.jpg" alt="Des amis qui regardent le coucher de soleil ensemble." loading="lazy" width="600" height="750" /></div>
       </div>
     </section>
 
-    <!-- CITATION -->
-    <section class="band">
-      <div class="wrap quote reveal">
-        <blockquote>« Partie seule à Lisbonne, revenue avec une bande. Et l'impression d'avoir gardé la tête froide tout du long. »</blockquote>
-        <p class="cite"><b>Chloé, 26 ans</b>, exploratrice solo à Lisbonne</p>
+    <!-- TÉMOIGNAGES -->
+    <section id="temoignages" class="testi">
+      <div class="wrap mhead reveal"><span class="seclabel">Ils sont partis seuls</span><h2 class="h2">On vous laisse lire la suite.</h2></div>
+      <div class="testi-track" id="testi">
+        <div class="tcard"><q>Partie seule à Lisbonne, rentrée avec un groupe WhatsApp encore actif six mois après. Je sais toujours pas comment.</q><div class="who"><span class="av" aria-hidden="true">L</span><span><b>Léa, 26 ans</b>, Lyon</span></div></div>
+        <div class="tcard"><q>J'avais prévu un musée. J'ai fini sur un toit avec trois inconnus et une guitare désaccordée. Aucun regret.</q><div class="who"><span class="av" aria-hidden="true">K</span><span><b>Karim, 31 ans</b>, Marseille</span></div></div>
+        <div class="tcard"><q>Premier voyage solo, je flippais un peu. Au final j'ai surtout flippé de devoir rentrer.</q><div class="who"><span class="av" aria-hidden="true">C</span><span><b>Chloé, 23 ans</b>, Nantes</span></div></div>
+        <div class="tcard"><q>À mon âge on se fait plus d'amis, paraît-il. Quelqu'un a oublié de prévenir SunMates.</q><div class="who"><span class="av" aria-hidden="true">A</span><span><b>Antoine, 38 ans</b>, Bordeaux</span></div></div>
+        <div class="tcard"><q>Je voulais juste savoir où boire un verre correct. Repartie avec une coloc de vacances et un nouvel apéro préféré.</q><div class="who"><span class="av" aria-hidden="true">I</span><span><b>Inès, 28 ans</b>, Strasbourg</span></div></div>
+        <div class="tcard"><q>L'appli te dit qui est dans le coin, pas qui est célibataire. Franchement, reposant.</q><div class="who"><span class="av" aria-hidden="true">M</span><span><b>Mathéo, 24 ans</b>, Toulouse</span></div></div>
       </div>
     </section>
 
@@ -394,11 +351,7 @@
     <section class="final">
       <div class="pb-media"><img src="sm-moment3.jpg" alt="Des amis qui regardent ensemble le coucher de soleil." loading="lazy" width="1500" height="1000" /></div>
       <div class="pb-scrim" aria-hidden="true"></div>
-      <div class="wrap"><div class="pb-in reveal">
-        <h2>Ta bande t'attend quelque part.</h2>
-        <p>Une nouvelle ville, des visages à découvrir, le soleil qui descend. Il ne manque plus que toi.</p>
-        <a href="app.html" class="btn btn-primary">Embarque, c'est gratuit</a>
-      </div></div>
+      <div class="wrap"><div class="pb-in reveal"><h2>Ta place est déjà gardée.</h2><p>Télécharge, arrive seul·e, et vois ce que la ville a prévu pour toi.</p><a href="app.html" class="btn btn-primary">Réserve ta place</a></div></div>
     </section>
   </main>
 
@@ -406,16 +359,19 @@
     <div class="wrap">
       <div class="foot-grid">
         <a href="#main" class="brand" aria-label="SunMates"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>Sun<b>Mates</b></a>
-        <nav class="foot-links" aria-label="Liens de pied de page"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#apercu">L'app</a><a href="app.html">Ouvrir l'app</a></nav>
+        <nav class="foot-links" aria-label="Liens de pied de page"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#temoignages">Témoignages</a><a href="app.html">Ouvrir l'app</a></nav>
       </div>
-      <p class="foot-note">SunMates transforme les rencontres de voyage éphémères en connexions joyeuses et de confiance. Et la tranquillité, gratuite pour tous, toujours.</p>
-      <p class="foot-postcard">Allez, fais tes valises. <span aria-hidden="true">☀️</span></p>
+      <p class="foot-note">SunMates, c'est le département des belles rencontres imprévues. On te montre qui traîne dans le coin ; la suite t'appartient. Et tout ce qui compte reste gratuit.</p>
+      <p class="foot-postcard">Allez, fais-toi un coin. <span aria-hidden="true">☀️</span></p>
     </div>
   </footer>
 
-  <button class="sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Activer l'ambiance sonore">
-    <span class="wf" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="soundLbl">Ambiance</span>
-  </button>
+  <div class="player" id="player" role="group" aria-label="Ambiance sonore">
+    <button class="pl-toggle" id="plToggle" type="button" aria-pressed="false" aria-label="Lancer l'ambiance sonore">▶</button>
+    <button class="pl-chan" id="plChan" type="button" aria-label="Changer de canal">Golden Hour FM</button>
+    <span class="wf" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+    <input class="pl-vol" id="plVol" type="range" min="0" max="100" value="62" aria-label="Volume de l'ambiance" />
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
@@ -430,64 +386,80 @@
         gsap.set(".reveal", { opacity: 0, y: 30 });
         document.documentElement.classList.remove("anim");
         ScrollTrigger.batch(".reveal", { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: .75, ease: "power3.out", stagger: .1, overwrite: true }); } });
-        // parallax photos de fond
-        gsap.utils.toArray(".hero-media img, .pb-media img").forEach(function (im) { gsap.to(im, { yPercent: 12, ease: "none", scrollTrigger: { trigger: im.closest("section"), start: "top bottom", end: "bottom top", scrub: true } }); });
+        gsap.utils.toArray(".hero-media video, .hero-media img, .pb-media img, .pb-media video").forEach(function (im) { gsap.to(im, { yPercent: 12, ease: "none", scrollTrigger: { trigger: im.closest("section"), start: "top bottom", end: "bottom top", scrub: true } }); });
         gsap.utils.toArray(".phone").forEach(function (ph) { gsap.to(ph, { yPercent: -8, ease: "none", scrollTrigger: { trigger: ph, start: "top bottom", end: "bottom top", scrub: true } }); });
-        // compteurs
-        document.querySelectorAll(".chip .k").forEach(function (el) { var txt = el.textContent || "", m = txt.match(/^(\d+)/); if (!m) return; var end = +m[1], suf = txt.replace(/^\d+/, ""), o = { v: 0 }; gsap.to(o, { v: end, duration: 1.2, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 92%", once: true }, onUpdate: function () { el.textContent = Math.round(o.v) + suf; } }); });
-        // tilt du mockup vers le curseur
+        document.querySelectorAll(".chip .k").forEach(function (el) { var t = el.textContent || "", m = t.match(/^(\d+)/); if (!m) return; var end = +m[1], suf = t.replace(/^\d+/, ""), o = { v: 0 }; gsap.to(o, { v: end, duration: 1.2, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 92%", once: true }, onUpdate: function () { el.textContent = Math.round(o.v) + suf; } }); });
         var tp = document.getElementById("tiltPhone");
         if (tp && window.matchMedia("(pointer:fine)").matches) {
           var rx = gsap.quickTo(tp, "rotationY", { duration: .5, ease: "power3" }), ry = gsap.quickTo(tp, "rotationX", { duration: .5, ease: "power3" });
-          gsap.set(tp, { transformPerspective: 800, transformOrigin: "center" });
+          gsap.set(tp, { transformPerspective: 800 });
           tp.addEventListener("mousemove", function (e) { var r = tp.getBoundingClientRect(); rx((e.clientX - r.left - r.width / 2) / r.width * 16); ry(-(e.clientY - r.top - r.height / 2) / r.height * 16); });
           tp.addEventListener("mouseleave", function () { rx(0); ry(0); });
         }
+        // marquees (ticker, moments, témoignages)
+        function loop(sel, dur) { var t = document.querySelector(sel); if (!t) return; t.innerHTML += t.innerHTML; gsap.to(t, { xPercent: -50, duration: dur, ease: "none", repeat: -1 }); }
+        loop("#ticker", 22); loop("#moments", 60); loop("#testi", 70);
+        // Le marquee moments a été dupliqué (innerHTML) -> on (re)charge la vidéo POV maintenant.
+        document.querySelectorAll("#moments video.momVid source[data-src]").forEach(function (s) { if (!s.src) { s.src = s.getAttribute("data-src"); s.parentNode.load(); s.parentNode.play().catch(function () {}); } });
         ScrollTrigger.refresh();
         setTimeout(function () { document.querySelectorAll(".reveal").forEach(function (el) { if (+getComputedStyle(el).opacity < .5) gsap.set(el, { opacity: 1, y: 0 }); }); }, 4500);
       });
-      // MARQUEES (toujours, même reduced-motion -> on les ralentit/garde lisibles via matchMedia)
-      gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", function () {
-        function loop(sel, dur) { var t = document.querySelector(sel); if (!t) return; t.innerHTML += t.innerHTML; gsap.to(t, { xPercent: -50, duration: dur, ease: "none", repeat: -1 }); }
-        loop("#ticker", 24);
-        loop("#moments", 55);
-      });
       return true;
     }
-    // Init dès le DOM prêt (les scripts GSAP en defer ont déjà tourné) — NE PAS attendre window.load
-    // (qui attend toutes les images) → le hero n'est jamais bloqué par le chargement des photos.
     function _smReady() { if (!_smInitMotion()) document.documentElement.classList.remove("anim"); }
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", _smReady); else _smReady();
     setTimeout(function () { if (!_smGsapReady) document.documentElement.classList.remove("anim"); }, 2000);
 
-    // ---------- SON AMBIANT (opt-in, défaut OFF, généré WebAudio, fondu) ----------
+    // ---------- VIDÉOS DE FOND (bande + POV) : chargées à l'approche (perf), via IntersectionObserver,
+    // indépendant de GSAP. Sous reduced-motion : rien ne se lance (le poster reste affiché). ----------
     (function () {
-      var btn = document.getElementById("soundBtn"), lbl = document.getElementById("soundLbl");
-      var ctx = null, master = null, nodes = [], on = false;
-      function build() {
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce || !("IntersectionObserver" in window)) return;
+      var vio = new IntersectionObserver(function (ents) {
+        ents.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var v = e.target, s = v.querySelector("source[data-src]");
+          if (s && !s.src) { s.src = s.getAttribute("data-src"); v.load(); v.play().catch(function () {}); }
+          vio.unobserve(v);
+        });
+      }, { rootMargin: "400px 0px" });
+      document.querySelectorAll("video.bandVid").forEach(function (v) { vio.observe(v); });
+    })();
+
+    // ---------- RADIO D'AMBIANCE (opt-in, généré WebAudio, canaux + volume) ----------
+    (function () {
+      var player = document.getElementById("player"), tgl = document.getElementById("plToggle"), chanBtn = document.getElementById("plChan"), vol = document.getElementById("plVol");
+      var CHANS = [
+        { name: "Golden Hour FM", notes: [220, 277.18, 329.63, 440], type: "sine", cutoff: 950 },
+        { name: "Terrasse Tardive", notes: [146.83, 220, 261.63, 349.23], type: "triangle", cutoff: 760 },
+        { name: "Retour de Plage", notes: [261.63, 329.63, 392.0, 587.33], type: "sine", cutoff: 1200 }
+      ];
+      var ctx = null, master = null, voices = [], filter = null, lfo = null, ci = 0, on = false;
+      function maxGain() { return (+vol.value / 100) * 0.42; }
+      function teardownVoices() { voices.forEach(function (n) { try { n.stop(); } catch (e) {} }); voices = []; }
+      function buildChannel(c) {
+        teardownVoices();
+        c.notes.forEach(function (f, i) { var o = ctx.createOscillator(); o.type = c.type; o.frequency.value = f; var g = ctx.createGain(); g.gain.value = i === c.notes.length - 1 ? .05 : .09; o.connect(g); g.connect(filter); o.start(); voices.push(o); });
+        filter.frequency.value = c.cutoff;
+      }
+      function ensureCtx() {
+        if (ctx) return;
         ctx = new (window.AudioContext || window.webkitAudioContext)();
         master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
-        var filter = ctx.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 900; filter.connect(master);
-        // accord chaud (La majeur doux) + léger battement = ambiance « coucher de soleil »
-        [220, 277.18, 329.63, 440].forEach(function (f, i) {
-          var osc = ctx.createOscillator(); osc.type = i === 3 ? "triangle" : "sine"; osc.frequency.value = f;
-          var g = ctx.createGain(); g.gain.value = i === 3 ? .04 : .08; osc.connect(g); g.connect(filter); osc.start(); nodes.push(osc);
-        });
-        // LFO lent sur le filtre = mouvement
-        var lfo = ctx.createOscillator(); lfo.frequency.value = .07; var lg = ctx.createGain(); lg.gain.value = 350; lfo.connect(lg); lg.connect(filter.frequency); lfo.start(); nodes.push(lfo);
+        filter = ctx.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 950; filter.connect(master);
+        lfo = ctx.createOscillator(); lfo.frequency.value = .07; var lg = ctx.createGain(); lg.gain.value = 320; lfo.connect(lg); lg.connect(filter.frequency); lfo.start();
       }
       function setOn(v) {
-        on = v; btn.classList.toggle("on", v); btn.setAttribute("aria-pressed", v ? "true" : "false");
-        btn.setAttribute("aria-label", v ? "Couper l'ambiance sonore" : "Activer l'ambiance sonore");
-        lbl.textContent = v ? "Ambiance ☼" : "Ambiance";
+        on = v; player.classList.toggle("on", v); tgl.textContent = v ? "⏸" : "▶"; tgl.setAttribute("aria-pressed", v ? "true" : "false"); tgl.setAttribute("aria-label", v ? "Couper l'ambiance sonore" : "Lancer l'ambiance sonore");
         try {
-          if (v) { if (!ctx) build(); if (ctx.state === "suspended") ctx.resume(); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(.12, ctx.currentTime + .9); }
-          else if (ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(0, ctx.currentTime + .7); }
-        } catch (e) { on = false; btn.classList.remove("on"); btn.style.display = "none"; } // WebAudio indispo -> on retire le bouton proprement
+          if (v) { ensureCtx(); if (ctx.state === "suspended") ctx.resume(); if (!voices.length) buildChannel(CHANS[ci]); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(maxGain(), ctx.currentTime + .9); }
+          else if (ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(0, ctx.currentTime + .6); }
+        } catch (e) { on = false; player.style.display = "none"; }
       }
-      btn.addEventListener("click", function () { setOn(!on); });
-      // jamais d'autoplay : on reste OFF au chargement (respect navigateur + utilisateur)
-      document.addEventListener("visibilitychange", function () { if (document.hidden && on && ctx) ctx.suspend(); else if (!document.hidden && on && ctx) ctx.resume(); });
+      tgl.addEventListener("click", function () { setOn(!on); });
+      chanBtn.addEventListener("click", function () { ci = (ci + 1) % CHANS.length; chanBtn.textContent = CHANS[ci].name; if (on && ctx) { buildChannel(CHANS[ci]); } });
+      vol.addEventListener("input", function () { if (on && ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(maxGain(), ctx.currentTime + .12); } });
+      document.addEventListener("visibilitychange", function () { if (!ctx) return; if (document.hidden && on) ctx.suspend(); else if (!document.hidden && on) ctx.resume(); });
     })();
   </script>
 </body>
