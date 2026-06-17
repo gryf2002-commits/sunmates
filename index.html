@@ -81,7 +81,9 @@
     .btn-ghost:hover { background: rgba(255,255,255,.14); border-color: var(--accent); }
     .btn-sm { padding: .6rem 1.1rem; font-size: .92rem; }
 
-    header.nav { position: sticky; top: 0; z-index: var(--z-nav); height: 68px; display: flex; align-items: center; background: rgba(25,14,46,.66); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+    /* nav transparente sur le hero (pas de bande sombre) ; prend son fond au scroll. */
+    header.nav { position: sticky; top: 0; z-index: var(--z-nav); height: 68px; display: flex; align-items: center; background: transparent; border-bottom: 1px solid transparent; transition: background .3s ease, backdrop-filter .3s ease, border-color .3s ease; }
+    header.nav.scrolled { background: rgba(25,14,46,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--line); }
     .nav-in { display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .brand { display: flex; align-items: center; gap: .6rem; font-family: "Fraunces", serif; font-weight: 900; font-size: 1.3rem; }
     .brand .mark { width: 34px; height: 34px; border-radius: 10px; background: var(--sunset); display: grid; place-items: center; box-shadow: 0 6px 16px rgba(255,85,112,.4); flex: none; }
@@ -272,6 +274,7 @@
   </style>
 </head>
 <body>
+  <div id="navSent" aria-hidden="true" style="position:absolute;top:0;left:0;height:64px;width:1px;pointer-events:none"></div>
   <a href="#main" class="skip">Aller au contenu principal</a>
 
   <header class="nav">
@@ -303,7 +306,7 @@
       </div>
     </section>
 
-    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"><span>Aucun plan B requis</span><span>La table est mise pour une personne de plus</span><span>Le monde est plus petit que tu crois</span><span>Quelqu'un, juste à côté, cherche aussi du monde</span><span>Tu choisis qui rejoindre, et quand</span></div></div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"><span>Aucun plan B requis</span><span>La table est mise pour une personne de plus</span><span>Le monde est plus petit que tu ne le crois</span><span>Quelqu'un, juste à côté, cherche aussi du monde</span><span>Tu choisis qui rejoindre, et quand</span></div></div>
 
     <section class="trust band" style="padding-bottom:0">
       <div class="wrap trust-row reveal">
@@ -324,7 +327,7 @@
           <p class="sub">On te montre les autres voyageurs à portée de café. Tu fais le premier pas, ou pas. Aucune pression.</p>
           <ul class="spot-list">
             <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><div class="t">En direct, autour de toi</div><div class="d">La carte révèle qui voyage et quels lieux bougent à deux rues. Lance ta journée, croise du monde.</div></div></li>
-            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span><div><div class="t">Des affinités, pas du hasard</div><div class="d">Mêmes centres d'intérêt, même façon de voyager, mêmes langues. Tu repères vite les gens de ta vibe.</div></div></li>
+            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span><div><div class="t">Des affinités, pas du hasard</div><div class="d">Mêmes centres d'intérêt, même façon de voyager, mêmes langues. Tu repères vite ceux qui te ressemblent.</div></div></li>
             <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><div><div class="t">Un score de confiance, pas un like</div><div class="d">L'appli te dit qui est dans le coin, pas qui est célibataire. Profils vérifiés, check-ins, recommandations.</div></div></li>
           </ul>
           <a href="app.html" class="btn btn-primary">Embarque</a>
@@ -346,7 +349,7 @@
         <div class="bento">
           <div class="cell feat reveal"><span class="tag">Les lieux</span><h3 class="glow">Les bons endroits, sans le guide qui parle trop.</h3><p>Les coins où ça se passe vraiment, repérés par des gens qui y étaient hier. Tu check-ines sur place, et la carte se remplit.</p></div>
           <div class="cell photo reveal"><img src="sm-cafe.jpg" alt="Des voyageurs en terrasse de café, baignés de lumière chaude." loading="lazy" width="1400" height="2100" /><div class="ph-scrim" aria-hidden="true"></div><div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div></div>
-          <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Le jeu</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour aller voir ailleurs, et qui s'y trouve.</p></div>
+          <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Le jeu</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour sortir, et voir qui est là.</p></div>
           <div class="cell third reveal"><span class="tag">Sans frontières</span><h3>FR / EN, hors-ligne</h3><p>Toute l'appli dans les deux langues, même quand le réseau te lâche.</p></div>
           <div class="cell third reveal"><span class="tag">Tranquillité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage ta position avec ton cercle de confiance, quand tu veux. Toi seul·e décides qui voit quoi.</p></div>
         </div>
@@ -448,7 +451,6 @@
     <input class="pl-vol" id="plVol" type="range" min="0" max="100" value="62" aria-label="Volume de l'ambiance" />
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
   <script>
@@ -458,21 +460,12 @@
       if (!window.gsap || !window.ScrollTrigger) return false;
       _smGsapReady = true;
       gsap.registerPlugin(ScrollTrigger);
-      // SMOOTH SCROLL (Lenis) -> sensation « extrêmement fluide ». Coupé sous reduced-motion.
-      if (window.Lenis && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        var lenis = new Lenis({ duration: 1.1, smoothWheel: true, touchMultiplier: 1.5 });
-        lenis.on("scroll", ScrollTrigger.update);
-        gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
-        gsap.ticker.lagSmoothing(0);
-        document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-          a.addEventListener("click", function (e) { var id = a.getAttribute("href"); if (id.length > 1) { var el = document.querySelector(id); if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -68 }); } } });
-        });
-      }
       gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", function () {
         gsap.set(".reveal", { opacity: 0, y: 30 });
         document.documentElement.classList.remove("anim");
         ScrollTrigger.batch(".reveal", { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: .75, ease: "power3.out", stagger: .1, overwrite: true }); } });
-        gsap.utils.toArray(".hero-media video, .hero-media img, .pb-media img, .pb-media video").forEach(function (im) { gsap.to(im, { yPercent: 12, ease: "none", scrollTrigger: { trigger: im.closest("section"), start: "top bottom", end: "bottom top", scrub: true } }); });
+        // Parallax léger UNIQUEMENT sur les images (jamais sur une vidéo en lecture -> évite les saccades).
+        gsap.utils.toArray(".final .pb-media img").forEach(function (im) { gsap.to(im, { yPercent: 10, ease: "none", scrollTrigger: { trigger: im.closest("section"), start: "top bottom", end: "bottom top", scrub: true } }); });
         gsap.utils.toArray(".phone").forEach(function (ph) { gsap.to(ph, { yPercent: -8, ease: "none", scrollTrigger: { trigger: ph, start: "top bottom", end: "bottom top", scrub: true } }); });
         // + motion au scroll : le contenu du hero monte et s'estompe quand on descend (parallax cinétique).
         gsap.to(".hero-in", { yPercent: -20, opacity: .25, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
@@ -501,6 +494,7 @@
         loop("#ticker", 22); loop("#moments", 60); loop("#testi", 70);
         // Le marquee moments a été dupliqué (innerHTML) -> on (re)charge la vidéo POV maintenant.
         document.querySelectorAll("#moments video.momVid source[data-src]").forEach(function (s) { if (!s.src) { s.src = s.getAttribute("data-src"); s.parentNode.load(); s.parentNode.play().catch(function () {}); } });
+        if (window._smApplyLang) window._smApplyLang(); // re-traduit les clones de marquee selon la langue courante
         ScrollTrigger.refresh();
         setTimeout(function () { document.querySelectorAll(".reveal").forEach(function (el) { if (+getComputedStyle(el).opacity < .5) gsap.set(el, { opacity: 1, y: 0 }); }); }, 4500);
       });
@@ -540,6 +534,13 @@
       document.querySelectorAll("video.bandVid").forEach(function (v) { vio.observe(v); });
     })();
 
+    // ---------- NAV : fond au scroll (transparente sur le hero, pas de bande sombre) ----------
+    (function () {
+      var nav = document.querySelector("header.nav"), sent = document.getElementById("navSent");
+      if (!nav || !sent || !("IntersectionObserver" in window)) { if (nav) nav.classList.add("scrolled"); return; }
+      new IntersectionObserver(function (e) { nav.classList.toggle("scrolled", !e[0].isIntersecting); }).observe(sent);
+    })();
+
     // ---------- BILINGUE FR / EN (toggle nav, sans rechargement, mémorisé) ----------
     (function () {
       var EN = {
@@ -550,14 +551,14 @@
         "L'appli pour les gens qui partent seuls et finissent rarement leur soirée comme ça.": "The app for people who set off alone and rarely end the night that way.",
         "Comment ça marche": "How it works", "Soleil": "Sunshine", "inclus ☀": "included ☀",
         "Aucun plan B requis": "No plan B needed", "La table est mise pour une personne de plus": "There's always room for one more",
-        "Le monde est plus petit que tu crois": "The world is smaller than you think", "Quelqu'un, juste à côté, cherche aussi du monde": "Someone right nearby is looking too", "Tu choisis qui rejoindre, et quand": "You pick who to join, and when",
+        "Le monde est plus petit que tu ne le crois": "The world is smaller than you think", "Quelqu'un, juste à côté, cherche aussi du monde": "Someone right nearby is looking too", "Tu choisis qui rejoindre, et quand": "You pick who to join, and when",
         "Pays dans la communauté": "Countries in the community", "Badges faits main": "Hand-drawn badges", "Même hors-ligne": "Even offline", "Fait main, zéro pixel générique": "Hand-made, zero generic pixels",
         "Qui est autour": "Who's around", "Qui traîne dans le coin.": "Who's hanging around.",
         "On te montre les autres voyageurs à portée de café. Tu fais le premier pas, ou pas. Aucune pression.": "We show you the travelers within coffee distance. Make the first move, or don't. No pressure.",
         "En direct, autour de toi": "Live, around you",
         "La carte révèle qui voyage et quels lieux bougent à deux rues. Lance ta journée, croise du monde.": "The map shows who's travelling and which spots are buzzing two streets away. Start your day, meet people.",
         "Des affinités, pas du hasard": "Affinities, not luck",
-        "Mêmes centres d'intérêt, même façon de voyager, mêmes langues. Tu repères vite les gens de ta vibe.": "Same interests, same way of travelling, same languages. You spot your kind of people fast.",
+        "Mêmes centres d'intérêt, même façon de voyager, mêmes langues. Tu repères vite ceux qui te ressemblent.": "Same interests, same way of travelling, same languages. You spot your kind of people fast.",
         "Un score de confiance, pas un like": "A trust score, not a like",
         "L'appli te dit qui est dans le coin, pas qui est célibataire. Profils vérifiés, check-ins, recommandations.": "The app tells you who's around, not who's single. Verified profiles, check-ins, recommendations.",
         "Ça continue après le check-out.": "It keeps going after check-out.",
@@ -568,7 +569,7 @@
         "Les coins où ça se passe vraiment, repérés par des gens qui y étaient hier. Tu check-ines sur place, et la carte se remplit.": "The places where it actually happens, spotted by people who were there yesterday. Check in on site, and the map fills up.",
         "Des spots qui ont une âme": "Spots with soul", "Pose ton sac où c'est bon.": "Drop your bag where it feels right.",
         "Le jeu": "The game", "Voyager devient un terrain de jeu.": "Travel becomes a playground.",
-        "Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour aller voir ailleurs, et qui s'y trouve.": "Solo or group quests, XP, 22 hand-drawn emblems. One more excuse to wander, and see who's there.",
+        "Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour sortir, et voir qui est là.": "Solo or group quests, XP, 22 hand-drawn emblems. One more excuse to wander, and see who's there.",
         "Sans frontières": "No borders", "FR / EN, hors-ligne": "FR / EN, offline",
         "Toute l'appli dans les deux langues, même quand le réseau te lâche.": "The whole app in both languages, even when the signal drops.",
         "Tranquillité": "Peace of mind", "Un geste, et quelqu'un répond": "One tap, and someone answers",
@@ -600,17 +601,24 @@
         "Ou directement dans l'app": "Or right in the app"
       };
       var btn = document.getElementById("langBtn");
-      var nodes = [];
-      (function () { var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); var n; while (n = w.nextNode()) { var t = (n.nodeValue || "").trim(); if (t && EN[t]) nodes.push({ n: n, fr: n.nodeValue, key: t }); } })();
-      function setLang(lang) {
-        document.documentElement.lang = lang;
-        nodes.forEach(function (o) { o.n.nodeValue = (lang === "en") ? o.fr.replace(o.key, EN[o.key]) : o.fr; });
-        if (btn) { btn.textContent = (lang === "en") ? "FR" : "EN"; btn.setAttribute("aria-label", (lang === "en") ? "Repasser en français" : "Switch to English"); }
-        try { localStorage.setItem("sm_lang", lang); } catch (e) {}
+      var REV = {}; for (var k in EN) REV[EN[k]] = k; // dico inverse EN -> FR
+      var lang = "fr"; try { lang = localStorage.getItem("sm_lang") || "fr"; } catch (e) {}
+      // Walk FRAIS à chaque application -> traduit aussi les nœuds recréés par les marquees (clones).
+      function applyLang() {
+        var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
+        while (n = w.nextNode()) { var v = n.nodeValue, t = (v || "").trim(); if (!t) continue;
+          if (lang === "en" && EN[t]) n.nodeValue = v.replace(t, EN[t]);
+          else if (lang === "fr" && REV[t]) n.nodeValue = v.replace(t, REV[t]);
+        }
       }
-      var saved = "fr"; try { saved = localStorage.getItem("sm_lang") || "fr"; } catch (e) {}
-      if (saved === "en") setLang("en");
-      if (btn) btn.addEventListener("click", function () { setLang(document.documentElement.lang === "en" ? "fr" : "en"); });
+      window._smApplyLang = applyLang;
+      function setLang(l) {
+        lang = l; document.documentElement.lang = l; applyLang();
+        if (btn) { btn.textContent = (l === "en") ? "FR" : "EN"; btn.setAttribute("aria-label", (l === "en") ? "Repasser en français" : "Switch to English"); }
+        try { localStorage.setItem("sm_lang", l); } catch (e) {}
+      }
+      if (lang === "en") setLang("en"); else if (btn) btn.textContent = "EN";
+      if (btn) btn.addEventListener("click", function () { setLang(lang === "en" ? "fr" : "en"); });
     })();
 
     // ---------- RADIO D'AMBIANCE (opt-in, VRAIES pistes Mixkit, 3 canaux + volume) ----------
