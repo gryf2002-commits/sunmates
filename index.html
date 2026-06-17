@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="sm-hero.jpg" fetchpriority="high" />
   <script type="application/ld+json">
-  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs autour de toi pendant un voyage solo. Gratuit.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
+  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs autour de toi pendant un voyage solo.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
   </script>
   <style>
     /* SunMates — vitrine v3 « énergie vacation » : vidéo, témoignages, POV, lecteur son,
@@ -77,6 +77,9 @@
     .nav-links { display: flex; align-items: center; gap: 2rem; }
     .nav-links a { font-weight: 600; color: var(--muted); font-size: .96rem; transition: color .15s ease; }
     .nav-links a:hover { color: var(--ink); }
+    .nav-cta { display: flex; align-items: center; gap: .7rem; }
+    .lang-btn { background: rgba(255,255,255,.08); border: 1px solid var(--line-strong); color: var(--ink); font: 700 .82rem "Manrope", sans-serif; padding: .42rem .7rem; border-radius: 999px; cursor: pointer; letter-spacing: .04em; }
+    .lang-btn:hover { border-color: var(--accent); }
     .nav-start .lbl-short { display: none; }
     @media (max-width: 860px) { .nav-links { display: none; } }
     @media (max-width: 560px) { .wrap { padding: 0 16px; } .nav-start .lbl-full { display: none; } .nav-start .lbl-short { display: inline; } }
@@ -202,7 +205,7 @@
     .player { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-player); display: inline-flex; align-items: center; gap: .65rem; padding: .5rem .7rem; border-radius: 999px; background: rgba(25,14,46,.82); border: 1px solid var(--line-strong); color: var(--ink); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: var(--shadow); font-size: .85rem; }
     .player button { background: none; border: 0; color: inherit; cursor: pointer; font: inherit; }
     .pl-toggle { width: 30px; height: 30px; border-radius: 50%; background: var(--sunset); color: #2a0d12; display: grid; place-items: center; font-size: .8rem; flex: none; }
-    .pl-chan { font-weight: 700; white-space: nowrap; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+    .pl-chan { font-weight: 700; white-space: nowrap; }
     .pl-chan:hover { color: var(--gold); }
     .wf { display: inline-flex; align-items: flex-end; gap: 2px; height: 16px; }
     .wf i { width: 2.5px; height: 25%; background: var(--gold); border-radius: 2px; }
@@ -233,7 +236,7 @@
     <div class="wrap nav-in">
       <a href="#main" class="brand" aria-label="SunMates, accueil"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>Sun<b>Mates</b></a>
       <nav class="nav-links" aria-label="Navigation principale"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#temoignages">Témoignages</a><a href="#apercu">L'app</a></nav>
-      <div class="nav-cta"><a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Embarque, c'est gratuit</span><span class="lbl-short">Embarque</span></a></div>
+      <div class="nav-cta"><button id="langBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button><a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Embarque</span><span class="lbl-short">Embarque</span></a></div>
     </div>
   </header>
 
@@ -252,20 +255,20 @@
         <h1 class="reveal">Le voyage en solo a enfin <span class="grad">du monde dedans.</span></h1>
         <p class="lead reveal">L'appli pour les gens qui partent seuls et finissent rarement leur soirée comme ça.</p>
         <div class="hero-cta reveal">
-          <a href="app.html" class="btn btn-primary">Embarque, c'est gratuit</a>
+          <a href="app.html" class="btn btn-primary">Embarque</a>
           <a href="#rencontres" class="btn btn-ghost">Comment ça marche</a>
         </div>
       </div>
     </section>
 
-    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"><span>Aucun plan B requis</span><span>La table est mise pour une personne de plus</span><span>Le coin est plus petit que tu crois</span><span>Quelqu'un dans le coin pense exactement pareil</span><span>Le solo, mais avec témoins</span></div></div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"><span>Aucun plan B requis</span><span>La table est mise pour une personne de plus</span><span>Le monde est plus petit que tu crois</span><span>Quelqu'un, juste à côté, cherche aussi du monde</span><span>Tu choisis qui rejoindre, et quand</span></div></div>
 
     <section class="trust band" style="padding-bottom:0">
       <div class="wrap trust-row reveal">
         <div class="chip"><div class="k">42</div><div class="v">Pays dans la communauté</div></div>
         <div class="chip"><div class="k">22</div><div class="v">Badges faits main</div></div>
         <div class="chip"><div class="k">FR / EN</div><div class="v">Même hors-ligne</div></div>
-        <div class="chip"><div class="k">0 €</div><div class="v">Tout ce qui compte, gratuit</div></div>
+        <div class="chip"><div class="k">100%</div><div class="v">Fait main, zéro pixel générique</div></div>
       </div>
     </section>
 
@@ -282,7 +285,7 @@
             <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span><div><div class="t">Des affinités, pas du hasard</div><div class="d">Mêmes centres d'intérêt, même façon de voyager, mêmes langues. Tu repères vite les gens de ta vibe.</div></div></li>
             <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><div><div class="t">Un score de confiance, pas un like</div><div class="d">L'appli te dit qui est dans le coin, pas qui est célibataire. Profils vérifiés, check-ins, recommandations.</div></div></li>
           </ul>
-          <a href="app.html" class="btn btn-primary">Embarque, c'est gratuit</a>
+          <a href="app.html" class="btn btn-primary">Embarque</a>
         </div>
       </div>
     </section>
@@ -299,11 +302,11 @@
       <div class="wrap">
         <div class="reveal" style="max-width:62ch"><h2 class="h2">Des prétextes pour sortir, surtout.</h2><p class="sub">Officiellement, c'est une appli de voyage. Officieusement, une collection d'excuses pour dire bonjour.</p></div>
         <div class="bento">
-          <div class="cell feat reveal"><span class="tag">Les lieux</span><h3 class="glow">Les bons endroits, sans le guide qui parle trop.</h3><p>Les coins où ça se passe vraiment, repérés par des gens qui y étaient hier. Check-in par code sur place, anti-triche.</p></div>
+          <div class="cell feat reveal"><span class="tag">Les lieux</span><h3 class="glow">Les bons endroits, sans le guide qui parle trop.</h3><p>Les coins où ça se passe vraiment, repérés par des gens qui y étaient hier. Tu check-ines sur place, et la carte se remplit.</p></div>
           <div class="cell photo reveal"><img src="sm-cafe.jpg" alt="Café chaleureux aux tons bois et lumière douce." loading="lazy" width="1400" height="2100" /><div class="ph-scrim" aria-hidden="true"></div><div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div></div>
-          <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Le jeu</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour dire bonjour, validée par la science.</p></div>
+          <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Le jeu</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour aller voir ailleurs, et qui s'y trouve.</p></div>
           <div class="cell third reveal"><span class="tag">Sans frontières</span><h3>FR / EN, hors-ligne</h3><p>Toute l'appli dans les deux langues, même quand le réseau te lâche.</p></div>
-          <div class="cell third reveal"><span class="tag">Tranquillité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage ta position avec ton cercle de confiance, quand tu veux. Gratuit, pour tout le monde.</p></div>
+          <div class="cell third reveal"><span class="tag">Tranquillité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage ta position avec ton cercle de confiance, quand tu veux. Toi seul·e décides qui voit quoi.</p></div>
         </div>
       </div>
     </section>
@@ -361,7 +364,7 @@
         <a href="#main" class="brand" aria-label="SunMates"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>Sun<b>Mates</b></a>
         <nav class="foot-links" aria-label="Liens de pied de page"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#temoignages">Témoignages</a><a href="app.html">Ouvrir l'app</a></nav>
       </div>
-      <p class="foot-note">SunMates, c'est le département des belles rencontres imprévues. On te montre qui traîne dans le coin ; la suite t'appartient. Et tout ce qui compte reste gratuit.</p>
+      <p class="foot-note">SunMates, c'est le département des belles rencontres imprévues. On te montre qui traîne dans le coin ; la suite t'appartient.</p>
       <p class="foot-postcard">Allez, fais-toi un coin. <span aria-hidden="true">☀️</span></p>
     </div>
   </footer>
@@ -388,6 +391,12 @@
         ScrollTrigger.batch(".reveal", { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: .75, ease: "power3.out", stagger: .1, overwrite: true }); } });
         gsap.utils.toArray(".hero-media video, .hero-media img, .pb-media img, .pb-media video").forEach(function (im) { gsap.to(im, { yPercent: 12, ease: "none", scrollTrigger: { trigger: im.closest("section"), start: "top bottom", end: "bottom top", scrub: true } }); });
         gsap.utils.toArray(".phone").forEach(function (ph) { gsap.to(ph, { yPercent: -8, ease: "none", scrollTrigger: { trigger: ph, start: "top bottom", end: "bottom top", scrub: true } }); });
+        // + motion au scroll : le contenu du hero monte et s'estompe quand on descend (parallax cinétique).
+        gsap.to(".hero-in", { yPercent: -20, opacity: .25, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+        // + grands titres des bandes média qui montent en arrivant (scroll-linked).
+        gsap.utils.toArray(".photoband, .final").forEach(function (s) { var h = s.querySelector("h2"); if (h) gsap.from(h, { y: 64, ease: "none", scrollTrigger: { trigger: s, start: "top bottom", end: "top 40%", scrub: true } }); });
+        // + le seal tourne légèrement au scroll, en plus de son oscillation.
+        gsap.to(".seal svg", { rotation: 40, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
         document.querySelectorAll(".chip .k").forEach(function (el) { var t = el.textContent || "", m = t.match(/^(\d+)/); if (!m) return; var end = +m[1], suf = t.replace(/^\d+/, ""), o = { v: 0 }; gsap.to(o, { v: end, duration: 1.2, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 92%", once: true }, onUpdate: function () { el.textContent = Math.round(o.v) + suf; } }); });
         var tp = document.getElementById("tiltPhone");
         if (tp && window.matchMedia("(pointer:fine)").matches) {
@@ -426,40 +435,91 @@
       document.querySelectorAll("video.bandVid").forEach(function (v) { vio.observe(v); });
     })();
 
-    // ---------- RADIO D'AMBIANCE (opt-in, généré WebAudio, canaux + volume) ----------
+    // ---------- BILINGUE FR / EN (toggle nav, sans rechargement, mémorisé) ----------
+    (function () {
+      var EN = {
+        "Rencontres": "Meet", "Fonctions": "Features", "Témoignages": "Stories", "L'app": "The app",
+        "Embarque": "Hop in", "Aller au contenu principal": "Skip to main content",
+        "Département des belles rencontres imprévues": "Bureau of happy accidents",
+        "Le voyage en solo a enfin": "Solo travel, finally with", "du monde dedans.": "people in it.",
+        "L'appli pour les gens qui partent seuls et finissent rarement leur soirée comme ça.": "The app for people who set off alone and rarely end the night that way.",
+        "Comment ça marche": "How it works", "Soleil": "Sunshine", "inclus ☀": "included ☀",
+        "Aucun plan B requis": "No plan B needed", "La table est mise pour une personne de plus": "There's always room for one more",
+        "Le monde est plus petit que tu crois": "The world is smaller than you think", "Quelqu'un, juste à côté, cherche aussi du monde": "Someone right nearby is looking too", "Tu choisis qui rejoindre, et quand": "You pick who to join, and when",
+        "Pays dans la communauté": "Countries in the community", "Badges faits main": "Hand-drawn badges", "Même hors-ligne": "Even offline", "Fait main, zéro pixel générique": "Hand-made, zero generic pixels",
+        "Qui est autour": "Who's around", "Qui traîne dans le coin.": "Who's hanging around.",
+        "On te montre les autres voyageurs à portée de café. Tu fais le premier pas, ou pas. Aucune pression.": "We show you the travelers within coffee distance. Make the first move, or don't. No pressure.",
+        "En direct, autour de toi": "Live, around you",
+        "La carte révèle qui voyage et quels lieux bougent à deux rues. Lance ta journée, croise du monde.": "The map shows who's travelling and which spots are buzzing two streets away. Start your day, meet people.",
+        "Des affinités, pas du hasard": "Affinities, not luck",
+        "Mêmes centres d'intérêt, même façon de voyager, mêmes langues. Tu repères vite les gens de ta vibe.": "Same interests, same way of travelling, same languages. You spot your kind of people fast.",
+        "Un score de confiance, pas un like": "A trust score, not a like",
+        "L'appli te dit qui est dans le coin, pas qui est célibataire. Profils vérifiés, check-ins, recommandations.": "The app tells you who's around, not who's single. Verified profiles, check-ins, recommendations.",
+        "Ça continue après le check-out.": "It keeps going after check-out.",
+        "Les soirées finissent, les groupes restent. La prochaine escale aussi se prépare à plusieurs.": "Nights end, the crews stay. The next stop gets planned together too.",
+        "Des prétextes pour sortir, surtout.": "Mostly, excuses to go out.",
+        "Officiellement, c'est une appli de voyage. Officieusement, une collection d'excuses pour dire bonjour.": "Officially, a travel app. Unofficially, a collection of excuses to say hi.",
+        "Les lieux": "Places", "Les bons endroits, sans le guide qui parle trop.": "The good spots, minus the guide who talks too much.",
+        "Les coins où ça se passe vraiment, repérés par des gens qui y étaient hier. Tu check-ines sur place, et la carte se remplit.": "The places where it actually happens, spotted by people who were there yesterday. Check in on site, and the map fills up.",
+        "Des spots qui ont une âme": "Spots with soul", "Pose ton sac où c'est bon.": "Drop your bag where it feels right.",
+        "Le jeu": "The game", "Voyager devient un terrain de jeu.": "Travel becomes a playground.",
+        "Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour aller voir ailleurs, et qui s'y trouve.": "Solo or group quests, XP, 22 hand-drawn emblems. One more excuse to wander, and see who's there.",
+        "Sans frontières": "No borders", "FR / EN, hors-ligne": "FR / EN, offline",
+        "Toute l'appli dans les deux langues, même quand le réseau te lâche.": "The whole app in both languages, even when the signal drops.",
+        "Tranquillité": "Peace of mind", "Un geste, et quelqu'un répond": "One tap, and someone answers",
+        "Partage ta position avec ton cercle de confiance, quand tu veux. Toi seul·e décides qui voit quoi.": "Share your location with your circle of trust, whenever. You alone decide who sees what.",
+        "Ton terrain de jeu": "Your playground", "Chaque ville, une aventure.": "Every city, an adventure.",
+        "Relève des quêtes": "Take on quests", "Des défis solo ou à plusieurs, sur place, pour explorer autrement.": "Solo or group challenges, on the spot, to explore differently.",
+        "Gagne de l'XP": "Earn XP", "Monte de niveau, débloque des badges exclusifs et des coupons partenaires.": "Level up, unlock exclusive badges and partner coupons.",
+        "Joue en groupe": "Play as a group", "Les quêtes à plusieurs rapportent un bonus, et créent des souvenirs.": "Group quests pay a bonus, and make memories.",
+        "Vos moments": "Your moments", "Le voyage, à hauteur d'amitié.": "Travel, the friends edition.",
+        "Ils sont partis seuls": "They left alone", "On vous laisse lire la suite.": "We'll let you read the rest.",
+        "Partie seule à Lisbonne, rentrée avec un groupe WhatsApp encore actif six mois après. Je sais toujours pas comment.": "Left for Lisbon solo, came back with a WhatsApp group still active six months later. Still no idea how.",
+        "J'avais prévu un musée. J'ai fini sur un toit avec trois inconnus et une guitare désaccordée. Aucun regret.": "I'd planned a museum. I ended up on a rooftop with three strangers and an out-of-tune guitar. No regrets.",
+        "Premier voyage solo, je flippais un peu. Au final j'ai surtout flippé de devoir rentrer.": "First solo trip, I was a bit scared. In the end I was mostly scared of having to go home.",
+        "À mon âge on se fait plus d'amis, paraît-il. Quelqu'un a oublié de prévenir SunMates.": "At my age you don't make friends anymore, they say. Someone forgot to tell SunMates.",
+        "Je voulais juste savoir où boire un verre correct. Repartie avec une coloc de vacances et un nouvel apéro préféré.": "I just wanted to know where to get a decent drink. Left with a holiday flatmate and a new favorite happy hour.",
+        "L'appli te dit qui est dans le coin, pas qui est célibataire. Franchement, reposant.": "The app tells you who's around, not who's single. Honestly, refreshing.",
+        "Léa, 26 ans": "Léa, 26", "Karim, 31 ans": "Karim, 31", "Chloé, 23 ans": "Chloé, 23", "Antoine, 38 ans": "Antoine, 38", "Inès, 28 ans": "Inès, 28", "Mathéo, 24 ans": "Mathéo, 24",
+        "Ta place est déjà gardée.": "Your spot's already saved.",
+        "Télécharge, arrive seul·e, et vois ce que la ville a prévu pour toi.": "Download, show up alone, and see what the city has in store for you.",
+        "Réserve ta place": "Save my spot", "Ouvrir l'app": "Open the app",
+        "SunMates, c'est le département des belles rencontres imprévues. On te montre qui traîne dans le coin ; la suite t'appartient.": "SunMates is the bureau of happy accidents. We show you who's hanging around; the rest is yours.",
+        "Allez, fais-toi un coin.": "Go on, carve out your spot."
+      };
+      var btn = document.getElementById("langBtn");
+      var nodes = [];
+      (function () { var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); var n; while (n = w.nextNode()) { var t = (n.nodeValue || "").trim(); if (t && EN[t]) nodes.push({ n: n, fr: n.nodeValue, key: t }); } })();
+      function setLang(lang) {
+        document.documentElement.lang = lang;
+        nodes.forEach(function (o) { o.n.nodeValue = (lang === "en") ? o.fr.replace(o.key, EN[o.key]) : o.fr; });
+        if (btn) { btn.textContent = (lang === "en") ? "FR" : "EN"; btn.setAttribute("aria-label", (lang === "en") ? "Repasser en français" : "Switch to English"); }
+        try { localStorage.setItem("sm_lang", lang); } catch (e) {}
+      }
+      var saved = "fr"; try { saved = localStorage.getItem("sm_lang") || "fr"; } catch (e) {}
+      if (saved === "en") setLang("en");
+      if (btn) btn.addEventListener("click", function () { setLang(document.documentElement.lang === "en" ? "fr" : "en"); });
+    })();
+
+    // ---------- RADIO D'AMBIANCE (opt-in, VRAIES pistes Mixkit, 3 canaux + volume) ----------
     (function () {
       var player = document.getElementById("player"), tgl = document.getElementById("plToggle"), chanBtn = document.getElementById("plChan"), vol = document.getElementById("plVol");
       var CHANS = [
-        { name: "Golden Hour FM", notes: [220, 277.18, 329.63, 440], type: "sine", cutoff: 950 },
-        { name: "Terrasse Tardive", notes: [146.83, 220, 261.63, 349.23], type: "triangle", cutoff: 760 },
-        { name: "Retour de Plage", notes: [261.63, 329.63, 392.0, 587.33], type: "sine", cutoff: 1200 }
+        { name: "Golden Hour FM", url: "https://assets.mixkit.co/music/443/443.mp3" },
+        { name: "Terrasse Tardive", url: "https://assets.mixkit.co/music/175/175.mp3" },
+        { name: "Retour de Plage", url: "https://assets.mixkit.co/music/662/662.mp3" }
       ];
-      var ctx = null, master = null, voices = [], filter = null, lfo = null, ci = 0, on = false;
-      function maxGain() { return (+vol.value / 100) * 0.42; }
-      function teardownVoices() { voices.forEach(function (n) { try { n.stop(); } catch (e) {} }); voices = []; }
-      function buildChannel(c) {
-        teardownVoices();
-        c.notes.forEach(function (f, i) { var o = ctx.createOscillator(); o.type = c.type; o.frequency.value = f; var g = ctx.createGain(); g.gain.value = i === c.notes.length - 1 ? .05 : .09; o.connect(g); g.connect(filter); o.start(); voices.push(o); });
-        filter.frequency.value = c.cutoff;
-      }
-      function ensureCtx() {
-        if (ctx) return;
-        ctx = new (window.AudioContext || window.webkitAudioContext)();
-        master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
-        filter = ctx.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 950; filter.connect(master);
-        lfo = ctx.createOscillator(); lfo.frequency.value = .07; var lg = ctx.createGain(); lg.gain.value = 320; lfo.connect(lg); lg.connect(filter.frequency); lfo.start();
-      }
+      var audio = new Audio(); audio.loop = true; audio.preload = "none"; audio.crossOrigin = "anonymous"; audio.volume = (+vol.value) / 100;
+      var ci = 0, on = false;
       function setOn(v) {
         on = v; player.classList.toggle("on", v); tgl.textContent = v ? "⏸" : "▶"; tgl.setAttribute("aria-pressed", v ? "true" : "false"); tgl.setAttribute("aria-label", v ? "Couper l'ambiance sonore" : "Lancer l'ambiance sonore");
-        try {
-          if (v) { ensureCtx(); if (ctx.state === "suspended") ctx.resume(); if (!voices.length) buildChannel(CHANS[ci]); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(maxGain(), ctx.currentTime + .9); }
-          else if (ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(0, ctx.currentTime + .6); }
-        } catch (e) { on = false; player.style.display = "none"; }
+        if (v) { if (!audio.src) audio.src = CHANS[ci].url; audio.volume = (+vol.value) / 100; audio.play().catch(function () { on = false; player.classList.remove("on"); tgl.textContent = "▶"; tgl.setAttribute("aria-pressed", "false"); }); }
+        else { audio.pause(); }
       }
       tgl.addEventListener("click", function () { setOn(!on); });
-      chanBtn.addEventListener("click", function () { ci = (ci + 1) % CHANS.length; chanBtn.textContent = CHANS[ci].name; if (on && ctx) { buildChannel(CHANS[ci]); } });
-      vol.addEventListener("input", function () { if (on && ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(maxGain(), ctx.currentTime + .12); } });
-      document.addEventListener("visibilitychange", function () { if (!ctx) return; if (document.hidden && on) ctx.suspend(); else if (!document.hidden && on) ctx.resume(); });
+      chanBtn.addEventListener("click", function () { ci = (ci + 1) % CHANS.length; chanBtn.textContent = CHANS[ci].name; audio.src = CHANS[ci].url; if (on) audio.play().catch(function () {}); });
+      vol.addEventListener("input", function () { audio.volume = (+vol.value) / 100; });
+      document.addEventListener("visibilitychange", function () { if (document.hidden && on) audio.pause(); else if (!document.hidden && on) audio.play().catch(function () {}); });
     })();
   </script>
 </body>
