@@ -588,5 +588,13 @@ body.sm-lite .tab-panel[data-panel="lieux"] > details { margin-top: 1.3rem; }
 /* Lieu Gold (premium/gaming) : masqué en Lite (le bloc est aussi coupé en JS, double sécurité). */
 body.sm-lite .gold-place { display: none !important; }
 
+/* ============================================================
+   PEAUFINAGE v538 — derniers P3 : lisibilité sous-textes + avatar.
+   ============================================================ */
+/* Sous-textes de tuiles : casse NORMALE (étaient en CAPS tracking large = peu lisibles). */
+body.sm-lite .t-meta { text-transform: none !important; letter-spacing: normal !important; font-size: .8rem !important; font-weight: 500 !important; }
+/* Avatar de profil (placeholder) : surface nette + filet + petite ombre (plus de carré crème plat). */
+body.sm-lite .prof-photo { border: 1px solid var(--line); box-shadow: 0 1px 3px rgba(20,18,40,.07) !important; }
+
 /* (Intro Lieux : reformulation « sans classement » reportée à une passe JS propre —
    le swap CSS ::after cassait la mise en page. Le texte original reste pour l'instant.) */
