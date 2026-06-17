@@ -7,17 +7,26 @@
     (function () { try { var s = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true; if (s) location.replace("app.html" + location.search + location.hash); } catch (e) {} })();
     try { if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) document.documentElement.classList.add("anim"); } catch (e) {}
   </script>
-  <title>SunMates — Le voyage en solo a enfin du monde dedans</title>
+  <title>SunMates, voyage solo et belles rencontres</title>
   <meta name="description" content="L'appli pour les gens qui partent seuls et finissent rarement leur soirée comme ça. On te montre qui traîne dans le coin. La suite, c'est ton affaire." />
   <link rel="canonical" href="https://sunmatesapp.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_FR" />
   <meta property="og:site_name" content="SunMates" />
-  <meta property="og:title" content="SunMates — Le voyage en solo a enfin du monde dedans" />
+  <meta property="og:title" content="SunMates, le voyage en solo a enfin du monde dedans" />
   <meta property="og:description" content="On te montre qui traîne dans le coin. Tu fais le premier pas, ou pas. La suite, c'est ton affaire." />
   <meta property="og:url" content="https://sunmatesapp.com/" />
   <meta property="og:image" content="https://sunmatesapp.com/sm-joie.jpg" />
+  <meta property="og:image:width" content="1500" />
+  <meta property="og:image:height" content="844" />
+  <meta property="og:image:alt" content="Une bande d'amis qui trinquent au soleil sur un rooftop." />
+  <meta name="twitter:title" content="SunMates, le voyage en solo a enfin du monde dedans" />
+  <meta name="twitter:description" content="On te montre qui traîne dans le coin. Tu fais le premier pas, ou pas. La suite, c'est ton affaire." />
+  <meta name="twitter:image" content="https://sunmatesapp.com/sm-joie.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <meta name="author" content="SunMates" />
+  <meta name="keywords" content="voyage solo, rencontrer des voyageurs, app voyage, voyager seul, communauté voyageurs, sunmates" />
   <meta name="theme-color" content="#190E2E" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,10 +34,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="sm-hero.jpg" fetchpriority="high" />
   <script type="application/ld+json">
-  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs autour de toi pendant un voyage solo.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
+  { "@context": "https://schema.org", "@graph": [
+    { "@type": "Organization", "@id": "https://sunmatesapp.com/#org", "name": "SunMates", "url": "https://sunmatesapp.com/", "logo": "https://sunmatesapp.com/icon.svg", "email": "sunmatesapp@gmail.com", "description": "L'appli qui transforme les rencontres de voyage en connexions sûres et joyeuses." },
+    { "@type": "WebSite", "@id": "https://sunmatesapp.com/#site", "url": "https://sunmatesapp.com/", "name": "SunMates", "inLanguage": "fr", "publisher": { "@id": "https://sunmatesapp.com/#org" } },
+    { "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs autour de toi pendant un voyage solo.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }, "publisher": { "@id": "https://sunmatesapp.com/#org" } }
+  ] }
   </script>
   <style>
-    /* SunMates — vitrine v3 « énergie vacation » : vidéo, témoignages, POV, lecteur son,
+    /* SunMates - vitrine « énergie vacation » : vidéo, témoignages, POV, lecteur son,
        voix distinctive. DA SunMates : nuit prune + sunset corail/or, Fraunces + Manrope.
        Zéro tiret cadratin, zéro point décoratif (· réservé à l'inclusif). */
     :root {
@@ -85,7 +98,8 @@
     @media (max-width: 560px) { .wrap { padding: 0 16px; } .nav-start .lbl-full { display: none; } .nav-start .lbl-short { display: inline; } }
 
     /* HERO vidéo */
-    .hero { position: relative; min-height: 94vh; min-height: 94dvh; display: flex; align-items: center; overflow: hidden; }
+    /* le hero remonte SOUS la nav translucide -> la vidéo remplit jusqu'en haut (plus de bande vide). */
+    .hero { position: relative; min-height: 94vh; min-height: 94dvh; margin-top: -68px; display: flex; align-items: center; overflow: hidden; }
     .hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #120720; }
     .hero-media img, .hero-media video { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
     .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(20,9,38,.94) 0%, rgba(20,9,38,.72) 40%, rgba(20,9,38,.34) 74%, rgba(20,9,38,.55) 100%), linear-gradient(0deg, rgba(20,9,38,.9) 0%, rgba(20,9,38,0) 50%); }
@@ -225,6 +239,9 @@
     .foot-links a:hover { color: var(--ink); }
     .foot-note { color: var(--muted); font-size: .86rem; margin-top: 28px; max-width: 54ch; }
     .foot-postcard { font-family: "Fraunces", serif; font-style: italic; color: var(--gold); margin-top: 14px; }
+    .contact { max-width: 720px; margin: 0 auto; text-align: center; }
+    .contact .sub { margin-left: auto; margin-right: auto; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: .9rem; justify-content: center; margin-top: 2rem; }
 
     /* LECTEUR SON (radio) : play + canal + volume + waveform */
     .player { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-player); display: inline-flex; align-items: center; gap: .65rem; padding: .5rem .7rem; border-radius: 999px; background: rgba(25,14,46,.82); border: 1px solid var(--line-strong); color: var(--ink); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: var(--shadow); font-size: .85rem; }
@@ -241,10 +258,6 @@
     @media (prefers-reduced-motion: reduce) { .player.on .wf i { animation: none; height: 60%; } }
     @media (max-width: 560px) { .player .pl-chan, .player .wf { display: none; } }
 
-    /* halo qui suit le curseur (desktop fin uniquement) */
-    .cursor-glow { position: fixed; top: 0; left: 0; width: 420px; height: 420px; margin: -210px 0 0 -210px; border-radius: 50%; background: radial-gradient(circle, rgba(255,138,69,.16), rgba(255,85,112,.08) 40%, transparent 66%); pointer-events: none; z-index: 40; opacity: 0; will-change: transform; }
-    @media (pointer: coarse), (prefers-reduced-motion: reduce) { .cursor-glow { display: none !important; } }
-
     .reveal { opacity: 1; }
     html.anim .reveal { opacity: 0; }
     @media (prefers-reduced-motion: reduce) { html.anim .reveal { opacity: 1; } }
@@ -259,7 +272,6 @@
   </style>
 </head>
 <body>
-  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
   <a href="#main" class="skip">Aller au contenu principal</a>
 
   <header class="nav">
@@ -327,30 +339,13 @@
       <div class="wrap"><div class="pb-in reveal"><h2>Ça continue après le check-out.</h2><p>Les soirées finissent, les groupes restent. La prochaine escale aussi se prépare à plusieurs.</p></div></div>
     </section>
 
-    <!-- SCROLLYTELLING cinématique (3 actes) -->
-    <section class="scrolly" id="histoire">
-      <div class="scrolly-stick">
-        <div class="sc-head reveal"><span class="seclabel">L'histoire</span><h2 class="h2">Seul·e au départ, jamais à l'arrivée.</h2></div>
-        <div class="sc-bg" aria-hidden="true"><img src="sm-hero.jpg" alt="" loading="lazy" /></div>
-        <div class="sc-bg" aria-hidden="true"><img src="sm-joie.jpg" alt="" loading="lazy" /></div>
-        <div class="sc-bg" aria-hidden="true"><img src="sm-moment3.jpg" alt="" loading="lazy" /></div>
-        <div class="sc-scrim" aria-hidden="true"></div>
-        <div class="sc-acts">
-          <div class="sc-act"><div class="num" aria-hidden="true">1</div><h3>L'appel de l'horizon</h3><p>Ce matin où la routine pèse trop, et où le billet devient une évidence. Tu n'attends plus personne pour partir.</p></div>
-          <div class="sc-act"><div class="num" aria-hidden="true">2</div><h3>Un sourire, et tout bascule</h3><p>Une terrasse, deux cafés, une langue qu'on bricole. La première personne qui devient un repère.</p></div>
-          <div class="sc-act"><div class="num" aria-hidden="true">3</div><h3>Une bande, née en route</h3><p>Des fous rires qu'on n'explique pas, et l'envie de continuer le voyage ensemble.</p></div>
-        </div>
-        <div class="sc-prog" aria-hidden="true"><i></i></div>
-      </div>
-    </section>
-
     <!-- FONCTIONS -->
     <section id="fonctions" class="band">
       <div class="wrap">
         <div class="reveal" style="max-width:62ch"><h2 class="h2">Des prétextes pour sortir, surtout.</h2><p class="sub">Officiellement, c'est une appli de voyage. Officieusement, une collection d'excuses pour dire bonjour.</p></div>
         <div class="bento">
           <div class="cell feat reveal"><span class="tag">Les lieux</span><h3 class="glow">Les bons endroits, sans le guide qui parle trop.</h3><p>Les coins où ça se passe vraiment, repérés par des gens qui y étaient hier. Tu check-ines sur place, et la carte se remplit.</p></div>
-          <div class="cell photo reveal"><img src="sm-cafe.jpg" alt="Café chaleureux aux tons bois et lumière douce." loading="lazy" width="1400" height="2100" /><div class="ph-scrim" aria-hidden="true"></div><div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div></div>
+          <div class="cell photo reveal"><img src="sm-cafe.jpg" alt="Des voyageurs en terrasse de café, baignés de lumière chaude." loading="lazy" width="1400" height="2100" /><div class="ph-scrim" aria-hidden="true"></div><div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div></div>
           <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Le jeu</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou à plusieurs, XP, 22 emblèmes faits main. Une excuse de plus pour aller voir ailleurs, et qui s'y trouve.</p></div>
           <div class="cell third reveal"><span class="tag">Sans frontières</span><h3>FR / EN, hors-ligne</h3><p>Toute l'appli dans les deux langues, même quand le réseau te lâche.</p></div>
           <div class="cell third reveal"><span class="tag">Tranquillité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage ta position avec ton cercle de confiance, quand tu veux. Toi seul·e décides qui voit quoi.</p></div>
@@ -368,6 +363,23 @@
           <div class="pp reveal"><div class="bar" aria-hidden="true"></div><div class="t">Gagne de l'XP</div><div class="d">Monte de niveau, débloque des badges exclusifs et des coupons partenaires.</div></div>
           <div class="pp reveal"><div class="bar" aria-hidden="true"></div><div class="t">Joue en groupe</div><div class="d">Les quêtes à plusieurs rapportent un bonus, et créent des souvenirs.</div></div>
         </div>
+      </div>
+    </section>
+
+    <!-- SCROLLYTELLING cinématique (3 actes) -->
+    <section class="scrolly" id="histoire">
+      <div class="scrolly-stick">
+        <div class="sc-head reveal"><span class="seclabel">L'histoire</span><h2 class="h2">Seul·e au départ, jamais à l'arrivée.</h2></div>
+        <div class="sc-bg" aria-hidden="true"><img src="sm-hero.jpg" alt="" loading="lazy" /></div>
+        <div class="sc-bg" aria-hidden="true"><img src="sm-joie.jpg" alt="" loading="lazy" /></div>
+        <div class="sc-bg" aria-hidden="true"><img src="sm-moment3.jpg" alt="" loading="lazy" /></div>
+        <div class="sc-scrim" aria-hidden="true"></div>
+        <div class="sc-acts">
+          <div class="sc-act"><div class="num" aria-hidden="true">1</div><h3>L'appel de l'horizon</h3><p>Ce matin où la routine pèse trop, et où le billet devient une évidence. Tu n'attends plus personne pour partir.</p></div>
+          <div class="sc-act"><div class="num" aria-hidden="true">2</div><h3>Un sourire, et tout bascule</h3><p>Une terrasse, deux cafés, une langue qu'on bricole. La première personne qui devient un repère.</p></div>
+          <div class="sc-act"><div class="num" aria-hidden="true">3</div><h3>Une bande, née en route</h3><p>Des fous rires qu'on n'explique pas, et l'envie de continuer le voyage ensemble.</p></div>
+        </div>
+        <div class="sc-prog" aria-hidden="true"><i></i></div>
       </div>
     </section>
 
@@ -403,6 +415,19 @@
       <div class="pb-scrim" aria-hidden="true"></div>
       <div class="wrap"><div class="pb-in reveal"><h2>Ta place est déjà gardée.</h2><p>Télécharge, arrive seul·e, et vois ce que la ville a prévu pour toi.</p><a href="app.html" class="btn btn-primary">Réserve ta place</a></div></div>
     </section>
+
+    <!-- À PROPOS / CONTACT -->
+    <section id="contact" class="band" style="padding-top:0">
+      <div class="wrap contact">
+        <span class="seclabel reveal">À propos</span>
+        <h2 class="h2 reveal">Une bande de voyageurs, pas une multinationale.</h2>
+        <p class="sub reveal">SunMates est un projet indépendant, fait main, pensé pour que personne ne voyage seul sans le vouloir. Une question, une idée, un bug à signaler ? Écris-nous, on répond pour de vrai.</p>
+        <div class="contact-row reveal">
+          <a href="mailto:sunmatesapp@gmail.com" class="btn btn-ghost">sunmatesapp@gmail.com</a>
+          <a href="app.html" class="btn btn-primary">Ou directement dans l'app</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -423,6 +448,7 @@
     <input class="pl-vol" id="plVol" type="range" min="0" max="100" value="62" aria-label="Volume de l'ambiance" />
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
   <script>
@@ -432,6 +458,16 @@
       if (!window.gsap || !window.ScrollTrigger) return false;
       _smGsapReady = true;
       gsap.registerPlugin(ScrollTrigger);
+      // SMOOTH SCROLL (Lenis) -> sensation « extrêmement fluide ». Coupé sous reduced-motion.
+      if (window.Lenis && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        var lenis = new Lenis({ duration: 1.1, smoothWheel: true, touchMultiplier: 1.5 });
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+        gsap.ticker.lagSmoothing(0);
+        document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+          a.addEventListener("click", function (e) { var id = a.getAttribute("href"); if (id.length > 1) { var el = document.querySelector(id); if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -68 }); } } });
+        });
+      }
       gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", function () {
         gsap.set(".reveal", { opacity: 0, y: 30 });
         document.documentElement.classList.remove("anim");
@@ -452,11 +488,8 @@
           tp.addEventListener("mousemove", function (e) { var r = tp.getBoundingClientRect(); rx((e.clientX - r.left - r.width / 2) / r.width * 16); ry(-(e.clientY - r.top - r.height / 2) / r.height * 16); });
           tp.addEventListener("mouseleave", function () { rx(0); ry(0); });
         }
-        // Halo qui suit le curseur + CTA magnétiques (desktop fin).
+        // CTA magnétiques (desktop fin).
         if (window.matchMedia("(pointer:fine)").matches) {
-          var glow = document.getElementById("cursorGlow");
-          if (glow) { var gx = gsap.quickTo(glow, "x", { duration: .5, ease: "power3" }), gy = gsap.quickTo(glow, "y", { duration: .5, ease: "power3" }), shown = false;
-            window.addEventListener("mousemove", function (e) { if (!shown) { shown = true; gsap.to(glow, { opacity: 1, duration: .4 }); } gx(e.clientX); gy(e.clientY); }, { passive: true }); }
           gsap.utils.toArray(".btn-primary").forEach(function (btn) {
             var mx = gsap.quickTo(btn, "x", { duration: .4, ease: "power3" }), my = gsap.quickTo(btn, "y", { duration: .4, ease: "power3" });
             btn.addEventListener("mousemove", function (e) { var r = btn.getBoundingClientRect(); mx((e.clientX - r.left - r.width / 2) * .3); my((e.clientY - r.top - r.height / 2) * .45); });
@@ -561,7 +594,10 @@
         "Télécharge, arrive seul·e, et vois ce que la ville a prévu pour toi.": "Download, show up alone, and see what the city has in store for you.",
         "Réserve ta place": "Save my spot", "Ouvrir l'app": "Open the app",
         "SunMates, c'est le département des belles rencontres imprévues. On te montre qui traîne dans le coin ; la suite t'appartient.": "SunMates is the bureau of happy accidents. We show you who's hanging around; the rest is yours.",
-        "Allez, fais-toi un coin.": "Go on, carve out your spot."
+        "Allez, fais-toi un coin.": "Go on, carve out your spot.",
+        "À propos": "About", "Une bande de voyageurs, pas une multinationale.": "A crew of travelers, not a corporation.",
+        "SunMates est un projet indépendant, fait main, pensé pour que personne ne voyage seul sans le vouloir. Une question, une idée, un bug à signaler ? Écris-nous, on répond pour de vrai.": "SunMates is an independent, hand-made project, built so no one travels alone unless they want to. A question, an idea, a bug to report? Write to us, we actually reply.",
+        "Ou directement dans l'app": "Or right in the app"
       };
       var btn = document.getElementById("langBtn");
       var nodes = [];
@@ -585,8 +621,10 @@
         { name: "Terrasse Tardive", url: "https://assets.mixkit.co/music/175/175.mp3" },
         { name: "Retour de Plage", url: "https://assets.mixkit.co/music/662/662.mp3" }
       ];
-      var audio = new Audio(); audio.loop = true; audio.preload = "none"; audio.crossOrigin = "anonymous"; audio.volume = (+vol.value) / 100;
+      var audio = new Audio(); audio.loop = false; audio.preload = "none"; audio.crossOrigin = "anonymous"; audio.volume = (+vol.value) / 100;
       var ci = 0, on = false;
+      // Radio continue : à la fin d'une piste, on enchaîne automatiquement sur le canal suivant.
+      audio.addEventListener("ended", function () { ci = (ci + 1) % CHANS.length; chanBtn.textContent = CHANS[ci].name; audio.src = CHANS[ci].url; if (on) audio.play().catch(function () {}); });
       function setOn(v) {
         on = v; player.classList.toggle("on", v); tgl.textContent = v ? "⏸" : "▶"; tgl.setAttribute("aria-pressed", v ? "true" : "false"); tgl.setAttribute("aria-label", v ? "Couper l'ambiance sonore" : "Lancer l'ambiance sonore");
         if (v) { if (!audio.src) audio.src = CHANS[ci].url; audio.volume = (+vol.value) / 100; audio.play().catch(function () { on = false; player.classList.remove("on"); tgl.textContent = "▶"; tgl.setAttribute("aria-pressed", "false"); }); }
