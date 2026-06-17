@@ -984,3 +984,24 @@ body.sm-lite #secuHome > .grid2 { display: none !important; }
 /* TOGGLES (interrupteurs réglages) : bascule la PLUS douce possible (pastille + fond animés). */
 body.sm-lite .switch .sl,
 body.sm-lite .switch .sl::before { transition: background-color .28s cubic-bezier(.22,1,.36,1), transform .28s cubic-bezier(.22,1,.36,1) !important; }
+
+/* ============================================================
+   PEAUFINAGE v558 — profil (fusion carte, jeux/défi retirés, dispo) + profils voyageurs.
+   ============================================================ */
+/* PROFIL : la carte « séparée en deux » (prof-head + carte stats) → FUSIONNÉES en UN bloc continu
+   (plus de bande crème ni de filet entre les deux). */
+body.sm-lite #profMain .prof-head { margin-bottom: 0 !important; border-radius: 18px 18px 0 0 !important; border-bottom: 0 !important; box-shadow: none !important; padding-bottom: .5rem !important; }
+body.sm-lite #profMain .prof-head + .card { margin-top: 0 !important; border-radius: 0 0 18px 18px !important; border-top: 0 !important; }
+
+/* PROFIL : notions de JEU retirées en Lite — XP, segments Premium/Pro/Admin, badges. */
+body.sm-lite #profMain .stat-box[data-stat="xp"] { display: none !important; }
+body.sm-lite #profMain .stat-row-3 { grid-template-columns: 1fr 1fr !important; }
+body.sm-lite #profMain #profSegNav { display: none !important; }
+body.sm-lite #profMain #profileBadges { display: none !important; }
+
+/* PROFIL : « Dispo ? » réactivable ICI (chip déplacé du header vers la prof-head en JS). */
+body.sm-lite #profMain #availChip { display: inline-flex !important; margin: .7rem auto 0 !important; }
+
+/* PROFILS VOYAGEURS : bouton « 🎯 Défi » (gaming) + stat « Défis relevés » retirés en Lite. */
+body.sm-lite #tpChallengeBtn,
+body.sm-lite .sp-stat[data-spstat="done"] { display: none !important; }
