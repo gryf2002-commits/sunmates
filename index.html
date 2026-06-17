@@ -4,52 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <script>
-    /* PWA installée (standalone / iOS) -> on ouvre l'app directement (conserve ?tab= et le hash). */
-    (function () {
-      try {
-        var standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
-        if (standalone) { location.replace("app.html" + location.search + location.hash); }
-      } catch (e) {}
-    })();
-    /* Animations activées seulement si le mouvement est OK (sinon contenu visible direct, sans flash). */
+    (function () { try { var s = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true; if (s) location.replace("app.html" + location.search + location.hash); } catch (e) {} })();
     try { if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) document.documentElement.classList.add("anim"); } catch (e) {}
   </script>
   <title>SunMates — Pars solo, trouve ta bande</title>
-  <meta name="description" content="Rencontre des voyageurs comme toi, explore des villes au soleil et repars avec une bande. Le voyage solo, version joyeuse et rassurée." />
+  <meta name="description" content="L'appli qui allège le voyage solo. Rencontre des voyageurs comme toi, explore au soleil, repars avec une bande. La tranquillité d'esprit en prime, gratuite." />
   <link rel="canonical" href="https://sunmatesapp.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_FR" />
   <meta property="og:site_name" content="SunMates" />
   <meta property="og:title" content="SunMates — Pars solo, trouve ta bande" />
-  <meta property="og:description" content="Rencontre des voyageurs comme toi, explore au soleil et repars avec une bande. Le solo, c'est juste le début de l'histoire." />
+  <meta property="og:description" content="Rencontre des voyageurs comme toi, explore au soleil, repars avec une bande. Le solo, c'est juste le début." />
   <meta property="og:url" content="https://sunmatesapp.com/" />
-  <meta property="og:image" content="https://sunmatesapp.com/sm-friends.jpg" />
+  <meta property="og:image" content="https://sunmatesapp.com/sm-joie.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#190E2E" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" href="sm-hero-sunset.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="sm-hero.jpg" fetchpriority="high" />
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "SunMates",
-    "applicationCategory": "TravelApplication",
-    "operatingSystem": "Web, iOS, Android",
-    "description": "Rencontre des voyageurs comme toi, explore des villes au soleil et repars avec une bande. La sécurité est gratuite pour tous.",
-    "url": "https://sunmatesapp.com/",
-    "inLanguage": "fr",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
-  }
+  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs comme toi, explore au soleil et repars avec une bande. La sécurité est gratuite pour tous.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
   </script>
   <style>
     /* ============================================================
-       SunMates — vitrine « Golden Hour » (page d'arrivée).
-       Énergie vacances / crème solaire : vraies photos voyage + nuit prune chaude.
-       Un seul accent corail #FF6A5D, signature sunset. Fraunces + Manrope.
-       Vanilla + GSAP (motion). Aucun tiret cadratin, aucun point décoratif.
+       SunMates — vitrine « Golden Hour » v2 (énergie vacation/leisure).
+       Inspiration vacation.inc : photos candides de GENS, grain, stickers,
+       marquees, son opt-in, ton joueur. DA SunMates : nuit prune + sunset
+       corail/or, Fraunces + Manrope. Sécurité = ton sobre (contraste assumé).
        ============================================================ */
     :root {
       --bg: #190E2E; --bg-2: #1F1138; --surface: #271641; --surface-2: #32204F;
@@ -60,7 +43,7 @@
       --r: 22px; --r-sm: 14px; --r-lg: 30px;
       --shadow: 0 22px 60px rgba(8,4,18,.45);
       --shadow-pop: 0 34px 80px rgba(178,36,80,.32), 0 8px 22px rgba(8,4,18,.45);
-      --maxw: 1180px; --z-nav: 50; --z-skip: 90;
+      --maxw: 1180px; --z-nav: 50; --z-skip: 90; --z-grain: 60; --z-sound: 55;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
@@ -74,6 +57,10 @@
     .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
     section { position: relative; }
 
+    /* grain global (vacation.inc) : alive, jamais cliquable */
+    body::after { content: ""; position: fixed; inset: 0; z-index: var(--z-grain); pointer-events: none; opacity: .045; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
     .skip { position: fixed; top: -120px; left: 16px; z-index: var(--z-skip); background: var(--accent); color: #2a0d12; font-weight: 800; padding: .7rem 1.1rem; border-radius: 12px; transition: top .15s ease; }
     .skip:focus { top: 16px; }
     :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
@@ -81,13 +68,12 @@
 
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 1rem; padding: .95rem 1.5rem; border-radius: 999px; border: 0; cursor: pointer; transition: transform .18s cubic-bezier(.16,1,.3,1), box-shadow .18s ease, background .18s ease; white-space: nowrap; }
     .btn-primary { background: var(--sunset); color: #2a0d12; box-shadow: var(--shadow-pop); }
-    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-primary:hover { transform: translateY(-2px) rotate(-.5deg); }
     .btn-primary:active { transform: translateY(0) scale(.98); }
     .btn-ghost { background: rgba(255,255,255,.08); color: var(--ink); border: 1px solid var(--line-strong); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     .btn-ghost:hover { background: rgba(255,255,255,.14); border-color: var(--accent); }
     .btn-sm { padding: .6rem 1.1rem; font-size: .92rem; }
 
-    /* nav */
     header.nav { position: sticky; top: 0; z-index: var(--z-nav); height: 68px; display: flex; align-items: center; background: rgba(25,14,46,.66); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
     .nav-in { display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .brand { display: flex; align-items: center; gap: .6rem; font-family: "Fraunces", serif; font-weight: 900; font-size: 1.3rem; }
@@ -101,26 +87,28 @@
     @media (max-width: 860px) { .nav-links { display: none; } }
     @media (max-width: 560px) { .wrap { padding: 0 16px; } .nav-start .lbl-full { display: none; } .nav-start .lbl-short { display: inline; } }
 
-    /* HERO photo plein cadre */
-    .hero { position: relative; min-height: 92vh; min-height: 92dvh; display: flex; align-items: center; overflow: hidden; }
+    /* HERO photo candide plein cadre */
+    .hero { position: relative; min-height: 94vh; min-height: 94dvh; display: flex; align-items: center; overflow: hidden; }
     .hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-    .hero-media img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
-    .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(20,9,38,.92) 0%, rgba(20,9,38,.7) 38%, rgba(20,9,38,.32) 72%, rgba(20,9,38,.5) 100%), linear-gradient(0deg, rgba(20,9,38,.85) 0%, rgba(20,9,38,0) 45%); }
-    .hero-in { position: relative; z-index: 2; padding: 96px 0 64px; }
+    .hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; transform: scale(1.05); }
+    .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(20,9,38,.94) 0%, rgba(20,9,38,.72) 40%, rgba(20,9,38,.34) 74%, rgba(20,9,38,.55) 100%), linear-gradient(0deg, rgba(20,9,38,.88) 0%, rgba(20,9,38,0) 48%); }
+    .hero-in { position: relative; z-index: 2; padding: 92px 0 72px; }
     .hero-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-weight: 700; font-size: .82rem; letter-spacing: .04em; color: var(--gold); background: rgba(255,209,92,.12); border: 1px solid rgba(255,209,92,.30); padding: .42rem .85rem; border-radius: 999px; margin-bottom: 1.4rem; }
-    .hero h1 { font-size: clamp(2.8rem, 7vw, 5.2rem); font-weight: 900; max-width: 14ch; }
+    .hero h1 { font-size: clamp(2.9rem, 7.4vw, 5.4rem); font-weight: 900; max-width: 14ch; }
     .hero h1 .grad { background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; font-weight: 700; }
-    .hero .lead { color: #ECE2F5; font-size: clamp(1.08rem, 1.7vw, 1.28rem); margin: 1.5rem 0 2rem; max-width: 36ch; text-shadow: 0 1px 16px rgba(8,4,18,.5); }
+    .hero .lead { color: #ECE2F5; font-size: clamp(1.08rem, 1.7vw, 1.28rem); margin: 1.5rem 0 2rem; max-width: 35ch; text-shadow: 0 1px 16px rgba(8,4,18,.6); }
     .hero-cta { display: flex; flex-wrap: wrap; gap: .9rem; }
+    /* sticker/seal sunset rotatif (vacation.inc) */
+    .seal { position: absolute; z-index: 2; right: clamp(16px, 5vw, 80px); top: 50%; transform: translateY(-50%); width: clamp(96px, 12vw, 148px); height: clamp(96px, 12vw, 148px); display: grid; place-items: center; }
+    .seal svg { width: 100%; height: 100%; }
+    .seal .seal-core { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font-family: "Fraunces", serif; font-weight: 900; color: #2a0d12; font-size: clamp(.62rem, 1vw, .8rem); line-height: 1.05; padding: 22%; }
+    @media (max-width: 760px) { .seal { right: 14px; top: 86px; transform: none; width: 92px; height: 92px; } }
 
-    /* bandes photo (atmosphère) */
-    .photoband { position: relative; min-height: 78vh; display: flex; align-items: center; overflow: hidden; }
-    .photoband .pb-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-    .photoband .pb-media img { width: 100%; height: 100%; object-fit: cover; }
-    .photoband .pb-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.86), rgba(20,9,38,.4) 55%, rgba(20,9,38,.6)); }
-    .photoband .pb-in { position: relative; z-index: 2; text-align: center; max-width: 18ch; margin: 0 auto; padding: 80px 0; }
-    .photoband h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; }
-    .photoband p { color: #ECE2F5; font-size: clamp(1.05rem, 2vw, 1.25rem); margin-top: 1.1rem; max-width: 30ch; margin-left: auto; margin-right: auto; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
+    /* MARQUEE ticker (cartes postales) */
+    .ticker { background: var(--sunset); color: #2a0d12; overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(0,0,0,.12); border-bottom: 1px solid rgba(0,0,0,.12); }
+    .ticker-track { display: inline-flex; align-items: center; gap: 0; will-change: transform; }
+    .ticker-track span { font-family: "Fraunces", serif; font-weight: 800; font-style: italic; font-size: 1.05rem; padding: .7rem 1.4rem; display: inline-flex; align-items: center; gap: 1.4rem; }
+    .ticker-track span::after { content: "☀"; font-style: normal; opacity: .7; }
 
     .band { padding: clamp(64px, 10vw, 120px) 0; }
     .seclabel { display: inline-block; font-weight: 800; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: 1rem; }
@@ -128,14 +116,14 @@
     .sub { color: var(--muted); font-size: 1.1rem; margin-top: 1rem; max-width: 56ch; }
 
     /* trust chips */
-    .trust { padding: 8px 0 0; margin-top: -64px; position: relative; z-index: 3; }
+    .trust { padding: 8px 0 0; }
     .trust-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
     .chip { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; box-shadow: var(--shadow); }
     .chip .k { font-family: "Fraunces", serif; font-weight: 900; font-size: 1.7rem; background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
     .chip .v { color: var(--muted); font-size: .9rem; font-weight: 600; margin-top: .2rem; }
     @media (max-width: 720px) { .trust-row { grid-template-columns: repeat(2, 1fr); } }
 
-    /* spotlight (split phone + texte) */
+    /* spotlight */
     .spot { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
     .phone-stage { position: relative; display: grid; place-items: center; }
     .phone-stage::before { content: ""; position: absolute; width: 86%; height: 86%; border-radius: 50%; background: var(--sunset); filter: blur(70px); opacity: .34; z-index: 0; }
@@ -149,7 +137,23 @@
     .spot-list .d { color: var(--muted); font-size: .98rem; margin-top: .15rem; }
     @media (max-width: 760px) { .spot { grid-template-columns: 1fr; } }
 
-    /* bento fonctionnalités */
+    /* bande photo (atmosphère joie) */
+    .photoband { position: relative; min-height: 76vh; display: flex; align-items: center; overflow: hidden; }
+    .photoband .pb-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+    .photoband .pb-media img { width: 100%; height: 100%; object-fit: cover; }
+    .photoband .pb-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.86), rgba(20,9,38,.35) 55%, rgba(20,9,38,.62)); }
+    .photoband .pb-in { position: relative; z-index: 2; text-align: center; max-width: 20ch; margin: 0 auto; padding: 80px 0; }
+    .photoband h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; }
+    .photoband p { color: #ECE2F5; font-size: clamp(1.05rem, 2vw, 1.25rem); margin-top: 1.1rem; max-width: 30ch; margin-left: auto; margin-right: auto; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
+
+    /* MARQUEE de moments (photos qui défilent) */
+    .moments { padding: clamp(48px, 7vw, 84px) 0; overflow: hidden; }
+    .moments .mhead { text-align: center; margin-bottom: 36px; }
+    .moments-track { display: flex; gap: 18px; width: max-content; will-change: transform; }
+    .moment { width: clamp(220px, 26vw, 300px); aspect-ratio: 4/5; border-radius: var(--r); overflow: hidden; flex: none; box-shadow: var(--shadow); border: 1px solid var(--line); }
+    .moment img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* bento */
     .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 48px; }
     .cell { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; transition: transform .2s cubic-bezier(.16,1,.3,1), border-color .2s ease; position: relative; overflow: hidden; }
     .cell:hover { transform: translateY(-4px); border-color: var(--line-strong); }
@@ -166,7 +170,6 @@
     .cell.photo .ph-in { position: relative; z-index: 2; }
     @media (max-width: 900px) { .bento { grid-template-columns: repeat(2, 1fr); } .cell, .cell.wide, .cell.third, .cell.feat, .cell.photo { grid-column: span 2; } }
 
-    /* aperçu (centré) */
     .preview { text-align: center; }
     .preview .phone-stage { margin: 48px auto 0; }
     .preview-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 52px; text-align: left; }
@@ -175,7 +178,6 @@
     .pp .bar { width: 38px; height: 4px; border-radius: 4px; background: var(--sunset); margin-bottom: 1rem; }
     @media (max-width: 720px) { .preview-points { grid-template-columns: 1fr; gap: 22px; } }
 
-    /* story */
     .story { background: linear-gradient(180deg, var(--bg), var(--bg-2)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
     .story-acts { display: grid; gap: 52px; margin-top: 52px; }
     .act { display: grid; grid-template-columns: 64px 1fr; gap: 28px; align-items: start; max-width: 760px; }
@@ -190,11 +192,10 @@
     .quote .cite { margin-top: 1.6rem; color: var(--muted); font-weight: 600; }
     .quote .cite b { color: var(--ink); font-style: normal; }
 
-    /* CTA final (photo) */
-    .final { position: relative; min-height: 70vh; display: flex; align-items: center; overflow: hidden; text-align: center; }
+    .final { position: relative; min-height: 72vh; display: flex; align-items: center; overflow: hidden; text-align: center; }
     .final .pb-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
     .final .pb-media img { width: 100%; height: 100%; object-fit: cover; }
-    .final .pb-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.92), rgba(20,9,38,.55) 55%, rgba(20,9,38,.78)); }
+    .final .pb-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.92), rgba(20,9,38,.5) 55%, rgba(20,9,38,.78)); }
     .final .pb-in { position: relative; z-index: 2; width: 100%; padding: 90px 0; }
     .final h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; }
     .final p { color: #ECE2F5; margin: 1.1rem auto 2rem; max-width: 44ch; font-size: 1.1rem; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
@@ -205,18 +206,31 @@
     .foot-links a { color: var(--muted); font-weight: 600; font-size: .95rem; }
     .foot-links a:hover { color: var(--ink); }
     .foot-note { color: var(--muted); font-size: .86rem; margin-top: 28px; max-width: 52ch; }
+    .foot-postcard { font-family: "Fraunces", serif; font-style: italic; color: var(--gold); margin-top: 14px; }
 
-    /* reveal (piloté GSAP) : visible par défaut, masqué seulement sous html.anim */
+    /* TOGGLE SON (opt-in, défaut off) */
+    .sound { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-sound); display: inline-flex; align-items: center; gap: .55rem; padding: .55rem .85rem; border-radius: 999px; background: rgba(25,14,46,.78); border: 1px solid var(--line-strong); color: var(--ink); font-weight: 700; font-size: .85rem; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: var(--shadow); }
+    .sound:hover { border-color: var(--accent); }
+    .sound .wf { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+    .sound .wf i { width: 2.5px; height: 30%; background: var(--gold); border-radius: 2px; }
+    .sound.on .wf i { animation: wf 1s ease-in-out infinite; }
+    .sound .wf i:nth-child(2){animation-delay:.15s} .sound .wf i:nth-child(3){animation-delay:.3s} .sound .wf i:nth-child(4){animation-delay:.45s}
+    @keyframes wf { 0%,100%{height:25%} 50%{height:100%} }
+    @media (prefers-reduced-motion: reduce) { .sound.on .wf i { animation: none; height: 60%; } }
+
+    /* reveal piloté GSAP (visible par défaut) */
     .reveal { opacity: 1; }
     html.anim .reveal { opacity: 0; }
     @media (prefers-reduced-motion: reduce) { html.anim .reveal { opacity: 1; } }
 
-    /* Ken Burns hero (calmé si reduced-motion) */
     @media (prefers-reduced-motion: no-preference) {
-      .hero-media img { animation: kenburns 18s ease-in-out infinite alternate; }
-      @keyframes kenburns { from { transform: scale(1.04); } to { transform: scale(1.13) translateY(-1.5%); } }
+      .hero-media img { animation: kenburns 20s ease-in-out infinite alternate; }
+      @keyframes kenburns { from { transform: scale(1.05); } to { transform: scale(1.14) translateY(-1.5%); } }
       .phone-stage::before { animation: breathe 7s ease-in-out infinite; }
       @keyframes breathe { 0%,100% { transform: scale(1); opacity: .34; } 50% { transform: scale(1.06); opacity: .5; } }
+      .seal { animation: wobble 6s ease-in-out infinite; }
+      @keyframes wobble { 0%,100% { transform: translateY(-50%) rotate(-6deg); } 50% { transform: translateY(-50%) rotate(6deg); } }
+      @media (max-width: 760px) { .seal { animation: wobbleM 6s ease-in-out infinite; } @keyframes wobbleM { 0%,100%{transform:rotate(-6deg)} 50%{transform:rotate(6deg)} } }
     }
   </style>
 </head>
@@ -236,21 +250,25 @@
         <a href="#histoire">Histoire</a>
       </nav>
       <div class="nav-cta">
-        <a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Commencer, c'est gratuit</span><span class="lbl-short">Commencer</span></a>
+        <a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Commencer, c'est gratuit</span><span class="lbl-short">Embarque</span></a>
       </div>
     </div>
   </header>
 
   <main id="main">
 
-    <!-- HERO : photo golden-hour plein cadre -->
+    <!-- HERO : photo candide (amies qui rient au crépuscule) -->
     <section class="hero">
-      <div class="hero-media"><img src="sm-hero-sunset.jpg" alt="Deux voyageurs face au coucher de soleil sur la mer, silhouettes au bord de l'eau." width="1600" height="2400" fetchpriority="high" /></div>
+      <div class="hero-media"><img src="sm-hero.jpg" alt="Deux amies qui rient au bord de l'eau au coucher de soleil, sacs sur l'épaule." width="1500" height="2250" fetchpriority="high" /></div>
       <div class="hero-scrim" aria-hidden="true"></div>
+      <div class="seal reveal" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,209,92,.9)" stroke-width="2" stroke-dasharray="3 4"/><circle cx="50" cy="50" r="40" fill="url(#sg)"/><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD15C"/><stop offset="1" stop-color="#FF5570"/></linearGradient></defs></svg>
+        <span class="seal-core">Sécurité<br>incluse</span>
+      </div>
       <div class="wrap hero-in">
-        <span class="hero-eyebrow reveal"><span aria-hidden="true">☀️</span> Le voyage solo, version ensoleillée</span>
+        <span class="hero-eyebrow reveal"><span aria-hidden="true">☀️</span> L'appli qui allège le voyage solo</span>
         <h1 class="reveal">Pars solo,<br /><span class="grad">trouve ta bande.</span></h1>
-        <p class="lead reveal">Rencontre des voyageurs comme toi, explore des villes au soleil, et repars avec une bande. Le solo, c'est juste le début de l'histoire.</p>
+        <p class="lead reveal">Rencontre des voyageurs comme toi, explore au soleil, et repars avec une bande. Le solo, c'est juste le début de l'histoire.</p>
         <div class="hero-cta reveal">
           <a href="app.html" class="btn btn-primary">Commencer, c'est gratuit</a>
           <a href="#rencontres" class="btn btn-ghost">Comment ça marche</a>
@@ -258,48 +276,44 @@
       </div>
     </section>
 
-    <!-- TRUST CHIPS (chevauchent le bas du hero) -->
-    <section class="trust">
+    <!-- TICKER cartes postales -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track" id="ticker"><span>Pars solo</span><span>Trouve ta bande</span><span>Le soleil t'attend</span><span>Rencontre du monde</span><span>Voyage l'esprit léger</span><span>Des lieux qui ont une âme</span></div>
+    </div>
+
+    <!-- TRUST CHIPS -->
+    <section class="trust band" style="padding-bottom:0">
       <div class="wrap trust-row reveal">
         <div class="chip"><div class="k">42</div><div class="v">Pays dans la communauté</div></div>
         <div class="chip"><div class="k">22</div><div class="v">Badges faits main</div></div>
         <div class="chip"><div class="k">FR / EN</div><div class="v">Même hors-ligne</div></div>
-        <div class="chip"><div class="k">0 €</div><div class="v">La sécurité, pour tous</div></div>
+        <div class="chip"><div class="k">0 €</div><div class="v">La tranquillité, pour tous</div></div>
       </div>
     </section>
 
-    <!-- SPOTLIGHT : RENCONTRES (le coeur, plus la sécurité) -->
+    <!-- RENCONTRES -->
     <section id="rencontres" class="band">
       <div class="wrap spot">
-        <div class="phone-stage reveal">
-          <div class="phone"><img src="showcase-home.jpg" width="290" height="628" alt="Écran d'accueil de SunMates : carte vivante des voyageurs et des lieux autour de toi, à Paris." loading="lazy" /></div>
+        <div class="phone-stage reveal" id="tiltPhone">
+          <div class="phone"><img src="showcase-home.jpg" width="290" height="628" alt="Écran d'accueil de SunMates : carte vivante des voyageurs et des lieux autour de toi." loading="lazy" /></div>
         </div>
         <div class="reveal">
           <span class="seclabel">Rencontres</span>
           <h2 class="h2">Rencontre les bonnes personnes.</h2>
           <p class="sub">Pas une app de dating : une app d'appartenance. Tu vois qui voyage autour de toi, en temps réel, et tu choisis qui rejoindre.</p>
           <ul class="spot-list">
-            <li>
-              <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-              <div><div class="t">Vois qui est autour de toi</div><div class="d">La carte révèle en direct les voyageurs et les lieux proches. Lance ta journée et croise du monde.</div></div>
-            </li>
-            <li>
-              <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span>
-              <div><div class="t">Des affinités, pas du hasard</div><div class="d">Centres d'intérêt, style de voyage, langues : tu repères les profils qui te ressemblent vraiment.</div></div>
-            </li>
-            <li>
-              <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span>
-              <div><div class="t">Un score de confiance, pas un like</div><div class="d">Vérification, check-ins et recommandations entre voyageurs. Tu sais à qui tu as affaire.</div></div>
-            </li>
+            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><div class="t">Vois qui est autour de toi</div><div class="d">La carte révèle en direct les voyageurs et les lieux proches. Lance ta journée, croise du monde.</div></div></li>
+            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span><div><div class="t">Des affinités, pas du hasard</div><div class="d">Centres d'intérêt, style de voyage, langues : tu repères les profils qui te ressemblent vraiment.</div></div></li>
+            <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><div><div class="t">Un score de confiance, pas un like</div><div class="d">Vérification, check-ins et recommandations entre voyageurs. Tu sais à qui tu as affaire.</div></div></li>
           </ul>
           <a href="app.html" class="btn btn-primary">Commencer, c'est gratuit</a>
         </div>
       </div>
     </section>
 
-    <!-- BANDE PHOTO : la joie des rencontres -->
+    <!-- BANDE PHOTO : la joie -->
     <section class="photoband">
-      <div class="pb-media"><img src="sm-friends.jpg" alt="Une bande d'amis qui rient ensemble dehors, au soleil, près d'un palmier." loading="lazy" width="1600" height="1067" /></div>
+      <div class="pb-media"><img src="sm-joie.jpg" alt="Une bande d'amis qui trinquent sur un rooftop ensoleillé." loading="lazy" width="1500" height="844" /></div>
       <div class="pb-scrim" aria-hidden="true"></div>
       <div class="wrap"><div class="pb-in reveal">
         <h2>On était trois inconnus.</h2>
@@ -307,53 +321,41 @@
       </div></div>
     </section>
 
-    <!-- FONCTIONS (bento varié, sécurité = UNE feature parmi d'autres) -->
+    <!-- MARQUEE de moments -->
+    <section class="moments">
+      <div class="wrap mhead reveal"><span class="seclabel">Vos moments</span><h2 class="h2">Le voyage, à hauteur d'amitié.</h2></div>
+      <div class="moments-track" id="moments">
+        <div class="moment"><img src="sm-rencontre.jpg" alt="Deux voyageurs qui se prennent en photo, sacs à dos, dans une rue." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-moment1.jpg" alt="Deux amis bras levés sur la plage, pleins de joie." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-friends.jpg" alt="Un groupe d'amis qui rit ensemble au soleil." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-moment2.jpg" alt="Trois amis qui font un selfie en voyage dans une ville." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-moment3.jpg" alt="Des amis qui regardent le coucher de soleil ensemble." loading="lazy" width="600" height="750" /></div>
+        <div class="moment"><img src="sm-cafe.jpg" alt="Intérieur d'un café chaleureux aux tons bois." loading="lazy" width="600" height="750" /></div>
+      </div>
+    </section>
+
+    <!-- FONCTIONS -->
     <section id="fonctions" class="band">
       <div class="wrap">
         <div class="reveal" style="max-width:60ch">
           <h2 class="h2">Tout ce qu'il faut pour partir léger.</h2>
-          <p class="sub">Explorer, jouer, se poser dans des lieux sûrs. Et la tranquillité d'esprit en prime, toujours gratuite.</p>
+          <p class="sub">Explorer, jouer, se poser dans des lieux qui ont une âme. Et la tranquillité d'esprit en prime, toujours gratuite.</p>
         </div>
         <div class="bento">
-          <div class="cell feat reveal">
-            <span class="tag">Lieux sûrs</span>
-            <h3 class="glow">Une carte chaude et lisible, jour comme nuit.</h3>
-            <p>Cafés et co-livings validés par la communauté. Check-in par code sur place, anti-triche : pas de points volés.</p>
-          </div>
-          <div class="cell photo reveal">
-            <img src="sm-cafe.jpg" alt="Intérieur d'un café chaleureux aux tons bois et lumière douce." loading="lazy" width="1400" height="2100" />
-            <div class="ph-scrim" aria-hidden="true"></div>
-            <div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div>
-          </div>
-          <div class="cell wide gold-cell reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)">
-            <span class="tag">Jeu &amp; badges</span>
-            <h3>Voyager devient un terrain de jeu.</h3>
-            <p>Quêtes solo ou en groupe, XP, et 22 emblèmes faits main à débloquer. Le jeu ne touche jamais au score de confiance.</p>
-          </div>
-          <div class="cell third reveal">
-            <span class="tag">Multilingue</span>
-            <h3>FR / EN, hors-ligne</h3>
-            <p>Toute l'app dans les deux langues, même sans réseau.</p>
-          </div>
-          <div class="cell third reveal">
-            <span class="tag">Sécurité</span>
-            <h3>Un geste, et tu n'es plus seul·e</h3>
-            <p>Partage de position au cercle de confiance et bouton d'alerte. Gratuit, pour tout le monde.</p>
-          </div>
+          <div class="cell feat reveal"><span class="tag">Lieux sûrs</span><h3 class="glow">Une carte chaude et lisible, jour comme nuit.</h3><p>Cafés et co-livings validés par la communauté. Check-in par code sur place, anti-triche : pas de points volés.</p></div>
+          <div class="cell photo reveal"><img src="sm-cafe.jpg" alt="Café chaleureux aux tons bois et lumière douce." loading="lazy" width="1400" height="2100" /><div class="ph-scrim" aria-hidden="true"></div><div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div></div>
+          <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Jeu &amp; badges</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou en groupe, XP, et 22 emblèmes faits main à débloquer. Le jeu ne touche jamais au score de confiance.</p></div>
+          <div class="cell third reveal"><span class="tag">Multilingue</span><h3>FR / EN, hors-ligne</h3><p>Toute l'app dans les deux langues, même sans réseau.</p></div>
+          <div class="cell third reveal"><span class="tag">Sécurité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage de position au cercle de confiance et bouton d'alerte. Gratuit, pour tout le monde.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- APERÇU APP : le jeu (écran coloré) -->
+    <!-- APERÇU jeux -->
     <section id="apercu" class="band" style="padding-top:0">
       <div class="wrap preview">
-        <div class="reveal" style="max-width:54ch;margin:0 auto">
-          <span class="seclabel">Ton terrain de jeu</span>
-          <h2 class="h2">Chaque ville, une aventure.</h2>
-        </div>
-        <div class="phone-stage reveal">
-          <div class="phone"><img src="shot_jeux.jpg" width="290" height="628" alt="Écran Jeux &amp; Quêtes de SunMates : niveau, quête du jour, badges, coupons et classement." loading="lazy" /></div>
-        </div>
+        <div class="reveal" style="max-width:54ch;margin:0 auto"><span class="seclabel">Ton terrain de jeu</span><h2 class="h2">Chaque ville, une aventure.</h2></div>
+        <div class="phone-stage reveal"><div class="phone"><img src="shot_jeux.jpg" width="290" height="628" alt="Écran Jeux et Quêtes : niveau, quête du jour, badges, coupons et classement." loading="lazy" /></div></div>
         <div class="preview-points">
           <div class="pp reveal"><div class="bar" aria-hidden="true"></div><div class="t">Relève des quêtes</div><div class="d">Des défis solo ou à plusieurs, sur place, pour explorer autrement.</div></div>
           <div class="pp reveal"><div class="bar" aria-hidden="true"></div><div class="t">Gagne de l'XP</div><div class="d">Monte de niveau, débloque des badges exclusifs et des coupons partenaires.</div></div>
@@ -365,10 +367,7 @@
     <!-- HISTOIRE -->
     <section id="histoire" class="band story">
       <div class="wrap">
-        <div class="reveal" style="max-width:60ch">
-          <span class="seclabel">L'histoire</span>
-          <h2 class="h2">Seul·e au départ, jamais à l'arrivée.</h2>
-        </div>
+        <div class="reveal" style="max-width:60ch"><span class="seclabel">L'histoire</span><h2 class="h2">Seul·e au départ, jamais à l'arrivée.</h2></div>
         <div class="story-acts">
           <div class="act reveal"><div class="num" aria-hidden="true">1</div><div><h3>L'appel de l'horizon</h3><p>Ce matin où la routine pèse trop et où le billet devient une évidence. Tu n'attends plus personne pour partir.</p></div></div>
           <div class="act reveal"><div class="num" aria-hidden="true">2</div><div><h3>Un sourire, et tout bascule</h3><p>Une terrasse, deux cafés, une langue qu'on bricole. La première personne qui devient un repère.</p></div></div>
@@ -385,9 +384,9 @@
       </div>
     </section>
 
-    <!-- CTA FINAL (photo falaise golden hour) -->
+    <!-- CTA FINAL -->
     <section class="final">
-      <div class="pb-media"><img src="sm-cliff.jpg" alt="Falaises d'Étretat au coucher de soleil doré, reflets sur la plage." loading="lazy" width="1600" height="1200" /></div>
+      <div class="pb-media"><img src="sm-moment3.jpg" alt="Des amis qui regardent ensemble le coucher de soleil." loading="lazy" width="1500" height="1000" /></div>
       <div class="pb-scrim" aria-hidden="true"></div>
       <div class="wrap"><div class="pb-in reveal">
         <h2>Ta bande t'attend quelque part.</h2>
@@ -400,26 +399,22 @@
   <footer>
     <div class="wrap">
       <div class="foot-grid">
-        <a href="#main" class="brand" aria-label="SunMates">
-          <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>
-          Sun<b>Mates</b>
-        </a>
-        <nav class="foot-links" aria-label="Liens de pied de page">
-          <a href="#rencontres">Rencontres</a>
-          <a href="#fonctions">Fonctions</a>
-          <a href="#apercu">L'app</a>
-          <a href="app.html">Ouvrir l'app</a>
-        </nav>
+        <a href="#main" class="brand" aria-label="SunMates"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>Sun<b>Mates</b></a>
+        <nav class="foot-links" aria-label="Liens de pied de page"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#apercu">L'app</a><a href="app.html">Ouvrir l'app</a></nav>
       </div>
       <p class="foot-note">SunMates transforme les rencontres de voyage éphémères en connexions sûres et joyeuses. La sécurité est gratuite pour tous, toujours.</p>
+      <p class="foot-postcard">Allez, fais tes valises. ☀️</p>
     </div>
   </footer>
+
+  <button class="sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Activer l'ambiance sonore">
+    <span class="wf" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="soundLbl">Ambiance</span>
+  </button>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
   <script>
-    // Motion GSAP : reveals en stagger, parallax des photos (énergie), parallax mockups,
-    // compteurs, entrée hero. Visible par défaut ; filet anti-blanc 4,5 s. reduced-motion géré.
+    // ---------- MOTION ----------
     var _smGsapReady = false;
     function _smInitMotion() {
       if (!window.gsap || !window.ScrollTrigger) return false;
@@ -428,31 +423,62 @@
       gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", function () {
         gsap.set(".reveal", { opacity: 0, y: 30 });
         document.documentElement.classList.remove("anim");
-        ScrollTrigger.batch(".reveal", {
-          start: "top 90%",
-          onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: .75, ease: "power3.out", stagger: .1, overwrite: true }); }
-        });
-        // Parallax des PHOTOS de fond (hero + bandes + final) : elles glissent/zooment au scroll = vivant.
-        gsap.utils.toArray(".hero-media img, .pb-media img").forEach(function (im) {
-          gsap.to(im, { yPercent: 12, ease: "none", scrollTrigger: { trigger: im.closest("section"), start: "top bottom", end: "bottom top", scrub: true } });
-        });
-        // Parallax léger des mockups.
-        gsap.utils.toArray(".phone").forEach(function (ph) {
-          gsap.to(ph, { yPercent: -8, ease: "none", scrollTrigger: { trigger: ph, start: "top bottom", end: "bottom top", scrub: true } });
-        });
-        // Compteurs sur les chips numériques.
-        document.querySelectorAll(".chip .k").forEach(function (el) {
-          var txt = el.textContent || "", m = txt.match(/^(\d+)/); if (!m) return;
-          var end = +m[1], suffix = txt.replace(/^\d+/, ""), obj = { v: 0 };
-          gsap.to(obj, { v: end, duration: 1.2, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 92%", once: true }, onUpdate: function () { el.textContent = Math.round(obj.v) + suffix; } });
-        });
+        ScrollTrigger.batch(".reveal", { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: .75, ease: "power3.out", stagger: .1, overwrite: true }); } });
+        // parallax photos de fond
+        gsap.utils.toArray(".hero-media img, .pb-media img").forEach(function (im) { gsap.to(im, { yPercent: 12, ease: "none", scrollTrigger: { trigger: im.closest("section"), start: "top bottom", end: "bottom top", scrub: true } }); });
+        gsap.utils.toArray(".phone").forEach(function (ph) { gsap.to(ph, { yPercent: -8, ease: "none", scrollTrigger: { trigger: ph, start: "top bottom", end: "bottom top", scrub: true } }); });
+        // compteurs
+        document.querySelectorAll(".chip .k").forEach(function (el) { var txt = el.textContent || "", m = txt.match(/^(\d+)/); if (!m) return; var end = +m[1], suf = txt.replace(/^\d+/, ""), o = { v: 0 }; gsap.to(o, { v: end, duration: 1.2, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 92%", once: true }, onUpdate: function () { el.textContent = Math.round(o.v) + suf; } }); });
+        // tilt du mockup vers le curseur
+        var tp = document.getElementById("tiltPhone");
+        if (tp && window.matchMedia("(pointer:fine)").matches) {
+          var rx = gsap.quickTo(tp, "rotationY", { duration: .5, ease: "power3" }), ry = gsap.quickTo(tp, "rotationX", { duration: .5, ease: "power3" });
+          gsap.set(tp, { transformPerspective: 800, transformOrigin: "center" });
+          tp.addEventListener("mousemove", function (e) { var r = tp.getBoundingClientRect(); rx((e.clientX - r.left - r.width / 2) / r.width * 16); ry(-(e.clientY - r.top - r.height / 2) / r.height * 16); });
+          tp.addEventListener("mouseleave", function () { rx(0); ry(0); });
+        }
         ScrollTrigger.refresh();
         setTimeout(function () { document.querySelectorAll(".reveal").forEach(function (el) { if (+getComputedStyle(el).opacity < .5) gsap.set(el, { opacity: 1, y: 0 }); }); }, 4500);
-        return function () { gsap.set(".reveal", { clearProps: "opacity,transform" }); };
       });
+      // MARQUEES (toujours, même reduced-motion -> on les ralentit/garde lisibles via matchMedia)
+      gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", function () {
+        function loop(sel, dur) { var t = document.querySelector(sel); if (!t) return; t.innerHTML += t.innerHTML; gsap.to(t, { xPercent: -50, duration: dur, ease: "none", repeat: -1 }); }
+        loop("#ticker", 24);
+        loop("#moments", 55);
+      });
+      return true;
     }
     window.addEventListener("load", function () { if (!_smInitMotion()) document.documentElement.classList.remove("anim"); });
     setTimeout(function () { if (!_smGsapReady) document.documentElement.classList.remove("anim"); }, 3500);
+
+    // ---------- SON AMBIANT (opt-in, défaut OFF, généré WebAudio, fondu) ----------
+    (function () {
+      var btn = document.getElementById("soundBtn"), lbl = document.getElementById("soundLbl");
+      var ctx = null, master = null, nodes = [], on = false;
+      function build() {
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+        var filter = ctx.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 900; filter.connect(master);
+        // accord chaud (La majeur doux) + léger battement = ambiance « coucher de soleil »
+        [220, 277.18, 329.63, 440].forEach(function (f, i) {
+          var osc = ctx.createOscillator(); osc.type = i === 3 ? "triangle" : "sine"; osc.frequency.value = f;
+          var g = ctx.createGain(); g.gain.value = i === 3 ? .04 : .08; osc.connect(g); g.connect(filter); osc.start(); nodes.push(osc);
+        });
+        // LFO lent sur le filtre = mouvement
+        var lfo = ctx.createOscillator(); lfo.frequency.value = .07; var lg = ctx.createGain(); lg.gain.value = 350; lfo.connect(lg); lg.connect(filter.frequency); lfo.start(); nodes.push(lfo);
+      }
+      function setOn(v) {
+        on = v; btn.classList.toggle("on", v); btn.setAttribute("aria-pressed", v ? "true" : "false");
+        btn.setAttribute("aria-label", v ? "Couper l'ambiance sonore" : "Activer l'ambiance sonore");
+        lbl.textContent = v ? "Ambiance ☼" : "Ambiance";
+        try { localStorage.setItem("sm_show_sound", v ? "1" : "0"); } catch (e) {}
+        if (v) { if (!ctx) build(); if (ctx.state === "suspended") ctx.resume(); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(.12, ctx.currentTime + .9); }
+        else if (ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(0, ctx.currentTime + .7); }
+      }
+      btn.addEventListener("click", function () { setOn(!on); });
+      // jamais d'autoplay : on reste OFF au chargement (respect navigateur + utilisateur)
+      document.addEventListener("visibilitychange", function () { if (document.hidden && on && ctx) ctx.suspend(); else if (!document.hidden && on && ctx) ctx.resume(); });
+    })();
   </script>
 </body>
 </html>
