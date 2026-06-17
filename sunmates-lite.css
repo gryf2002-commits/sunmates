@@ -842,6 +842,9 @@ body.sm-lite .tab-panel[data-panel="accueil"] .grid2 #goldTile { display: none !
 /* Cercle de confiance : repli géré par le système NATIF data-coll (chevron ▸/▾ comme iceCard/
    conseils), démarré replié en Lite via collapsibleCards. Plus de collapse maison « .lite-collapsed »
    (le chevron « › » custom doublonnait le natif et le format différait). */
+/* MÊME FORMAT que « Mes contacts d'urgence » : titre en casse NORMALE (pas les capitales façon
+   section-head), le ↻ Rafraîchir reste dans l'entête. */
+body.sm-lite #circleCard .section-head h3 { text-transform: none !important; letter-spacing: normal !important; font-weight: 800 !important; color: var(--ink) !important; }
 
 /* « Bonjour » : un peu d'air en dessous (était trop collé à la suite). */
 body.sm-lite #homeHello { margin-bottom: .55rem !important; }
@@ -989,9 +992,10 @@ body.sm-lite .switch .sl::before { transition: background-color .28s cubic-bezie
    PEAUFINAGE v558 — profil (fusion carte, jeux/défi retirés, dispo) + profils voyageurs.
    ============================================================ */
 /* PROFIL : la carte « séparée en deux » (prof-head + carte stats) → FUSIONNÉES en UN bloc continu
-   (plus de bande crème ni de filet entre les deux). */
+   (plus de bande crème ni de filet entre les deux). box-shadow retiré sur LES DEUX → aucune couture,
+   y compris en mode SOMBRE (l'ombre du 2e bloc créait un liseré au joint en theme-dusk). */
 body.sm-lite #profMain .prof-head { margin-bottom: 0 !important; border-radius: 18px 18px 0 0 !important; border-bottom: 0 !important; box-shadow: none !important; padding-bottom: .5rem !important; }
-body.sm-lite #profMain .prof-head + .card { margin-top: 0 !important; border-radius: 0 0 18px 18px !important; border-top: 0 !important; }
+body.sm-lite #profMain .prof-head + .card { margin-top: 0 !important; border-radius: 0 0 18px 18px !important; border-top: 0 !important; box-shadow: none !important; }
 
 /* PROFIL : notions de JEU retirées en Lite — XP, segments Premium/Pro/Admin, badges. */
 body.sm-lite #profMain .stat-box[data-stat="xp"] { display: none !important; }
@@ -1002,9 +1006,12 @@ body.sm-lite #profMain #profileBadges { display: none !important; }
 /* PROFIL : « Dispo ? » réactivable ICI (chip déplacé du header vers la prof-head en JS). */
 body.sm-lite #profMain #availChip { display: inline-flex !important; margin: .7rem auto 0 !important; }
 
-/* PROFILS VOYAGEURS : bouton « 🎯 Défi » (gaming) + stat « Défis relevés » retirés en Lite. */
+/* PROFILS VOYAGEURS / APERÇU : bouton « 🎯 Défi » + stat « Défis relevés » + BADGES retirés en Lite
+   (l'aperçu « Modifier mon profil » ouvre cette fiche → plus aucune notion de jeu/badge). */
 body.sm-lite #tpChallengeBtn,
-body.sm-lite .sp-stat[data-spstat="done"] { display: none !important; }
+body.sm-lite .sp-stat[data-spstat="done"],
+body.sm-lite #tpStarBadges,
+body.sm-lite #tpBadgesCard { display: none !important; }
 
 /* MODE MAISON : le hub « Ta progression solo » (défis/rituels/XP/niveau) = 100 % gaming → retiré en Lite. */
 body.sm-lite #soloProgress { display: none !important; }
