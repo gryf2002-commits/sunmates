@@ -140,6 +140,31 @@
     .photoband h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; }
     .photoband p { color: #ECE2F5; font-size: clamp(1.05rem, 2vw, 1.25rem); margin-top: 1.1rem; max-width: 32ch; margin-left: auto; margin-right: auto; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
 
+    /* SCROLLYTELLING cinématique (3 actes). Défaut = empilé statique (mobile / sans-JS / reduced-motion).
+       Enrichi en .cine (desktop + motion) : section haute, scène sticky, crossfade au scroll. */
+    .scrolly { background: linear-gradient(180deg, var(--bg), var(--bg-2)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .scrolly-stick { padding: clamp(56px,8vw,90px) 0; }
+    .sc-head { text-align: center; max-width: 60ch; margin: 0 auto clamp(28px,4vw,48px); padding: 0 24px; }
+    .sc-acts { display: grid; gap: 40px; max-width: 760px; margin: 0 auto; padding: 0 24px; }
+    .sc-act { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 30px; }
+    .sc-act .num { font-family: "Fraunces", serif; font-weight: 900; font-size: 2rem; background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .sc-act h3 { font-size: clamp(1.5rem,3vw,2.1rem); margin: .3rem 0 .6rem; }
+    .sc-act p { color: var(--muted); font-size: 1.08rem; }
+    .sc-bg, .sc-scrim, .sc-prog { display: none; }
+    /* --- mode cinématique --- */
+    .scrolly.cine { height: 360vh; background: #120720; border: 0; }
+    .scrolly.cine .scrolly-stick { position: sticky; top: 0; height: 100vh; height: 100dvh; padding: 0; overflow: hidden; display: grid; place-items: center; }
+    .scrolly.cine .sc-head { display: none; }
+    .scrolly.cine .sc-bg { display: block; position: absolute; inset: 0; z-index: 0; opacity: 0; }
+    .scrolly.cine .sc-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .scrolly.cine .sc-scrim { display: block; position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(20,9,38,.9), rgba(20,9,38,.42) 55%, rgba(20,9,38,.72)); }
+    .scrolly.cine .sc-acts { display: block; position: relative; z-index: 2; max-width: none; padding: 0; }
+    .scrolly.cine .sc-act { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: min(86vw, 620px); text-align: center; background: none; border: 0; padding: 0; opacity: 0; }
+    .scrolly.cine .sc-act h3 { font-size: clamp(2rem,5vw,3.6rem); }
+    .scrolly.cine .sc-act p { color: #ECE2F5; font-size: clamp(1.05rem,2vw,1.3rem); max-width: 30ch; margin: .8rem auto 0; text-shadow: 0 1px 14px rgba(8,4,18,.5); }
+    .scrolly.cine .sc-prog { display: block; position: absolute; bottom: 7%; left: 50%; transform: translateX(-50%); z-index: 3; width: 160px; height: 4px; background: rgba(255,255,255,.22); border-radius: 4px; overflow: hidden; }
+    .scrolly.cine .sc-prog i { display: block; height: 100%; width: 0; background: var(--sunset); }
+
     /* marquee moments (photos + 1 POV vidéo) */
     .moments { padding: clamp(48px, 7vw, 84px) 0; overflow: hidden; }
     .moments .mhead { text-align: center; margin-bottom: 36px; }
@@ -216,6 +241,10 @@
     @media (prefers-reduced-motion: reduce) { .player.on .wf i { animation: none; height: 60%; } }
     @media (max-width: 560px) { .player .pl-chan, .player .wf { display: none; } }
 
+    /* halo qui suit le curseur (desktop fin uniquement) */
+    .cursor-glow { position: fixed; top: 0; left: 0; width: 420px; height: 420px; margin: -210px 0 0 -210px; border-radius: 50%; background: radial-gradient(circle, rgba(255,138,69,.16), rgba(255,85,112,.08) 40%, transparent 66%); pointer-events: none; z-index: 40; opacity: 0; will-change: transform; }
+    @media (pointer: coarse), (prefers-reduced-motion: reduce) { .cursor-glow { display: none !important; } }
+
     .reveal { opacity: 1; }
     html.anim .reveal { opacity: 0; }
     @media (prefers-reduced-motion: reduce) { html.anim .reveal { opacity: 1; } }
@@ -230,6 +259,7 @@
   </style>
 </head>
 <body>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
   <a href="#main" class="skip">Aller au contenu principal</a>
 
   <header class="nav">
@@ -295,6 +325,23 @@
       <div class="pb-media"><video class="bandVid" muted loop playsinline preload="none" poster="sm-joie.jpg"><source data-src="https://videos.pexels.com/video-files/3252985/3252985-sd_960_540_25fps.mp4" type="video/mp4" /></video></div>
       <div class="pb-scrim" aria-hidden="true"></div>
       <div class="wrap"><div class="pb-in reveal"><h2>Ça continue après le check-out.</h2><p>Les soirées finissent, les groupes restent. La prochaine escale aussi se prépare à plusieurs.</p></div></div>
+    </section>
+
+    <!-- SCROLLYTELLING cinématique (3 actes) -->
+    <section class="scrolly" id="histoire">
+      <div class="scrolly-stick">
+        <div class="sc-head reveal"><span class="seclabel">L'histoire</span><h2 class="h2">Seul·e au départ, jamais à l'arrivée.</h2></div>
+        <div class="sc-bg" aria-hidden="true"><img src="sm-hero.jpg" alt="" loading="lazy" /></div>
+        <div class="sc-bg" aria-hidden="true"><img src="sm-joie.jpg" alt="" loading="lazy" /></div>
+        <div class="sc-bg" aria-hidden="true"><img src="sm-moment3.jpg" alt="" loading="lazy" /></div>
+        <div class="sc-scrim" aria-hidden="true"></div>
+        <div class="sc-acts">
+          <div class="sc-act"><div class="num" aria-hidden="true">1</div><h3>L'appel de l'horizon</h3><p>Ce matin où la routine pèse trop, et où le billet devient une évidence. Tu n'attends plus personne pour partir.</p></div>
+          <div class="sc-act"><div class="num" aria-hidden="true">2</div><h3>Un sourire, et tout bascule</h3><p>Une terrasse, deux cafés, une langue qu'on bricole. La première personne qui devient un repère.</p></div>
+          <div class="sc-act"><div class="num" aria-hidden="true">3</div><h3>Une bande, née en route</h3><p>Des fous rires qu'on n'explique pas, et l'envie de continuer le voyage ensemble.</p></div>
+        </div>
+        <div class="sc-prog" aria-hidden="true"><i></i></div>
+      </div>
     </section>
 
     <!-- FONCTIONS -->
@@ -405,6 +452,17 @@
           tp.addEventListener("mousemove", function (e) { var r = tp.getBoundingClientRect(); rx((e.clientX - r.left - r.width / 2) / r.width * 16); ry(-(e.clientY - r.top - r.height / 2) / r.height * 16); });
           tp.addEventListener("mouseleave", function () { rx(0); ry(0); });
         }
+        // Halo qui suit le curseur + CTA magnétiques (desktop fin).
+        if (window.matchMedia("(pointer:fine)").matches) {
+          var glow = document.getElementById("cursorGlow");
+          if (glow) { var gx = gsap.quickTo(glow, "x", { duration: .5, ease: "power3" }), gy = gsap.quickTo(glow, "y", { duration: .5, ease: "power3" }), shown = false;
+            window.addEventListener("mousemove", function (e) { if (!shown) { shown = true; gsap.to(glow, { opacity: 1, duration: .4 }); } gx(e.clientX); gy(e.clientY); }, { passive: true }); }
+          gsap.utils.toArray(".btn-primary").forEach(function (btn) {
+            var mx = gsap.quickTo(btn, "x", { duration: .4, ease: "power3" }), my = gsap.quickTo(btn, "y", { duration: .4, ease: "power3" });
+            btn.addEventListener("mousemove", function (e) { var r = btn.getBoundingClientRect(); mx((e.clientX - r.left - r.width / 2) * .3); my((e.clientY - r.top - r.height / 2) * .45); });
+            btn.addEventListener("mouseleave", function () { mx(0); my(0); });
+          });
+        }
         // marquees (ticker, moments, témoignages)
         function loop(sel, dur) { var t = document.querySelector(sel); if (!t) return; t.innerHTML += t.innerHTML; gsap.to(t, { xPercent: -50, duration: dur, ease: "none", repeat: -1 }); }
         loop("#ticker", 22); loop("#moments", 60); loop("#testi", 70);
@@ -412,6 +470,20 @@
         document.querySelectorAll("#moments video.momVid source[data-src]").forEach(function (s) { if (!s.src) { s.src = s.getAttribute("data-src"); s.parentNode.load(); s.parentNode.play().catch(function () {}); } });
         ScrollTrigger.refresh();
         setTimeout(function () { document.querySelectorAll(".reveal").forEach(function (el) { if (+getComputedStyle(el).opacity < .5) gsap.set(el, { opacity: 1, y: 0 }); }); }, 4500);
+      });
+      // SCROLLYTELLING cinématique : DESKTOP + motion uniquement (mobile/reduced-motion = empilé statique).
+      gsap.matchMedia().add("(min-width: 861px) and (prefers-reduced-motion: no-preference)", function () {
+        var sc = document.querySelector(".scrolly"); if (!sc) return;
+        sc.classList.add("cine");
+        var bgs = sc.querySelectorAll(".sc-bg"), acts = sc.querySelectorAll(".sc-act"), prog = sc.querySelector(".sc-prog i");
+        gsap.set(bgs[0], { opacity: 1 }); gsap.set([bgs[1], bgs[2]], { opacity: 0 });
+        gsap.set(acts[0], { opacity: 1, y: 0 }); gsap.set([acts[1], acts[2]], { opacity: 0, y: 34 });
+        var tl = gsap.timeline({ scrollTrigger: { trigger: sc, start: "top top", end: "bottom bottom", scrub: 1 } });
+        tl.to(prog, { width: "100%", ease: "none", duration: 3 }, 0);
+        tl.to(acts[0], { opacity: 0, y: -34, duration: .5 }, 0.9).to(bgs[0], { opacity: 0, duration: .6 }, "<").to(bgs[1], { opacity: 1, duration: .6 }, "<").to(acts[1], { opacity: 1, y: 0, duration: .5 }, "<.15");
+        tl.to(acts[1], { opacity: 0, y: -34, duration: .5 }, 1.9).to(bgs[1], { opacity: 0, duration: .6 }, "<").to(bgs[2], { opacity: 1, duration: .6 }, "<").to(acts[2], { opacity: 1, y: 0, duration: .5 }, "<.15");
+        ScrollTrigger.refresh();
+        return function () { sc.classList.remove("cine"); gsap.set([].slice.call(bgs).concat([].slice.call(acts), [prog]), { clearProps: "all" }); };
       });
       return true;
     }
@@ -474,6 +546,10 @@
         "Joue en groupe": "Play as a group", "Les quêtes à plusieurs rapportent un bonus, et créent des souvenirs.": "Group quests pay a bonus, and make memories.",
         "Vos moments": "Your moments", "Le voyage, à hauteur d'amitié.": "Travel, the friends edition.",
         "Ils sont partis seuls": "They left alone", "On vous laisse lire la suite.": "We'll let you read the rest.",
+        "L'histoire": "The story", "Seul·e au départ, jamais à l'arrivée.": "Alone at the start, never at the finish.",
+        "L'appel de l'horizon": "The call of the horizon", "Ce matin où la routine pèse trop, et où le billet devient une évidence. Tu n'attends plus personne pour partir.": "That morning when routine weighs too much, and the ticket becomes obvious. You stop waiting for anyone to leave.",
+        "Un sourire, et tout bascule": "A smile, and everything shifts", "Une terrasse, deux cafés, une langue qu'on bricole. La première personne qui devient un repère.": "A terrace, two coffees, a language you patch together. The first person who becomes a landmark.",
+        "Une bande, née en route": "A crew, born on the road", "Des fous rires qu'on n'explique pas, et l'envie de continuer le voyage ensemble.": "Laughter you can't explain, and the urge to keep travelling together.",
         "Partie seule à Lisbonne, rentrée avec un groupe WhatsApp encore actif six mois après. Je sais toujours pas comment.": "Left for Lisbon solo, came back with a WhatsApp group still active six months later. Still no idea how.",
         "J'avais prévu un musée. J'ai fini sur un toit avec trois inconnus et une guitare désaccordée. Aucun regret.": "I'd planned a museum. I ended up on a rooftop with three strangers and an out-of-tune guitar. No regrets.",
         "Premier voyage solo, je flippais un peu. Au final j'ai surtout flippé de devoir rentrer.": "First solo trip, I was a bit scared. In the end I was mostly scared of having to go home.",
