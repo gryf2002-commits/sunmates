@@ -874,10 +874,11 @@ body.sm-lite #settingsCard .row { justify-content: center; }
    profil (édition ouverte), Mates (Partager collé, segment Messages → raccourci header).
    ============================================================ */
 
-/* LOGO header : on reproduit EXACTEMENT le dégradé du MODE COMPLET (celui que Maxime trouve
-   « magnifique ») = `linear-gradient(160deg,#FF9A4D,#FF5A6E)`, appliqué par le loader DA en complet
-   mais GATÉ en Lite → on le recode en dur ici pour que Lite == complète. */
-body.sm-lite .brand .mark { background: linear-gradient(160deg, #FF9A4D, #FF5A6E) !important; box-shadow: 0 5px 14px rgba(255,90,110,.3) !important; }
+/* LOGO header : le SVG « lever de soleil » du header (rayons en haut + ligne d'horizon) n'était PAS
+   le vrai logo de marque. On utilise le VRAI logo = `icon.svg` (soleil rayonnant complet, 8 rayons,
+   dégradé or→orange→rose), exactement l'icône de l'app. On masque le svg interne et on le pose en fond. */
+body.sm-lite .brand .mark { background: url('icon.svg') center / cover no-repeat !important; box-shadow: 0 5px 14px rgba(255,90,110,.28) !important; }
+body.sm-lite .brand .mark svg { display: none !important; }
 
 /* ACCUEIL « Que faire maintenant » : LIGNES compactes horizontales (fini les énormes pavés
    verticaux que la v552 avait recréés en centrant la vignette). Décisif (dernier en source). */
@@ -1042,3 +1043,19 @@ body.sm-lite.lite-msg-on #liteMsgBack {
   display: inline-flex; align-items: center; gap: .25rem; background: none; border: 0;
   color: var(--accent); font-weight: 800; font-size: 1.05rem; padding: .1rem 0 .9rem; cursor: pointer;
 }
+
+/* ============================================================
+   PEAUFINAGE v565 — logo icon.svg, titre Sécurité, cercle == contacts, recherche messages.
+   ============================================================ */
+/* CERCLE replié : bouton ↻ COMPACT (icône seule) → entête épurée, alignée sur « Mes contacts
+   d'urgence » (emoji + titre + chevron, et le rafraîchir discret dedans). */
+body.sm-lite #refreshCircleBtn { padding: .3rem .55rem !important; font-size: 0 !important; line-height: 1 !important; }
+body.sm-lite #refreshCircleBtn::before { content: "↻"; font-size: 1.05rem; font-weight: 800; }
+/* Titre Sécurité injecté : même rendu que les autres titres d'onglet (déjà couvert par la règle
+   .tab-panel > h1, mais on le garde net et centré). */
+body.sm-lite #liteSecuTitle { margin-top: 1.1rem; }
+
+/* MESSAGES : barre de recherche en haut du panneau messages. */
+body.sm-lite .lite-msgsearch { margin: 0 0 .7rem; }
+body.sm-lite #liteMsgSearch { width: 100%; padding: .7rem .9rem; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font-size: .95rem; outline: none; }
+body.sm-lite #liteMsgSearch:focus { border-color: var(--accent); }

@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=564"></script>
+  <script src="sunmates-badges.js?v=565"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=564">
+  <link rel="stylesheet" href="sunmates-lite.css?v=565">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -20279,6 +20279,9 @@
           busy = true;
           try {
             document.querySelectorAll(SEL).forEach(function (el) {
+              // Cercle de confiance : on NE strip PAS son entête → garde l'emoji 🛟 + le chevron ▸/▾
+              // natif (comme « Mes contacts d'urgence ») ; sinon l'emoji et le chevron disparaissaient.
+              if (el.closest && el.closest("#circleCard")) return;
               const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null), ns = []; let n;
               while ((n = w.nextNode())) ns.push(n);
               ns.forEach(function (t) { const v = t.nodeValue.replace(EMOJI_RE, "").replace(/\s*\(\+\d+\s*(?:pts|XP)?\)/gi, "").replace(/\s+[\u2014\u2013]\s+/g, ", ").replace(/\s+\u00B7\s+/g, ", ").replace(/\s{2,}/g, " ").replace(/\s+([,.!?])/g, "$1"); if (v !== t.nodeValue) t.nodeValue = v; });
@@ -20439,6 +20442,41 @@
           setStep(2, "🎉", "Crée des moments", "Café, balade, coucher de soleil, soirée… propose des sorties et retrouve tes Mates pour les vivre <b>ensemble</b> ☀️");
           // step 3 : « Joue & gagne » (100 % gaming) → un pilier Lite chaleureux : des rencontres sûres.
           setStep(3, "🤝", "Tes Mates de confiance", "Connecte-toi avec des <b>voyageurs vérifiés</b>, papote tranquillement, et pars à l'aventure <b>l'esprit léger</b> 💛");
+        } catch (e) {}
+        // v565 — Sécurité : l'onglet n'avait PAS de titre (h1 secuHome/secuHelp masqués) → on injecte
+        // un titre « Sécurité » en haut, cohérent avec les autres onglets (Mon profil, Mes Mates…).
+        try {
+          const sp = document.querySelector('.tab-panel[data-panel="securite"]');
+          if (sp && !sp.querySelector("#liteSecuTitle")) {
+            const h = document.createElement("h1"); h.id = "liteSecuTitle"; h.textContent = "Sécurité"; h.style.order = "-1";
+            sp.insertBefore(h, sp.firstChild);
+          }
+        } catch (e) {}
+        // v565 — Réinitialiser les tuiles dépliables en QUITTANT un onglet (Maxime : « si spot est ouvert,
+        // une fois la page quittée il se ferme »). À chaque nav par la barre du bas, on referme les <details>.
+        try {
+          document.querySelectorAll(".bottom-nav [data-tab]").forEach(function (el) {
+            el.addEventListener("click", function () { document.querySelectorAll(".tab-panel details[open]").forEach(function (d) { try { d.open = false; } catch (e2) {} }); });
+          });
+        } catch (e) {}
+        // v565 — Messages : barre de RECHERCHE en haut → on retrouve une conversation par son nom
+        // (les autres ne s'affichent qu'à la recherche). Filtre les conversations [data-chat] en direct.
+        try {
+          const mp = document.querySelector('[data-msegpanel="messages"]');
+          if (mp && !document.getElementById("liteMsgSearch")) {
+            const wrap = document.createElement("div"); wrap.className = "lite-msgsearch";
+            const inp = document.createElement("input");
+            inp.id = "liteMsgSearch"; inp.type = "search"; inp.placeholder = "Rechercher une conversation…"; inp.setAttribute("aria-label", "Rechercher une conversation");
+            wrap.appendChild(inp); mp.insertBefore(wrap, mp.firstChild);
+            inp.addEventListener("input", function () {
+              const q = (inp.value || "").trim().toLowerCase();
+              const cl = document.getElementById("convList"); if (!cl) return;
+              cl.querySelectorAll("[data-chat]").forEach(function (it) {
+                const nmEl = it.querySelector(".name"); const nm = (nmEl ? nmEl.textContent : it.textContent).toLowerCase();
+                it.style.display = (!q || nm.indexOf(q) !== -1) ? "" : "none";
+              });
+            });
+          }
         } catch (e) {}
         strip();
       })();
