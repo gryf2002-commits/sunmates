@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=554"></script>
+  <script src="sunmates-badges.js?v=555"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=554">
+  <link rel="stylesheet" href="sunmates-lite.css?v=555">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -15531,8 +15531,14 @@
     }
     // Repli raster : CARTO Voyager (CDN mondial bien plus rapide que tile.openstreetmap.org).
     function _smRasterBase() {
-      return L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        { attribution: "© OpenStreetMap · © CARTO", maxZoom: 19, keepBuffer: 4, updateWhenIdle: false, updateWhenZooming: false });
+      // Lite : tuiles NON rétina (2× moins de pixels à décoder) + updateWhenIdle (les tuiles ne se
+      // rechargent qu'à l'arrêt du geste → pan fluide « comme Plans » sur mobile, fini le « rame »).
+      const lite = (typeof betaOn === "function" && !betaOn());
+      const url = lite
+        ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
+        : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+      return L.tileLayer(url,
+        { attribution: "© OpenStreetMap · © CARTO", maxZoom: 19, keepBuffer: lite ? 2 : 4, updateWhenIdle: true, updateWhenZooming: false });
     }
 
     // ---- Carte interactive des lieux sûrs (Leaflet) ----
@@ -20333,6 +20339,29 @@
         try {
           const sh = document.getElementById("secuHome");
           if (sh) { const h = Array.prototype.slice.call(sh.querySelectorAll(".section-head h3")).find(function (x) { return /Acc[eè]s rapides/i.test(x.textContent); }); if (h) h.textContent = "Outils de sécurité"; }
+        } catch (e) {}
+        // v555 — Sécurité : Faux appel / Signal / Rentrée → UNE tuile combinée « Outils de sécurité » (sous-menu).
+        try {
+          const sh = document.getElementById("secuHome");
+          const grid = sh && sh.querySelector(".grid2");
+          if (grid && !grid.querySelector("[data-litesecu-tile]")) {
+            const tile = document.createElement("div");
+            tile.className = "tile"; tile.setAttribute("data-litesecu-tile", "1");
+            tile.innerHTML = '<div class="thumb purp">🛡️</div><div class="t-name">Outils de sécurité</div><div class="t-meta">Faux appel, signal, rentrée</div>';
+            grid.insertBefore(tile, grid.firstChild);
+            tile.addEventListener("click", function () {
+              if (typeof popInfo !== "function") return;
+              popInfo("🛡️", "Outils de sécurité", '<div class="sml-menu"><button class="btn-ghost btn-block" data-litesecu="fakecall">📞 Faux appel</button><button class="btn-ghost btn-block" data-litesecu="signal" style="margin-top:.5rem">🔦 Signal d\'aide</button><button class="btn-ghost btn-block" data-litesecu="safearrival" style="margin-top:.5rem">⏱️ Rentrée en sécurité</button></div>');
+            });
+          }
+          document.addEventListener("click", function (e) {
+            const g = e.target.closest && e.target.closest("[data-litesecu]");
+            if (!g) return;
+            const k = g.dataset.litesecu;
+            try { if (typeof closePicker === "function") closePicker(); } catch (e2) {}
+            const orig = document.querySelector('[data-secuquick="' + k + '"]');
+            if (orig) setTimeout(function () { orig.click(); }, 90);
+          });
         } catch (e) {}
         strip();
       })();

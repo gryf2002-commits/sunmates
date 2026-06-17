@@ -919,3 +919,16 @@ body.sm-lite #matesHome .mseg [data-mseg="messages"] { display: none !important;
 
 /* HEADER : bouton raccourci « Messages » à côté de la cloche (injecté en JS, Lite only). */
 body.sm-lite #liteMsgBtn { display: inline-flex !important; }
+
+/* ============================================================
+   PEAUFINAGE v555 — bande de fond (#bgFx) retirée, tuile sécu combinée, carte fluide.
+   ============================================================ */
+/* FOND : la lueur ambrée radiale décorative (#bgFx) crée une « bande nette de coupure » en
+   s'estompant → on la retire en Lite (fond plat uniforme = cohérent avec la DA aplatie). */
+body.sm-lite #bgFx { display: none !important; }
+
+/* SÉCURITÉ : les 3 outils (Faux appel / Signal / Rentrée) fusionnés en UNE tuile « Outils de
+   sécurité » (sous-menu) → on masque les 3 tuiles individuelles (la combinée est injectée en JS). */
+body.sm-lite #secuHome .grid2 .tile[data-secuquick="fakecall"],
+body.sm-lite #secuHome .grid2 .tile[data-secuquick="signal"],
+body.sm-lite #secuHome .grid2 .tile[data-secuquick="safearrival"] { display: none !important; }
