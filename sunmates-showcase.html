@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="sm-hero.jpg" fetchpriority="high" />
   <script type="application/ld+json">
-  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs comme toi, explore au soleil et repars avec une bande. La sécurité est gratuite pour tous.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
+  { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "SunMates", "applicationCategory": "TravelApplication", "operatingSystem": "Web, iOS, Android", "description": "Rencontre des voyageurs comme toi, explore au soleil et repars avec une bande. La tranquillité est gratuite pour tous.", "url": "https://sunmatesapp.com/", "inLanguage": "fr", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" } }
   </script>
   <style>
     /* ============================================================
@@ -95,14 +95,14 @@
     .hero-in { position: relative; z-index: 2; padding: 92px 0 72px; }
     .hero-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-weight: 700; font-size: .82rem; letter-spacing: .04em; color: var(--gold); background: rgba(255,209,92,.12); border: 1px solid rgba(255,209,92,.30); padding: .42rem .85rem; border-radius: 999px; margin-bottom: 1.4rem; }
     .hero h1 { font-size: clamp(2.9rem, 7.4vw, 5.4rem); font-weight: 900; max-width: 14ch; }
-    .hero h1 .grad { background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; font-weight: 700; }
+    .hero h1 .grad { color: var(--gold); font-style: italic; font-weight: 700; }
     .hero .lead { color: #ECE2F5; font-size: clamp(1.08rem, 1.7vw, 1.28rem); margin: 1.5rem 0 2rem; max-width: 35ch; text-shadow: 0 1px 16px rgba(8,4,18,.6); }
     .hero-cta { display: flex; flex-wrap: wrap; gap: .9rem; }
     /* sticker/seal sunset rotatif (vacation.inc) */
     .seal { position: absolute; z-index: 2; right: clamp(16px, 5vw, 80px); top: 50%; transform: translateY(-50%); width: clamp(96px, 12vw, 148px); height: clamp(96px, 12vw, 148px); display: grid; place-items: center; }
     .seal svg { width: 100%; height: 100%; }
     .seal .seal-core { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font-family: "Fraunces", serif; font-weight: 900; color: #2a0d12; font-size: clamp(.62rem, 1vw, .8rem); line-height: 1.05; padding: 22%; }
-    @media (max-width: 760px) { .seal { right: 14px; top: 86px; transform: none; width: 92px; height: 92px; } }
+    @media (max-width: 760px) { .seal { right: 14px; top: auto; bottom: 13%; transform: none; width: 82px; height: 82px; } }
 
     /* MARQUEE ticker (cartes postales) */
     .ticker { background: var(--sunset); color: #2a0d12; overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(0,0,0,.12); border-bottom: 1px solid rgba(0,0,0,.12); }
@@ -119,7 +119,11 @@
     .trust { padding: 8px 0 0; }
     .trust-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
     .chip { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; box-shadow: var(--shadow); }
-    .chip .k { font-family: "Fraunces", serif; font-weight: 900; font-size: 1.7rem; background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .chip .k { font-family: "Fraunces", serif; font-weight: 900; font-size: 1.7rem; color: var(--gold); }
+    /* dégradé-texte UNIQUEMENT si supporté (sinon couleur pleine, jamais invisible) */
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      .hero h1 .grad, .chip .k { background: var(--sunset); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+    }
     .chip .v { color: var(--muted); font-size: .9rem; font-weight: 600; margin-top: .2rem; }
     @media (max-width: 720px) { .trust-row { grid-template-columns: repeat(2, 1fr); } }
 
@@ -152,6 +156,8 @@
     .moments-track { display: flex; gap: 18px; width: max-content; will-change: transform; }
     .moment { width: clamp(220px, 26vw, 300px); aspect-ratio: 4/5; border-radius: var(--r); overflow: hidden; flex: none; box-shadow: var(--shadow); border: 1px solid var(--line); }
     .moment img { width: 100%; height: 100%; object-fit: cover; }
+    /* reduced-motion : pas de défilement -> on enroule pour que TOUTES les photos restent visibles (pas de strip coupé). */
+    @media (prefers-reduced-motion: reduce) { .moments { overflow: visible; } .moments-track { flex-wrap: wrap; width: auto; justify-content: center; } }
 
     /* bento */
     .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 48px; }
@@ -263,7 +269,7 @@
       <div class="hero-scrim" aria-hidden="true"></div>
       <div class="seal reveal" aria-hidden="true">
         <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,209,92,.9)" stroke-width="2" stroke-dasharray="3 4"/><circle cx="50" cy="50" r="40" fill="url(#sg)"/><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD15C"/><stop offset="1" stop-color="#FF5570"/></linearGradient></defs></svg>
-        <span class="seal-core">Sécurité<br>incluse</span>
+        <span class="seal-core">Soleil<br>inclus ☀</span>
       </div>
       <div class="wrap hero-in">
         <span class="hero-eyebrow reveal"><span aria-hidden="true">☀️</span> L'appli qui allège le voyage solo</span>
@@ -346,7 +352,7 @@
           <div class="cell photo reveal"><img src="sm-cafe.jpg" alt="Café chaleureux aux tons bois et lumière douce." loading="lazy" width="1400" height="2100" /><div class="ph-scrim" aria-hidden="true"></div><div class="ph-in"><span class="tag" style="color:var(--gold)">Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div></div>
           <div class="cell wide reveal" style="background:linear-gradient(150deg, rgba(255,209,92,.14), rgba(255,138,69,.08)); border-color:rgba(255,209,92,.26)"><span class="tag">Jeu &amp; badges</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou en groupe, XP, et 22 emblèmes faits main à débloquer. Le jeu ne touche jamais au score de confiance.</p></div>
           <div class="cell third reveal"><span class="tag">Multilingue</span><h3>FR / EN, hors-ligne</h3><p>Toute l'app dans les deux langues, même sans réseau.</p></div>
-          <div class="cell third reveal"><span class="tag">Sécurité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage de position au cercle de confiance et bouton d'alerte. Gratuit, pour tout le monde.</p></div>
+          <div class="cell third reveal"><span class="tag">Tranquillité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage ta position avec ton cercle de confiance, quand tu veux. Gratuit, pour tout le monde.</p></div>
         </div>
       </div>
     </section>
@@ -391,7 +397,7 @@
       <div class="wrap"><div class="pb-in reveal">
         <h2>Ta bande t'attend quelque part.</h2>
         <p>Une nouvelle ville, des visages à découvrir, le soleil qui descend. Il ne manque plus que toi.</p>
-        <a href="app.html" class="btn btn-primary">Commencer, c'est gratuit</a>
+        <a href="app.html" class="btn btn-primary">Embarque, c'est gratuit</a>
       </div></div>
     </section>
   </main>
@@ -402,8 +408,8 @@
         <a href="#main" class="brand" aria-label="SunMates"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="5" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 21v1M3 13H1M23 13h-2M5 6 3.5 4.5M19 6l1.5-1.5"/></g></svg></span>Sun<b>Mates</b></a>
         <nav class="foot-links" aria-label="Liens de pied de page"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#apercu">L'app</a><a href="app.html">Ouvrir l'app</a></nav>
       </div>
-      <p class="foot-note">SunMates transforme les rencontres de voyage éphémères en connexions sûres et joyeuses. La sécurité est gratuite pour tous, toujours.</p>
-      <p class="foot-postcard">Allez, fais tes valises. ☀️</p>
+      <p class="foot-note">SunMates transforme les rencontres de voyage éphémères en connexions joyeuses et de confiance. Et la tranquillité, gratuite pour tous, toujours.</p>
+      <p class="foot-postcard">Allez, fais tes valises. <span aria-hidden="true">☀️</span></p>
     </div>
   </footer>
 
@@ -448,8 +454,11 @@
       });
       return true;
     }
-    window.addEventListener("load", function () { if (!_smInitMotion()) document.documentElement.classList.remove("anim"); });
-    setTimeout(function () { if (!_smGsapReady) document.documentElement.classList.remove("anim"); }, 3500);
+    // Init dès le DOM prêt (les scripts GSAP en defer ont déjà tourné) — NE PAS attendre window.load
+    // (qui attend toutes les images) → le hero n'est jamais bloqué par le chargement des photos.
+    function _smReady() { if (!_smInitMotion()) document.documentElement.classList.remove("anim"); }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", _smReady); else _smReady();
+    setTimeout(function () { if (!_smGsapReady) document.documentElement.classList.remove("anim"); }, 2000);
 
     // ---------- SON AMBIANT (opt-in, défaut OFF, généré WebAudio, fondu) ----------
     (function () {
@@ -471,9 +480,10 @@
         on = v; btn.classList.toggle("on", v); btn.setAttribute("aria-pressed", v ? "true" : "false");
         btn.setAttribute("aria-label", v ? "Couper l'ambiance sonore" : "Activer l'ambiance sonore");
         lbl.textContent = v ? "Ambiance ☼" : "Ambiance";
-        try { localStorage.setItem("sm_show_sound", v ? "1" : "0"); } catch (e) {}
-        if (v) { if (!ctx) build(); if (ctx.state === "suspended") ctx.resume(); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(.12, ctx.currentTime + .9); }
-        else if (ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(0, ctx.currentTime + .7); }
+        try {
+          if (v) { if (!ctx) build(); if (ctx.state === "suspended") ctx.resume(); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(.12, ctx.currentTime + .9); }
+          else if (ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.linearRampToValueAtTime(0, ctx.currentTime + .7); }
+        } catch (e) { on = false; btn.classList.remove("on"); btn.style.display = "none"; } // WebAudio indispo -> on retire le bouton proprement
       }
       btn.addEventListener("click", function () { setOn(!on); });
       // jamais d'autoplay : on reste OFF au chargement (respect navigateur + utilisateur)
