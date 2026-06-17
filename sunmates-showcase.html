@@ -21,9 +21,11 @@
   <meta name="description" content="L'app sociale « sécurité d'abord » pour voyageurs solo. Profils vérifiés, lieux sûrs, partage de position et bouton d'alerte. La sécurité, gratuite pour tous." />
   <link rel="canonical" href="https://sunmatesapp.com/" />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:site_name" content="SunMates" />
   <meta property="og:title" content="SunMates — Pars solo, trouve ta bande" />
   <meta property="og:description" content="Voyage solo, jamais isolé·e. Profils vérifiés, lieux sûrs, alerte d'urgence. La sécurité, gratuite pour tous." />
-  <meta property="og:url" content="https://sunmatesapp.com" />
+  <meta property="og:url" content="https://sunmatesapp.com/" />
   <meta property="og:image" content="https://sunmatesapp.com/showcase-home.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#190E2E" />
@@ -33,6 +35,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- LCP : l'écran hero (mockup) est préchargé en priorité. -->
   <link rel="preload" as="image" href="showcase-safety.jpg" fetchpriority="high" />
+  <!-- SEO : données structurées (résultats enrichis). -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SunMates",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "description": "L'app sociale « sécurité d'abord » pour voyageurs solo : profils vérifiés, lieux sûrs, partage de position et bouton d'alerte. La sécurité, gratuite pour tous.",
+    "url": "https://sunmatesapp.com/",
+    "inLanguage": "fr",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+  }
+  </script>
   <style>
     /* ============================================================
        SunMates — vitrine « Radiant Horizon » (page d'arrivée).
@@ -282,7 +298,7 @@
           </div>
           <p class="hero-foot"><span class="dot" aria-hidden="true"></span> La sécurité, gratuite pour tous. Toujours.</p>
         </div>
-        <div class="phone-stage reveal" aria-hidden="false">
+        <div class="phone-stage reveal">
           <div class="phone tilt">
             <img src="showcase-safety.jpg" width="290" height="628" alt="Écran Sécurité de l'app SunMates : bouton d'alerte d'urgence, partage de position au cercle de confiance et accès rapides de secours." loading="eager" fetchpriority="high" />
           </div>
@@ -305,7 +321,7 @@
       <div class="wrap spot">
         <div class="phone-stage reveal">
           <div class="phone">
-            <img src="showcase-safety.jpg" width="290" height="628" alt="Écran Sécurité : « En cas d'urgence », appel du 112, alerte qui diffuse la position au cercle de confiance." loading="lazy" />
+            <img src="showcase-circle.jpg" width="290" height="628" alt="Accès rapides de sécurité dans SunMates : faux appel, signal d'aide, partage de position au cercle, alerte d'urgence, rentrée en sécurité et aide à proximité." loading="lazy" />
           </div>
         </div>
         <div class="reveal">
