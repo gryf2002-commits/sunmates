@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=561"></script>
+  <script src="sunmates-badges.js?v=562"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=561">
+  <link rel="stylesheet" href="sunmates-lite.css?v=562">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -15808,10 +15808,14 @@
       if (tm && (tm.style.display === "none" || el.offsetParent === null)) return;
       ensureIaPersonas();
       if (!homeLeaf) {
-        homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.5, wheelPxPerZoomLevel: 120, zoomControl: false, maxZoom: 19,
+        // LITE : zoom/dézoom plus NET sur mobile — on coupe l'animation de zoom + l'anim des marqueurs
+        // + le fondu de tuiles (compositing coûteux qui « rame »), on cale sur des zooms entiers et on
+        // raccourcit l'inertie (le long glissement donnait un rendu « bancal »). Complet inchangé.
+        const _lmap = (typeof betaOn === "function" && !betaOn());
+        homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: _lmap ? 1 : 0.5, wheelPxPerZoomLevel: 120, zoomControl: false, maxZoom: 19,
           // #12 : UN seul monde (fini les cartes côte à côte au dézoom) + bords élastiques doux
           minZoom: 2.4, maxBounds: [[-85, -180], [85, 180]], maxBoundsViscosity: 0.8, worldCopyJump: false,
-          preferCanvas: true, tap: false, zoomAnimation: true, fadeAnimation: true, inertiaDeceleration: 2000 }).setView([46.6, 2.3], 4); /* P6 : inertie plus douce, glisse « à la Plans » */
+          preferCanvas: true, tap: false, zoomAnimation: !_lmap, markerZoomAnimation: !_lmap, fadeAnimation: !_lmap, inertiaDeceleration: _lmap ? 3400 : 2000 }).setView([46.6, 2.3], 4); /* P6 : inertie plus douce, glisse « à la Plans » */
         // P4 (retour Maxime, remplace le geste P2.7) : TAP-POUR-EXPLORER · la mini-carte dort
         // (1 doigt = la page défile) ; un TAP dessus la RÉVEILLE (drag direct, 100 % réactive,
         // liseré corail discret) ; toucher la page EN DEHORS la rendort → le scroll de
