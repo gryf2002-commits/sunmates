@@ -283,7 +283,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=568"></script>
+  <script src="sunmates-badges.js?v=569"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -5823,7 +5823,7 @@
         <!-- Vue principale : SOS bien visible + quelques accès rapides -->
         <div id="secuHome" class="secu-view">
           <h1 data-i18n="safety.title">Sécurité</h1>
-          <p class="muted" style="margin-top:0">En cas de besoin, un seul geste. On est là pour toi — où que tu sois.</p>
+          <p class="muted" style="margin-top:0">En cas de besoin, un seul geste. On est là pour toi, où que tu sois.</p>
 
           <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1.2rem">
             <button id="sosLogo" class="sos-logo" aria-label="Ouvrir les actions d'urgence" title="Actions d'urgence">🆘</button>
@@ -10054,7 +10054,7 @@
       const km = (myGeo && c.lat != null && c.lng != null) ? haversineKm(myGeo, { lat: c.lat, lng: c.lng }) : null;
       const html = "<div style='text-align:left'>" +
         "<div style='height:150px;border-radius:14px;background:var(--cream);background-size:cover;background-position:center;background-repeat:no-repeat;background-image:url(\"" + cafeImage(c) + "\");margin-bottom:.6rem'></div>" +
-        "<div style='font-size:.84rem;color:var(--muted);margin-bottom:.5rem'>" + escapeHtml(c.category || "Lieu sûr") + " · " + escapeHtml(c.city || "") + (km != null ? " · 📍 à " + _fmtDist(km) : "") + "</div>" +
+        "<div style='font-size:.84rem;color:var(--muted);margin-bottom:.5rem'>" + escapeHtml(c.category || "Lieu sûr") + ", " + escapeHtml(c.city || "") + (km != null ? ", 📍 à " + _fmtDist(km) : "") + "</div>" +
         "<div style='font-size:.88rem;line-height:1.7'>" +
           // P14 (Espace Pro) : l'OFFRE DU MOMENT du partenaire, mise en avant sur sa fiche
           (c.offer ? "<div style='background:var(--accent-soft);border-radius:10px;padding:.4rem .6rem;margin-bottom:.4rem;font-weight:700'>🎁 " + escapeHtml(c.offer) + "</div>" : "") +
@@ -10166,7 +10166,7 @@
       let countTxt = `${arr.length} lieu${arr.length > 1 ? "x" : ""}`;
       if (goldShown) countTxt += " · 👑 1 Gold";
       if (cafeFilter.mode === "eco") countTxt += " éco-responsables";
-      countTxt += ` · ${cities.size} ville${cities.size > 1 ? "s" : ""}`;
+      countTxt += `, ${cities.size} ville${cities.size > 1 ? "s" : ""}`;
       $("cafesCount").textContent = countTxt;
       list.innerHTML = goldPlace + (arr.length ? arr.map((c) => {
         const nCk = cafeCheckins[c.id] || 0;
@@ -12748,7 +12748,7 @@
       if (ckToday) bits.push(`📍 ${ckToday}`);
       if (qToday) bits.push(`🎯 ${qToday}`);
       if (bToday) bits.push(`🏅 ${bToday}`);
-      el.textContent = bits.length ? i18nT("✨ aujourd'hui : {b}", { b: bits.join(" · ") }) : i18nT("Prêt·e pour de nouvelles aventures 🌞");
+      el.textContent = bits.length ? i18nT("✨ aujourd'hui : {b}", { b: bits.join(", ") }) : i18nT("Prêt·e pour de nouvelles aventures 🌞");
     }
     function parcoursStats() {
       const trips = (typeof loadTripsDone === "function") ? loadTripsDone().length : 0;
@@ -13223,7 +13223,7 @@
         const tag = st === "completed" ? '<span class="badge ok" style="margin-left:.4rem"><span class="vchip" style="width:13px;height:13px;font-size:8px;vertical-align:-2px">✓</span> Fait</span>'
                   : (st === "joined" ? '<span class="q-inprog">⏳ En cours</span>' : "");
         // Bonus de groupe AFFICHÉ (+50% à deux) → donne envie de coopérer sans ouvrir le détail
-        const sub = [q.city, (q.points ? i18nT("+{x} XP · 👥 +{g} à deux ✨", { x: q.points, g: Math.round(q.points * 1.5) }) : "")].filter(Boolean).join(" · ");
+        const sub = [q.city, (q.points ? i18nT("+{x} XP · 👥 +{g} à deux ✨", { x: q.points, g: Math.round(q.points * 1.5) }) : "")].filter(Boolean).join(", ");
         return `<div class="qrow${st === "completed" ? " qrow-done" : ""}" data-qkey="${q.key}">
           <div class="qico">${q.emoji}</div>
           <div class="qname">${escapeHtml(q.title)}${tag}${sub ? `<div class="qrow-sub">${escapeHtml(sub)}</div>` : ""}</div>
@@ -14744,11 +14744,11 @@
       const age = ageFrom(p.birthdate);
       const cells = [
         tpCell("Âge", age ? age + " ans" : "", "🎂"),
-        tpCell("Genre", [p.gender, p.pronouns].filter(Boolean).join(" · "), "🧑"),
+        tpCell("Genre", [p.gender, p.pronouns].filter(Boolean).join(", "), "🧑"),
         tpCell("Hôte SunMates", p.host_status === "approved" ? "🛟 Accueil validé" : "", "🛟"),
         tpCell("Recherche", (p.intent || []).join(", "), "🎯"),
-        tpCell("Métier", [p.job_title, p.company].filter(Boolean).join(" · "), "💼"),
-        tpCell("Études", [p.education_level, p.school].filter(Boolean).join(" · "), "🎓"),
+        tpCell("Métier", [p.job_title, p.company].filter(Boolean).join(", "), "💼"),
+        tpCell("Études", [p.education_level, p.school].filter(Boolean).join(", "), "🎓"),
         tpCell("Origine", p.hometown, "🏡"),
         tpCell("Taille", p.height_cm ? p.height_cm + " cm" : "", "📏"),
         tpCell("Langues", (p.languages || []).join(", "), "🗣️"),
@@ -17620,7 +17620,7 @@
         const parts = [];
         if (reqs) parts.push(reqs + " demande" + (reqs > 1 ? "s" : ""));
         if (msgs) parts.push(msgs + " message" + (msgs > 1 ? "s" : ""));
-        set("qaMates", parts.join(" · "));
+        set("qaMates", parts.join(", "));
       } else set("qaMates", i18nT("Tes compagnons d'aventure"));
       if (myProfile) set("qaProfil", "Confiance : " + (myProfile.trust_score ?? 0) + (myProfile.is_verified ? " ✅" : ""));
       const nb = (myBadges || []).length;
