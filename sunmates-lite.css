@@ -871,10 +871,10 @@ body.sm-lite #settingsCard .row { justify-content: center; }
    profil (édition ouverte), Mates (Partager collé, segment Messages → raccourci header).
    ============================================================ */
 
-/* LOGO header : on rend le dégradé sunset ORIGINAL EXACT (or→orange→corail, `--accent-grad` natif
-   l.275) que Maxime trouvait « magnifique » — la v554 avait inventé un autre mélange (« moche »),
-   et le forçage v543 l'avait aplati. Lite aplatit `--accent-grad` → on le RECODE en dur ici. */
-body.sm-lite .brand .mark { background: linear-gradient(135deg, #FFC93C 0%, #FF8A3D 45%, #FF5A4D 100%) !important; box-shadow: 0 5px 14px rgba(255,138,61,.3) !important; }
+/* LOGO header : on reproduit EXACTEMENT le dégradé du MODE COMPLET (celui que Maxime trouve
+   « magnifique ») = `linear-gradient(160deg,#FF9A4D,#FF5A6E)`, appliqué par le loader DA en complet
+   mais GATÉ en Lite → on le recode en dur ici pour que Lite == complète. */
+body.sm-lite .brand .mark { background: linear-gradient(160deg, #FF9A4D, #FF5A6E) !important; box-shadow: 0 5px 14px rgba(255,90,110,.3) !important; }
 
 /* ACCUEIL « Que faire maintenant » : LIGNES compactes horizontales (fini les énormes pavés
    verticaux que la v552 avait recréés en centrant la vignette). Décisif (dernier en source). */
@@ -1005,3 +1005,6 @@ body.sm-lite #profMain #availChip { display: inline-flex !important; margin: .7r
 /* PROFILS VOYAGEURS : bouton « 🎯 Défi » (gaming) + stat « Défis relevés » retirés en Lite. */
 body.sm-lite #tpChallengeBtn,
 body.sm-lite .sp-stat[data-spstat="done"] { display: none !important; }
+
+/* MODE MAISON : le hub « Ta progression solo » (défis/rituels/XP/niveau) = 100 % gaming → retiré en Lite. */
+body.sm-lite #soloProgress { display: none !important; }
