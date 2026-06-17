@@ -3,7 +3,7 @@
 // cache à la volée les libs CDN et les images (avatars, tuiles de carte) en
 // "stale-while-revalidate" (on sert le cache tout de suite, on rafraîchit en fond).
 // Les écritures Supabase (POST/PATCH…) ne sont jamais touchées.
-const VER = "v566";
+const VER = "v567";
 const SHELL_CACHE = "sunmates-shell-" + VER;   // coquille (versionnée → purge à chaque déploiement)
 const RUNTIME = "sunmates-rt-" + VER;          // libs CDN/fonts (regénéré par version, re-précaché à l'install)
 // #15/#8 : cache MÉDIA STABLE (NON versionné) → avatars, photos (quêtes/check-ins), tuiles de carte.
@@ -11,7 +11,9 @@ const RUNTIME = "sunmates-rt-" + VER;          // libs CDN/fonts (regénéré pa
 // fini le rechargement de toutes les images/tuiles à chaque MAJ de version. Borné en taille (LRU).
 const MEDIA = "sunmates-media";
 const MEDIA_MAX = 350;
-const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./sunmates-badges.js", "./sunmates-icons-v2.js",
+// Depuis la bascule vitrine (v567) : "./" + "./index.html" = la VITRINE (accueil) ;
+// "./app.html" = l'APPLICATION. Les deux sont précachées → l'app installée marche hors-ligne.
+const SHELL = ["./", "./index.html", "./app.html", "./manifest.json", "./icon.svg", "./sunmates-badges.js", "./sunmates-icons-v2.js",
   "./icon-192.png", "./icon-512.png", "./icon-180.png", "./icon-maskable-512.png", "./badge-96.png"];
 // Libs CDN précachées dès l'install → carte/QR/etc. dispo INSTANTANÉMENT et hors-ligne (cache plus "lourd" mais + fluide).
 const CDN_PRECACHE = [
@@ -85,13 +87,20 @@ self.addEventListener("fetch", (e) => {
   //   la version courante : précachée fraîche à l'install). Hors-ligne → repli immédiat aussi.
   if (req.mode === "navigate") {
     e.respondWith((async () => {
-      const fallback = () => caches.match("./index.html").then((c) => c || fetch(req.url).catch(() => new Response("", { status: 504 })));
+      // Deux entrées HTML depuis la bascule vitrine : racine/index.html = VITRINE, app.html = APP.
+      // On sert/replie sur la BONNE coquille selon le chemin → l'app installée (qui redirige vers
+      // app.html) reste fonctionnelle hors-ligne, et la vitrine ne « mange » jamais l'app.
+      const isApp = /(^|\/)app\.html$/i.test(url.pathname);
+      const shellKey = isApp ? "./app.html" : "./index.html";
+      const fallback = () => caches.match(shellKey)
+        .then((c) => c || caches.match("./app.html"))
+        .then((c) => c || fetch(req.url).catch(() => new Response("", { status: 504 })));
       try {
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 6000);
         const res = await fetch(req.url, { cache: "no-store", signal: ctrl.signal });
         clearTimeout(timer);
-        if (res && res.ok) { const c = res.clone(); caches.open(SHELL_CACHE).then((cc) => cc.put("./index.html", c)).catch(() => {}); }
+        if (res && res.ok) { const c = res.clone(); caches.open(SHELL_CACHE).then((cc) => cc.put(shellKey, c)).catch(() => {}); }
         return res;
       } catch (e) {
         return fallback();
@@ -111,7 +120,7 @@ self.addEventListener("fetch", (e) => {
       // FIX OFFLINE (#35) : ignoreSearch ! La coquille précache « sunmates-badges.js » SANS
       // query, mais la page le demande avec « ?v=NNN » → match raté hors-ligne, et le repli
       // index.html renvoyait du HTML à la place du JS = écran mort en mode avion.
-      }).catch(() => caches.match(req, { ignoreSearch: true }).then((c) => c || caches.match("./index.html")))
+      }).catch(() => caches.match(req, { ignoreSearch: true }).then((c) => c || caches.match("./app.html")))
     );
     return;
   }
@@ -150,7 +159,7 @@ self.addEventListener("push", (e) => {
     tag: d.tag || "sunmates",
     renotify: false,                   // une notif du même tag remplace, n'empile pas
     vibrate: [60, 30, 60],             // petite vibration douce → ressenti « app native », pas brutal
-    data: { url: d.url || "./", tab: d.tab || "" }, // P2.38 : onglet cible transporté dans la notif
+    data: { url: d.url || "./app.html", tab: d.tab || "" }, // P2.38 : onglet cible (ouvre l'app, pas la vitrine)
   };
   e.waitUntil(self.registration.showNotification(title, opts));
 });
@@ -183,7 +192,7 @@ self.addEventListener("notificationclick", (e) => {
   const tab = data.tab || "";
   // Si l'app est déjà ouverte → on la focalise ET on lui dit quel onglet afficher (postMessage).
   // Sinon → on ouvre une fenêtre avec ?tab=… (la page lit ce paramètre au démarrage).
-  const target = tab ? ("./?tab=" + encodeURIComponent(tab)) : (data.url || "./");
+  const target = tab ? ("./app.html?tab=" + encodeURIComponent(tab)) : (data.url || "./app.html");
   e.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((cl) => {
       for (const c of cl) {

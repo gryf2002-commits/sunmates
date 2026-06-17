@@ -434,6 +434,12 @@ body.sm-lite #matesChat .bubble.them { background: var(--cream) !important; colo
 /* Flammes (gaming) dans le chat → retirées en Lite */
 body.sm-lite .chat-flame, body.sm-lite .chat-poc { display: none !important; }
 
+/* Actions sur le profil d'un mate (Défi / BFF / Bloquer) : dégradés en dur → plats.
+   tpa-danger (Bloquer) = garde le ROUGE mais À PLAT (garde-fou sémantique, jamais neutralisé). */
+body.sm-lite .tpa-btn.tpa-chal { background: var(--accent) !important; color: #fff !important; }
+body.sm-lite .tpa-btn.tpa-bff { background: var(--cream) !important; color: var(--ink) !important; border: 1px solid var(--line) !important; }
+body.sm-lite .tpa-btn.tpa-danger { background: var(--danger) !important; color: #fff !important; }
+
 /* Textes en dégradé (bannis) → encre pleine */
 body.sm-lite .match-card h3,
 body.sm-lite .stat,

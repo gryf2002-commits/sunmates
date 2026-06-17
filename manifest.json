@@ -3,7 +3,7 @@
   "name": "SunMates — voyager solo, en sécurité",
   "short_name": "SunMates",
   "description": "L'app sociale « sécurité d'abord » pour les voyageurs solo : repère qui est autour, lance des activités, relève des quêtes et pars l'esprit tranquille.",
-  "start_url": ".",
+  "start_url": "./app.html",
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait",
@@ -18,9 +18,9 @@
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "shortcuts": [
-    { "name": "Découvrir des Mates", "short_name": "Découvrir", "url": "./?tab=connexions", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Mes messages", "short_name": "Messages", "url": "./?tab=connexions&seg=messages", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Quêtes & jeux", "short_name": "Jeux", "url": "./?tab=jeux", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+    { "name": "Découvrir des Mates", "short_name": "Découvrir", "url": "./app.html?tab=connexions", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Mes messages", "short_name": "Messages", "url": "./app.html?tab=connexions&seg=messages", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Quêtes & jeux", "short_name": "Jeux", "url": "./app.html?tab=jeux", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ],
   "screenshots": [
     { "src": "shot_accueil.jpg", "sizes": "780x1688", "type": "image/jpeg", "form_factor": "narrow", "label": "La carte vivante : repère les lieux et les voyageurs autour de toi" },
