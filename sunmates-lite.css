@@ -775,5 +775,41 @@ body.sm-lite #secuHome .grid2 .tile[data-secuquick="circle"],
 body.sm-lite #secuHome .grid2 .tile[data-secuquick="numbers"],
 body.sm-lite #secuHome .grid2 .tile[data-secuquick="lieux"] { display: none !important; }
 
+/* ============================================================
+   PEAUFINAGE v550 — retours Maxime : header épuré, tuiles sobres, Mates, sécurité, jour/nuit smooth.
+   ============================================================ */
+/* Header : toggle jour/nuit UNIQUEMENT dans Réglages (retiré du header) ; « Dispo ? » retiré (fait tache). */
+body.sm-lite #themeToggle { display: none !important; }
+body.sm-lite #availChip { display: none !important; }
+/* Sous-titre d'accueil « Prends ton temps » retiré (pas beau). */
+body.sm-lite .tab-panel[data-panel="accueil"] > .lite-only { display: none !important; }
+/* Icônes du header un peu plus grandes. */
+body.sm-lite .topbar-actions .iconbtn { width: 42px !important; height: 42px !important; }
+body.sm-lite .topbar-actions .iconbtn svg { width: 24px !important; height: 24px !important; }
+
+/* Tuiles « Que faire maintenant » : SOBRES (moins balèze, raccord DA épurée). */
+body.sm-lite .tab-panel[data-panel="accueil"] .grid2 .tile { padding: .65rem .8rem !important; }
+body.sm-lite .tab-panel[data-panel="accueil"] .grid2 .tile .thumb { width: 34px !important; height: 34px !important; font-size: 1.15rem !important; }
+body.sm-lite .tab-panel[data-panel="accueil"] .grid2 .tile .t-name { font-size: .92rem !important; }
+body.sm-lite .tab-panel[data-panel="accueil"] .grid2 .tile .t-meta { font-size: .74rem !important; }
+
+/* Mates : retirer la petite phrase du haut (redondante avec le titre). */
+body.sm-lite .tab-panel[data-panel="connexions"] > .muted { display: none !important; }
+
+/* Sécurité : « En cas d'urgence » TOUT EN HAUT (secuHelp avant secuHome), titre/sous-titre redondants retirés. */
+body.sm-lite .tab-panel[data-panel="securite"] { display: flex; flex-direction: column; }
+body.sm-lite #secuHelp { order: 1; margin-top: 0 !important; }
+body.sm-lite #secuHome { order: 2; }
+body.sm-lite #secuHome > h1,
+body.sm-lite #secuHome > .muted { display: none !important; }
+
+/* Jour ↔ Nuit : transition DOUCE sur les surfaces (plus de bascule brutale). */
+body.sm-lite .app-shell,
+body.sm-lite .card,
+body.sm-lite .tile,
+body.sm-lite .topbar,
+body.sm-lite .bottom-nav,
+body.sm-lite .search input { transition: background-color .35s ease, color .35s ease, border-color .35s ease !important; }
+
 /* (Intro Lieux : reformulation « sans classement » reportée à une passe JS propre —
    le swap CSS ::after cassait la mise en page. Le texte original reste pour l'instant.) */

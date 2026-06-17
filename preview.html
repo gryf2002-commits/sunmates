@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=549"></script>
+  <script src="sunmates-badges.js?v=550"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=549">
+  <link rel="stylesheet" href="sunmates-lite.css?v=550">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -6363,10 +6363,7 @@
             <div><div class="st-lbl">🌙 Mode sombre</div><div class="st-sub">Thème « nuit tropicale », repose les yeux</div></div>
             <label class="switch"><input type="checkbox" id="setThemeToggle"><span class="sl"></span></label>
           </div>
-          <div class="set-toggle">
-            <div><div class="st-lbl" data-i18n="set.haptics">Vibrations (haptique)</div><div class="st-sub" data-i18n="set.hapticsSub">Petit retour vibrant sur les actions clés</div></div>
-            <label class="switch"><input type="checkbox" id="hapticsToggle"><span class="sl"></span></label>
-          </div>
+          <!-- Vibrations (haptique) retiré : jamais paramétré -->
           <div class="set-toggle">
             <div><div class="st-lbl" data-i18n="set.sound">🔊 Sons de l'interface</div><div class="st-sub" data-i18n="set.soundSub">Petits sons sur les clics, succès et déblocages</div></div>
             <label class="switch"><input type="checkbox" id="soundToggle"><span class="sl"></span></label>
@@ -6376,7 +6373,7 @@
             <label class="switch"><input type="checkbox" id="presenceToggle" checked><span class="sl"></span></label>
           </div>
           <div class="set-toggle">
-            <div><div class="st-lbl">Profil public</div><div class="st-sub">Apparaître dans le <b>classement</b>. Désactive pour rester discret·ète.</div></div>
+            <div><div class="st-lbl">Profil public</div><div class="st-sub">Apparaître publiquement. Désactive pour rester discret·ète.</div></div>
             <label class="switch"><input type="checkbox" id="publicToggle"><span class="sl"></span></label>
           </div>
 
@@ -15675,7 +15672,7 @@
       if (_homeForceCenter) return; // #9 : un centrage explicite (quête/ville) a la priorité
       const focusNear = (lat, lng, fbZoom) => {
         const near = nearestMarkerTo(lat, lng, markers);
-        if (near) { try { homeLeaf.setView(near.getLatLng(), 14, { animate: false }); near.openPopup && setTimeout(() => { try { near.openPopup(); } catch (e) {} }, 250); return; } catch (e) {} }
+        if (near) { try { homeLeaf.setView(near.getLatLng(), 14, { animate: false }); if (!(typeof betaOn === "function" && !betaOn())) { near.openPopup && setTimeout(() => { try { near.openPopup(); } catch (e) {} }, 250); } return; } catch (e) {} }
         homeLeaf.setView([lat, lng], fbZoom, { animate: false });
       };
       if (lastKnownGeo) { focusNear(lastKnownGeo.lat, lastKnownGeo.lng, 13); return; }
