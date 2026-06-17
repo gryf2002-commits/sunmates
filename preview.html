@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=560"></script>
+  <script src="sunmates-badges.js?v=561"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=560">
+  <link rel="stylesheet" href="sunmates-lite.css?v=561">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -11184,7 +11184,15 @@
       A(() => s.run && s.run());
       $("adTitle").textContent = s.title;
       $("adText").textContent = s.text;
-      $("adProg").textContent = (i + 1) + " / " + AUTO_DEMO.length;
+      // Numérotation : en Lite, on ne compte QUE les chapitres réellement joués (les chapitres gaming
+      // sont sautés) → fini le « 2/82 » qui saute ; on affiche position/total parmi les chapitres Lite.
+      if (!betaOn() && typeof _stepIsBeta === "function") {
+        const liteTotal = AUTO_DEMO.filter((st) => !_stepIsBeta(st)).length;
+        const litePos = AUTO_DEMO.slice(0, i + 1).filter((st) => !_stepIsBeta(st)).length;
+        $("adProg").textContent = litePos + " / " + liteTotal;
+      } else {
+        $("adProg").textContent = (i + 1) + " / " + AUTO_DEMO.length;
+      }
       adWake();                    // ré-affiche le texte en douceur, puis se replie tout seul
       adSchedule();
     }
@@ -20409,6 +20417,19 @@
           const ac = document.getElementById("availChip");
           const ph = document.querySelector("#profMain .prof-head");
           if (ac && ph && ac.parentElement !== ph) ph.appendChild(ac);
+        } catch (e) {}
+        // v561 — Onboarding Lite : ton JOVIAL + RASSURANT, sans gaming (défis/quêtes/XP/badges/classement).
+        try {
+          const setStep = function (n, emoji, title, html) {
+            const s = document.querySelector('.onb-step[data-step="' + n + '"]'); if (!s) return;
+            const e = s.querySelector(".onb-emoji"); if (e && emoji) e.textContent = emoji;
+            const h = s.querySelector("h2"); if (h && title) h.textContent = title;
+            const p = s.querySelector("p"); if (p && html) p.innerHTML = html;
+          };
+          // step 2 : on retire « défis » et « badges » (gaming) ; on garde l'esprit fête/rencontres.
+          setStep(2, "🎉", "Crée des moments", "Café, balade, coucher de soleil, soirée… propose des sorties et retrouve tes Mates pour les vivre <b>ensemble</b> ☀️");
+          // step 3 : « Joue & gagne » (100 % gaming) → un pilier Lite chaleureux : des rencontres sûres.
+          setStep(3, "🤝", "Tes Mates de confiance", "Connecte-toi avec des <b>voyageurs vérifiés</b>, papote tranquillement, et pars à l'aventure <b>l'esprit léger</b> 💛");
         } catch (e) {}
         strip();
       })();
