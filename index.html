@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=535"></script>
+  <script src="sunmates-badges.js?v=536"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=535">
+  <link rel="stylesheet" href="sunmates-lite.css?v=536">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -12523,6 +12523,7 @@
 
     // Attribue automatiquement les badges « jalons » dès que les conditions sont remplies.
     async function checkMilestoneBadges() {
+      if (typeof betaOn === "function" && !betaOn()) return; // Lite : pas de badges « jeu vidéo » (ni toast « Badge débloqué » ni confettis au check-in)
       if (!myUserId || !allBadgeDefs.length) return;
       const ck = parseInt(($("checkinCount") || {}).textContent) || 0;
       const questsDone = Object.values(myQuestStatus).filter((s) => s === "completed").length;
@@ -16186,6 +16187,7 @@
       const _hmMode = (typeof getHomeMode === "function") ? getHomeMode() : "travel";
       const grpBtn = (_hmMode !== "home") ? '<button class="mappop-btn alt" data-hmqgroup="1">👥 À plusieurs <span style="opacity:.8">+bonus</span></button>' : '';
       const soloLabel = (_hmMode !== "home") ? "🧭 Jouer en solo" : "🧭 Jouer";
+      if (typeof betaOn === "function" && !betaOn()) questPts = []; // Lite : ZÉRO quête sur la carte (gaming) — la carte ne montre que lieux sûrs + voyageurs
       questPts.forEach((q) => {
         // Distance depuis ta position (si connue) · cohérent avec le radar « quête la plus proche ».
         const distTxt = (lastKnownGeo && typeof haversineKm === "function") ? ` · 📍 à ${_fmtDist(haversineKm(lastKnownGeo, { lat: q.lat, lng: q.lng }))}` : "";
@@ -20229,7 +20231,7 @@
         } catch (e) {}
         // 3) Emoji retirés du CHROME uniquement (boutons/titres/tuiles) — JAMAIS le contenu (chat/bios/noms conservés)
         const EMOJI_RE = /[\u2300-\u27BF\u2B00-\u2BFF\u2600-\u26FF\u{1F000}-\u{1FAFF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}\u200D\u20E3]/gu;
-        const SEL = ".btn-primary,.btn-accent,.btn-ghost,.onb-next,.onb-skip,.onb-step h2,.auth-title h1,.section-head>h3,.qm-head>h3,.jnav-cap,.t-name,.tpa-btn,.empty-t,.etitle";
+        const SEL = ".btn-primary,.btn-accent,.btn-ghost,.onb-next,.onb-skip,.onb-step h2,.auth-title h1,.section-head>h3,.qm-head>h3,.jnav-cap,.t-name,.t-meta,.tpa-btn,.empty-t,.etitle,.avail-chip,.qm-all,.clbl";
         let busy = false, scheduled = false;
         function strip() {
           busy = true;
@@ -20642,7 +20644,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=11"></script>
+  <script src="sunmates-da-loader.js?v=12"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->

@@ -83,6 +83,8 @@
 
   function applyTokens(T) {
     if (!T || !T.modes) return;
+    // LITE : loader DA INERTE → la Lite garde les 2 DA NATIVES (Jour clair / Nuit prune), jamais les presets beta.
+    try { if (typeof window.betaOn === 'function' && !window.betaOn()) return; } catch (e) {}
     try { document.body.classList.add('sm-da-on'); } catch (e) {} // priorité loader > couche figée
     var css = '';
     Object.keys(T.modes).forEach(function (k) {
@@ -284,6 +286,7 @@
     return s.replace(/\{(\w+)\}/g, function (_, k) { return vars[k] != null ? vars[k] : '{' + k + '}'; });
   }
   function boot() {
+    try { if (typeof window.betaOn === 'function' && !window.betaOn()) return; } catch (e) {} // Lite : aucun preset/DA beta, on n'injecte rien
     try { applyTokens(getTokens()); } catch (e) {} try { applyStrings(getStrings()); } catch (e) {}
     // DA PUBLIÉE POUR TOUS : si aucun brouillon local (admin en test), on va chercher la DA publiée
     // en base (da_tokens id='live') et on l'applique → tous les utilisateurs reçoivent la DA publiée.
