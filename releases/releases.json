@@ -1,5 +1,11 @@
 [
   {
+    "v": "v550 🎉",
+    "date": "2026-06-17",
+    "note": "Jalon · grande REFONTE de la version LITE : passée d'un simple calque CSS à une vraie app neutre/MVP. 2 DA natives propres (loader DA + console DA admin coupés en Lite → fini la DA beta qui bavait), ZÉRO gaming visible (carte sans quêtes, plus de XP/badges/Gold, check-in simple, toasts gaming coupés), nav 5 onglets, onboarding clair, profil fusionné + raccourcis utiles, sécurité TOUT EN UNE PAGE (urgences en haut), carte en RASTER (marqueurs ancrés, fluide), header épuré (toggle thème dans Réglages), emojis & ponctuation nettoyés. Mode COMPLET strictement inchangé (vérifié dual-mode + simulation admin).",
+    "file": "v550.html"
+  },
+  {
     "v": "v510 🎉",
     "date": "2026-06-15",
     "note": "Jalon (multiple de 30) · grand chantier preview : système beta + version lissée colorée, console DA LIVE in-app (✦ DA déplaçable, presets distincts-mais-DA, clic-recolor universel, emoji, tailles), mode « Texte seul », pins carte thémés. Promotion publique v509 faite. Base de la VERSION LITE grand public (sunmates-app.html) en préparation.",
