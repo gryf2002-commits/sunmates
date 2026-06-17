@@ -1008,3 +1008,23 @@ body.sm-lite .sp-stat[data-spstat="done"] { display: none !important; }
 
 /* MODE MAISON : le hub « Ta progression solo » (défis/rituels/XP/niveau) = 100 % gaming → retiré en Lite. */
 body.sm-lite #soloProgress { display: none !important; }
+
+/* ============================================================
+   PEAUFINAGE v560 — overlay messages plein écran (raccourci 💬).
+   ============================================================ */
+/* Le 💬 affiche les messages EN OVERLAY plein écran par-dessus l'accueil (sans changer d'onglet),
+   avec un bouton « ‹ Retour » (+ retour natif Android géré en JS via popstate). */
+#liteMsgBack { display: none; }
+body.sm-lite.lite-msg-on .tab-panel[data-panel="connexions"] {
+  display: block !important; position: fixed !important; inset: 0 !important; z-index: 3000 !important;
+  background: var(--bg, #fff4e6) !important; overflow-y: auto !important; margin: 0 !important;
+  padding: calc(.9rem + env(safe-area-inset-top)) 1rem calc(1.5rem + env(safe-area-inset-bottom)) !important;
+}
+body.sm-lite.lite-msg-on #matesHome > h1,
+body.sm-lite.lite-msg-on #matesHome > .muted,
+body.sm-lite.lite-msg-on #matesHome .lite-materow,
+body.sm-lite.lite-msg-on #matesHome .mseg { display: none !important; }
+body.sm-lite.lite-msg-on #liteMsgBack {
+  display: inline-flex; align-items: center; gap: .25rem; background: none; border: 0;
+  color: var(--accent); font-weight: 800; font-size: 1.05rem; padding: .1rem 0 .9rem; cursor: pointer;
+}

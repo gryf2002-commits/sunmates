@@ -208,7 +208,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=559"></script>
+  <script src="sunmates-badges.js?v=560"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4654,7 +4654,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=559">
+  <link rel="stylesheet" href="sunmates-lite.css?v=560">
 </head>
 <body>
   <!-- #3+#4 : calque de fond FIXE (halo DA chaud, ne défile pas) derrière toute l'app → fond cohérent partout. -->
@@ -20318,18 +20318,39 @@
             if (act && act.dataset.mseg === "messages") showMatesSegment("discover");
           }
         } catch (e) {}
-        // v554 — Header : raccourci « Messages » à côté de la cloche (ouvre la vue messages de Mates).
+        // v560 — Header : raccourci « Messages » → OVERLAY plein écran par-dessus l'accueil (sans
+        // quitter l'onglet), avec bouton « ‹ Retour » + retour natif Android (popstate).
         try {
+          const ensureBack = function () {
+            const mh = document.getElementById("matesHome");
+            if (!mh || document.getElementById("liteMsgBack")) return;
+            const back = document.createElement("button");
+            back.id = "liteMsgBack"; back.type = "button"; back.innerHTML = "‹ Retour";
+            back.addEventListener("click", function () { closeLiteMsg(false); });
+            mh.insertBefore(back, mh.firstChild);
+          };
+          const openLiteMsg = function () {
+            try { if (typeof showMatesView === "function") showMatesView("matesHome"); } catch (e) {}
+            try { if (typeof showMatesSegment === "function") showMatesSegment("messages"); } catch (e) {}
+            ensureBack();
+            document.body.classList.add("lite-msg-on");
+            try { history.pushState({ liteMsg: 1 }, ""); } catch (e) {}
+          };
+          const closeLiteMsg = function (fromPop) {
+            if (!document.body.classList.contains("lite-msg-on")) return;
+            document.body.classList.remove("lite-msg-on");
+            if (!fromPop) { try { if (history.state && history.state.liteMsg) history.back(); } catch (e) {} }
+          };
+          window.addEventListener("popstate", function () { if (document.body.classList.contains("lite-msg-on")) closeLiteMsg(true); });
+          // Toute navigation par la barre du bas ferme l'overlay (sans re-popper l'historique).
+          document.querySelectorAll(".bottom-nav [data-tab]").forEach(function (el) { el.addEventListener("click", function () { document.body.classList.remove("lite-msg-on"); }); });
           const bell = document.getElementById("notifBell");
           if (bell && !document.getElementById("liteMsgBtn")) {
             const b = document.createElement("button");
             b.className = "iconbtn"; b.id = "liteMsgBtn"; b.title = "Messages"; b.setAttribute("aria-label", "Mes messages");
             b.innerHTML = '<span data-smicon="chat" data-smicon-size="22">💬</span>';
             bell.parentNode.insertBefore(b, bell.nextSibling);
-            b.addEventListener("click", function () {
-              goToTab("connexions");
-              setTimeout(function () { if (typeof showMatesSegment === "function") showMatesSegment("messages"); }, 120);
-            });
+            b.addEventListener("click", openLiteMsg);
           }
         } catch (e) {}
         // v554 — Profil : ouvrir d'office l'édition (« ça fait plus complet ») ; carte raccourcis retirée en CSS.
