@@ -283,7 +283,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=572"></script>
+  <script src="sunmates-badges.js?v=573"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -637,7 +637,7 @@
     /* P8 : VRAI centrage du placeholder · min-height 44px avec padding symétrique (11,5px ×2
        + ligne 21px = 44px pile), face à l'avatar 38px. Avant : 52px avec 8px en haut → le
        « Écris quelque chose… » flottait en haut. */
-    .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .72rem .4rem; min-height: 44px; max-height: 7rem; overflow-y: auto; line-height: 1.4; word-break: break-word; }
+    .feed-composer textarea { flex: 1 1 auto; min-width: 0; width: 100%; box-sizing: border-box; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: .72rem .4rem; min-height: 44px; max-height: 10rem; overflow-y: auto; line-height: 1.4; word-break: break-word; } /* v572 : plus de hauteur → la question de sondage n'est plus rognée */
     .feed-composer textarea:focus { outline: none; }
     .feed-composer .fc-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .4rem; flex-wrap: wrap; }
     .feed-composer .fc-kinds { display: flex; gap: .25rem; background: var(--cream); border-radius: 999px; padding: .2rem; }
@@ -655,6 +655,11 @@
        « Visible par toute la communauté » juste en dessous et la voilait). */
     .fc-send { padding: .45rem 1rem; font-size: .85rem; box-shadow: 0 2px 6px color-mix(in oklab, var(--accent, #FF5A4D) 22%, transparent) !important; }
     body.theme-dusk .fc-kind { background: var(--dcard,#2a2140); color: #eee; border-color: rgba(255,255,255,.1); }
+    /* v572 (retour Maxime) : en NUIT, l'état SÉLECTIONNÉ de Humeur/Spot/Sondage + des chips d'humeur
+       était écrasé par les règles body.theme-dusk (spécificité supérieure) → aucune distinction.
+       On ré-affirme l'accent sur l'état actif/sélectionné en nuit. */
+    body.theme-dusk .fc-kind.active { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent !important; }
+    body.theme-dusk .fc-chip.on { background: var(--accent-grad) !important; color: #fff !important; border-color: transparent !important; }
     /* Post : barre d'actions (like / supprimer) */
     .fpost-body { margin-top: .55rem; font-size: .92rem; color: var(--ink); line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
     .fpost-actions { display: flex; align-items: center; gap: 1rem; margin-top: .55rem; }
@@ -1528,7 +1533,9 @@
     }
     .tile:active { transform: scale(.98); }
     .tile .thumb {
-      height: 84px; border-radius: 12px; margin-bottom: .55rem;
+      height: 84px; border-radius: 12px; margin: 0 auto .55rem;
+      /* v572 (retour Maxime) : `margin-inline:auto` → quand le thumb a une largeur FIXE (le loader/DA
+         le passe à 74px), il était collé à GAUCHE dans la tuile flex-colonne. Centré maintenant. */
       /* v570 : radial blanc calmé (.4→.12) — il « grisait » le centre-haut au-dessus de l'emoji. */
       background-image: radial-gradient(circle at 50% 20%, rgba(255,255,255,.12), rgba(255,255,255,0) 52%), var(--accent-grad);
       display: grid; place-items: center; font-size: 30px; box-shadow: 0 6px 16px rgba(45,38,52,.22);
@@ -3811,6 +3818,11 @@
     /* #24 : cartes repliables (Besoin d'aide) · fermé = seul le titre reste, chevron indicateur */
     [data-coll].coll-closed > :not(h3):not(.section-head) { display: none; }
     [data-coll].coll-closed h3 { margin-bottom: 0 !important; }
+    /* v572 (retour Maxime) : une fois REPLIÉ, les boutons d'action du header (ex. ↻ Rafraîchir du
+       Cercle de confiance) ne doivent PAS rester visibles, et la banderole doit être COMPACTE. */
+    [data-coll].coll-closed .section-head button { display: none !important; }
+    [data-coll].coll-closed .section-head { margin: 0 !important; min-height: 0 !important; }
+    [data-coll].coll-closed { padding-top: .85rem !important; padding-bottom: .85rem !important; }
     [data-coll] .coll-chev { color: var(--accent); font-size: .85em; font-weight: 800; }
 
     /* ====== 🥚 Easter eggs (effets visuels · jamais documentés côté public) ====== */
@@ -4616,6 +4628,12 @@
     #authView input, #authView textarea, #authView select { background:#fff !important; color: #39203A !important; -webkit-text-fill-color: #39203A !important; caret-color: #FF5A4D; border-color: var(--line); }
     #authView input::placeholder, #authView textarea::placeholder { color: #9a8a93 !important; -webkit-text-fill-color: #9a8a93 !important; }
     #authView input:focus, #authView textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    /* v572 (retour Maxime) : lien « mot de passe oublié » + DA des messages d'auth (vérif identité / email). */
+    #authView .auth-forgot { background:none; border:0; color:#C23A2D; font-size:.82rem; font-weight:800; cursor:pointer; padding:.15rem .1rem; text-decoration:underline; text-underline-offset:2px; }
+    #authView .auth-forgot:hover { opacity:.78; }
+    #authView #authMsg:not(:empty) { margin-top:1rem; padding:.7rem .85rem; border-radius:14px; background:#FFF3EC; border:1px solid #FFD7C6; color:#7a3a2c; font-weight:600; font-size:.85rem; line-height:1.45; text-align:center; box-shadow:0 6px 16px rgba(255,90,77,.10); }
+    #authView #authMsg:not(:empty) b { color:#39203A; }
+    #authView #authMsg .btn-ghost { background:#fff; border:1px solid #FFD7C6; color:#C23A2D; }
     #authView .seg { background: rgba(255,255,255,.07); }
     #authView .seg button { color: var(--muted); }
     #authView .seg button.active { background: var(--accent-grad); color:#fff; }
@@ -5238,6 +5256,8 @@
             <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" autocomplete="current-password" />
             <button type="button" id="authPwToggle" class="pw-eye" title="Afficher / masquer le mot de passe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
           </div>
+          <!-- v572 (retour Maxime) : mot de passe oublié (réinitialisation par email Supabase). Visible en mode Connexion. -->
+          <div id="authForgotRow" style="text-align:right;margin-top:.5rem"><button type="button" id="authForgot" class="auth-forgot">Mot de passe oublié ?</button></div>
           <div class="auth-play"><button id="authPlay" aria-label="Se connecter">Se connecter</button></div>
           <div class="msg" id="authMsg" style="text-align:center"></div>
         </div>
@@ -8516,6 +8536,40 @@
     $("tabLogin").addEventListener("click", () => setAuthMode("login"));
     $("tabSignup").addEventListener("click", () => setAuthMode("signup"));
 
+    // v572 (retour Maxime) : MOT DE PASSE OUBLIÉ → envoie un lien de réinitialisation par email (Supabase).
+    { const fg = $("authForgot"); if (fg) fg.addEventListener("click", async () => {
+        const email = ($("authEmail").value || "").trim();
+        const msg = $("authMsg");
+        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          msg.style.color = "var(--danger)"; msg.textContent = "Entre d'abord ton email ci-dessus, puis touche « Mot de passe oublié ».";
+          $("authEmail").focus(); return;
+        }
+        const old = fg.textContent; fg.disabled = true; fg.textContent = "Envoi…";
+        try {
+          const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+          if (error) { msg.style.color = "var(--danger)"; msg.textContent = _authErr(error); }
+          else { msg.style.color = "var(--ok)"; msg.textContent = "📧 Si un compte existe pour cette adresse, un lien pour changer ton mot de passe vient d'être envoyé. Pense à regarder tes spams."; }
+        } catch (e) { msg.style.color = "var(--danger)"; msg.textContent = _authErr(e); }
+        finally { fg.disabled = false; fg.textContent = old; }
+      });
+    }
+    // Récupération : si on revient depuis le lien email (session de recovery), on propose de définir un nouveau mot de passe.
+    try {
+      if (db && db.auth && db.auth.onAuthStateChange) db.auth.onAuthStateChange(async (event) => {
+        if (event === "PASSWORD_RECOVERY") {
+          try {
+            const np = (typeof smPromptP === "function")
+              ? await smPromptP("🔑 Nouveau mot de passe", "Choisis un nouveau mot de passe (8 caractères min).", "", { type: "password" })
+              : window.prompt("Nouveau mot de passe (8 caractères min) :");
+            if (np && np.length >= 8) {
+              const { error } = await db.auth.updateUser({ password: np });
+              if (typeof toast === "function") toast(error ? "⚠️" : "✅", error ? _authErr(error) : "Mot de passe mis à jour, te voilà connecté·e !");
+            } else if (np != null) { if (typeof toast === "function") toast("⚠️", "Mot de passe trop court (8 caractères min)."); }
+          } catch (e) {}
+        }
+      });
+    } catch (e) {}
+
     function setAuthMode(mode) {
       // #4 : on ne garde pas le brouillon du message Pro d'un onglet à l'autre.
       if (mode !== "pro") { const bn = $("b2bNeed"); if (bn) bn.value = ""; }
@@ -8523,6 +8577,7 @@
       $("tabLogin").classList.toggle("active", mode === "login");
       $("tabSignup").classList.toggle("active", mode === "signup");
       show($("authPseudoWrap"), mode === "signup"); // P2.5 : le pseudo ne sert qu'à l'inscription
+      { const fr = $("authForgotRow"); if (fr) show(fr, mode === "login"); } // v572 : « oublié » seulement en Connexion
       const proBtn = $("tabPro"); if (proBtn) proBtn.classList.toggle("active", mode === "pro");
       $("authMsg").textContent = "";
       // Onglet Pro : la page de connexion change DU TOUT AU TOUT (pas d'identifiants, juste « Démarrer »).
@@ -17942,7 +17997,7 @@
     }));
     renderFeedChips();  // tuiles d'humeur affichées d'emblée
     // Auto-grandissement du champ (évite tout débordement / barre qui dépasse)
-    { const ta = $("feedInput"); if (ta) ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 112) + "px"; }); }
+    { const ta = $("feedInput"); if (ta) ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 160) + "px"; }); } /* v572 : cap d'auto-grandissement relevé (112→160) → question de sondage plus rognée */
     $("feedRefresh").addEventListener("click", () => { buildHomeFeed(); });
 
     /* ================= HOME v2 · Hub de jeu « Paris » ================= */
