@@ -283,7 +283,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=571"></script>
+  <script src="sunmates-badges.js?v=572"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -1524,6 +1524,7 @@
     .tile {
       background: var(--card); border-radius: var(--radius-sm); padding: .9rem;
       box-shadow: var(--shadow-sm); cursor: pointer; transition: transform .1s;
+      text-align: center; /* v571 (retour Maxime) : contenu CENTRÉ comme .cat-tile → centrages homogènes */
     }
     .tile:active { transform: scale(.98); }
     .tile .thumb {
@@ -2658,6 +2659,37 @@
 
     /* Apparition des panneaux au changement d'onglet (keyframes tabFade défini plus haut) */
     .tab-panel:not(.hidden) { animation: tabFade .34s cubic-bezier(.22,.8,.3,1) both; }
+
+    /* ============================================================
+       v571 — MOTION (retour Maxime « chaud pour du motion ») : touches PREMIUM,
+       rapides, purposeful — additives (ne compoundent pas le slide des panneaux,
+       cascade en OPACITÉ seule) et entièrement neutralisées en mouvement réduit.
+       ============================================================ */
+    @media (prefers-reduced-motion: no-preference) {
+      /* 1) Ressort de l'icône de nav quand l'onglet devient actif (feedback de navigation) */
+      @keyframes smNavPop { 0% { transform: translateY(-1px) scale(.82); } 55% { transform: translateY(-1px) scale(1.16); } 100% { transform: translateY(-1px) scale(1); } }
+      .bottom-nav button.active .ni { animation: smNavPop .42s cubic-bezier(.34,1.56,.4,1) both; }
+      /* 2) Cascade d'entrée des tuiles d'accès rapide (opacité seule → pas de double mouvement) */
+      @keyframes smTileFade { from { opacity: 0; } to { opacity: 1; } }
+      .tab-panel:not(.hidden) .grid2 > .tile,
+      .secu-view:not(.hidden) .grid2 > .tile,
+      #jeuxNav .cat-row > .cat-tile { animation: smTileFade .45s ease both; }
+      .grid2 > .tile:nth-child(1), #jeuxNav .cat-row > .cat-tile:nth-child(1) { animation-delay: .04s; }
+      .grid2 > .tile:nth-child(2), #jeuxNav .cat-row > .cat-tile:nth-child(2) { animation-delay: .09s; }
+      .grid2 > .tile:nth-child(3), #jeuxNav .cat-row > .cat-tile:nth-child(3) { animation-delay: .14s; }
+      .grid2 > .tile:nth-child(4), #jeuxNav .cat-row > .cat-tile:nth-child(4) { animation-delay: .19s; }
+      .grid2 > .tile:nth-child(5) { animation-delay: .24s; }
+      .grid2 > .tile:nth-child(6) { animation-delay: .29s; }
+      .grid2 > .tile:nth-child(7) { animation-delay: .34s; }
+      .grid2 > .tile:nth-child(8) { animation-delay: .39s; }
+      /* 3) Reflet PREMIUM qui balaie le CTA principal au survol/focus (Emil-style, subtil) */
+      .btn-primary { position: relative; overflow: hidden; }
+      .btn-primary > * { position: relative; z-index: 1; }
+      .btn-primary::after { content: ""; position: absolute; top: 0; bottom: 0; left: -70%; width: 45%; z-index: 0;
+        background: linear-gradient(110deg, transparent, rgba(255,255,255,.38), transparent); transform: skewX(-16deg); opacity: 0; pointer-events: none; }
+      @keyframes smShine { 0% { left: -70%; opacity: .85; } 100% { left: 140%; opacity: 0; } }
+      .btn-primary:hover::after, .btn-primary:focus-visible::after { animation: smShine .75s ease; }
+    }
     /* ===================================================================
        POLISH v2, finitions écran par écran
        =================================================================== */
@@ -4578,8 +4610,11 @@
     #authView .lp-chrome h1, #authView .lp-chrome h2, #authView .lp-chrome h3, #authView .lp-join-head h2 { font-family: "Fraunces", Georgia, serif; color: var(--lp-ink); line-height: 1.12; margin: 0; }
     #authView .lp-chrome p { margin: 0; }
     #authView .lp-chrome a { color: inherit; text-decoration: none; }
-    /* Overrides sombres ciblés du formulaire historique #authCore */
-    #authView input, #authView textarea, #authView select { background:#2b2240; color:#ede6f2; border-color: rgba(255,255,255,.14); }
+    /* v571 (retour Maxime) : les champs étaient en texte clair (#ede6f2) sur fond BLANC (forcé par
+       `input{background:#fff!important}`) → texte ILLISIBLE à la saisie des identifiants. La carte
+       d'auth est claire → fond blanc + encre FONCÉE lisible (+ -webkit-text-fill-color pour l'autofill). */
+    #authView input, #authView textarea, #authView select { background:#fff !important; color: #39203A !important; -webkit-text-fill-color: #39203A !important; caret-color: #FF5A4D; border-color: var(--line); }
+    #authView input::placeholder, #authView textarea::placeholder { color: #9a8a93 !important; -webkit-text-fill-color: #9a8a93 !important; }
     #authView input:focus, #authView textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
     #authView .seg { background: rgba(255,255,255,.07); }
     #authView .seg button { color: var(--muted); }
@@ -20980,6 +21015,6 @@
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
-  <script src="da-console-overlay.js?v=570"></script>
+  <script src="da-console-overlay.js?v=571"></script>
 </body>
 </html>

@@ -257,7 +257,14 @@
     var to=document.createElement('button');to.textContent=_txtOnly?'🅰 Texte seul : ON (recharge pour annuler)':'🅰 Texte seul (sans emoji)';
     to.style.cssText='width:100%;border:1px solid #333;border-radius:9px;padding:7px;cursor:pointer;margin-bottom:6px;background:'+(_txtOnly?'#FFD15C':'transparent')+';color:'+(_txtOnly?'#221':'#fff');
     to.onclick=function(){var n=!_txtOnly;setTextOnly(n);if(n)build_panel();};P.appendChild(to);
-    P.appendChild(H('Presets'));var pb=document.createElement('div');pb.style.cssText='display:flex;flex-wrap:wrap;gap:4px';
+    P.appendChild(H('Presets'));
+    // v571 (retour Maxime) : reset TOTAL en 1 clic → repart de la base propre « Radiant Horizon »
+    // (preset + efface les retouches au clic). Pratique pour itérer sereinement sur des plans futurs.
+    var rstBtn=document.createElement('button');rstBtn.textContent='♻️ Repartir de Radiant Horizon (reset total)';
+    rstBtn.style.cssText='display:block;width:100%;margin:0 0 8px;border:1px solid #FF7A4D;background:rgba(255,122,77,.16);color:#FFC3AE;border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:pointer';
+    rstBtn.onclick=function(){T=build('🌅 Radiant Horizon');T.overrides={};curMode='jour';setMode('jour');};
+    P.appendChild(rstBtn);
+    var pb=document.createElement('div');pb.style.cssText='display:flex;flex-wrap:wrap;gap:4px';
     Object.keys(PRESETS).forEach(function(n){var b=document.createElement('button');b.textContent=n;
       b.style.cssText='border:1px solid #333;border-radius:999px;padding:4px 8px;font-size:11px;cursor:pointer;background:'+(n===T.preset?'#FF7A4D':'transparent')+';color:'+(n===T.preset?'#221':'#fff');
       b.onclick=function(){var ov=T.overrides||{};T=build(n);T.overrides=ov;setMode(curMode);};pb.appendChild(b);});P.appendChild(pb);
