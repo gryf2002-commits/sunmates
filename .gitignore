@@ -61,3 +61,7 @@ index.html.SAVE-icons
 icones-preview.html
 icones-contexte.html
 icones-modes.html
+
+# Ménage v570 : artefacts locaux (scratch dev archivé + captures de vérif) — gardés sur disque, hors repo
+_archive/
+_da_shots/
