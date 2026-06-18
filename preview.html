@@ -283,7 +283,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=573"></script>
+  <script src="sunmates-badges.js?v=574"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -4628,9 +4628,7 @@
     #authView input, #authView textarea, #authView select { background:#fff !important; color: #39203A !important; -webkit-text-fill-color: #39203A !important; caret-color: #FF5A4D; border-color: var(--line); }
     #authView input::placeholder, #authView textarea::placeholder { color: #9a8a93 !important; -webkit-text-fill-color: #9a8a93 !important; }
     #authView input:focus, #authView textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
-    /* v572 (retour Maxime) : lien « mot de passe oublié » + DA des messages d'auth (vérif identité / email). */
-    #authView .auth-forgot { background:none; border:0; color:#C23A2D; font-size:.82rem; font-weight:800; cursor:pointer; padding:.15rem .1rem; text-decoration:underline; text-underline-offset:2px; }
-    #authView .auth-forgot:hover { opacity:.78; }
+    /* v572 (retour Maxime) : DA des messages d'auth (vérif identité / email). */
     #authView #authMsg:not(:empty) { margin-top:1rem; padding:.7rem .85rem; border-radius:14px; background:#FFF3EC; border:1px solid #FFD7C6; color:#7a3a2c; font-weight:600; font-size:.85rem; line-height:1.45; text-align:center; box-shadow:0 6px 16px rgba(255,90,77,.10); }
     #authView #authMsg:not(:empty) b { color:#39203A; }
     #authView #authMsg .btn-ghost { background:#fff; border:1px solid #FFD7C6; color:#C23A2D; }
@@ -5256,8 +5254,6 @@
             <input id="authPassword" type="password" placeholder="••••••••" style="padding-right:2.8rem" autocomplete="current-password" />
             <button type="button" id="authPwToggle" class="pw-eye" title="Afficher / masquer le mot de passe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a14 14 0 0 1-2.3 2.7"/><path d="M6.6 6.6A14 14 0 0 0 3 12s4 6 9 6c1.3 0 2.5-.4 3.6-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
           </div>
-          <!-- v572 (retour Maxime) : mot de passe oublié (réinitialisation par email Supabase). Visible en mode Connexion. -->
-          <div id="authForgotRow" style="text-align:right;margin-top:.5rem"><button type="button" id="authForgot" class="auth-forgot">Mot de passe oublié ?</button></div>
           <div class="auth-play"><button id="authPlay" aria-label="Se connecter">Se connecter</button></div>
           <div class="msg" id="authMsg" style="text-align:center"></div>
         </div>
@@ -8535,40 +8531,7 @@
 
     $("tabLogin").addEventListener("click", () => setAuthMode("login"));
     $("tabSignup").addEventListener("click", () => setAuthMode("signup"));
-
-    // v572 (retour Maxime) : MOT DE PASSE OUBLIÉ → envoie un lien de réinitialisation par email (Supabase).
-    { const fg = $("authForgot"); if (fg) fg.addEventListener("click", async () => {
-        const email = ($("authEmail").value || "").trim();
-        const msg = $("authMsg");
-        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-          msg.style.color = "var(--danger)"; msg.textContent = "Entre d'abord ton email ci-dessus, puis touche « Mot de passe oublié ».";
-          $("authEmail").focus(); return;
-        }
-        const old = fg.textContent; fg.disabled = true; fg.textContent = "Envoi…";
-        try {
-          const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
-          if (error) { msg.style.color = "var(--danger)"; msg.textContent = _authErr(error); }
-          else { msg.style.color = "var(--ok)"; msg.textContent = "📧 Si un compte existe pour cette adresse, un lien pour changer ton mot de passe vient d'être envoyé. Pense à regarder tes spams."; }
-        } catch (e) { msg.style.color = "var(--danger)"; msg.textContent = _authErr(e); }
-        finally { fg.disabled = false; fg.textContent = old; }
-      });
-    }
-    // Récupération : si on revient depuis le lien email (session de recovery), on propose de définir un nouveau mot de passe.
-    try {
-      if (db && db.auth && db.auth.onAuthStateChange) db.auth.onAuthStateChange(async (event) => {
-        if (event === "PASSWORD_RECOVERY") {
-          try {
-            const np = (typeof smPromptP === "function")
-              ? await smPromptP("🔑 Nouveau mot de passe", "Choisis un nouveau mot de passe (8 caractères min).", "", { type: "password" })
-              : window.prompt("Nouveau mot de passe (8 caractères min) :");
-            if (np && np.length >= 8) {
-              const { error } = await db.auth.updateUser({ password: np });
-              if (typeof toast === "function") toast(error ? "⚠️" : "✅", error ? _authErr(error) : "Mot de passe mis à jour, te voilà connecté·e !");
-            } else if (np != null) { if (typeof toast === "function") toast("⚠️", "Mot de passe trop court (8 caractères min)."); }
-          } catch (e) {}
-        }
-      });
-    } catch (e) {}
+    // (v573 : « mot de passe oublié » retiré sur demande de Maxime — à reprendre plus tard.)
 
     function setAuthMode(mode) {
       // #4 : on ne garde pas le brouillon du message Pro d'un onglet à l'autre.
@@ -8577,7 +8540,6 @@
       $("tabLogin").classList.toggle("active", mode === "login");
       $("tabSignup").classList.toggle("active", mode === "signup");
       show($("authPseudoWrap"), mode === "signup"); // P2.5 : le pseudo ne sert qu'à l'inscription
-      { const fr = $("authForgotRow"); if (fr) show(fr, mode === "login"); } // v572 : « oublié » seulement en Connexion
       const proBtn = $("tabPro"); if (proBtn) proBtn.classList.toggle("active", mode === "pro");
       $("authMsg").textContent = "";
       // Onglet Pro : la page de connexion change DU TOUT AU TOUT (pas d'identifiants, juste « Démarrer »).
