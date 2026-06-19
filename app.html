@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=590"></script>
+  <script src="sunmates-badges.js?v=591"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -442,10 +442,46 @@
     }
     .globe-pt-label b { color: #2a1640; }
     .globe-pt-label .gl-meta { display: block; font-weight: 600; opacity: .82; font-size: .72rem; }
+    /* ===== 🛂 Passeport globe-trotter (mode Pays) ===== */
+    .globe-passport {
+      flex-shrink: 0; position: relative; z-index: 3;
+      margin: 0 auto .45rem; padding: .55rem .8rem .65rem; max-width: 540px; width: calc(100% - 1.4rem);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,209,92,.10), rgba(255,126,114,.08));
+      border: 1px solid rgba(255,209,92,.22);
+      box-shadow: 0 10px 30px -16px rgba(255,126,114,.55), inset 0 1px 0 rgba(255,255,255,.06);
+      animation: gpFade .4s cubic-bezier(.23,1,.32,1) both;
+    }
+    .globe-passport.hidden { display: none; }
+    @keyframes gpFade { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    .gp-head {
+      display: flex; align-items: center; gap: .4rem; justify-content: center;
+      font: 700 .72rem/1 "Manrope", system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase;
+      color: #FFD15C; margin-bottom: .5rem;
+    }
+    .gp-figs { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+    .gp-fig {
+      flex: 1 1 0; min-width: 76px; max-width: 150px; text-align: center;
+      padding: .35rem .4rem; border-radius: 13px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+    }
+    .gp-fig b {
+      display: block; font: 800 1.5rem/1 "Fraunces", Georgia, serif; font-variant-numeric: tabular-nums;
+      background: linear-gradient(135deg, #FFD15C, #ff9a8d); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .gp-fig span { display: block; margin-top: .15rem; font: 600 .68rem/1.2 "Manrope", system-ui, sans-serif; color: var(--muted, #a99fbe); }
+    .gp-conts { margin-top: .5rem; display: flex; gap: .3rem; flex-wrap: wrap; justify-content: center; }
+    .gp-cont {
+      font: 600 .68rem/1 "Manrope", system-ui, sans-serif; color: var(--text, #ded3e6);
+      padding: .25rem .55rem; border-radius: 999px;
+      background: rgba(255,209,92,.10); border: 1px solid rgba(255,209,92,.20);
+    }
+    .gp-note { margin: .45rem 0 0; text-align: center; font: 600 .7rem/1.3 "Manrope", system-ui, sans-serif; color: var(--muted, #a99fbe); }
     @media (max-width: 420px) {
       .globe-modes { margin-left: auto; }
       .globe-mode { padding: .4rem .62rem; font-size: .74rem; }
       .globe-title { font-size: 1.02rem; }
+      .gp-fig b { font-size: 1.3rem; }
     }
 
     /* Header : tient sur les petits écrans (≤380px) sans chevauchement */
@@ -1098,10 +1134,12 @@
         <button type="button" class="globe-mode is-on" data-gmode="points">Points</button>
         <button type="button" class="globe-mode" data-gmode="arcs">Arcs</button>
         <button type="button" class="globe-mode" data-gmode="heat">Heatmap</button>
+        <button type="button" class="globe-mode" data-gmode="countries">Pays</button>
       </div>
       <button type="button" id="globeClose" class="globe-close" aria-label="Fermer">✕</button>
     </div>
     <div class="globe-stats" id="globeStats" aria-live="polite"></div>
+    <div class="globe-passport hidden" id="globePassport" aria-live="polite"></div>
     <div id="globeStage" class="globe-stage">
       <div id="globeState" class="globe-state">Chargement du globe…</div>
     </div>
@@ -5589,6 +5627,11 @@
       let onKey = null;
       let lastTrips = [];
       let mode = "points";
+      // --- Mode « Pays » / passeport ---
+      const COUNTRIES_URL = "https://cdn.jsdelivr.net/gh/vasturiano/globe.gl@master/example/datasets/ne_110m_admin_0_countries.geojson";
+      let countriesFeatures = null;   // cache mémoire du geojson (chargé 1x)
+      let countriesPromise = null;    // chargement lazy unique
+      let countryStats = null;        // { countries, continents:Set, total }
 
       // Retire un éventuel emoji drapeau / espaces parasites d'un pays.
       function cleanCountry(c) {
@@ -5597,6 +5640,77 @@
       }
       function tripsWithCoords(trips) {
         return (trips || []).filter((t) => t && typeof t.lat === "number" && typeof t.lng === "number" && isFinite(t.lat) && isFinite(t.lng));
+      }
+
+      // ===== Mode « Pays » : geojson lazy + point-in-polygon maison =====
+      // Charge le geojson des frontières une seule fois (offline-safe via timeout).
+      function loadCountriesGeo() {
+        if (countriesFeatures) return Promise.resolve(countriesFeatures);
+        if (countriesPromise) return countriesPromise;
+        countriesPromise = (async () => {
+          const ctrl = (typeof AbortController === "function") ? new AbortController() : null;
+          const timer = setTimeout(() => { try { ctrl && ctrl.abort(); } catch (e) {} }, 12000);
+          try {
+            const res = await fetch(COUNTRIES_URL, ctrl ? { signal: ctrl.signal } : {});
+            if (!res.ok) throw new Error("http");
+            const gj = await res.json();
+            countriesFeatures = (gj && gj.features) ? gj.features : [];
+            return countriesFeatures;
+          } finally { clearTimeout(timer); }
+        })().catch((e) => { countriesPromise = null; throw e; });
+        return countriesPromise;
+      }
+
+      // Ray-casting : un point lng/lat est-il dans un anneau [[lng,lat],...] ?
+      function pointInRing(lng, lat, ring) {
+        let inside = false;
+        for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+          const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+          const intersect = ((yi > lat) !== (yj > lat)) &&
+            (lng < (xj - xi) * (lat - yi) / ((yj - yi) || 1e-12) + xi);
+          if (intersect) inside = !inside;
+        }
+        return inside;
+      }
+      // Gère Polygon (anneaux : [0]=extérieur, suivants=trous) ET MultiPolygon.
+      function pointInPolygonRings(lng, lat, polys) {
+        // polys = liste de polygones, chacun = liste d'anneaux
+        for (const rings of polys) {
+          if (!rings || !rings.length) continue;
+          if (!pointInRing(lng, lat, rings[0])) continue; // hors enveloppe → suivant
+          let inHole = false;
+          for (let h = 1; h < rings.length; h++) { if (pointInRing(lng, lat, rings[h])) { inHole = true; break; } }
+          if (!inHole) return true;
+        }
+        return false;
+      }
+      function pointInFeature(lng, lat, feat) {
+        const g = feat && feat.geometry; if (!g) return false;
+        if (g.type === "Polygon") return pointInPolygonRings(lng, lat, [g.coordinates]);
+        if (g.type === "MultiPolygon") return pointInPolygonRings(lng, lat, g.coordinates);
+        return false;
+      }
+      function featName(f) { const p = (f && f.properties) || {}; return p.ADMIN || p.NAME || p.name || "Pays"; }
+
+      // Marque chaque feature .visited = true si un voyage tombe dedans. Renvoie les stats.
+      function computeCountryStats(features, trips) {
+        const pts = tripsWithCoords(trips);
+        const visited = new Set();
+        const continents = new Set();
+        (features || []).forEach((f) => {
+          f.visited = false;
+          for (const p of pts) {
+            if (pointInFeature(p.lng, p.lat, f)) {
+              f.visited = true;
+              visited.add(featName(f));
+              const c = f.properties && f.properties.CONTINENT;
+              if (c && c !== "Seven seas (open ocean)") continents.add(c);
+              break;
+            }
+          }
+        });
+        countryStats = { countries: visited.size, continents: continents, contList: [...continents].sort(), total: visited.size };
+        return countryStats;
       }
 
       // Charge globe.gl (embarque three) une seule fois, avec timeout offline-safe.
@@ -5637,6 +5751,38 @@
         let html = `<span class="globe-stat"><b>${countries.size}</b> pays</span><span class="globe-stat"><b>${cities.size}</b> ville${cities.size > 1 ? "s" : ""}</span>`;
         if (ci != null) html += `<span class="globe-stat"><b>${ci}</b> check-in${ci > 1 ? "s" : ""}</span>`;
         box.innerHTML = html;
+      }
+
+      // Affiche / masque le panneau passeport (uniquement en mode Pays).
+      function showPassport(on) {
+        const box = $("globePassport");
+        if (!box) return;
+        if (!on) { box.classList.add("hidden"); box.innerHTML = ""; return; }
+        box.classList.remove("hidden");
+        renderPassport();
+      }
+      function renderPassport() {
+        const box = $("globePassport");
+        if (!box) return;
+        if (!countryStats) {
+          box.innerHTML = `<div class="gp-head">🛂 Passeport</div><p class="gp-note">Calcul de tes pays en cours…</p>`;
+          return;
+        }
+        const nb = countryStats.countries;
+        const conts = countryStats.contList || [];
+        const pct = Math.round((nb / 195) * 100);
+        const conChips = conts.length
+          ? `<div class="gp-conts">${conts.map((c) => `<span class="gp-cont">${escapeHtml(c)}</span>`).join("")}</div>`
+          : "";
+        box.innerHTML =
+          `<div class="gp-head">🛂 Passeport</div>` +
+          `<div class="gp-figs">` +
+            `<div class="gp-fig"><b>${nb}</b><span>pays visité${nb > 1 ? "s" : ""}</span></div>` +
+            `<div class="gp-fig"><b>${conts.length}</b><span>continent${conts.length > 1 ? "s" : ""}</span></div>` +
+            `<div class="gp-fig"><b>${pct}%</b><span>du monde</span></div>` +
+          `</div>` +
+          conChips +
+          (nb === 0 ? `<p class="gp-note">Aucun voyage repéré dans un pays pour le moment.</p>` : "");
       }
 
       // Check-ins de l'utilisateur (best-effort) → coords des lieux pour la heatmap.
@@ -5704,9 +5850,54 @@
         try { globe.width(r.width).height(r.height); } catch (e) {}
       }
 
+      // Couche polygones pays. Visités = teinte sunset surélevée + contour doré ;
+      // non visités = sombre discret, à plat.
+      function renderCountryLayer(features) {
+        if (!globe || typeof globe.polygonsData !== "function") return;
+        globe.polygonsData(features)
+          .polygonCapColor((f) => f.visited ? "rgba(255,154,141,.55)" : "rgba(120,90,150,.08)")
+          .polygonSideColor((f) => f.visited ? "rgba(255,126,114,.32)" : "rgba(80,60,110,.06)")
+          .polygonStrokeColor((f) => f.visited ? GOLD : "rgba(180,160,200,.18)")
+          .polygonAltitude((f) => f.visited ? 0.045 : 0.006)
+          .polygonsTransitionDuration(700)
+          .polygonLabel((f) => `<div class="globe-pt-label"><b>${escapeHtml(featName(f))}</b>${f.visited ? `<span class="gl-meta">visité ✓</span>` : ""}</div>`);
+      }
+      function clearCountries() {
+        if (globe && typeof globe.polygonsData === "function") { try { globe.polygonsData([]); } catch (e) {} }
+        showPassport(false);
+      }
+      // Entrée lazy en mode Pays : charge le geojson (1x), calcule, rend.
+      function enterCountries() {
+        if (!globe) return;
+        // vide les autres couches
+        globe.pointsData([]).arcsData([]);
+        if (typeof globe.heatmapsData === "function") { try { globe.heatmapsData([]); } catch (e) {} }
+        if (countriesFeatures) {
+          if (!countryStats) computeCountryStats(countriesFeatures, lastTrips);
+          renderCountryLayer(countriesFeatures);
+          showPassport(true);
+          return;
+        }
+        showPassport(true); // affiche le panneau en état « calcul »
+        setState("Chargement de la carte des pays…", true);
+        loadCountriesGeo().then((features) => {
+          if (mode !== "countries" || !globe) return; // changé entre-temps
+          hideState();
+          computeCountryStats(features, lastTrips);
+          renderCountryLayer(features);
+          renderPassport();
+        }).catch(() => {
+          if (mode !== "countries") return;
+          setState(`<h4>Carte des pays indisponible</h4><p>Reviens en ligne pour colorier ton passeport 🛂</p>`, false);
+          showPassport(false);
+        });
+      }
+
       function setMode(m) {
+        const prev = mode;
         mode = m;
         document.querySelectorAll("#globeModes .globe-mode").forEach((b) => b.classList.toggle("is-on", b.dataset.gmode === m));
+        if (prev === "countries" && m !== "countries") clearCountries(); // sortie propre du mode Pays
         applyData();
       }
 
@@ -5715,6 +5906,7 @@
         const pts = tripsWithCoords(lastTrips).map((t) => ({ lat: t.lat, lng: t.lng, city: t.city, country: t.country, dates: _fmtTripDates(t.start_date, t.end_date) }));
         // Reset layers
         const noHeat = () => { if (typeof globe.heatmapsData === "function") { try { globe.heatmapsData([]); } catch (e) {} } };
+        if (mode === "countries") { enterCountries(); return; }
         if (mode === "points") {
           globe.pointsData(pts).arcsData([]); noHeat();
         } else if (mode === "arcs") {
@@ -5821,6 +6013,9 @@
         }
         const stage = $("globeStage");
         if (stage) { stage.innerHTML = '<div id="globeState" class="globe-state">Chargement du globe…</div>'; }
+        // Passeport : on masque le panneau et on invalide les stats (trips peuvent changer).
+        showPassport(false);
+        countryStats = null;
       }
 
       // Branchements (les éléments existent dans le DOM dès le boot).
