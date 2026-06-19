@@ -56,23 +56,54 @@
       --maxw: 1180px; --z-nav: 50; --z-skip: 90; --z-grain: 60; --z-player: 55;
     }
     /* ====== MODE JOUR (toggle vitrine, défaut = nuit prune) ======
-       On redéfinit les variables vers une palette claire « lever de soleil ».
-       Le hero (photo + voile sombre) garde son texte clair dans les deux modes. */
+       Vrai thème clair « lever de soleil » : fond crème chaud, surfaces blanches,
+       encres prune foncées, or assombri pour le TEXTE (sinon illisible sur clair).
+       Les sections MÉDIA (hero vidéo, bandeaux vidéo/photo, POV, scrolly ciné) gardent
+       leur visuel sombre + texte clair dans les deux modes (override dédié plus bas). */
     body.vit-day {
       --bg: #FBF4EC; --bg-2: #F3E8DD; --surface: #FFFFFF; --surface-2: #F8F0E7;
       --ink: #2A1A33; --muted: #6F5E82; --line: rgba(42,26,51,.12); --line-strong: rgba(42,26,51,.20);
-      --gold: #B5740E;
-      --shadow: 0 20px 50px rgba(80,40,90,.14);
-      --shadow-pop: 0 28px 64px rgba(255,85,112,.20), 0 8px 22px rgba(80,40,90,.14);
+      --accent-ink: #C24436; /* l'accent corail clair devient illisible sur fond clair -> corail foncé pour les labels */
+      --gold: #B5740E;        /* l'or sert de TEXTE (chips, .glow) -> ambre foncé AA sur clair */
+      --shadow: 0 18px 44px rgba(120,70,40,.14);
+      --shadow-pop: 0 26px 60px rgba(255,85,112,.20), 0 8px 22px rgba(120,70,40,.12);
     }
-    body.vit-day .btn-ghost { background: rgba(42,26,51,.05); }
-    body.vit-day .btn-ghost:hover { background: rgba(42,26,51,.10); }
-    body.vit-day .lang-btn { background: rgba(42,26,51,.05); }
-    body.vit-day header.nav.scrolled { background: rgba(255,250,244,.82); border-bottom-color: var(--line); }
+    /* sélection + focus */
     body.vit-day ::selection { background: var(--accent); color: #fff; }
-    /* le hero reste sur sa photo sombre → texte + or gardés clairs en mode jour */
+    body.vit-day :focus-visible { outline-color: var(--accent); }
+    /* nav : verre clair (le blur est réduit ailleurs pour la fluidité) */
+    body.vit-day header.nav.scrolled { background: rgba(255,250,244,.85); border-bottom-color: var(--line); }
+    body.vit-day .brand b { color: var(--accent); }
+    body.vit-day .brand .mark { box-shadow: 0 6px 16px rgba(255,85,112,.28); }
+    /* boutons verre clair (bordures sombres visibles, plus de blanc invisible) */
+    body.vit-day .btn-ghost { background: rgba(42,26,51,.04); border-color: var(--line-strong); color: var(--ink); }
+    body.vit-day .btn-ghost:hover { background: rgba(42,26,51,.09); border-color: var(--accent); }
+    body.vit-day .lang-btn { background: rgba(42,26,51,.04); border-color: var(--line-strong); color: var(--ink); }
+    body.vit-day .lang-btn:hover { border-color: var(--accent); }
+    /* surfaces cartes : fond blanc + bordure visible (la var --line/--surface s'en charge déjà,
+       on ne corrige que les fonds CODÉS EN DUR) */
+    body.vit-day .cell.feat { background: linear-gradient(150deg, #FFF1E2, #FFE9F0); border-color: rgba(255,138,69,.40); }
+    body.vit-day .cell.feat .glow { background: linear-gradient(135deg, #C24436, #B5740E); -webkit-background-clip: text; background-clip: text; }
+    body.vit-day .chip .k { background: linear-gradient(135deg, #C24436, #B5740E); -webkit-background-clip: text; background-clip: text; }
+    body.vit-day .sc-act .num { background: linear-gradient(135deg, #C24436, #B5740E); -webkit-background-clip: text; background-clip: text; }
+    body.vit-day .phone { background: #2A1A33; border-color: rgba(42,26,51,.14); }
+    /* ticker : le dégradé sunset est lumineux -> on garde, juste les liserés noirs adoucis déjà ok */
+    /* lecteur son : verre clair */
+    body.vit-day .player { background: rgba(255,250,244,.88); border-color: var(--line-strong); color: var(--ink); }
+    body.vit-day .pl-toggle { color: #fff; }
+    /* footer / sections claires : tout passe par les variables -> rien à coder en dur ici */
+
+    /* --- SECTIONS MÉDIA : restent SOMBRES (vidéos/photos) dans les deux modes ---
+       Leur fond #120720 et leurs voiles rgba(20,9,38,*) sont codés en dur (intouchés).
+       On force juste les textes/labels qui passeraient par une var foncée à rester clairs. */
     body.vit-day .hero h1 { color: #FCEFE9; }
     body.vit-day .hero h1 .grad, body.vit-day .hero-eyebrow { color: #FFD15C; }
+    body.vit-day .hero-eyebrow { background: rgba(255,209,92,.14); border-color: rgba(255,209,92,.32); }
+    body.vit-day .photoband h2, body.vit-day .final h2 { color: #FCEFE9; }
+    body.vit-day .photoband .seclabel, body.vit-day .moments .seclabel { color: var(--accent-ink); }
+    body.vit-day .scrolly.cine .sc-act h3 { color: #FCEFE9; }
+    body.vit-day .scrolly.cine .seclabel { color: #FFD15C; }
+    body.vit-day .cell.photo .ph-in h3 { color: #fff; }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -96,13 +127,13 @@
     .btn-primary { background: var(--sunset); color: #2a0d12; box-shadow: var(--shadow-pop); }
     .btn-primary:hover { transform: translateY(-2px) rotate(-.5deg); }
     .btn-primary:active { transform: translateY(0) scale(.98); }
-    .btn-ghost { background: rgba(255,255,255,.08); color: var(--ink); border: 1px solid var(--line-strong); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .btn-ghost { background: rgba(255,255,255,.08); color: var(--ink); border: 1px solid var(--line-strong); }
     .btn-ghost:hover { background: rgba(255,255,255,.14); border-color: var(--accent); }
     .btn-sm { padding: .6rem 1.1rem; font-size: .92rem; }
 
     /* nav transparente sur le hero (pas de bande sombre) ; prend son fond au scroll. */
     header.nav { position: sticky; top: 0; z-index: var(--z-nav); height: 68px; display: flex; align-items: center; background: transparent; border-bottom: 1px solid transparent; transition: background .3s ease, backdrop-filter .3s ease, border-color .3s ease; }
-    header.nav.scrolled { background: rgba(25,14,46,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--line); }
+    header.nav.scrolled { background: rgba(25,14,46,.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom-color: var(--line); }
     .nav-in { display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .brand { display: flex; align-items: center; gap: .6rem; font-family: "Fraunces", serif; font-weight: 900; font-size: 1.3rem; }
     .brand .mark { width: 34px; height: 34px; border-radius: 10px; background: var(--sunset); display: grid; place-items: center; box-shadow: 0 6px 16px rgba(255,85,112,.4); flex: none; }
@@ -265,7 +296,7 @@
     .contact-row { display: flex; flex-wrap: wrap; gap: .9rem; justify-content: center; margin-top: 2rem; }
 
     /* LECTEUR SON (radio) : play + canal + volume + waveform */
-    .player { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-player); display: inline-flex; align-items: center; gap: .65rem; padding: .5rem .7rem; border-radius: 999px; background: rgba(25,14,46,.82); border: 1px solid var(--line-strong); color: var(--ink); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: var(--shadow); font-size: .85rem; }
+    .player { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-player); display: inline-flex; align-items: center; gap: .65rem; padding: .5rem .7rem; border-radius: 999px; background: rgba(25,14,46,.92); border: 1px solid var(--line-strong); color: var(--ink); box-shadow: var(--shadow); font-size: .85rem; }
     .player button { background: none; border: 0; color: inherit; cursor: pointer; font: inherit; }
     .pl-toggle { width: 30px; height: 30px; border-radius: 50%; background: var(--sunset); color: #2a0d12; display: grid; place-items: center; font-size: .8rem; flex: none; }
     .pl-chan { font-weight: 700; white-space: nowrap; }
@@ -508,8 +539,18 @@
             btn.addEventListener("mouseleave", function () { mx(0); my(0); });
           });
         }
-        // marquees (ticker, moments, témoignages)
-        function loop(sel, dur) { var t = document.querySelector(sel); if (!t) return; t.innerHTML += t.innerHTML; gsap.to(t, { xPercent: -50, duration: dur, ease: "none", repeat: -1 }); }
+        // marquees (ticker, moments, témoignages) : boucle continue, MISE EN PAUSE hors-écran
+        // (gain compositor mobile : un marquee qui défile sous le pli ne consomme plus de GPU).
+        function loop(sel, dur) {
+          var t = document.querySelector(sel); if (!t) return null;
+          t.innerHTML += t.innerHTML;
+          var tw = gsap.to(t, { xPercent: -50, duration: dur, ease: "none", repeat: -1 });
+          if ("IntersectionObserver" in window) {
+            var sec = t.closest("section") || t.parentNode;
+            new IntersectionObserver(function (e) { e[0].isIntersecting ? tw.play() : tw.pause(); }, { rootMargin: "120px 0px" }).observe(sec);
+          }
+          return tw;
+        }
         loop("#ticker", 22); loop("#moments", 60); loop("#testi", 70);
         // Le marquee moments a été dupliqué (innerHTML) -> on (re)charge la vidéo POV maintenant.
         document.querySelectorAll("#moments video.momVid source[data-src]").forEach(function (s) { if (!s.src) { s.src = s.getAttribute("data-src"); s.parentNode.load(); s.parentNode.play().catch(function () {}); } });
@@ -541,7 +582,9 @@
     // indépendant de GSAP. Sous reduced-motion : rien ne se lance (le poster reste affiché). ----------
     (function () {
       var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduce || !("IntersectionObserver" in window)) return;
+      // reduced-motion : on ne lance AUCUNE vidéo (posters figés), y compris le hero en autoplay markup.
+      if (reduce) { try { var hv = document.getElementById("heroVid"); if (hv) { hv.removeAttribute("autoplay"); hv.pause(); } } catch (_) {} return; }
+      if (!("IntersectionObserver" in window)) return;
       // Charge à l'approche + JOUE seulement quand visible, PAUSE hors-écran (1 vidéo décode à la fois = fluide).
       var vio = new IntersectionObserver(function (ents) {
         ents.forEach(function (e) {
