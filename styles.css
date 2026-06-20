@@ -164,6 +164,11 @@
       font-size: .95rem; font-family: inherit; transition: border-color .15s, box-shadow .15s;
     }
     input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    /* iOS : un champ < 16px déclenche un ZOOM auto au focus qui reste bloqué (« la Sécurité casse le zoom »).
+       On force 16px sur les écrans TACTILES pour TOUS les champs → plus de zoom intempestif. Le pinch-zoom (a11y) reste possible. */
+    @media (pointer: coarse) {
+      input, textarea, select, .search input, .ice-fin, #numbersSearch, #advFilters input, #advFilters select { font-size: 16px !important; }
+    }
 
     /* ----------------------------- Boutons -------------------------- */
     button { border: 0; border-radius: var(--radius-sm); padding: .8rem 1.2rem; font-size: .95rem;
