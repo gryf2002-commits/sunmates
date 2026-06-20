@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=604"></script>
+  <script src="sunmates-badges.js?v=605"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -14024,31 +14024,35 @@
       goToTab("lieux");
       setTimeout(() => { const sm = $("smMain"); if (sm) sm.scrollTop = 0; }, 120);
     }
-    // GEO-TRIGGER : remplit la carte « Ici, maintenant ». Position SEULEMENT si déjà accordée (zéro prompt).
+    // GEO-TRIGGER : remplit la carte « Ici, maintenant ». S'affiche TOUJOURS (repli moment+idées sans position),
+    // puis s'AFFINE avec le vrai quartier + idées IA si la géoloc est déjà accordée (zéro prompt).
+    function _geoMeteo() { try { const c = JSON.parse(localStorage.getItem("sm_weather") || "null"); if (c && c.w && typeof _WMO === "function") return c.w.temp + "° " + _WMO(c.w.code); } catch (e) {} return ""; }
+    function _paintGeoNow(card, where, ideas) {
+      const moment = escapeHtml(_momentLabel());
+      const meteo = _geoMeteo();
+      const top = (ideas && ideas.length ? ideas : _ruleSuggest()).slice(0, 3);
+      card.innerHTML =
+        '<div style="font-weight:800;font-size:.95rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline">📍 ' + escapeHtml(where) +
+        '<span class="muted" style="font-weight:600;font-size:.78rem">' + moment + (meteo ? " · " + escapeHtml(meteo) : "") + '</span></div>' +
+        '<div class="geo-ideas">' +
+        top.map((s, i) => '<button type="button" class="geo-idea" data-idea="' + i + '">' + escapeHtml(s) + '<span class="gi-arrow">›</span></button>').join("") +
+        '</div>';
+      // GEO-TRIGGER : chaque idée mène à l'écran correspondant (jamais décorative).
+      card.querySelectorAll(".geo-idea").forEach((b) => b.addEventListener("click", () => _geoIdeaGo(top[Number(b.dataset.idea)] || "")));
+      card.classList.remove("hidden");
+    }
     async function renderGeoNow() {
       const card = $("geoNowCard"); if (!card) return;
       try {
+        _paintGeoNow(card, i18nT("Autour de toi"), null); // repli IMMÉDIAT : la carte s'affiche toujours (fini « ne s'affiche jamais »)
         if (!navigator.geolocation || !navigator.permissions || !navigator.permissions.query) return;
         const st = await navigator.permissions.query({ name: "geolocation" });
-        if (st.state !== "granted") return;
+        if (st.state !== "granted") return; // pas accordée → on garde le repli (le bandeau #geoPrompt invite à activer)
         const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { maximumAge: 600000, timeout: 8000 }));
         reverseGeoPlace(pos.coords.latitude, pos.coords.longitude, async (p) => {
-          const where = (p && p.label) ? escapeHtml(p.label) : i18nT("Autour de toi");
-          const moment = escapeHtml(_momentLabel());
-          let meteo = "";
-          try { const c = JSON.parse(localStorage.getItem("sm_weather") || "null"); if (c && c.w && typeof _WMO === "function") meteo = c.w.temp + "° " + _WMO(c.w.code); } catch (e) {}
-          let ideas = await aiSuggest({ meteo: meteo });
-          if (!ideas) ideas = _ruleSuggest();
-          const top = ideas.slice(0, 3);
-          card.innerHTML =
-            '<div style="font-weight:800;font-size:.95rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline">📍 ' + where +
-            '<span class="muted" style="font-weight:600;font-size:.78rem">' + moment + (meteo ? " · " + escapeHtml(meteo) : "") + '</span></div>' +
-            '<div class="geo-ideas">' +
-            top.map((s, i) => '<button type="button" class="geo-idea" data-idea="' + i + '">' + escapeHtml(s) + '<span class="gi-arrow">›</span></button>').join("") +
-            '</div>';
-          // GEO-TRIGGER : chaque idée mène à l'écran correspondant (jamais décorative).
-          card.querySelectorAll(".geo-idea").forEach((b) => b.addEventListener("click", () => _geoIdeaGo(top[Number(b.dataset.idea)] || "")));
-          card.classList.remove("hidden");
+          const where = (p && p.label) ? p.label : i18nT("Autour de toi");
+          let ideas = await aiSuggest({ meteo: _geoMeteo() }); if (!ideas) ideas = _ruleSuggest();
+          _paintGeoNow(card, where, ideas); // affinage : vrai quartier + idées IA
         });
       } catch (e) {}
     }
