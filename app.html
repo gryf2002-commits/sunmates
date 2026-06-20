@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=593"></script>
+  <script src="sunmates-badges.js?v=594"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -525,6 +525,15 @@
       background: color-mix(in oklab, var(--accent) 16%, transparent); font-weight: 800; }
     /* Centrage cohérent : titres de section vides + sous-titres d'écran */
     .set-grouptitle { text-align: left; } /* labels de réglages restent alignés à gauche (lisibilité) */
+
+    /* ANTI-FUITE complète→Lite (20/06) : globe 3D, Wrapped, frise/passeport voyages =
+       features de la version COMPLÈTE. En Lite (marché épuré) on les masque ; les
+       voyages de base (cartes) restent. */
+    body.sm-lite #globeOpenBtn,
+    body.sm-lite #wrappedOpenBtn,
+    body.sm-lite #tripViewToggle,
+    body.sm-lite #tripPassport,
+    body.sm-lite #tripTimeline { display: none !important; }
 
     /* Tuiles ACCÈS RAPIDES : grille cohérente. Avant, .t-meta{margin-top:auto} collait la
        méta en bas → grand vide entre l'icône et le texte quand une tuile était plus haute que
