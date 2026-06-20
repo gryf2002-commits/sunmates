@@ -397,6 +397,10 @@ body.sm-lite {
 body.sm-lite .btn-danger { background: var(--danger) !important; }
 /* Coquille : retirer le halo soleil radial + la texture de grain globale */
 body.sm-lite .app-shell { background: var(--bg) !important; }
+/* Saisons en mode SOMBRE (Lite) : la surface unie de l'app-shell masquait le fond saisonnier (bleu hiver /
+   vert tropiques) du body → on la rend transparente comme en mode complet pour que l'ambiance transparaisse. */
+body.sm-lite.theme-winter.theme-dusk .app-shell,
+body.sm-lite.theme-tropic.theme-dusk .app-shell { background: transparent !important; }
 body.sm-lite::after { content: none !important; }
 /* Halos/glow des CTA génériques (corail diffus) → off */
 body.sm-lite .btn-primary,
@@ -880,11 +884,11 @@ body.sm-lite #settingsCard .row { justify-content: center; }
    profil (édition ouverte), Mates (Partager collé, segment Messages → raccourci header).
    ============================================================ */
 
-/* LOGO header : le SVG « lever de soleil » du header (rayons en haut + ligne d'horizon) n'était PAS
-   le vrai logo de marque. On utilise le VRAI logo = `icon.svg` (soleil rayonnant complet, 8 rayons,
-   dégradé or→orange→rose), exactement l'icône de l'app. On masque le svg interne et on le pose en fond. */
-body.sm-lite .brand .mark { background: url('icon.svg') center / cover no-repeat !important; box-shadow: 0 5px 14px rgba(255,90,110,.28) !important; }
-body.sm-lite .brand .mark svg { display: none !important; }
+/* LOGO header (20/06) : la Lite réutilise le MÊME logo que le mode complet (SVG soleil inline) —
+   l'ancien override `icon.svg` est retiré. En Lite jour, `--accent-grad` est aplati en corail plein
+   (l.393) → on RESTAURE le dégradé sunset UNIQUEMENT pour le mark du logo (dusk/saisons gardent leurs
+   propres dégradés via styles.css, donc on exclut .theme-dusk pour ne pas les écraser). */
+body.sm-lite:not(.theme-dusk) .brand .mark { background: linear-gradient(135deg, #FFC93C 0%, #FF7A3D 20%, #FF4F6D 52%) !important; }
 
 /* ACCUEIL « Que faire maintenant » : LIGNES compactes horizontales (fini les énormes pavés
    verticaux que la v552 avait recréés en centrant la vignette). Décisif (dernier en source). */
@@ -916,7 +920,9 @@ body.sm-lite #secuHome .grid2 .tile .t-meta { width: auto; }
 body.sm-lite .tab-panel[data-panel="profil"] .prof-shortcuts { display: none !important; }
 
 /* MATES : « Partager » COLLÉ à côté du compteur de Mates (wrapper .lite-materow ajouté en JS). */
-body.sm-lite #matesHome .lite-materow { display: flex !important; align-items: center; gap: .5rem; flex-wrap: nowrap; margin: .25rem 0 .15rem !important; }
+body.sm-lite #matesHome .lite-materow { display: flex !important; align-items: center; gap: .5rem; flex-wrap: nowrap; margin: .35rem 0 .85rem !important; } /* marge basse aérée : ne plus coller à la barre de recherche */
+/* Carte « Tes groupes » masquée en Lite (feature sociale/beta, hors MVP) */
+body.sm-lite #groupCard { display: none !important; }
 body.sm-lite #matesHome .lite-materow .mates-stat { flex: 0 1 auto; min-width: 0; margin: 0 !important; font-size: .9rem !important; }
 body.sm-lite #matesHome .lite-materow .invite-banner { flex: 0 0 auto; margin: 0 !important; white-space: nowrap; }
 body.sm-lite #matesHome .lite-materow .invite-banner .inv-go { white-space: nowrap; }
