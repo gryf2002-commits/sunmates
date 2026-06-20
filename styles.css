@@ -3827,7 +3827,7 @@
        proprement. Mode-aware via var(--bg). !important pour gagner sur toutes les couches topbar par mode.
        (La topbar n'est pas un ancêtre de la carte → ce backdrop-filter ne casse PAS le plein écran.) */
     .topbar { background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 80%, transparent) 0%, color-mix(in srgb, var(--bg) 60%, transparent) 58%, transparent 100%) !important;
-      -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1);
+      -webkit-backdrop-filter: blur(7px) saturate(1.08); backdrop-filter: blur(7px) saturate(1.08); /* flou RÉDUIT (retour Maxime « pavé flou moche ») — moins de frosting, transparence gardée */
       /* Bug Maxime « le flou translucide du header est trop marqué d'une démarcation » : le backdrop-filter
          a un BORD NET en bas (le flou s'arrête d'un coup = la ligne visible). On ESTOMPE ce bord avec un
          masque dégradé → le flou ET le fond fondent en douceur sur les ~22px du bas (zone de padding, sous
