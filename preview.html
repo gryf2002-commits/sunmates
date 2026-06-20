@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=602"></script>
+  <script src="sunmates-badges.js?v=603"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -9725,10 +9725,13 @@
         el.addEventListener("click", () => { const mm = $("matesListModal"); if (mm) mm.classList.add("hidden"); openTravelerProfile(travelerMap[el.dataset.profile]); }));
 
       // « Mes conversations » = connexions acceptées (hors supprimées), triées par dernier message
-      const convIds = [...connectedIds].filter((id) => !hiddenConvs.has(id));
+      // Une « conversation » = a au moins UN message échangé, OU est épinglée/BFF, OU le Mate est en ligne maintenant
+      // (avant : TOUTE connexion acceptée s'affichait → « conversations vides »). Toutes les connexions restent
+      // visibles via « Mes connexions » ; ici on ne montre que de vraies conversations / des Mates joignables.
+      const pinnedSet = new Set(loadPinnedConvs().map(String));
+      const convIds = [...connectedIds].filter((id) => !hiddenConvs.has(id) && (lastByPeer[id] || id === myBffId || pinnedSet.has(String(id)) || isActive(travelerMap[id])));
       convIds.sort((a, b) => (lastByPeer[b]?.created_at || "").localeCompare(lastByPeer[a]?.created_at || ""));
       // Épinglage utilisateur : les conversations épinglées remontent en tête (Array.sort stable → l'ordre par date est gardé dans chaque groupe).
-      const pinnedSet = new Set(loadPinnedConvs().map(String));
       convIds.sort((a, b) => ((pinnedSet.has(String(b)) ? 1 : 0) - (pinnedSet.has(String(a)) ? 1 : 0)));
       // #13 : le BFF du moment vit ICI · conversation ÉPINGLÉE en tête, case dorée (au-dessus des épinglés).
       if (myBffId && convIds.includes(myBffId)) { convIds.splice(convIds.indexOf(myBffId), 1); convIds.unshift(myBffId); }
@@ -11284,11 +11287,18 @@
     function filterConvs() {
       const q = (($("convSearch") || {}).value || "").trim().toLowerCase();
       const box = $("convList"); if (!box) return;
+      let shown = 0;
       box.querySelectorAll(".conv-open").forEach((row) => {
-        const name = ((row.querySelector(".name") || {}).textContent || "");
-        const prev = ((row.querySelector(".conv-preview") || {}).textContent || "");
-        row.style.display = (!q || (name + " " + prev).toLowerCase().indexOf(q) !== -1) ? "" : "none";
+        // Recherche par NOM du Mate uniquement (avant : matchait aussi l'aperçu « Toi : »/emojis = bruit).
+        const name = ((row.querySelector(".name") || {}).textContent || "").toLowerCase();
+        const ok = (!q || name.indexOf(q) !== -1);
+        row.style.display = ok ? "" : "none";
+        if (ok) shown++;
       });
+      // État « aucun résultat » (retiré dès qu'on efface / qu'il y a des résultats)
+      let nr = box.querySelector(".conv-noresult");
+      if (q && shown === 0) { if (!nr) { nr = document.createElement("p"); nr.className = "conv-noresult muted"; nr.style.cssText = "text-align:center;padding:1rem;font-size:.85rem"; box.appendChild(nr); } nr.textContent = "Aucune conversation pour « " + q + " »"; }
+      else if (nr) nr.remove();
     }
     { const cs = $("convSearch"); if (cs) cs.addEventListener("input", filterConvs); }
     function togglePinBadge(key) {
@@ -12901,16 +12911,20 @@
     // ---- Recherche globale de l'accueil (lieux sûrs + voyageurs) ----
     let allCafes = [];
     let _searchScope = "all";
+    // Rang de pertinence : 0 = commence par la requête (meilleur), 1 = début de mot, 2 = contient, 9 = absent.
+    function _relRank(s, q) { if (!s || !q) return 9; const i = s.indexOf(q); if (i < 0) return 9; if (i === 0) return 0; return s[i - 1] === " " ? 1 : 2; }
     async function renderSearch(q) {
       q = (q || "").trim();
       const box = $("searchResults"); if (!box) return;
       if (typeof window._syncSearchScopes === "function") window._syncSearchScopes(); // catégories visibles si recherche en cours
-      if (!q) { box.innerHTML = ""; return; }
+      // Vraie recherche : seuil de 2 lettres (1 lettre = « tout et n'importe quoi »).
+      if (q.length < 2) { box.innerHTML = q ? '<div class="card"><p class="muted" style="margin:0;font-size:.85rem">Tape au moins 2 lettres pour chercher…</p></div>' : ""; return; }
       const ql = q.toLowerCase();
       const qd = _deburr(q); // version sans accents (« jose » trouve « José »)
       const wantPlaces = _searchScope === "all" || _searchScope === "places";
       const wantPeople = _searchScope === "all" || _searchScope === "people" || _searchScope === "verified";
-      let places = wantPlaces ? allCafes.filter((c) => _deburr(c.name).includes(qd) || _deburr(c.city).includes(qd)).slice(0, 5) : [];
+      let places = wantPlaces ? allCafes.filter((c) => _deburr(c.name).includes(qd) || _deburr(c.city).includes(qd))
+        .sort((a, b) => _relRank(_deburr(a.name), qd) - _relRank(_deburr(b.name), qd)).slice(0, 5) : []; // tri par pertinence (le nom qui commence par la requête d'abord)
       // Recherche de pseudo CÔTÉ SERVEUR (fiable : trouve n'importe quel·le voyageur·se, pas que le cache local).
       let people = [];
       if (wantPeople) {
@@ -12920,7 +12934,8 @@
           const rpc = await db.rpc("search_profiles", { q: q, p_limit: 8 });
           if (!rpc.error && rpc.data) data = rpc.data;
           else { const r = await db.from("profiles").select("id,username,avatar_url,city,is_verified,banned").ilike("username", "%" + q + "%").limit(8); data = r.data; }
-          people = (data || []).filter((p) => p.id !== myUserId && !p.banned);
+          people = (data || []).filter((p) => p.id !== myUserId && !p.banned)
+            .sort((a, b) => _relRank(_deburr(a.username || ""), qd) - _relRank(_deburr(b.username || ""), qd)); // pseudo qui commence par la requête d'abord
           people.forEach((p) => { if (!travelerMap[p.id]) travelerMap[p.id] = p; }); // cache → ouverture de la fiche
         } catch (e) {
           people = Object.values(travelerMap).filter((p) => p.id !== myUserId && !p.banned && _deburr(p.username).includes(qd)).slice(0, 6);
