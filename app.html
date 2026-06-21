@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=658"></script>
+  <script src="sunmates-badges.js?v=659"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -3857,6 +3857,12 @@
       "Quiz du jour": "Quiz of the day", "Réussi": "Passed", "Raté": "Missed", "À tenter": "Try it",
       "Bravo !": "Well done!", "Raté.": "Missed.", "Tu as déjà tenté le quiz du jour.": "You already tried today's quiz.",
       "Mate du jour": "Mate of the day", "en commun": "in common", "Mot du jour": "Word of the day",
+      "Mission du jour": "Mission of the day", "Fait !": "Done!", "Touche quand c'est fait": "Tap when it's done",
+      "Mission accomplie ! +XP ✨": "Mission complete! +XP ✨",
+      "Réponds à la question du jour": "Answer the question of the day", "Tente le quiz du jour": "Try the quiz of the day",
+      "Apprends le mot du jour": "Learn the word of the day", "Ajoute une destination à ta wishlist": "Add a destination to your wishlist",
+      "Va dire bonjour à ton Mate du jour": "Go say hi to your Mate of the day", "Mets à jour ton statut du moment": "Update your current status",
+      "Ajoute ou rafraîchis ta photo de profil": "Add or refresh your profile photo", "Envoie un mot gentil à un·e Mate": "Send a kind word to a Mate",
       "Réessaie dans un instant.": "Try again in a moment.",
       // Corps de modales popInfo (balises <b> incluses dans la clé → traduites en un bloc par i18nT, pas via le DOM)
       "Ton minuteur de rentrée est <b>actif</b>. Touche « Bien arrivé·e » pour l'arrêter, sinon ta position sera diffusée à ton cercle.": "Your home timer is <b>active</b>. Tap “Arrived safely” to stop it, otherwise your location will be shared with your circle.",
@@ -15003,8 +15009,8 @@
       _tbBuilt = true;
       band.classList.remove("hidden");
       band.innerHTML = '<div class="tb-head">☀️ ' + i18nT("Aujourd'hui") + '</div><div class="tb-cards" id="tbCards">' +
-        '<div class="tb-card" id="tbcQ"></div><div class="tb-card" id="tbcZ"></div><div class="tb-card" id="tbcM"></div><div class="tb-card" id="tbcW"></div></div>';
-      _tbQuestion(); _tbQuiz(); _tbMate(); _tbWord();
+        '<div class="tb-card" id="tbcMission"></div><div class="tb-card" id="tbcQ"></div><div class="tb-card" id="tbcZ"></div><div class="tb-card" id="tbcM"></div><div class="tb-card" id="tbcW"></div></div>';
+      _tbMission(); _tbQuestion(); _tbQuiz(); _tbMate(); _tbWord();
       setTimeout(() => { const c = $("tbCards"); if (c && !c.children.length) band.classList.add("hidden"); }, 4500); // tout vide → on masque
     }
     window.renderTodayBand = renderTodayBand;
@@ -15089,6 +15095,24 @@
         card.innerHTML = '<div class="tb-emoji">' + (w.emoji || "🗣️") + '</div><div class="tb-kind">' + i18nT("Mot du jour") + ' · ' + escapeHtml(w.lang || lang) + '</div><div class="tb-q">' + escapeHtml(w.word) + '</div><div class="tb-meta">' + escapeHtml(w.translation || "") + '</div>';
         card.onclick = () => showInfo("🗣️ " + escapeHtml(w.word), "<div style='text-align:center'><p style='font-size:1.15rem;margin:.2rem 0'><b>" + escapeHtml(w.word) + "</b> → " + escapeHtml(w.translation || "") + "</p>" + (w.example ? "<p class='muted' style='font-style:italic'>« " + escapeHtml(w.example) + " »</p>" : "") + "</div>");
       } catch (e) { card.remove(); }
+    }
+    // Mission du jour : petite mission « canapé » 100 % CLIENT (zéro réseau, jamais d'IRL), tournante par jour.
+    // Récompense XP best-effort (1×/jour, anti-triche serveur via grant_solo_xp). XP seulement, jamais de trust.
+    const _TB_MISSIONS = [
+      { e: "💬", t: "Réponds à la question du jour" }, { e: "🧠", t: "Tente le quiz du jour" },
+      { e: "🗣️", t: "Apprends le mot du jour" }, { e: "🌠", t: "Ajoute une destination à ta wishlist" },
+      { e: "🌍", t: "Va dire bonjour à ton Mate du jour" }, { e: "✨", t: "Mets à jour ton statut du moment" },
+      { e: "📸", t: "Ajoute ou rafraîchis ta photo de profil" }, { e: "💛", t: "Envoie un mot gentil à un·e Mate" },
+    ];
+    function _tbMission() {
+      const card = $("tbcMission"); if (!card) return;
+      const d = new Date(); const doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+      const m = _TB_MISSIONS[doy % _TB_MISSIONS.length];
+      const key = "sm_mission_" + d.toISOString().slice(0, 10) + "_" + (myUserId || "x");
+      let done = false; try { done = localStorage.getItem(key) === "1"; } catch (e) {}
+      const paint = () => { card.className = "tb-card" + (done ? " tb-done" : ""); card.innerHTML = '<div class="tb-emoji">' + m.e + '</div><div class="tb-kind">' + i18nT("Mission du jour") + '</div><div class="tb-q">' + i18nT(m.t) + '</div><div class="tb-meta">' + (done ? "✅ " + i18nT("Fait !") : i18nT("Touche quand c'est fait")) + '</div>'; };
+      paint();
+      card.onclick = () => { if (done) return; done = true; try { localStorage.setItem(key, "1"); } catch (e) {} _tbXp("daily_mission"); paint(); if (typeof toast === "function") toast("✅", i18nT("Mission accomplie ! +XP ✨")); if (window.SMSound) SMSound.play("success"); };
     }
 
     async function renderGeoNow() {
