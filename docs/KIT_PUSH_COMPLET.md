@@ -1,5 +1,10 @@
 # 🔔 KIT PUSH COMPLET — SunMates
 
+> 🛑 **MISE À JOUR 21/06 — étape devenue OBLIGATOIRE :** la version actuelle de `send-push`
+> **refuse tout appel** sans le secret `WEBHOOK_SECRET` (côté fonction) + l'en-tête
+> `x-webhook-secret` (côté chaque webhook). C'est aujourd'hui le SEUL chaînon manquant
+> (les appareils s'abonnent déjà). Procédure détaillée à jour : voir **`PUSH_SETUP.md`** (étapes 3 et 5).
+
 Tu as **déjà** le push sur les **messages**. Ce kit ajoute les **demandes de connexion**
 et les **matchs acceptés**, et propre la notif (logo soleil + vibration douce + ouverture
 sur le bon onglet). Tout se fait dans le **dashboard Supabase**, ~5 minutes, zéro outil à installer.

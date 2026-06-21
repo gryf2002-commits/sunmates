@@ -20,6 +20,12 @@ Colle tout le contenu de **`supabase/functions/send-push/index.ts`** → **Deplo
 Edge Functions → `send-push` → onglet **Secrets** (ou « Manage secrets ») → ajoute :
 - `VAPID_PUBLIC` = `BDroKpS-uCezrK7igjxCD9Ih8a5OgPQ3AtOuza220aSx8CzR3LIw9EwkkObyHZVMI1wyT24_w48Ho7CUnAAPZ_0`
 - `VAPID_PRIVATE` = *(la clé privée donnée par Claude dans le chat)*
+- **`WEBHOOK_SECRET`** = *(une longue chaîne secrète que TU inventes, ex. 32+ caractères aléatoires)* — **OBLIGATOIRE**.
+
+> 🔒 **Pourquoi `WEBHOOK_SECRET` ?** La version actuelle de `send-push` **refuse TOUT appel**
+> qui n'apporte pas le bon en-tête `x-webhook-secret` (sécurité par défaut : sans ce secret,
+> aucune notification ne part — c'est le cas aujourd'hui). Tu dois donc (a) poser ce secret ici,
+> puis (b) le renvoyer dans CHAQUE webhook à l'étape 5. Garde-le privé (jamais dans le code/GitHub).
 
 *(SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY sont déjà fournis automatiquement.)*
 
@@ -32,7 +38,9 @@ La **même** fonction `send-push` gère plusieurs cas selon la table : crée **3
 (Menu **Database** → **Webhooks** → **Create a new hook**). Pour chacun :
 - **Type** : *Supabase Edge Functions* → choisir **`send-push`**
   *(ou HTTP Request POST vers `https://ihiwuharxkmkzaxixhae.functions.supabase.co/send-push`)*
-- **Method** : POST, en-têtes par défaut → **Create**.
+- **Method** : POST.
+- **⚠️ HTTP Headers** : ajoute un en-tête **`x-webhook-secret`** = *(la MÊME valeur que `WEBHOOK_SECRET` de l'étape 3)*.
+  Sans cet en-tête, la fonction répond **401** et **aucune notif ne part**. → **Create**.
 
 | # | Table | Events | Ce que ça notifie |
 |---|-------|--------|-------------------|
@@ -56,6 +64,10 @@ La **même** fonction `send-push` gère plusieurs cas selon la table : crée **3
 
 ### Dépannage
 - Rien ne s'affiche ? Vérifie : permission accordée, une ligne dans `push_subscriptions`,
-  les 2 secrets VAPID, « Verify JWT » désactivé, et les **logs** de la fonction
+  les 2 secrets VAPID **+ `WEBHOOK_SECRET`**, « Verify JWT » désactivé, et les **logs** de la fonction
   (Edge Functions → send-push → Logs).
+- **Logs « 401 » / « unauthorized »** = l'en-tête `x-webhook-secret` du webhook ne correspond pas
+  (ou est absent) à la valeur du secret `WEBHOOK_SECRET`. Corrige l'en-tête dans les 3 webhooks (étape 5).
+- État actuel constaté (21/06) : les appareils s'abonnent bien (lignes présentes dans `push_subscriptions`),
+  donc le SEUL chaînon manquant est la paire `WEBHOOK_SECRET` (secret) + en-tête `x-webhook-secret` (webhooks).
 - iPhone : il faut **installer** la PWA (écran d'accueil) ; le push ne marche pas dans Safari onglet.
