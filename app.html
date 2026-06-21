@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=657"></script>
+  <script src="sunmates-badges.js?v=658"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -5585,6 +5585,7 @@
         askNotifPermission();
         if (typeof hydrateIce === "function") hydrateIce(); // contacts d'urgence : base = source de vérité (+ migration douce du local)
         if (typeof hydrateSafeWatch === "function") hydrateSafeWatch(); // veilleur de nuit : restaure une veille active depuis la base
+        if (typeof hydrateWishlist === "function") hydrateWishlist(); // destinations rêvées : base = source de vérité (+ migration douce du local)
       } else {
         _renderedUserId = null;
         myUserId = null;
@@ -7049,9 +7050,29 @@
     }
     // Bucket-list de destinations de rêve (locale)
     // Mémoïsé : relu à CHAQUE rendu du mode Maison → on parse une fois, on invalide à l'écriture.
-    let _wishCache = null;
+    let _wishCache = null, _wishSyncT = null;
     function loadWishlist() { if (_wishCache) return _wishCache; try { _wishCache = JSON.parse(localStorage.getItem("sm_wishlist") || "[]") || []; } catch (e) { _wishCache = []; } return _wishCache; }
-    function saveWishlist(a) { _wishCache = a.slice(0, 30); try { localStorage.setItem("sm_wishlist", JSON.stringify(_wishCache)); } catch (e) {} }
+    // Persistance en base (table wishlist, RLS owner) : on garde le cache string-array (tous les call sites
+    // marchent tels quels) + écriture débouncée (delete+insert de l'état final → pas de course sur des ajouts rapides).
+    function _wishSyncDB() {
+      if (!myUserId || !window.db) return; clearTimeout(_wishSyncT);
+      _wishSyncT = setTimeout(async () => { try { await db.from("wishlist").delete().eq("user_id", myUserId); if (_wishCache && _wishCache.length) await db.from("wishlist").insert(_wishCache.map((d) => ({ user_id: myUserId, destination: String(d).slice(0, 80) }))); } catch (e) {} }, 600);
+    }
+    function saveWishlist(a) { _wishCache = a.slice(0, 30); try { localStorage.setItem("sm_wishlist", JSON.stringify(_wishCache)); } catch (e) {} _wishSyncDB(); }
+    async function hydrateWishlist() {
+      if (!myUserId || !window.db) return;
+      try {
+        const { data, error } = await db.from("wishlist").select("destination,created_at").order("created_at"); if (error) return;
+        let rows = (data || []).map((r) => r.destination).filter(Boolean);
+        if (!rows.length) { // base vide → migration douce du local (une fois)
+          let local = []; try { local = JSON.parse(localStorage.getItem("sm_wishlist") || "[]") || []; } catch (e) {}
+          if (local.length) { _wishCache = local.slice(0, 30); _wishSyncDB(); if (typeof renderWishlist === "function") renderWishlist(); return; }
+        }
+        _wishCache = rows.slice(0, 30); try { localStorage.setItem("sm_wishlist", JSON.stringify(_wishCache)); } catch (e) {}
+        if (typeof renderWishlist === "function") renderWishlist();
+      } catch (e) {}
+    }
+    window.hydrateWishlist = hydrateWishlist;
     function renderWishlist() {
       const box = $("wishlistCard"); if (!box) return;
       const list = loadWishlist();
