@@ -4249,3 +4249,31 @@
        peu plus d'air en-dessous pour bien le distinguer du reste. */
     .secu-view #secuHelp .secu-urgent { margin-bottom: 1.1rem; }
     /* Fin polish onglets v2 */
+
+    /* ======================================================================
+       PERFORMANCE (21/06) — réduire la chauffe/conso GPU sur l'accueil.
+       ====================================================================== */
+    /* 1) App en arrière-plan (onglet caché / écran verrouillé) : on FIGE toutes
+       les animations CSS. Invisible pour l'utilisateur, gros gain batterie/chauffe. */
+    body.app-hidden *, body.app-hidden *::before, body.app-hidden *::after {
+      animation-play-state: paused !important;
+    }
+    /* 2) « Réduire les animations » (réglage système d'accessibilité) : on neutralise
+       les animations/transitions (on les complète quasi-instantanément, sans les SUPPRIMER
+       pour ne jamais masquer un contenu qui apparaît via une animation). Gros gain batterie. */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+    /* 3) MOBILE : ombres simplifiées (le paint d'ombres floues multi-couches sur ~20 cartes
+       à l'écran coûte cher) + backdrop-filter coupé sur les cartes de jeu (flou GPU par frame). */
+    @media (max-width: 820px) {
+      .card, .tile, .cell { box-shadow: 0 8px 22px rgba(8,4,18,.32) !important; }
+      .gcard .gtype, .gcard .grate, .feature .tags span {
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+      }
+    }

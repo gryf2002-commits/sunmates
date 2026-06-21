@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=649"></script>
+  <script src="sunmates-badges.js?v=650"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -13948,10 +13948,14 @@
         // + le fondu de tuiles (compositing coûteux qui « rame »), on cale sur des zooms entiers et on
         // raccourcit l'inertie (le long glissement donnait un rendu « bancal »). Complet inchangé.
         const _lmap = (typeof betaOn === "function" && !betaOn());
+        // PERF : on coupe les animations de carte (zoom/fade/marker) en Lite ET sur mobile (les 2 modes) —
+        // le compositing des tuiles à chaque frame d'anim est la 1re source de chauffe sur téléphone.
+        let _mobilePerf = false; try { _mobilePerf = window.matchMedia && window.matchMedia("(max-width: 820px)").matches; } catch (e) {}
+        const _noMapAnim = _lmap || _mobilePerf;
         homeLeaf = L.map(el, { scrollWheelZoom: false, zoomSnap: _lmap ? 1 : 0.5, wheelPxPerZoomLevel: 120, zoomControl: false, maxZoom: 19,
           // #12 : UN seul monde (fini les cartes côte à côte au dézoom) + bords élastiques doux
           minZoom: 2.4, maxBounds: [[-85, -180], [85, 180]], maxBoundsViscosity: 0.8, worldCopyJump: false,
-          preferCanvas: true, tap: false, zoomAnimation: !_lmap, markerZoomAnimation: !_lmap, fadeAnimation: !_lmap, inertiaDeceleration: _lmap ? 3400 : 2000 }).setView([46.6, 2.3], 4); /* P6 : inertie plus douce, glisse « à la Plans » */
+          preferCanvas: true, tap: false, zoomAnimation: !_noMapAnim, markerZoomAnimation: !_noMapAnim, fadeAnimation: !_noMapAnim, inertiaDeceleration: _lmap ? 3400 : 2000 }).setView([46.6, 2.3], 4); /* P6 : inertie plus douce, glisse « à la Plans » */
         // P4 (retour Maxime, remplace le geste P2.7) : TAP-POUR-EXPLORER · la mini-carte dort
         // (1 doigt = la page défile) ; un TAP dessus la RÉVEILLE (drag direct, 100 % réactive,
         // liseré corail discret) ; toucher la page EN DEHORS la rendort → le scroll de
@@ -16651,6 +16655,13 @@
     }
     function stopGeoWatch() { if (_geoWatchId != null) { try { navigator.geolocation.clearWatch(_geoWatchId); } catch (e) {} _geoWatchId = null; } }
     document.addEventListener("visibilitychange", () => { if (document.hidden) stopGeoWatch(); else startGeoWatchIfGranted(); });
+    // PERF : app en arrière-plan → on FIGE toutes les animations CSS (classe app-hidden) + on stoppe
+    // l'animation de la carte. Invisible pour l'utilisateur, gros gain chauffe/batterie. (geo watch déjà coupé ci-dessus.)
+    document.addEventListener("visibilitychange", () => {
+      const hidden = document.hidden;
+      document.body.classList.toggle("app-hidden", hidden);
+      if (hidden) { try { if (window.homeLeaf && homeLeaf.stop) homeLeaf.stop(); } catch (e) {} }
+    });
     function startGeoWatchIfGranted() {
       try { if (navigator.permissions && navigator.permissions.query) navigator.permissions.query({ name: "geolocation" }).then((st) => { if (st.state === "granted") startGeoWatch(); }); } catch (e) {}
     }
