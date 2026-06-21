@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=638"></script>
+  <script src="sunmates-badges.js?v=639"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -14361,12 +14361,18 @@
     // GEO-TRIGGER : remplit la carte « Ici, maintenant ». S'affiche TOUJOURS (repli moment+idées sans position),
     // puis s'AFFINE avec le vrai quartier + idées IA si la géoloc est déjà accordée (zéro prompt).
     function _geoMeteo() { try { const c = JSON.parse(localStorage.getItem("sm_weather") || "null"); if (c && c.w && typeof _WMO === "function") return c.w.temp + "° " + _WMO(c.w.code); } catch (e) {} return ""; }
-    function _paintGeoNow(card, where, ideas) {
+    function _paintGeoNow(card, where, ideas, country) {
       const moment = escapeHtml(_momentLabel());
       const meteo = _geoMeteo();
       const top = (ideas && ideas.length ? ideas : _ruleSuggest()).slice(0, 3);
-      // Bulle REPLIABLE : en-tête tappable (lieu + moment) + chevron ; les 3 idées se déplient/replient.
-      // (l'état gn-collapsed persiste entre les repaints car on ne remplace QUE innerHTML, pas l'élément #geoNowCard)
+      // GEO-TRIGGER « l'app s'adapte au lieu » : si la géoloc a résolu un PAYS qui a une histoire,
+      // on glisse en tête une idée « le savais-tu ? » qui ouvre la carte histoire de CE pays-là.
+      const ck = country ? _countryKey(country) : "";
+      const st = (ck && typeof SM_COUNTRY_STORIES !== "undefined") ? SM_COUNTRY_STORIES[ck] : null;
+      const ctryIdea = st
+        ? '<button type="button" class="geo-idea geo-idea-ctry" data-ctry="' + escapeHtml(st.name || country) + '">' + (st.emoji || "🌍") + ' ' + i18nT("Le savais-tu ?") + ' · ' + escapeHtml(st.name || country) + '<span class="gi-arrow">›</span></button>'
+        : "";
+      // Bulle REPLIABLE : en-tête tappable (lieu + moment) + chevron ; les idées se déplient/replient.
       card.innerHTML =
         '<button type="button" class="geo-now-head">' +
           '<span class="gn-sun" aria-hidden="true">🌅</span>' +
@@ -14378,14 +14384,20 @@
           '<span class="gn-chev" aria-hidden="true">›</span>' +
         '</button>' +
         '<div class="gn-body"><div class="geo-ideas">' +
+        ctryIdea +
         top.map((s, i) => '<button type="button" class="geo-idea" data-idea="' + i + '">' + escapeHtml(s) + '<span class="gi-arrow">›</span></button>').join("") +
         '</div></div>';
+      // Repli MÉMORISÉ entre les sessions (la bulle reste comme l'utilisateur l'a laissée).
+      try { card.classList.toggle("gn-collapsed", localStorage.getItem("sm_geonow_collapsed") === "1"); } catch (e) {}
       const _head = card.querySelector(".geo-now-head");
       const _syncAria = () => { if (_head) _head.setAttribute("aria-expanded", card.classList.contains("gn-collapsed") ? "false" : "true"); };
-      if (_head) _head.addEventListener("click", () => { card.classList.toggle("gn-collapsed"); _syncAria(); if (window.SMSound) SMSound.play("tap"); });
+      if (_head) _head.addEventListener("click", () => { card.classList.toggle("gn-collapsed"); try { localStorage.setItem("sm_geonow_collapsed", card.classList.contains("gn-collapsed") ? "1" : "0"); } catch (e) {} _syncAria(); if (window.SMSound) SMSound.play("tap"); });
       _syncAria();
-      // GEO-TRIGGER : clic sur une idée → une BULLE qui pop avec une VRAIE suggestion + « Voir » (pas un tab mort).
-      card.querySelectorAll(".geo-idea").forEach((b) => b.addEventListener("click", () => _geoSuggestBubble(card, top[Number(b.dataset.idea)] || "")));
+      // GEO-TRIGGER : clic sur une idée → bulle pays (histoire) OU bulle suggestion réelle + « Voir ».
+      card.querySelectorAll(".geo-idea").forEach((b) => b.addEventListener("click", () => {
+        if (b.dataset.ctry) { if (typeof openCountryStory === "function") openCountryStory(b.dataset.ctry); return; }
+        _geoSuggestBubble(card, top[Number(b.dataset.idea)] || "");
+      }));
       card.classList.remove("hidden");
     }
     // « Ici, maintenant » actionnable : ouvre une bulle avec du CONTENU RÉEL (défi/voyageurs/lieu) + bouton Voir.
@@ -14421,7 +14433,7 @@
         reverseGeoPlace(pos.coords.latitude, pos.coords.longitude, async (p) => {
           const where = (p && p.label) ? p.label : i18nT("Autour de toi");
           let ideas = await aiSuggest({ meteo: _geoMeteo() }); if (!ideas) ideas = _ruleSuggest();
-          _paintGeoNow(card, where, ideas); // affinage : vrai quartier + idées IA
+          _paintGeoNow(card, where, ideas, p && p.country); // affinage : vrai quartier + idées IA + idée pays geo-aware
         });
       } catch (e) {}
     }

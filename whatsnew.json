@@ -1,12 +1,12 @@
 {
-  "candidate": "v638",
+  "candidate": "v639",
   "items": [
     "🧭 Tutos par zone : la visite guidée se découpe en mini-tutos (Accueil, Lieux, Mates, Jeux, Sécurité, Profil), chacun se lance et s'arrête seul à la fin de sa zone.",
     "🌍 La carte se peuple de TOUS les pays : un repère par pays (avatars + noms des voyageur·ses qui y sont + quêtes), et « Découvrir » ouvre de vraies cartes histoires (3 anecdotes vraies + incontournables, 37 pays). Le calque Communauté se recentre quand on l'isole.",
     "🗺️ Petites histoires sur la carte : touche un lieu et découvre un fait fun de sa ville ou de son pays (« Un seul panneau STOP dans tout Paris… »).",
     "🌍 Ton globe façon Polarsteps : tes destinations s'allument avec des halos pulsés et la ROUTE de ton voyage se dessine en arcs lumineux (rotation fluide).",
     "✨ Logo net : plus aucun halo autour de l'icône SunMates (ombre retirée) + header transparent.",
-    "🌅 « Ici & maintenant » devient une bulle repliable : touche l'en-tête pour déplier/replier tes idées du moment.",
+    "🌅 « Ici & maintenant » : bulle repliable (qui garde ton choix), et quand l'app détecte ton pays, une idée « le savais-tu ? » t'ouvre son histoire.",
     "🆘 Sécurité plus claire : les accès rapides sont regroupés en « En cas d'urgence » et « Prévention ».",
     "🔔 Autorisations : l'état (Actif · Bloqué · À activer) s'affiche en pastille claire — sans faux interrupteur, ton navigateur garde le contrôle.",
     "💬 Les bulles de messages arrivent tout en douceur à l'ouverture d'une conversation.",
