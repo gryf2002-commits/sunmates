@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=631"></script>
+  <script src="sunmates-badges.js?v=632"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -344,7 +344,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=630">
+  <link rel="stylesheet" href="styles.css?v=632">
   <!-- ============================================================
        PREVIEW FIXES (inline, scopé preview) — 19/06 : header mobile,
        onglet Messages, idées geo cliquables, centrage, contrôle saison.
@@ -13490,6 +13490,58 @@
           : "Toutes les quêtes sont <b>réaffichées</b> sur la carte (faites + à faire). Re-touche (<b>ON</b>) pour ne garder que celles à faire.");
     }); }
 
+    // ===== 🗺️ Faits / histoires de lieux (carte #5) : enrichit les bulles avec un fait fun du lieu/pays =====
+    const SM_PLACE_FACTS = {
+      // Villes (FR)
+      "paris": "Un seul panneau STOP dans tout Paris… et il a disparu en 2016 🤯",
+      "lyon": "Capitale de la gastronomie ET berceau du cinéma (merci les frères Lumière) 🎬",
+      "marseille": "La plus vieille ville de France : 2 600 ans et toujours le même accent ☀️",
+      "bordeaux": "Son miroir d'eau est le plus grand du monde, parfait pour les photos 📸",
+      "lille": "Sa braderie est le plus grand marché aux puces d'Europe 🛍️",
+      "toulouse": "La ville rose fabrique des avions ET un cassoulet légendaire 🛩️",
+      "nice": "La baie des Anges doit son nom à des requins-anges, pas aux chérubins 😇",
+      "nantes": "Un éléphant mécanique de 12 mètres se balade dans la ville 🐘",
+      "strasbourg": "Sa cathédrale a été le plus haut bâtiment du monde pendant 227 ans ⛪",
+      "montpellier": "Grande ville sans fleuve… mais avec la mer à 11 km 🌊",
+      "biarritz": "Le surf européen est né ici, sur un tournage hollywoodien en 1957 🏄",
+      "annecy": "Son lac est réputé être le plus pur d'Europe 💧",
+      // Pays (FR + alias EN)
+      "france": "Le pays le plus visité au monde : près de 90 millions de voyageurs par an ✈️",
+      "espagne": "2e pays au monde pour les sites classés à l'UNESCO, et la sieste y est presque sacrée 😴",
+      "spain": "2e pays au monde pour les sites classés à l'UNESCO, et la sieste y est presque sacrée 😴",
+      "portugal": "Un des plus vieux pays d'Europe : ses frontières n'ont quasi pas bougé depuis 1139 🏰",
+      "italie": "Plus de sites classés à l'UNESCO que n'importe quel autre pays au monde 🍝",
+      "italy": "Plus de sites classés à l'UNESCO que n'importe quel autre pays au monde 🍝",
+      "allemagne": "Des autoroutes sans limite de vitesse… et plus de 1 500 sortes de saucisses 🌭",
+      "germany": "Des autoroutes sans limite de vitesse… et plus de 1 500 sortes de saucisses 🌭",
+      "royaume-uni": "« Big Ben » est le nom de la cloche, pas de la tour ⏰",
+      "angleterre": "« Big Ben » est le nom de la cloche, pas de la tour ⏰",
+      "united kingdom": "« Big Ben » est le nom de la cloche, pas de la tour ⏰",
+      "pays-bas": "Il y a plus de vélos que d'habitants 🚲",
+      "netherlands": "Il y a plus de vélos que d'habitants 🚲",
+      "grece": "Plus de 6 000 îles, mais seulement environ 227 sont habitées 🏝️",
+      "greece": "Plus de 6 000 îles, mais seulement environ 227 sont habitées 🏝️",
+      "japon": "Un train qui n'a presque jamais de retard et des distributeurs jusqu'en pleine montagne 🚄",
+      "japan": "Un train qui n'a presque jamais de retard et des distributeurs jusqu'en pleine montagne 🚄",
+      "thailande": "Le vrai nom de Bangkok fait 168 lettres : le plus long nom de ville au monde 🛕",
+      "thailand": "Le vrai nom de Bangkok fait 168 lettres : le plus long nom de ville au monde 🛕",
+      "maroc": "Chefchaouen, sa ville entièrement peinte en bleu, est un secret bien gardé 💙",
+      "morocco": "Chefchaouen, sa ville entièrement peinte en bleu, est un secret bien gardé 💙",
+      "islande": "Aucun moustique, et de l'eau chaude qui sort directement du sol ♨️",
+      "iceland": "Aucun moustique, et de l'eau chaude qui sort directement du sol ♨️",
+      "canada": "Plus de lacs que tout le reste du monde réuni 🍁",
+      "etats-unis": "La Statue de la Liberté était un cadeau de la France 🗽",
+      "united states": "La Statue de la Liberté était un cadeau de la France 🗽",
+      "mexique": "Le chocolat, la tomate et le piment viennent d'ici 🌶️",
+      "mexico": "Le chocolat, la tomate et le piment viennent d'ici 🌶️",
+      "bresil": "L'Amazonie, c'est une part énorme de l'oxygène de la planète 🌳",
+      "brazil": "L'Amazonie, c'est une part énorme de l'oxygène de la planète 🌳",
+    };
+    function _smPlaceFact(city, country) {
+      const n = (s) => (typeof _deburr === "function" ? _deburr(s) : String(s || "").toLowerCase()).replace(/,.*$/, "").trim();
+      return SM_PLACE_FACTS[n(city)] || SM_PLACE_FACTS[n(country)] || "";
+    }
+
     async function renderHomeMap() {
       if (typeof L === "undefined") return;
       const el = $("homeMap"); if (!el) return;
@@ -13763,7 +13815,7 @@
         const rateLine = (rt && rt.cnt) ? `<div style="margin:.15rem 0;color:#B5740E;font-weight:700;font-size:.78rem">⭐ ${rt.avg.toFixed(1)} <span class="muted" style="font-weight:600">(${rt.cnt} avis)</span></div>` : "";
         const stats = `<div class="muted" style="margin:.2rem 0">${nCk ? "✅ " + nCk + " ici récemment" : "✨ Sois le·la 1er·ère à checker !"}${c.is_eco ? " · 🌱 éco" : ""}</div>`;
         const mk = L.marker([c.lat, c.lng], { icon: epinIcon("📍", "#FF5A4D") })
-          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${c.address ? `<span class="muted" style="font-size:.72rem">📍 ${escapeHtml(c.address)}</span>` : escapeHtml(c.city || "")}${rateLine}${stats}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button><button class="mappop-btn ghost" data-hmreviews="${c.id}" data-hmrname="${escapeHtml(c.name)}">⭐ Avis</button></div>`);
+          .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${c.address ? `<span class="muted" style="font-size:.72rem">📍 ${escapeHtml(c.address)}</span>` : escapeHtml(c.city || "")}${rateLine}${stats}${(() => { const _f = _smPlaceFact(c.city, c.country); return _f ? `<div class="mappop-fact">💡 ${escapeHtml(_f)}</div>` : ""; })()}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button><button class="mappop-btn ghost" data-hmreviews="${c.id}" data-hmrname="${escapeHtml(c.name)}">⭐ Avis</button></div>`);
         mk.smType = "places"; homeMarkersByType.places.push(mk); allMarkers.push(mk); homeCafeMarkerById[c.id] = mk;
       });
 
