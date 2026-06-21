@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=656"></script>
+  <script src="sunmates-badges.js?v=657"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -552,6 +552,23 @@
     #wwmOv .wwm-act:active, #wwmOv .wwm-sos:active { transform: scale(.97); }
     #wwmOv .wwm-exit { margin-top: .8rem; background: none; border: 1px solid rgba(255,255,255,.25); color: #f3ecf6; border-radius: 999px; padding: .7rem 1.6rem; font: inherit; font-weight: 700; cursor: pointer; }
     #wwmOv .wwm-snd { position: absolute; top: -.2rem; right: -.2rem; background: rgba(255,255,255,.1); border: 0; color: #fff; width: 42px; height: 42px; border-radius: 50%; font-size: 1.05rem; cursor: pointer; }
+    /* « Aujourd'hui » : bande de cartes-rituel quotidien (scroll horizontal) */
+    #todayBand { margin: .6rem 0 .2rem; }
+    #todayBand .tb-head { font-size: .92rem; font-weight: 800; color: var(--ink); margin: 0 0 .5rem; }
+    #todayBand .tb-cards { display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none; margin: 0 -.2rem; padding: .1rem .2rem .3rem; scroll-snap-type: x mandatory; }
+    #todayBand .tb-cards::-webkit-scrollbar { display: none; }
+    #todayBand .tb-card { flex: 0 0 auto; width: 152px; min-height: 122px; scroll-snap-align: start; box-sizing: border-box;
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: .7rem .75rem; cursor: pointer;
+      display: flex; flex-direction: column; gap: .25rem; transition: transform .1s ease, border-color .15s ease; box-shadow: 0 6px 16px -12px rgba(60,30,20,.5); }
+    #todayBand .tb-card:hover { border-color: var(--accent); }
+    #todayBand .tb-card:active { transform: scale(.98); }
+    #todayBand .tb-card .tb-emoji { font-size: 1.5rem; line-height: 1; }
+    #todayBand .tb-card .tb-kind { font-size: .67rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--accent-ink, var(--accent)); }
+    #todayBand .tb-card .tb-q { font-size: .84rem; font-weight: 600; line-height: 1.3; color: var(--ink); flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    #todayBand .tb-card .tb-meta { font-size: .71rem; color: var(--muted); font-weight: 600; margin-top: auto; }
+    #todayBand .tb-card .avatar { width: 42px; height: 42px; }
+    #todayBand .tb-card.tb-done { opacity: .7; }
     /* Idées « Ici, maintenant » : chips horizontales scrollables (compactes, 1 ligne au lieu de 3) */
     #geoNowCard .geo-ideas {
       display: flex; gap: .4rem; overflow-x: auto; margin: .45rem -.85rem -.1rem; padding: .15rem .85rem .2rem;
@@ -2005,6 +2022,10 @@
         <!-- ACTIVATION : checklist « Bien démarrer » (3 étapes) — affichée seulement tant que tout n'est pas fait,
              puis masquée définitivement. Remplie par renderStarterChecklist(). 100% règles, marche Lite + complet. -->
         <div id="starterCard" class="hidden" aria-label="Bien démarrer"></div>
+
+        <!-- « AUJOURD'HUI » : rituel quotidien (raison de revenir chaque jour, même sans personne autour).
+             Cartes Question / Quiz / Mate / Mot du jour, remplies par renderTodayBand() via RPC. -->
+        <div id="todayBand" class="hidden" aria-label="Aujourd'hui"></div>
 
         <!-- GEO-TRIGGER : « Ici, maintenant » → l'app s'adapte au LIEU (quartier + heure + idées). Rempli par renderGeoNow(). -->
         <div id="geoNowCard" class="hidden" role="status" aria-live="polite" style="margin:.55rem 0 .2rem;padding:.7rem .85rem;border-radius:14px;background:var(--accent-soft,rgba(255,209,92,.12));border:1px solid var(--line,rgba(0,0,0,.08))"></div>
@@ -3827,6 +3848,15 @@
       "Rencontre confirmée. Dis-lui de confirmer aussi de son côté !": "Meet confirmed. Ask them to confirm on their side too!",
       "Cherche quelqu'un pour… (ex : une rando demain, le ciné ce soir)": "Looking for someone to… (e.g. a hike tomorrow, the movies tonight)",
       "Je suis dispo": "I'm in", "Ouvre son profil pour lui répondre.": "Open their profile to reply.",
+      // Bande « Aujourd'hui » (rituel quotidien)
+      "Aujourd'hui": "Today", "Question du jour": "Question of the day", "réponses": "answers",
+      "La question du jour": "Today's question", "Ta réponse…": "Your answer…",
+      "Modifier ma réponse": "Edit my answer", "Voir les réponses": "See answers",
+      "Réponse enregistrée ✨": "Answer saved ✨", "Les réponses du jour": "Today's answers",
+      "Sois le premier à répondre ✨": "Be the first to answer ✨",
+      "Quiz du jour": "Quiz of the day", "Réussi": "Passed", "Raté": "Missed", "À tenter": "Try it",
+      "Bravo !": "Well done!", "Raté.": "Missed.", "Tu as déjà tenté le quiz du jour.": "You already tried today's quiz.",
+      "Mate du jour": "Mate of the day", "en commun": "in common", "Mot du jour": "Word of the day",
       "Réessaie dans un instant.": "Try again in a moment.",
       // Corps de modales popInfo (balises <b> incluses dans la clé → traduites en un bloc par i18nT, pas via le DOM)
       "Ton minuteur de rentrée est <b>actif</b>. Touche « Bien arrivé·e » pour l'arrêter, sinon ta position sera diffusée à ton cercle.": "Your home timer is <b>active</b>. Tap “Arrived safely” to stop it, otherwise your location will be shared with your circle.",
@@ -7507,6 +7537,7 @@
       if (typeof renderGeoNow === "function") renderGeoNow(); // geo-trigger « Ici, maintenant »
       if (typeof maybeShowGeoBanner === "function") maybeShowGeoBanner(); // invitation douce à activer la position
       if (typeof renderStarterChecklist === "function") renderStarterChecklist(); // checklist d'activation « Bien démarrer »
+      if (typeof renderTodayBand === "function") renderTodayBand(); // bande « Aujourd'hui » (rituel quotidien)
       if (typeof renderTrips === "function") renderTrips();
       if (typeof maybeWeeklyRecap === "function") maybeWeeklyRecap();
       if (typeof renderGameHub === "function") renderGameHub();
@@ -14942,6 +14973,102 @@
       const x = card.querySelector(".starter-x"); if (x) x.addEventListener("click", () => _starterFinish(card));
     }
     window.renderStarterChecklist = renderStarterChecklist;
+
+    // ===== « Aujourd'hui » : rituel quotidien (Question / Quiz / Mate / Mot du jour) — backend session41 =====
+    let _tbBuilt = false;
+    function _tbXp(key) { try { db.rpc("grant_solo_xp", { p_key: key }).then(function () {}, function () {}); } catch (e) {} } // best-effort, XP only
+    async function renderTodayBand() {
+      const band = $("todayBand"); if (!band || !myUserId || _tbBuilt) return;
+      _tbBuilt = true;
+      band.classList.remove("hidden");
+      band.innerHTML = '<div class="tb-head">☀️ ' + i18nT("Aujourd'hui") + '</div><div class="tb-cards" id="tbCards">' +
+        '<div class="tb-card" id="tbcQ"></div><div class="tb-card" id="tbcZ"></div><div class="tb-card" id="tbcM"></div><div class="tb-card" id="tbcW"></div></div>';
+      _tbQuestion(); _tbQuiz(); _tbMate(); _tbWord();
+      setTimeout(() => { const c = $("tbCards"); if (c && !c.children.length) band.classList.add("hidden"); }, 4500); // tout vide → on masque
+    }
+    window.renderTodayBand = renderTodayBand;
+    async function _tbQuestion() {
+      const card = $("tbcQ"); if (!card) return;
+      try {
+        const { data, error } = await db.rpc("dq_today"); const q = data && data[0]; if (error || !q) { card.remove(); return; }
+        const paint = () => { card.className = "tb-card" + (q.my_answer ? " tb-done" : ""); card.innerHTML = '<div class="tb-emoji">' + (q.emoji || "💬") + '</div><div class="tb-kind">' + i18nT("Question du jour") + '</div><div class="tb-q">' + escapeHtml(q.question) + '</div><div class="tb-meta">' + (q.my_answer ? "✅ " : "") + (q.total || 0) + " " + i18nT("réponses") + '</div>'; };
+        paint(); card.onclick = () => _openDailyQuestion(q, paint);
+      } catch (e) { card.remove(); }
+    }
+    function _openDailyQuestion(q, repaint) {
+      popInfo(q.emoji || "💬", i18nT("La question du jour"),
+        "<p style='text-align:center;font-weight:600;margin:0 0 .6rem'>" + escapeHtml(q.question) + "</p>" +
+        "<textarea id='dqInput' rows='2' maxlength='240' placeholder='" + i18nT("Ta réponse…") + "' style='width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:.55rem .7rem;font:inherit;resize:none;background:var(--card);color:var(--ink)'>" + escapeHtml(q.my_answer || "") + "</textarea>" +
+        "<button class='btn-primary btn-block' id='dqSave' style='margin-top:.6rem'>" + (q.my_answer ? i18nT("Modifier ma réponse") : i18nT("Répondre")) + "</button>" +
+        "<button class='btn-ghost btn-block' id='dqFeed' style='margin-top:.4rem'>👀 " + i18nT("Voir les réponses") + "</button>");
+      setTimeout(() => {
+        const inp = $("dqInput"), save = $("dqSave"), feed = $("dqFeed");
+        if (save) save.onclick = async () => {
+          const a = (inp && inp.value || "").trim(); if (!a) return;
+          try { await db.rpc("dq_answer", { p_question_id: q.id, p_answer: a }); } catch (e) {}
+          const wasNew = !q.my_answer; q.my_answer = a; if (wasNew) { q.total = (q.total || 0) + 1; _tbXp("daily_question"); }
+          if (typeof repaint === "function") repaint();
+          const ov = $("popInfoOv"); if (ov) ov.classList.add("hidden");
+          if (typeof toast === "function") toast("💬", i18nT("Réponse enregistrée ✨"));
+        };
+        if (feed) feed.onclick = () => _openDqFeed(q);
+      }, 40);
+    }
+    async function _openDqFeed(q) {
+      popInfo("👀", i18nT("Les réponses du jour"), '<div id="dqFeedList" style="text-align:left;max-height:50vh;overflow:auto"><p class="muted" style="font-size:.84rem">' + i18nT("Chargement…") + '</p></div>');
+      try {
+        const { data } = await db.rpc("dq_feed", { p_question_id: q.id, p_limit: 20 }); const box = $("dqFeedList"); if (!box) return;
+        box.innerHTML = (data && data.length) ? data.map((a) => '<div class="qrow" style="padding:.4rem .2rem;align-items:flex-start">' + avatarMarkup(a.username, a.avatar_url) + '<div style="flex:1"><b style="font-size:.82rem">' + escapeHtml(a.username || "Voyageur") + '</b><div style="font-size:.86rem;margin-top:.1rem">' + escapeHtml(a.answer || "") + '</div></div></div>').join("") : ('<p class="muted" style="text-align:center;padding:1rem">' + i18nT("Sois le premier à répondre ✨") + '</p>');
+      } catch (e) {}
+    }
+    async function _tbQuiz() {
+      const card = $("tbcZ"); if (!card) return;
+      try {
+        const { data } = await db.rpc("quiz_today"); const z = data && data[0]; if (!z) { card.remove(); return; }
+        const paint = () => { card.className = "tb-card" + (z.done ? " tb-done" : ""); const cat = z.category === "securite" ? "🛡️" : "🌍"; card.innerHTML = '<div class="tb-emoji">' + (z.emoji || "🧠") + '</div><div class="tb-kind">' + cat + ' ' + i18nT("Quiz du jour") + '</div><div class="tb-q">' + escapeHtml(z.question) + '</div><div class="tb-meta">' + (z.done ? (z.was_correct ? "✅ " + i18nT("Réussi") : "❌ " + i18nT("Raté")) : i18nT("À tenter")) + '</div>'; };
+        paint(); card.onclick = () => _openDailyQuiz(z, paint);
+      } catch (e) { card.remove(); }
+    }
+    function _openDailyQuiz(z, repaint) {
+      const choices = z.choices || [];
+      popInfo(z.emoji || "🧠", i18nT("Quiz du jour"),
+        "<p style='text-align:center;font-weight:600;margin:0 0 .6rem'>" + escapeHtml(z.question) + "</p>" +
+        "<div id='quizChoices'>" + choices.map((c, i) => "<button class='btn-ghost btn-block quiz-choice' data-qc='" + i + "' style='margin-bottom:.4rem;text-align:left'>" + escapeHtml(c) + "</button>").join("") + "</div>" +
+        "<div id='quizResult' style='margin-top:.4rem'></div>");
+      setTimeout(() => {
+        document.querySelectorAll(".quiz-choice").forEach((b) => b.onclick = async () => {
+          if (z.done) return;
+          const i = Number(b.dataset.qc); let r = null;
+          try { const { data } = await db.rpc("quiz_answer", { p_quiz_id: z.id, p_choice: i }); r = data && (Array.isArray(data) ? data[0] : data); } catch (e) {}
+          if (!r) return;
+          z.done = true; z.was_correct = r.correct; if (r.correct) _tbXp("daily_quiz");
+          document.querySelectorAll(".quiz-choice").forEach((x, xi) => { x.disabled = true; if (xi === r.answer_index) x.style.borderColor = "var(--accent)"; if (xi === i && !r.correct) x.style.opacity = ".5"; });
+          const res = $("quizResult"); if (res) res.innerHTML = "<div style='background:var(--accent-soft);border-radius:12px;padding:.6rem .7rem;font-size:.86rem'>" + (r.correct ? "✅ " + i18nT("Bravo !") : "❌ " + i18nT("Raté.")) + " " + escapeHtml(r.explanation || "") + "</div>";
+          if (typeof repaint === "function") repaint();
+          if (window.SMSound) SMSound.play(r.correct ? "success" : "tap");
+        });
+        if (z.done) { const res = $("quizResult"); if (res) res.innerHTML = "<p class='muted' style='text-align:center;font-size:.82rem'>" + i18nT("Tu as déjà tenté le quiz du jour.") + "</p>"; document.querySelectorAll(".quiz-choice").forEach((x) => x.disabled = true); }
+      }, 40);
+    }
+    async function _tbMate() {
+      const card = $("tbcM"); if (!card) return;
+      try {
+        const { data } = await db.rpc("mate_of_the_day"); const m = data && data[0]; if (!m) { card.remove(); return; }
+        const si = Array.isArray(m.shared_interests) ? m.shared_interests.length : (m.shared_interests || 0);
+        card.innerHTML = '<div class="tb-kind">🌍 ' + i18nT("Mate du jour") + '</div>' + avatarMarkup(m.username, m.avatar_url) + '<div class="tb-q" style="-webkit-line-clamp:1">' + escapeHtml(m.username || "") + (m.is_verified ? " ✓" : "") + '</div><div class="tb-meta">' + escapeHtml(m.city || "") + (si ? " · " + si + " " + i18nT("en commun") : "") + '</div>';
+        card.onclick = () => { travelerMap[m.id] = travelerMap[m.id] || m; goToTab("connexions"); setTimeout(() => openTravelerProfile(travelerMap[m.id]), 60); };
+      } catch (e) { card.remove(); }
+    }
+    async function _tbWord() {
+      const card = $("tbcW"); if (!card) return;
+      try {
+        const langs = (myProfile && myProfile.languages) || [];
+        const lang = langs.find((l) => /espa|ital|portug|deuts|engl/i.test(l)) || "Español";
+        const { data } = await db.rpc("word_today", { p_lang: lang }); const w = data && data[0]; if (!w) { card.remove(); return; }
+        card.innerHTML = '<div class="tb-emoji">' + (w.emoji || "🗣️") + '</div><div class="tb-kind">' + i18nT("Mot du jour") + ' · ' + escapeHtml(w.lang || lang) + '</div><div class="tb-q">' + escapeHtml(w.word) + '</div><div class="tb-meta">' + escapeHtml(w.translation || "") + '</div>';
+        card.onclick = () => showInfo("🗣️ " + escapeHtml(w.word), "<div style='text-align:center'><p style='font-size:1.15rem;margin:.2rem 0'><b>" + escapeHtml(w.word) + "</b> → " + escapeHtml(w.translation || "") + "</p>" + (w.example ? "<p class='muted' style='font-style:italic'>« " + escapeHtml(w.example) + " »</p>" : "") + "</div>");
+      } catch (e) { card.remove(); }
+    }
 
     async function renderGeoNow() {
       const card = $("geoNowCard"); if (!card) return;
