@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=644"></script>
+  <script src="sunmates-badges.js?v=645"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -5458,6 +5458,7 @@
       } else {
         _renderedUserId = null;
         myUserId = null;
+        _iceCache = null; // vide le cache des contacts d'urgence (sinon l'autre compte en hérite sur appareil partagé)
         loadNotified(null); // vide le cache de notifs au logout (sinon l'autre compte en hérite)
         unsubscribeCircle();
         unsubscribeMessages();
@@ -9666,21 +9667,26 @@
     // ---- Mes contacts d'urgence (ICE) : synchronisés sur TON compte (table emergency_contacts,
     //      RLS owner-only → toi seul·e y as accès), avec repli localStorage hors-ligne. Appel en 1 geste. ----
     let _iceCache = null; // null = pas encore hydraté depuis la base ; tableau = source de vérité en mémoire
+    let _iceHydrating = false; // garde anti-réentrance (évite une double-migration → contacts dupliqués)
+    // Clé localStorage CLOISONNÉE PAR COMPTE (sinon, sur un appareil partagé, les contacts d'un compte
+    // pourraient s'afficher sous un autre). On lit aussi l'ancienne clé globale « sm_ice » pour migrer en douceur.
+    function _iceKey() { return "sm_ice_" + (myUserId || "anon"); }
     function loadIce() {
       if (Array.isArray(_iceCache)) return _iceCache;
-      try { return JSON.parse(localStorage.getItem("sm_ice") || "[]"); } catch (e) { return []; }
+      try { return JSON.parse(localStorage.getItem(_iceKey()) || localStorage.getItem("sm_ice") || "[]"); } catch (e) { return []; }
     }
-    function saveIce(a) { _iceCache = a; try { localStorage.setItem("sm_ice", JSON.stringify(a)); } catch (e) {} }
+    function saveIce(a) { _iceCache = a; try { localStorage.setItem(_iceKey(), JSON.stringify(a)); } catch (e) {} }
     // Hydrate les contacts depuis la base au login, avec MIGRATION DOUCE : si la base est vide
     // mais que l'appareil a déjà des contacts (ancien stockage local), on les pousse en base une fois.
     async function hydrateIce() {
-      if (!myUserId || !window.db) return;
+      if (!myUserId || !window.db || _iceHydrating) return;
+      _iceHydrating = true;
       try {
         const { data, error } = await db.from("emergency_contacts").select("*").order("created_at");
         if (error) return; // base indispo → on garde le repli local
         let rows = data || [];
         if (!rows.length) {
-          let local = []; try { local = JSON.parse(localStorage.getItem("sm_ice") || "[]"); } catch (e) {}
+          let local = []; try { local = JSON.parse(localStorage.getItem(_iceKey()) || localStorage.getItem("sm_ice") || "[]"); } catch (e) {}
           if (local.length) {
             const ins = local.slice(0, 3).map((c) => ({ user_id: myUserId, name: c.name, phone: c.phone, relation: c.relation || null }));
             const { data: inserted } = await db.from("emergency_contacts").insert(ins).select();
@@ -9688,8 +9694,9 @@
           }
         }
         saveIce(rows.map((r) => ({ id: r.id, name: r.name, phone: r.phone, relation: r.relation })));
+        try { localStorage.removeItem("sm_ice"); } catch (e) {} // purge l'ancienne clé globale (anti-fuite inter-comptes)
         if (typeof renderIce === "function") renderIce();
-      } catch (e) {}
+      } catch (e) {} finally { _iceHydrating = false; }
     }
     window.hydrateIce = hydrateIce;
     function renderIce() {
@@ -9919,12 +9926,23 @@
       // - matches_connections : uniquement MES lignes (filtre serveur).
       // - profiles : cap à 1000 (les plus récemment actifs) pour l'annuaire Découvrir,
       //   complété ensuite par les profils manquants de mes connexions (toujours exacts).
-      const [{ data: profilesRaw }, { data: conns }, { data: msgs }, { data: blk }] = await Promise.all([
-        db.from("profiles").select("*").order("last_seen_at", { ascending: false, nullsFirst: false }).limit(1000),
-        db.from("matches_connections").select("*").or(`user_a.eq.${myId},user_b.eq.${myId}`),
-        db.from("messages").select("sender_id,recipient_id,content,created_at").order("created_at", { ascending: false }).limit(300),
-        db.from("blocks").select("blocked").eq("blocker", myId),
-      ]);
+      let profilesRaw, conns, msgs, blk;
+      try {
+        const _r = await Promise.all([
+          db.from("profiles").select("*").order("last_seen_at", { ascending: false, nullsFirst: false }).limit(1000),
+          db.from("matches_connections").select("*").or(`user_a.eq.${myId},user_b.eq.${myId}`),
+          db.from("messages").select("sender_id,recipient_id,content,created_at").order("created_at", { ascending: false }).limit(300),
+          db.from("blocks").select("blocked").eq("blocker", myId),
+        ]);
+        profilesRaw = _r[0].data; conns = _r[1].data; msgs = _r[2].data; blk = _r[3].data;
+      } catch (e) {
+        // Réseau coupé : ne JAMAIS laisser les listes figées sur les skeletons. On affiche un état clair ;
+        // le poll/_refreshConnsSoon réessaiera tout seul. (On ne touche pas une liste déjà remplie.)
+        ["travelersList", "convList", "requestsList"].forEach((id) => {
+          const el = $(id); if (el && /skel/.test(el.innerHTML)) el.innerHTML = emptyState("📡", i18nT("Connexion interrompue"), i18nT("Vérifie ta connexion, on réessaie tout seul."), null);
+        });
+        return;
+      }
       let profiles = profilesRaw || [];
       { // garantit que MON profil + ceux de mes connexions/demandes sont toujours présents
         const have = new Set(profiles.map((p) => p.id));
@@ -12395,8 +12413,10 @@
             }
             $("chatBody").insertAdjacentHTML("beforeend", bubbleHtml(m));
             scrollChatBottom();
-            // Un message de l'autre arrive et j'ai le chat ouvert → je le lis : accusé de lecture.
-            if (m.sender_id === currentChatUserId) sendReadReceipt();
+            // Un message de l'autre arrive et j'ai le chat ouvert → je le lis : accusé de lecture
+            // + on met à jour la « seen-map » locale, sinon le prochain loadUnread le re-compte non-lu
+            // (pastille fantôme qui réapparaît alors que la conversation est sous les yeux).
+            if (m.sender_id === currentChatUserId) { sendReadReceipt(); if (typeof markMsgsSeen === "function") markMsgsSeen(currentChatUserId); }
           } else if (m.recipient_id === myUserId && m.sender_id !== myUserId && notifyOnce("msg:" + m.id)) {
             // message reçu hors conversation ouverte → toast + pastille
             if (typeof unhideConv === "function") unhideConv(m.sender_id); // un nouveau message ré-affiche la conv
@@ -16434,6 +16454,7 @@
     }
     function checkGeofences(g) {
       try {
+        if (typeof betaOn === "function" && !betaOn()) return; // Lite : pas de quêtes (gameplay) → pas de toast « +XP ici »
         if (!g || typeof haversineKm !== "function" || typeof _questGeoList !== "function") return;
         _questGeoList(true).filter((q) => q.lat != null && q.lng != null).forEach((q) => {
           const km = haversineKm(g, { lat: q.lat, lng: q.lng });

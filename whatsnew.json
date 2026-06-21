@@ -1,10 +1,10 @@
 {
-  "candidate": "v644",
+  "candidate": "v645",
   "items": [
-    "👀 Lisibilité renforcée : en mode jour, le texte corail (petits labels, pourcentages, liens) passe à un corail un peu plus profond pour être bien lisible sur fond clair — conforme aux standards d'accessibilité. Le corail vif de la marque reste sur les boutons, icônes et dégradés.",
-    "🆘 Tes contacts d'urgence te suivent partout : enregistrés sur ton compte (privés) au lieu d'un seul appareil ; tes contacts déjà saisis sont récupérés automatiquement.",
-    "🔑 Mot de passe oublié : depuis l'écran de connexion, touche « Mot de passe oublié ? », reçois un lien par email, et choisis un nouveau mot de passe en deux clics.",
-    "🌅 Le bandeau « hors-ligne » se fait tout doux : fini le rouge qui fait peur, place à un ton chaleureux et un message qui rassure.",
-    "🔐 Connexion plus pratique : ton gestionnaire de mots de passe et le remplissage automatique fonctionnent enfin, et la touche « Entrée » valide toujours."
+    "🛠️ Fiabilité : les notifications de messages sont plus justes (fini la pastille « non lu » qui réapparaît alors que tu lis la conversation), et les listes ne restent plus bloquées si ta connexion saute une seconde (un message clair + nouvel essai automatique).",
+    "🔒 Contacts d'urgence cloisonnés par compte : sur un appareil partagé, chaque compte ne voit QUE ses propres contacts.",
+    "👀 Lisibilité renforcée (mode jour) : le texte corail passe à un corail un peu plus profond pour être bien lisible sur fond clair. Le corail vif de la marque reste sur les boutons et icônes.",
+    "🆘 Tes contacts d'urgence te suivent partout : enregistrés sur ton compte (privés), récupérés automatiquement.",
+    "🔑 Mot de passe oublié : depuis l'écran de connexion, reçois un lien par email et choisis un nouveau mot de passe en deux clics."
   ]
 }
