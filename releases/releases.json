@@ -1,5 +1,23 @@
 [
   {
+    "v": "v630 🎉",
+    "date": "2026-06-21",
+    "note": "Jalon (multiple de 30) · suite session 21/06 : header allégé en TRANSPARENT (fondu avec la page) + LOGO net sans aucun halo gris (vrai coupable de la « cassure » : l'ombre du logo était grise). Avant : v624 bulle « Ici & maintenant » repliable, v625→628 chasse au bug header.",
+    "file": "v630.html"
+  },
+  {
+    "v": "v623",
+    "date": "2026-06-21",
+    "note": "Session 21/06 (lot UX) · Sécurité regroupée « En cas d'urgence » / « Prévention », autorisations en PASTILLES d'état (Actif/Bloqué/À activer, sans faux interrupteur), tuiles d'aide Lite enfin lisibles (pleine largeur), micro-anim des bulles de chat, info-bulles de carte lisibles en jour, cibles tactiles ~44px. + fix du garde-fou smoke.",
+    "file": "v623.html"
+  },
+  {
+    "v": "v593",
+    "date": "2026-06-20",
+    "note": "Refonte v2 · geo-trigger central « Ici, maintenant » (l'app s'adapte au lieu), trust engine, fusion Mates→Messages (recherche / épingle / réactions), onboarding refait, autorisations cliquables.",
+    "file": "v593.html"
+  },
+  {
     "v": "v550 🎉",
     "date": "2026-06-17",
     "note": "Jalon · grande REFONTE de la version LITE : passée d'un simple calque CSS à une vraie app neutre/MVP. 2 DA natives propres (loader DA + console DA admin coupés en Lite → fini la DA beta qui bavait), ZÉRO gaming visible (carte sans quêtes, plus de XP/badges/Gold, check-in simple, toasts gaming coupés), nav 5 onglets, onboarding clair, profil fusionné + raccourcis utiles, sécurité TOUT EN UNE PAGE (urgences en haut), carte en RASTER (marqueurs ancrés, fluide), header épuré (toggle thème dans Réglages), emojis & ponctuation nettoyés. Mode COMPLET strictement inchangé (vérifié dual-mode + simulation admin).",
