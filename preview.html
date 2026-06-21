@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=640"></script>
+  <script src="sunmates-badges.js?v=641"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -1405,6 +1405,25 @@
   <!-- Bandeau d'état réseau (hors-ligne / Supabase injoignable) -->
   <div id="netBanner" class="net-banner">☀️ Hors-ligne · on reprend dès que le réseau revient</div>
 
+  <!-- Mot de passe oublié — écran « nouveau mot de passe ». S'ouvre quand on arrive via le lien reçu par email
+       (Supabase émet l'évènement PASSWORD_RECOVERY). Caché le reste du temps. -->
+  <div id="pwRecoveryOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="Choisir un nouveau mot de passe" style="position:fixed;inset:0;z-index:9600;display:flex;align-items:center;justify-content:center;padding:1.2rem;background:rgba(20,10,36,.74);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)">
+    <div style="width:100%;max-width:380px;background:var(--card,#271641);border:1px solid var(--line,rgba(255,255,255,.1));border-radius:20px;box-shadow:0 24px 60px rgba(10,6,18,.5);padding:1.3rem 1.2rem">
+      <div style="text-align:center;font-size:1.9rem;line-height:1">🌅</div>
+      <h2 style="font-family:'Fraunces',Georgia,serif;text-align:center;margin:.35rem 0 .15rem;color:var(--ink,#fff)">Nouveau mot de passe</h2>
+      <p style="text-align:center;color:var(--muted);font-size:.85rem;margin:0 0 1rem">Choisis ton nouveau mot de passe (8 caractères minimum).</p>
+      <form onsubmit="return false">
+        <!-- Champ email caché (rempli depuis la session de récupération) : aide les gestionnaires de mots de passe
+             à associer le nouveau mot de passe au bon compte (recommandation a11y/autofill de Chrome). -->
+        <input id="pwRecoveryEmail" type="email" autocomplete="username" readonly aria-hidden="true" tabindex="-1" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" />
+        <input id="pwRecoveryNew" type="password" placeholder="Nouveau mot de passe" autocomplete="new-password" style="width:100%;margin-bottom:.5rem" />
+        <input id="pwRecoveryNew2" type="password" placeholder="Confirme le mot de passe" autocomplete="new-password" style="width:100%" />
+        <button type="button" id="pwRecoverySave" class="btn-primary btn-block" style="margin-top:.9rem">Enregistrer mon mot de passe</button>
+      </form>
+      <div class="msg" id="pwRecoveryMsg" style="text-align:center;margin-top:.55rem"></div>
+    </div>
+  </div>
+
   <!-- Bannière « Installer l'app » (PWA) -->
   <div id="pwaBanner" class="pwa-banner">
     <div class="pwa-ic">📲</div>
@@ -1838,6 +1857,10 @@
           </div>
           <div class="auth-play"><button type="button" id="authPlay" aria-label="Se connecter">Se connecter</button></div>
           <div class="msg" id="authMsg" style="text-align:center"></div>
+          <!-- Mot de passe oublié (réactivé v640, pour tout le monde) : visible en mode Connexion seulement. -->
+          <div id="authForgotRow" style="text-align:center;margin-top:.5rem">
+            <button type="button" id="authForgotBtn" style="background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font:inherit;font-size:.82rem">Mot de passe oublié ?</button>
+          </div>
         </form>
 
         <!-- Bloc Pro / B2B : 4 tuiles séparées, cliquables → chacune pop son détail (pas de redirect direct) -->
@@ -5212,6 +5235,7 @@
       $("tabLogin").classList.toggle("active", mode === "login");
       $("tabSignup").classList.toggle("active", mode === "signup");
       show($("authPseudoWrap"), mode === "signup"); // P2.5 : le pseudo ne sert qu'à l'inscription
+      { const _fr = $("authForgotRow"); if (_fr) show(_fr, mode === "login"); } // « Mot de passe oublié ? » : connexion seulement
       const proBtn = $("tabPro"); if (proBtn) proBtn.classList.toggle("active", mode === "pro");
       $("authMsg").textContent = "";
       // Onglet Pro : la page de connexion change DU TOUT AU TOUT (pas d'identifiants, juste « Démarrer »).
@@ -5332,6 +5356,44 @@
       t.setAttribute("aria-label", show ? "Masquer le mot de passe" : "Afficher le mot de passe");
     });
 
+    // ====================== MOT DE PASSE OUBLIÉ (réactivé v640, pour tout le monde) ======================
+    // 1) Depuis l'écran de connexion : on envoie un lien de réinitialisation par email.
+    //    redirectTo = l'app elle-même → au clic sur le lien, Supabase ouvre l'app + émet PASSWORD_RECOVERY.
+    { const fb = $("authForgotBtn"); if (fb) fb.addEventListener("click", async () => {
+      const email = ($("authEmail").value || "").trim();
+      const msg = $("authMsg");
+      if (!email) { msg.style.color = "var(--danger)"; msg.textContent = "Entre d'abord ton email ci-dessus, puis touche « Mot de passe oublié ? »."; const e = $("authEmail"); if (e) e.focus(); return; }
+      await once("auth:forgot", async () => {
+        msg.style.color = "var(--muted)"; msg.textContent = "Un instant…";
+        const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+        // On ne révèle JAMAIS si l'adresse a un compte (sécurité) → message neutre quoi qu'il arrive.
+        if (error && /rate|too many|429/i.test((error.message || "") + (error.code || ""))) { msg.style.color = "var(--danger)"; msg.textContent = _authErr(error); }
+        else if (error) { console.warn("[SunMates] reset error:", error); msg.style.color = "var(--danger)"; msg.textContent = _authErr(error); }
+        else { msg.style.color = "var(--ok)"; msg.textContent = "📧 Si un compte existe pour cette adresse, un mail vient de partir pour choisir un nouveau mot de passe (pense aux spams)."; }
+      });
+    }); }
+
+    // 2) Écran « nouveau mot de passe » : ouvert quand on arrive via le lien email (déclencheur dans onAuthStateChange).
+    function showPwRecovery() {
+      const ov = $("pwRecoveryOverlay"); if (!ov) return;
+      ov.classList.remove("hidden");
+      const inp = $("pwRecoveryNew"); if (inp) setTimeout(() => { try { inp.focus(); } catch (e) {} }, 60);
+      // Renseigne le champ email caché depuis la session de récupération (pour le gestionnaire de mots de passe).
+      try { db.auth.getUser().then(({ data }) => { const em = data && data.user && data.user.email; const f = $("pwRecoveryEmail"); if (em && f) f.value = em; }); } catch (e) {}
+    }
+    { const sv = $("pwRecoverySave"); if (sv) sv.addEventListener("click", async () => {
+      const p1 = (($("pwRecoveryNew") || {}).value) || "", p2 = (($("pwRecoveryNew2") || {}).value) || "";
+      const m = $("pwRecoveryMsg");
+      if (p1.length < 8) { m.style.color = "var(--danger)"; m.textContent = "Mot de passe trop court : 8 caractères minimum."; return; }
+      if (p1 !== p2) { m.style.color = "var(--danger)"; m.textContent = "Les deux mots de passe ne correspondent pas."; return; }
+      await once("auth:recovery-save", async () => {
+        m.style.color = "var(--muted)"; m.textContent = "Un instant…";
+        const { error } = await db.auth.updateUser({ password: p1 });
+        if (error) { m.style.color = "var(--danger)"; m.textContent = errFr(error); }
+        else { m.style.color = "var(--ok)"; m.textContent = "✅ C'est tout bon ! On te connecte…"; setTimeout(() => { try { location.replace(location.origin + location.pathname); } catch (e) { location.reload(); } }, 1000); }
+      });
+    }); }
+
     // #5 : on RECHARGE après déconnexion (comme le ban-logout) → on repart d'un état 100 % propre
     // (abonnements temps réel, dédup notifs, listes en mémoire) ; sinon au changement de compte
     // toutes les anciennes notifs « revenaient ».
@@ -5341,7 +5403,12 @@
     // IMPORTANT : on diffère render hors du callback (setTimeout 0). Sinon, faire des
     // requêtes db.from(...) DANS le callback onAuthStateChange provoque un deadlock
     // (verrou interne de Supabase) → au rechargement, plus rien ne se charge.
-    db.auth.onAuthStateChange((_event, session) => { setTimeout(() => render(session), 0); });
+    db.auth.onAuthStateChange((_event, session) => {
+      // Arrivée via le lien « mot de passe oublié » → on affiche l'écran « nouveau mot de passe »
+      // (et PAS l'app), même si une session de récupération existe déjà.
+      if (_event === "PASSWORD_RECOVERY") { setTimeout(showPwRecovery, 0); return; }
+      setTimeout(() => render(session), 0);
+    });
 
     let _renderedUserId = null; // anti-flicker : ne relance PAS tout le pipeline à chaque event auth (TOKEN_REFRESHED, SIGNED_IN répétés…)
     async function render(session) {
