@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=630"></script>
+  <script src="sunmates-badges.js?v=631"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -6179,7 +6179,7 @@
       function stopRotate() { if (globe) { try { globe.controls().autoRotate = false; } catch (e) {} } }
       function startRotate() {
         if (!globe) return;
-        try { const c = globe.controls(); c.autoRotate = true; c.autoRotateSpeed = 0.45; } catch (e) {}
+        try { const c = globe.controls(); c.autoRotate = true; c.autoRotateSpeed = 0.6; } catch (e) {}
       }
 
       // Centre la vue sur le barycentre des points.
@@ -6247,6 +6247,7 @@
         if (!globe) return;
         // vide les autres couches
         globe.pointsData([]).arcsData([]);
+        if (typeof globe.ringsData === "function") { try { globe.ringsData([]); } catch (e) {} }
         if (typeof globe.heatmapsData === "function") { try { globe.heatmapsData([]); } catch (e) {} }
         if (countriesFeatures) {
           if (!countryStats) computeCountryStats(countriesFeatures, lastTrips);
@@ -6283,19 +6284,20 @@
         // Reset layers
         const noHeat = () => { if (typeof globe.heatmapsData === "function") { try { globe.heatmapsData([]); } catch (e) {} } };
         if (mode === "countries") { enterCountries(); return; }
+        const noRings = () => { if (typeof globe.ringsData === "function") { try { globe.ringsData([]); } catch (e) {} } };
         if (mode === "points") {
-          globe.pointsData(pts).arcsData([]); noHeat();
+          globe.pointsData(pts).ringsData(pts).arcsData([]); noHeat(); // Polarsteps : destinations + halos pulsés
         } else if (mode === "arcs") {
           const sorted = tripsWithCoords(lastTrips).slice().sort((a, b) => String(a.start_date || "").localeCompare(String(b.start_date || "")));
           const arcs = [];
           for (let i = 0; i < sorted.length - 1; i++) {
             arcs.push({ startLat: sorted[i].lat, startLng: sorted[i].lng, endLat: sorted[i + 1].lat, endLng: sorted[i + 1].lng });
           }
-          globe.pointsData(pts)
+          globe.pointsData(pts).ringsData(pts) // Polarsteps : la ROUTE du voyage + halos pulsés sur chaque étape
             .arcStartLat("startLat").arcStartLng("startLng").arcEndLat("endLat").arcEndLng("endLng")
             .arcsData(arcs); noHeat();
         } else if (mode === "heat") {
-          globe.arcsData([]);
+          globe.arcsData([]); noRings();
           const heatPts = (globeCheckins && globeCheckins.length)
             ? globeCheckins.map((c) => ({ lat: c.lat, lng: c.lng, weight: c.weight || 1 }))
             : pts.map((p) => ({ lat: p.lat, lng: p.lng, weight: 1 }));
@@ -6356,7 +6358,7 @@
 
         buildGlobe();
         hideState();
-        setMode("points");
+        setMode(withCoords.length > 1 ? "arcs" : "points"); // Polarsteps : 2+ escales → la ROUTE par défaut
         focusOnTrips(trips);
         startRotate();
         const stage = $("globeStage");
