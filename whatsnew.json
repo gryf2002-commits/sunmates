@@ -1,7 +1,7 @@
 {
-  "candidate": "v629",
+  "candidate": "v630",
   "items": [
-    "✨ Logo net : fini le halo gris autour de l'icône SunMates (ombre grise → corail discret) + header transparent.",
+    "✨ Logo net : plus aucun halo autour de l'icône SunMates (ombre retirée) + header transparent.",
     "🌅 « Ici & maintenant » devient une bulle repliable : touche l'en-tête pour déplier/replier tes idées du moment.",
     "🆘 Sécurité plus claire : les accès rapides sont regroupés en « En cas d'urgence » et « Prévention ».",
     "🔔 Autorisations : l'état (Actif · Bloqué · À activer) s'affiche en pastille claire — sans faux interrupteur, ton navigateur garde le contrôle.",

@@ -3001,10 +3001,10 @@
 
     h1, h2, h3 { color: var(--ink); }
     .topbar { background: linear-gradient(var(--bg) 62%, rgba(255,244,230,0)); border-bottom: 0; }
-    /* 21/06 (Maxime : « case grise / halo gris autour du logo ») : l'ombre était GRISE (rgba(45,38,52,.16))
-       et ressortait comme un cadre sale autour du logo (surtout sur AMOLED, header transparent). → ombre
-       CHAUDE corail très discrète, fondue dans l'icône orange = lift léger, AUCUN halo gris. */
-    .brand .mark { background: var(--accent-grad); box-shadow: 0 2px 6px rgba(255,90,77,.20) !important; }
+    /* 21/06 (Maxime : « je n'en veux plus du tout, faut que ce soit propre ») : AUCUNE ombre sur le logo
+       (l'ombre grise rgba(45,38,52,.16) faisait un halo/case gris ; même en corail il en restait un soupçon).
+       → box-shadow none = icône orange nette posée sur la page, zéro halo. */
+    .brand .mark { background: var(--accent-grad); box-shadow: none !important; }
     .section-head a { color: var(--retro-teal); }
 
     /* Cartes chaleureuses */
