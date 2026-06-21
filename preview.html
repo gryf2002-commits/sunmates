@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=622"></script>
+  <script src="sunmates-badges.js?v=623"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -526,10 +526,13 @@
     .perm-txt { flex: 1; min-width: 0; }
     .perm-txt b { display: block; font-weight: 700; color: var(--ink); }
     .perm-txt .perm-sub { display: block; font-size: .76rem; color: var(--muted); margin-top: .1rem; }
-    .perm-state { flex: 0 0 auto; font-size: .72rem; font-weight: 800; letter-spacing: .02em; color: var(--muted); white-space: nowrap; }
-    .perm-state.state-granted { color: var(--ok); }
-    .perm-state.state-denied { color: var(--danger); }
-    .perm-state.state-prompt { color: var(--accent); }
+    /* Pastille d'état des autorisations : statut CLAIR (chip teintée), pas un faux on/off
+       (le navigateur garde le contrôle réel ; « Bloqué » ouvre la modale d'aide réactivation). */
+    .perm-state { flex: 0 0 auto; font-size: .72rem; font-weight: 800; letter-spacing: .02em; color: var(--muted); white-space: nowrap; padding: .24rem .62rem; border-radius: 999px; background: var(--line, rgba(20,18,40,.06)); }
+    .perm-state.state-granted { color: var(--ok); background: rgba(30,122,90,.13); }
+    .perm-state.state-denied { color: var(--danger); background: rgba(239,68,68,.13); }
+    .perm-state.state-prompt { color: var(--accent); background: var(--accent-soft); }
+    .perm-state.state-unsupported { color: var(--muted); background: var(--line, rgba(20,18,40,.06)); }
     /* Messages — recherche dans les conversations (filtre client, façon Insta) */
     .conv-search { display: flex; align-items: center; gap: .5rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: .5rem .7rem; margin: 0 0 .5rem; }
     .conv-search .ico { opacity: .6; font-size: .95rem; }

@@ -1,9 +1,11 @@
 {
-  "candidate": "v498",
+  "candidate": "v623",
   "items": [
-    "🙂 Retour aux emojis natifs partout : le moteur d'icônes SVG maison est désactivé — fini les pictos et tuiles « bizarres ».",
-    "🎮 Les tuiles de l'accueil, les pastilles et les boutons réaffichent leurs emojis d'origine (☕ 🌱 📍 ⭐ 🔥 🏆 🎯 …).",
-    "⚡ Bonus : le fichier d'icônes passe de ~150 Ko à quelques lignes → app plus légère.",
-    "✅ Base toujours stable (v482) : tous les correctifs récents sont conservés, seule la DA expérimentale reste en retrait (archivée)."
+    "🆘 Sécurité plus claire : les accès rapides sont regroupés en « En cas d'urgence » et « Prévention ».",
+    "🔔 Autorisations : l'état (Actif · Bloqué · À activer) s'affiche en pastille claire — sans faux interrupteur, ton navigateur garde le contrôle.",
+    "💬 Les bulles de messages arrivent tout en douceur à l'ouverture d'une conversation.",
+    "🗺️ Les info-bulles de la carte sont plus lisibles en plein jour (fond crème, texte net).",
+    "👆 Boutons plus faciles à toucher : suppression de message, check-in sur la carte, lecteur de note vocale.",
+    "📖 Version Lite : les tuiles d'aide Sécurité passent en pleine largeur — fini les titres coupés."
   ]
 }
