@@ -1,10 +1,10 @@
 {
-  "candidate": "v655",
+  "candidate": "v656",
   "items": [
-    "📍 Se retrouver à mi-chemin : sur le profil d'un Mate connecté, touche « Mi-chemin » — on te propose un lieu sûr partenaire entre vous deux, prêt à envoyer en un message. Fini le casse-tête du « on se voit où ? ».",
-    "🤝 « On s'est vus » : confirme une rencontre en vrai avec un Mate. Si vous le confirmez tou·tes les deux, c'est un signal de confiance fort pour la communauté (sans vérification d'identité payante).",
-    "🚶 Marche avec moi : un compagnon plein écran pour tes trajets seul·e le soir.",
-    "🌙 Veilleur de nuit + 📍 partage de position 24 h + 🆘 SOS qui prévient tes contacts d'urgence.",
-    "🌍 « Découvrir » montre les vrais voyageur·ses + check-ins gratuits illimités."
+    "🙋 Cherche un·e accompagnateur·rice : dans le fil, choisis « 🙋 Cherche » et dis ce que tu veux faire (une rando demain, le ciné ce soir…). Les voyageur·ses du coin voient ta demande et peuvent répondre « Je suis dispo » en un geste. Pile entre « je suis dispo » et « événement ».",
+    "📍 Se retrouver à mi-chemin avec un Mate + 🤝 « On s'est vus » (rencontre IRL = confiance).",
+    "🚶 Marche avec moi + 🌙 Veilleur de nuit.",
+    "🌍 « Découvrir » montre les vrais voyageur·ses + check-ins gratuits illimités.",
+    "🔋 Moins de chauffe + 🇬🇧 nouveautés traduites en anglais."
   ]
 }

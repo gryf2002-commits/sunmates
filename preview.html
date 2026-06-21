@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=655"></script>
+  <script src="sunmates-badges.js?v=656"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -2263,6 +2263,7 @@
             <div class="fc-kinds">
               <button class="fc-kind active" data-fkind="post" type="button">✨ Humeur</button>
               <button class="fc-kind" data-fkind="spot" type="button">📍 Spot</button>
+              <button class="fc-kind" data-fkind="ask" type="button">🙋 Cherche</button>
               <button class="fc-kind" data-fkind="poll" type="button">📊 Sondage</button>
             </div>
             <button class="btn-primary fc-send" id="feedPostBtn" type="button">Publier</button>
@@ -3824,6 +3825,8 @@
       "Oui, on s'est vus": "Yes, we met",
       "Rencontre confirmée des deux côtés 🛟": "Meet confirmed by both 🛟",
       "Rencontre confirmée. Dis-lui de confirmer aussi de son côté !": "Meet confirmed. Ask them to confirm on their side too!",
+      "Cherche quelqu'un pour… (ex : une rando demain, le ciné ce soir)": "Looking for someone to… (e.g. a hike tomorrow, the movies tonight)",
+      "Je suis dispo": "I'm in", "Ouvre son profil pour lui répondre.": "Open their profile to reply.",
       "Réessaie dans un instant.": "Try again in a moment.",
       // Corps de modales popInfo (balises <b> incluses dans la clé → traduites en un bloc par i18nT, pas via le DOM)
       "Ton minuteur de rentrée est <b>actif</b>. Touche « Bien arrivé·e » pour l'arrêter, sinon ta position sera diffusée à ton cercle.": "Your home timer is <b>active</b>. Tap “Arrived safely” to stop it, otherwise your location will be shared with your circle.",
@@ -16328,7 +16331,7 @@
         feed.innerHTML = '<div class="fpost-empty"><span class="fe-emoji">🌅</span><div class="fe-title">Le fil est calme…</div><div class="fe-sub">Sois le premier à publier quelque chose ✨</div></div>';
         return;
       }
-      const kindTag = { spot: "📍 Spot", quest: "🎯 Quête", poll: "📊 Sondage", post: "" };
+      const kindTag = { spot: "📍 Spot", quest: "🎯 Quête", poll: "📊 Sondage", ask: "🙋 Cherche", post: "" };
       feed.innerHTML = rows.map((r) => {
         const isMe = r.user_id === myUserId;
         const name = isMe ? "Toi" : (r.username || "Voyageur");
@@ -16341,6 +16344,7 @@
           <div class="fpost-actions">
             <button class="fpost-like${r.liked ? " liked" : ""}" data-like="${r.id}">${r.liked ? "❤️" : "🤍"} <span>${r.likes || 0}</span></button>
             <button class="fpost-like fpost-cmt" data-cmt="${r.id}">💬 <span data-cmtn="${r.id}">0</span></button>
+            ${(r.kind === "ask" && !isMe) ? '<button class="fpost-like fpost-join" data-join="' + r.user_id + '">🙋 <span>' + i18nT("Je suis dispo") + "</span></button>" : ""}
             ${isMe ? '<button class="fpost-del" data-del="' + r.id + '" title="Supprimer">🗑️</button>' : ""}
           </div></div>`;
       }).join("");
@@ -16353,6 +16357,12 @@
         try { const { data } = await db.rpc("feed_comment_counts", { p_ids: ids }); (data || []).forEach((c) => { const s = feed.querySelector('[data-cmtn="' + c.post_id + '"]'); if (s) s.textContent = c.n; }); } catch (e) {}
       })();
       feed.querySelectorAll("[data-cmt]").forEach((el) => el.addEventListener("click", (e) => { e.stopPropagation(); openFeedComments(Number(el.dataset.cmt)); }));
+      // « Je suis dispo » sur un post « Cherche » → ouvre le profil du posteur (connexion + message de là).
+      feed.querySelectorAll("[data-join]").forEach((el) => el.addEventListener("click", (e) => {
+        e.stopPropagation(); const uid = el.dataset.join;
+        if (uid && travelerMap[uid]) { goToTab("connexions"); setTimeout(() => openTravelerProfile(travelerMap[uid]), 60); }
+        else if (typeof toast === "function") toast("🙋", i18nT("Ouvre son profil pour lui répondre."));
+      }));
       // Sondages : options (feed_posts) + décomptes (RPC) + mon vote → on garnit chaque poll-box.
       (async () => {
         const pollRows = rows.filter((r) => r.kind === "poll"); if (!pollRows.length) return;
@@ -16467,7 +16477,8 @@
         if (!body) { if (msg) { msg.style.color = "var(--danger)"; msg.textContent = _feedKind === "poll" ? "Écris ta question ✏️" : "Écris quelque chose ✏️"; } return; }
         if (!myUserId) return;
         const city = (myProfile && myProfile.city) ? String(myProfile.city).split(",")[0].trim() : null;
-        const row = { user_id: myUserId, kind: _feedKind, body: body.slice(0, 280), city };
+        const _finalBody = (_feedKind === "ask") ? ("🙋 Cherche quelqu'un pour : " + body) : body;
+        const row = { user_id: myUserId, kind: _feedKind, body: _finalBody.slice(0, 280), city };
         if (_feedKind === "poll") {
           const opts = [...document.querySelectorAll("#feedPollOptions .fpo-in")].map((i) => i.value.trim()).filter(Boolean).slice(0, 4);
           if (opts.length < 2) { if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "Mets au moins 2 options."; } return; }
@@ -16540,12 +16551,13 @@
       _feedKind = b.dataset.fkind;
       document.querySelectorAll(".fc-kind").forEach((x) => x.classList.toggle("active", x === b));
       const poll = _feedKind === "poll";
-      const ta = $("feedInput"); if (ta) { ta.placeholder = poll ? "Ta question (ex : Plage ou montagne ?)" : (_feedKind === "spot" ? "Ton spot du moment 📍" : "Ton humeur du jour ✨"); }
-      const av = $("feedComposerAv"); if (av && !(myProfile && myProfile.avatar_url)) av.textContent = poll ? "📊" : (_feedKind === "spot" ? "📍" : "🙂");
-      // En mode sondage : on cache les tuiles d'humeur/spot et on montre les options.
-      show($("feedChips"), !poll); show($("feedChipsHint"), !poll);
+      const ask = _feedKind === "ask";
+      const ta = $("feedInput"); if (ta) { ta.placeholder = poll ? "Ta question (ex : Plage ou montagne ?)" : ask ? i18nT("Cherche quelqu'un pour… (ex : une rando demain, le ciné ce soir)") : (_feedKind === "spot" ? "Ton spot du moment 📍" : "Ton humeur du jour ✨"); }
+      const av = $("feedComposerAv"); if (av && !(myProfile && myProfile.avatar_url)) av.textContent = poll ? "📊" : ask ? "🙋" : (_feedKind === "spot" ? "📍" : "🙂");
+      // Sondage/Cherche : on cache les tuiles d'humeur/spot (texte libre).
+      show($("feedChips"), !poll && !ask); show($("feedChipsHint"), !poll && !ask);
       const po = $("feedPollOptions"); if (po) po.classList.toggle("hidden", !poll);
-      if (poll) renderPollOptionsUIWith(["", ""]); else renderFeedChips();
+      if (poll) renderPollOptionsUIWith(["", ""]); else if (!ask) renderFeedChips();
     }));
     renderFeedChips();  // tuiles d'humeur affichées d'emblée
     // Auto-grandissement du champ (évite tout débordement / barre qui dépasse)
