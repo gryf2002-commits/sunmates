@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=635"></script>
+  <script src="sunmates-badges.js?v=636"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -344,7 +344,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=632">
+  <link rel="stylesheet" href="styles.css?v=636">
   <!-- ============================================================
        PREVIEW FIXES (inline, scopé preview) — 19/06 : header mobile,
        onglet Messages, idées geo cliquables, centrage, contrôle saison.
@@ -2896,6 +2896,11 @@
               <button class="btn-primary btn-block" id="demoPlay" style="font-size:1.05rem">▶ Lancer la visite guidée</button>
               <p class="muted" style="font-size:.76rem;margin:.6rem 0 0">Pause / avancer / reculer / quitter à tout moment. Chaque « ▶ Démo guidée » du catalogue l'ouvre directement au bon chapitre.</p>
             </div>
+
+            <!-- 🧭 TUTOS PAR ZONE (#7) : les 83 chapitres splités en mini-tutos par zone (pour le livre blanc) -->
+            <div class="section-head"><h3 style="margin:.8rem 0 .1rem">🧭 Ou un tuto par zone</h3></div>
+            <p class="muted" style="font-size:.8rem;margin:.1rem 0 .7rem">Découvre une zone à la fois : chaque mini-tuto se lance et s'arrête seul à la fin de sa zone. Idéal avec le livre blanc.</p>
+            <div class="tz-grid" id="demoZones"></div>
 
             <!-- Recherche UNIQUE : filtre la visite (chapitres) ET le catalogue d'un coup -->
             <div class="search kb-search" style="margin:.6rem 0"><span class="ico">🔍</span><input id="kbSearch" type="text" maxlength="80" placeholder="Rechercher une fonctionnalité, un écran, un chapitre…" /></div>
@@ -8340,6 +8345,7 @@
           </div>
         </div>`).join("") : '<p class="muted" style="font-size:.82rem">Aucun chapitre ne correspond.</p>';
       box.querySelectorAll("[data-demojump]").forEach((b) => b.addEventListener("click", () => startAutoDemo(Number(b.dataset.demojump))));
+      if (typeof renderDemoZones === "function") renderDemoZones(); // hub « tutos par zone »
       renderFeatureCatalog(q);
     }
     // Recherche UNIQUE : filtre visite + catalogue. (Le bouton « effacer » ✕ est ajouté
@@ -8548,6 +8554,8 @@
     }
     // ====================== DÉMO GUIDÉE AUTOMATIQUE (clé en main, A à Z) ======================
     let adIdx = 0, adTimer = null, adPaused = false, adHideTimer = null, adThemeWasDusk = false;
+    let adStopIdx = null;   // tuto par ZONE : index de fin (inclus) ; null = visite complète
+    let adZoneKey = null;   // clé de la zone en cours (pour marquer « déjà vu » à la fin)
     const A = (fn) => { try { fn(); } catch (e) {} };
     const adClick = (id) => { const e = $(id); if (e) A(() => e.click()); };
     // #18 : l'élément cité doit finir AU MILIEU de la zone VISIBLE (la barre de démo en bas
@@ -8781,7 +8789,7 @@
     }
     function adPlay(i) {
       clearTimeout(adTimer);
-      if (i >= AUTO_DEMO.length) { endAutoDemo(); return; }
+      if (i >= AUTO_DEMO.length || (adStopIdx != null && i > adStopIdx)) { endAutoDemo(); return; } // tuto par zone : stop à la fin de la zone
       const s = AUTO_DEMO[i];
       if (!betaOn() && _stepIsBeta(s)) { adPlay(i + 1); return; } // V0.2 — saute les chapitres beta en mode Lite (cibles masquées)
       adIdx = i;
@@ -8811,8 +8819,10 @@
         try { t.blur(); } catch (_) {}
       }
     }, true);
-    function startAutoDemo(i) {
+    function startAutoDemo(i, stopIdx, zoneKey) {
       window._demoOn = true;
+      adStopIdx = (typeof stopIdx === "number") ? stopIdx : null; // tuto par zone si fourni
+      adZoneKey = zoneKey || null;
       adPaused = false; $("adPause").textContent = "⏸ Pause";
       adThemeWasDusk = document.body.classList.contains("theme-dusk");
       $("autoDemo").classList.remove("hidden");
@@ -8821,6 +8831,9 @@
     }
     function endAutoDemo() {
       window._demoOn = false;
+      // tuto par ZONE arrivé au bout de sa zone → on la marque « déjà vue » (pas si quitté avant la fin)
+      try { if (adZoneKey && adStopIdx != null && adIdx >= adStopIdx && typeof _markZoneSeen === "function") _markZoneSeen(adZoneKey); } catch (e) {}
+      adStopIdx = null; adZoneKey = null;
       clearTimeout(adTimer); clearTimeout(adHideTimer); adCleanup();
       const bar = $("autoDemo"); if (bar) { bar.classList.add("hidden"); bar.classList.remove("dim"); }
       if (document.body.classList.contains("theme-dusk") !== adThemeWasDusk) adClick("setThemeToggle"); // restaure le thème
@@ -14677,11 +14690,64 @@
       ],
     };
     // FUSION tuto pas-à-pas + démo auto : un SEUL moteur = AUTO_DEMO (auto + Précédent/Suivant).
-    // startGuidedTour(key) ouvre cette démo unique directement au chapitre correspondant.
     const TAB_DEMO_IDX = { full: 0, accueil: 4, lieux: 12, connexions: 16, mates: 16, jeux: 25, securite: 29, profil: 32 };
+    // ===== 🧭 TUTOS PAR ZONE (#7) : les 83 chapitres restent, mais splités en mini-tutos par zone
+    //   (pour le livre blanc). Chaque zone joue de SON départ JUSQU'À juste avant la zone suivante. =====
+    const DEMO_ZONES = [
+      { key: "accueil", emoji: "🏠", label: "Accueil & carte", desc: "La carte vivante, les modes Voyage / Maison, la recherche et ton fil." },
+      { key: "lieux", emoji: "📍", label: "Lieux sûrs", desc: "Le catalogue des spots validés, les filtres et le check-in par code." },
+      { key: "connexions", emoji: "💬", label: "Mates & messages", desc: "Rencontrer des voyageur·ses, les demandes, le match et la messagerie." },
+      { key: "jeux", emoji: "🎮", label: "Jeux & quêtes", desc: "Quêtes, badges, coupons : tout ce qu'on gagne en explorant." },
+      { key: "securite", emoji: "🛡️", label: "Sécurité", desc: "SOS, faux appel, partage de position et contacts d'urgence." },
+      { key: "profil", emoji: "👤", label: "Profil", desc: "Ton identité, ton QR de profil et ton parcours de voyageur·se." },
+    ];
+    function _demoZoneRange(key) {
+      const start = (typeof TAB_DEMO_IDX[key] === "number") ? TAB_DEMO_IDX[key] : 0;
+      const starts = DEMO_ZONES.map((z) => TAB_DEMO_IDX[z.key]).filter((n) => typeof n === "number").sort((a, b) => a - b);
+      const next = starts.find((n) => n > start);
+      const total = (typeof AUTO_DEMO !== "undefined") ? AUTO_DEMO.length : 999;
+      return { start: start, end: (typeof next === "number" ? next - 1 : total - 1) };
+    }
+    function _demoZoneCount(key) {
+      const r = _demoZoneRange(key);
+      let n = 0;
+      for (let i = r.start; i <= r.end && typeof AUTO_DEMO !== "undefined" && i < AUTO_DEMO.length; i++) {
+        if (typeof betaOn === "function" && !betaOn() && typeof _stepIsBeta === "function" && _stepIsBeta(AUTO_DEMO[i])) continue;
+        n++;
+      }
+      return n;
+    }
+    function _zoneSeenKey() { return "sm_tuto_seen_" + (typeof myUserId !== "undefined" && myUserId ? myUserId : "anon"); }
+    function _zonesSeen() { try { return JSON.parse(localStorage.getItem(_zoneSeenKey()) || "{}"); } catch (e) { return {}; } }
+    function _markZoneSeen(key) { try { const s = _zonesSeen(); s[key] = true; localStorage.setItem(_zoneSeenKey(), JSON.stringify(s)); } catch (e) {} if (typeof renderDemoZones === "function") renderDemoZones(); }
     function startGuidedTour(key) {
-      const i = (typeof TAB_DEMO_IDX[key] === "number") ? TAB_DEMO_IDX[key] : 0;
-      if (typeof startAutoDemo === "function") startAutoDemo(i);
+      if (typeof startAutoDemo !== "function") return;
+      if (key === "full") { startAutoDemo(0); return; } // visite complète : aucun stop
+      const r = _demoZoneRange(key);
+      startAutoDemo(r.start, r.end, key);
+    }
+    function renderDemoZones() {
+      const box = $("demoZones"); if (!box) return;
+      const seen = _zonesSeen();
+      box.innerHTML = DEMO_ZONES.map((z, i) => {
+        const n = _demoZoneCount(z.key);
+        if (!n) return "";
+        const mins = Math.max(1, Math.round(n * 6.2 / 60));
+        const done = seen[z.key];
+        return `<button class="tz-card${done ? " tz-done" : ""}" data-tutozone="${z.key}" style="animation-delay:${i * 45}ms" aria-label="Lancer le tuto ${escapeHtml(z.label)}">
+          <span class="tz-emoji" aria-hidden="true">${z.emoji}</span>
+          <span class="tz-body">
+            <span class="tz-name">${escapeHtml(z.label)}${done ? ' <span class="tz-check" title="Déjà vu">✓</span>' : ""}</span>
+            <span class="tz-meta">${n} chapitre${n > 1 ? "s" : ""} · ~${mins} min</span>
+            <span class="tz-desc">${escapeHtml(z.desc)}</span>
+          </span>
+          <span class="tz-go" aria-hidden="true">▶</span>
+        </button>`;
+      }).join("");
+      box.querySelectorAll("[data-tutozone]").forEach((b) => b.addEventListener("click", () => {
+        const k = b.dataset.tutozone;
+        if (typeof startGuidedTour === "function") startGuidedTour(k);
+      }));
     }
     function showTourStep(i) {
       if (i >= _activeTour.length) { endTour(); return; }
