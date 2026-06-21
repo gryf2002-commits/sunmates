@@ -3844,17 +3844,20 @@
        qui glisse dessous « en fantôme », pas joli). Plus transparent + flou → le contenu dessous est FONDU
        proprement. Mode-aware via var(--bg). !important pour gagner sur toutes les couches topbar par mode.
        (La topbar n'est pas un ancêtre de la carte → ce backdrop-filter ne casse PAS le plein écran.) */
-    /* Header PROPRE (retour Maxime « cassure claire en haut à gauche / zone de flou pas pleine largeur ») :
-       fond SOLIDE en haut (var(--bg) plein 0→42%) qui fond en douceur, AUCUN backdrop-filter, AUCUN mask-image
-       (le masque créait un bord découpé). → bandeau net, pleine largeur, zéro couture, zéro flou. */
-    .topbar { background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 42%, color-mix(in srgb, var(--bg) 55%, transparent) 72%, transparent 100%) !important; }
+    /* 21/06 (retour Maxime, FIN du bug « bloc/flou pas pleine largeur autour du logo ») :
+       le BAS du dégradé était semi-transparent (…transparent 100%) → le contenu qui défile dessous
+       (cartes feed inset de 20px, w<largeur écran) TRANSPARAISSAIT sous le header = bloc plus clair
+       pas pleine largeur + bord = « cassure » (visible surtout sur le compositing Android).
+       → header 100% OPAQUE, couleur unie var(--bg), pleine largeur, AUCUNE transparence : rien ne
+       peut transparaître dessous. Le contenu défile et est occulté NET, comme un header d'app classique. */
+    .topbar { background: var(--bg) !important; }
     /* Bug Maxime « coupure / barre sombre sous la status-bar en NUIT » : le verre dépoli (ci-dessus, 80% au sommet)
        laissait le halo violet TRANSPARAÎTRE sous la status-bar (elle = --bg PLEIN/sombre) → marche visible. En nuit,
        on rend le SOMMET du topbar OPAQUE (var(--bg) plein à 0%) = même couleur EXACTE que la status-bar → fondu invisible ;
        le verre dépoli (transparence + flou) reste plus bas (30%→100%) là où le contenu défile. Spéc. 0,2,0 + !important
        gagne sur le .topbar global. Le jour garde son verre 80% (pas de coupure : status-bar claire, halo doux). */
     body.theme-dusk .topbar, body.theme-winter.theme-dusk .topbar, body.theme-tropic.theme-dusk .topbar {
-      background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 30%, color-mix(in srgb, var(--bg) 62%, transparent) 60%, transparent 100%) !important; }
+      background: var(--bg) !important; }
     body.theme-tropic.theme-dusk #bgFx { background:radial-gradient(120% 50% at 50% -8%, rgba(255,194,61,.16) 0%, rgba(12,29,23,0) 58%), var(--bg); }
     body.theme-tropic.theme-dusk .app-shell { background: transparent !important; }
     body.theme-tropic.theme-dusk .help-cta { background: var(--dcard2); border-color: rgba(92,216,168,.16); color:#E9F7EF; }

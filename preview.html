@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=625"></script>
+  <script src="sunmates-badges.js?v=626"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -344,7 +344,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=625">
+  <link rel="stylesheet" href="styles.css?v=626">
   <!-- ============================================================
        PREVIEW FIXES (inline, scopé preview) — 19/06 : header mobile,
        onglet Messages, idées geo cliquables, centrage, contrôle saison.
@@ -6207,7 +6207,11 @@
           .pointLabel((d) => `<div class="globe-pt-label"><b>${escapeHtml(d.city || "")}</b>${d.country ? `<span class="gl-meta">${escapeHtml(cleanCountry(d.country))}</span>` : ""}${d.dates ? `<span class="gl-meta">${escapeHtml(d.dates)}</span>` : ""}</div>`)
           .arcColor(() => [ACCENT, GOLD])
           .arcDashLength(0.45).arcDashGap(0.12).arcDashAnimateTime(2200)
-          .arcStroke(0.5).arcAltitudeAutoScale(0.4);
+          .arcStroke(0.5).arcAltitudeAutoScale(0.4)
+          // Polarsteps : halos PULSÉS autour de chaque destination (motion fluide + repères nets)
+          .ringLat("lat").ringLng("lng")
+          .ringColor(() => (t) => `rgba(255,209,92,${Math.sqrt(1 - t)})`)
+          .ringMaxRadius(3.2).ringPropagationSpeed(1.4).ringRepeatPeriod(1100);
         // Stoppe l'auto-rotation dès qu'on interagit.
         try { globe.controls().addEventListener("start", stopRotate); } catch (e) {}
         sizeGlobe();
