@@ -137,7 +137,7 @@
        MÊME taille exacte (22px) quelle que soit leur source SVG (évite l'effet « tailles différentes »). */
     .brand .mark svg, #notifBell svg, #themeToggle svg { width: 22px !important; height: 22px !important; display: block; }
     .brand b { font-weight: 800; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .brand b .sun { color: var(--accent); }
+    .brand b .sun { color: var(--accent-ink, var(--accent)); }
     /* Marque « SunMates Pro » : soleil doré distinct + badge PRO (espace B2B) */
     .mark-pro { background: linear-gradient(150deg,#FFC93C,#E89B2B) !important; box-shadow: 0 6px 16px rgba(232,155,43,.4) !important; }
     .pro-tag { font-size: .62rem; font-weight: 900; letter-spacing: .08em; color: #fff; background: linear-gradient(135deg,#E89B2B,#C98A1E); padding: .12rem .4rem; border-radius: 6px; vertical-align: middle; }
@@ -148,7 +148,7 @@
     h3 { font-size: 1rem; color: var(--ink); font-weight: 700; margin: 1.2rem 0 .5rem; }
     .muted { color: var(--muted); }
     .section-head { display: flex; align-items: center; justify-content: space-between; }
-    .section-head a { color: var(--accent); font-size: .8rem; font-weight: 600; text-decoration: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
+    .section-head a { color: var(--accent-ink, var(--accent)); font-size: .8rem; font-weight: 600; text-decoration: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
 
     /* ----------------------------- Cartes --------------------------- */
     main { flex: 1; padding: 0 1.25rem calc(7rem + env(safe-area-inset-bottom, 0px)); }
@@ -181,7 +181,7 @@
     /* #5 : halo DÉRIVÉ de l'accent du thème (plus de lueur rouge figée dans tous les modes) + adouci */
     .btn-primary { background: var(--accent-grad); color: #fff; box-shadow: 0 4px 10px color-mix(in oklab, var(--accent, #FF5A4D) 16%, transparent); } /* P12 : halo bouton adouci */
     .btn-primary:hover { filter: brightness(1.04); }
-    .btn-accent  { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+    .btn-accent  { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-weight: 700; }
     .btn-ghost   { background: #fff; color: var(--text); border: 1.5px solid var(--line); }
     .btn-danger  { background: var(--accent-grad); color: #fff; width: 100%; font-size: 1.05rem; padding: 1rem; box-shadow: 0 6px 18px rgba(45,38,52,.16); }
     .btn-block   { width: 100%; }
@@ -274,8 +274,8 @@
     .prog-row .pr-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .12rem; }
     .prog-row .pr-tx b { font-size: .86rem; font-weight: 700; color: var(--ink-warm, var(--ink)); }
     .prog-row .pr-sub { font-size: .74rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .prog-row .pr-val { flex: 0 0 auto; font-size: .8rem; font-weight: 800; color: var(--accent); background: rgba(255,90,77,.09); border-radius: 999px; padding: .12rem .5rem; }
-    .prog-row .pr-chev { flex: 0 0 auto; color: var(--accent); font-weight: 700; }
+    .prog-row .pr-val { flex: 0 0 auto; font-size: .8rem; font-weight: 800; color: var(--accent-ink, var(--accent)); background: rgba(255,90,77,.09); border-radius: 999px; padding: .12rem .5rem; }
+    .prog-row .pr-chev { flex: 0 0 auto; color: var(--accent-ink, var(--accent)); font-weight: 700; }
     body.theme-dusk .prog-row { border-bottom-color: rgba(255,255,255,.08); }
     /* (anciennes tuiles carrées de progression · classes gardées pour compat si réutilisées ailleurs) */
     .prog-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: .55rem; margin-bottom: .55rem; }
@@ -295,7 +295,7 @@
     .coloc-card { min-width: 180px; }
     .coloc-head { font-weight: 800; color: var(--ink); margin-bottom: .5rem; font-size: .95rem; }
     .coloc-row { display: flex; align-items: center; gap: .4rem; padding: .25rem 0; color: var(--ink); font-size: .85rem; }
-    .coloc-row b { color: var(--accent); }
+    .coloc-row b { color: var(--accent-ink, var(--accent)); }
     .coloc-btn { margin-top: .6rem; width: 100%; background: var(--accent-grad); color: #fff; border: 0; border-radius: 10px; padding: .5rem; font-weight: 800; font-size: .82rem; cursor: pointer; }
 
     /* ---- Fil d'actualité (posts) : cartes à bandeau coloré ---- */
@@ -334,7 +334,7 @@
     .fpost-body { margin-top: .55rem; font-size: .92rem; color: var(--ink); line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
     .fpost-actions { display: flex; align-items: center; gap: 1rem; margin-top: .55rem; }
     .fpost-like { display: inline-flex; align-items: center; gap: .3rem; background: none; border: 0; cursor: pointer; font-weight: 700; font-size: .82rem; color: var(--muted); }
-    .fpost-like.liked { color: var(--accent); }
+    .fpost-like.liked { color: var(--accent-ink, var(--accent)); }
     .fpost-del { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--muted); font-size: .9rem; }
     .fpost-kindtag { font-size: .7rem; font-weight: 800; padding: .1rem .45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink, var(--accent)); margin-left: .4rem; } /* Lot A2 : encre foncée sur corail pâle */
     /* Séparation NETTE entre les posts (avant : cartes qui se fondaient, surtout en mode nuit) */
@@ -360,7 +360,7 @@
     .poll-opt-mine { border-color: var(--accent); }
     .poll-opt-mine .poll-fill { background: linear-gradient(90deg, rgba(255,138,61,.30), rgba(255,90,77,.20)); }
     .poll-lbl { position: relative; z-index: 1; flex: 1; min-width: 0; }
-    .poll-pct { position: relative; z-index: 1; font-weight: 800; color: var(--accent); font-size: .8rem; flex-shrink: 0; }
+    .poll-pct { position: relative; z-index: 1; font-weight: 800; color: var(--accent-ink, var(--accent)); font-size: .8rem; flex-shrink: 0; }
     .poll-total { font-size: .74rem; color: var(--muted); margin-top: .1rem; }
     /* ⭐ Mate du jour (suggestion quotidienne, sunset) */
     .mod-card { background: var(--accent-grad); color: #fff; border-radius: 16px; padding: .7rem .85rem; margin-bottom: .7rem; box-shadow: 0 8px 20px rgba(45,38,52,.28); cursor: pointer; }
@@ -380,12 +380,12 @@
     .trip-del { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .95rem; flex-shrink: 0; }
     .trip-note { font-size: .82rem; color: var(--muted); margin-top: .35rem; }
     .trip-matches { margin-top: .55rem; border-top: 1px dashed var(--line); padding-top: .5rem; }
-    .trip-matches .tm-lbl { font-size: .76rem; font-weight: 800; color: var(--accent); margin-bottom: .35rem; }
+    .trip-matches .tm-lbl { font-size: .76rem; font-weight: 800; color: var(--accent-ink, var(--accent)); margin-bottom: .35rem; }
     .trip-mate { display: flex; align-items: center; gap: .55rem; padding: .35rem .15rem; cursor: pointer; border-radius: 10px; }
     .trip-mate:active { background: var(--accent-soft); }
     .trip-mate .tmn { flex: 1; min-width: 0; font-size: .86rem; font-weight: 600; color: var(--ink); }
     .trip-mate .tmn .meta { font-size: .72rem; color: var(--muted); font-weight: 500; }
-    .trip-mate .tm-compat { flex-shrink: 0; font-size: .74rem; font-weight: 800; color: var(--accent); }
+    .trip-mate .tm-compat { flex-shrink: 0; font-size: .74rem; font-weight: 800; color: var(--accent-ink, var(--accent)); }
     .trip-empty { text-align: center; padding: 1.2rem 1rem; background: var(--card); border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); font-size: .86rem; }
     #tripMatchBanner .tmb { display: flex; align-items: center; gap: .5rem; background: var(--accent-grad); color: #fff; border-radius: 14px; padding: .7rem .85rem; margin-bottom: .6rem; box-shadow: 0 8px 20px rgba(45,38,52,.28); font-weight: 700; font-size: .88rem; cursor: pointer; }
     .fpost { cursor: default; position: relative; } /* le corps blanc n'est PAS cliquable (anti mis-clic) */
@@ -423,7 +423,7 @@
     .pcard .pcard-rate, .pcard .pcard-new { position: absolute; top: .6rem; right: .6rem; z-index: 2; }
     .pcard-eco { background: linear-gradient(135deg,#4ED8B8,#179E8C); color: #06352D; } /* DA : turquoise bijou (pas de vert émeraude vif) · texte teal foncé ≥4.8:1 (loi de contraste, ANNONCÉ) */
     /* « Sois le·la 1er·ère à checker ! » = vrai bouton (lance le check-in), plus un texte gris décoratif */
-    .pcard-firstck { border: 0; background: none; padding: 0; font: inherit; font-weight: 800; color: var(--accent); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+    .pcard-firstck { border: 0; background: none; padding: 0; font: inherit; font-weight: 800; color: var(--accent-ink, var(--accent)); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
     .pcard-top { background: linear-gradient(135deg,#FFC93C,#FF8A3D); color: #4A2A08; } /* texte ambre foncé ≥5:1 (avant : blanc ~1.6:1, échec AA) · ANNONCÉ */
     .pcard-rate { background: rgba(255,255,255,.96); color: #B5740E; }
     .pcard-rate b { opacity: .6; font-weight: 700; }
@@ -457,7 +457,7 @@
     /* Étapes d'installation (carte explicative) */
     .install-steps { margin: 0 0 .4rem; padding-left: 1.2rem; }
     .install-steps li { font-size: .87rem; line-height: 1.6; color: var(--text); margin-bottom: .3rem; }
-    .install-steps li::marker { color: var(--accent); font-weight: 800; }
+    .install-steps li::marker { color: var(--accent-ink, var(--accent)); font-weight: 800; }
 
     /* ---- Skeletons de chargement (perception de rapidité) ---- */
     .skel { position: relative; overflow: hidden; background: #ece7e3; border-radius: 12px; }
@@ -547,7 +547,7 @@
     .vouch-card { padding: .85rem 1rem; }
     .vouch-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
     .vouch-title { font-weight: 800; color: var(--ink); font-size: .92rem; display: flex; align-items: center; gap: .35rem; }
-    .vouch-title b { color: var(--accent); }
+    .vouch-title b { color: var(--accent-ink, var(--accent)); }
     .vouch-btn { padding: .5rem .8rem; font-size: .82rem; white-space: nowrap; flex-shrink: 0; }
     .vouch-row { display: flex; align-items: center; margin-top: .5rem; }
     .vouch-row:empty { display: none; }
@@ -562,7 +562,7 @@
     /* ---- Traduction d'un message (sous la bulle, style des méta) ---- */
     .bubble-translate { display: inline-flex; align-items: center; gap: .25rem; margin-top: .25rem; font-size: .68rem;
       font-weight: 700; opacity: .7; cursor: pointer; background: none; border: 0; padding: 0; color: inherit; }
-    .bubble.them .bubble-translate { color: var(--accent); opacity: .85; }
+    .bubble.them .bubble-translate { color: var(--accent-ink, var(--accent)); opacity: .85; }
     .bubble-translate:hover { opacity: 1; }
     .bubble-tr { margin-top: .35rem; padding-top: .35rem; border-top: 1px dashed rgba(0,0,0,.12); font-size: .86rem; line-height: 1.35; opacity: .92; }
     .bubble.me .bubble-tr { border-top-color: rgba(255,255,255,.35); }
@@ -628,7 +628,7 @@
     .spot-card > summary::-webkit-details-marker { display: none; }
     .spot-card > summary .sp-right { display: flex; align-items: center; gap: .5rem; min-width: 0; }
     .spot-card > summary .sp-sum { font-weight: 600; font-size: .8rem; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .spot-card > summary .sp-chev { color: var(--accent); font-weight: 800; transition: transform .2s; }
+    .spot-card > summary .sp-chev { color: var(--accent-ink, var(--accent)); font-weight: 800; transition: transform .2s; }
     .spot-card[open] > summary .sp-chev { transform: rotate(90deg); }
 
     /* ---- Sélecteur de langue (réglages) ---- */
@@ -637,7 +637,7 @@
     /* Sélecteur de langue compact sur la page de connexion (haut-droite) */
     .auth-lang { display: flex; gap: .3rem; justify-content: flex-end; margin-bottom: .6rem; }
     .auth-lang button { background: var(--cream); border: 1.5px solid var(--line); color: var(--muted); border-radius: 999px; padding: .3rem .7rem; font-size: .76rem; font-weight: 700; cursor: pointer; }
-    .auth-lang button.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .auth-lang button.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink, var(--accent)); }
     /* Bloc Pro / B2B sur la page de connexion */
     .auth-pro-card { background: var(--cream); border: 1px solid var(--line); border-radius: 16px; padding: 1rem; }
     .auth-pro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
@@ -648,7 +648,7 @@
     body.theme-dusk .lang-seg button:not(.active) { background: #2b2240; color: #ede6f2; }
     body.theme-dusk .spot-emoji-pick button:not(.active) { background: rgba(255,255,255,.08); }
     body.theme-dusk .spot-chip { color: #f3e9f3; }
-    .set-grouptitle { font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 1.1rem 0 .5rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+    .set-grouptitle { font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink, var(--accent)); margin: 1.1rem 0 .5rem; padding-top: .9rem; border-top: 1px solid var(--line); }
     .set-grouptitle:first-of-type { border-top: 0; padding-top: 0; margin-top: .8rem; }
     .set-toggle { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .7rem 0; }
     .set-toggle .st-lbl { font-weight: 600; color: var(--ink); }
@@ -678,7 +678,7 @@
     .iconbtn { min-width: 40px; min-height: 40px; display: inline-grid; place-items: center; }
 
     /* ---- Accusé de lecture (« ✓ Vu » sous mon dernier message) ---- */
-    .seen-mark { align-self: flex-end; font-size: .68rem; color: var(--accent); font-weight: 700; margin: -.1rem .25rem .35rem 0; }
+    .seen-mark { align-self: flex-end; font-size: .68rem; color: var(--accent-ink, var(--accent)); font-weight: 700; margin: -.1rem .25rem .35rem 0; }
 
     /* ---- Bannière « compte de démonstration (IA) » ---- */
     .demo-banner { background: rgba(122,92,255,.12); color: #6a4ad8; border: 1px solid rgba(122,92,255,.25);
@@ -695,7 +695,7 @@
     .cbrk-l { flex: 0 0 44%; color: var(--ink); }
     .cbrk-bar { flex: 1; height: 8px; background: var(--cream); border-radius: 999px; overflow: hidden; }
     .cbrk-bar i { display: block; height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width .45s ease; }
-    .cbrk-p { flex: 0 0 auto; font-weight: 800; color: var(--accent); font-size: .76rem; min-width: 34px; text-align: right; }
+    .cbrk-p { flex: 0 0 auto; font-weight: 800; color: var(--accent-ink, var(--accent)); font-size: .76rem; min-width: 34px; text-align: right; }
 
     /* ---- Bandeau d'état réseau (hors-ligne) ---- */
     .net-banner { position: fixed; top: 0; left: 0; right: 0; z-index: var(--z-confetti);
@@ -823,7 +823,7 @@
     .tz-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .12rem; }
     .tz-name { font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1rem; color: var(--ink); display: flex; align-items: center; gap: .35rem; }
     .tz-check { color: var(--ok); font-weight: 800; font-size: .85rem; }
-    .tz-meta { font-size: .72rem; font-weight: 700; color: var(--accent); letter-spacing: .01em; }
+    .tz-meta { font-size: .72rem; font-weight: 700; color: var(--accent-ink, var(--accent)); letter-spacing: .01em; }
     .tz-desc { font-size: .78rem; line-height: 1.4; color: var(--muted); }
     .tz-go { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
       background: var(--accent-grad); color: #fff; font-size: .82rem; box-shadow: 0 4px 10px -3px rgba(255,90,77,.5); }
@@ -837,7 +837,7 @@
     .prof-photo { width: 112px; height: 112px; margin: .2rem auto .6rem; border-radius: 20px; background-color: var(--cream); background-size: cover; background-position: center; background-repeat: no-repeat; display: grid; place-items: center; font-size: 2.8rem; box-shadow: var(--shadow-sm); overflow: hidden; }
     body.theme-dusk .prof-photo { background-color: var(--dcard,#2a2140); }
     .prof-name { font-size: 1.25rem; font-weight: 800; justify-content: center; display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
-    .prof-title { font-size: .95rem; color: var(--accent); font-weight: 700; margin-top: .15rem; }
+    .prof-title { font-size: .95rem; color: var(--accent-ink, var(--accent)); font-weight: 700; margin-top: .15rem; }
     .prof-city { font-size: .9rem; margin-top: .15rem; }
     .prof-trust { display: inline-flex; align-items: center; gap: .35rem; margin: .8rem auto 0; padding: .35rem .8rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-weight: 700; font-size: .85rem; cursor: pointer; } /* Lot A2 : encre foncée sur corail pâle */
     .prof-trust b { font-size: 1rem; color: var(--accent-ink, var(--accent)); }
@@ -920,7 +920,7 @@
     /* Listing « Ma collection » (quêtes par ville) */
     .coll-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .7rem; }
     .coll-stat { background: var(--accent-soft); border-radius: 14px; padding: .6rem; text-align: center; }
-    .coll-stat .cs-v { font-size: 1.5rem; font-weight: 900; color: var(--accent); }
+    .coll-stat .cs-v { font-size: 1.5rem; font-weight: 900; color: var(--accent-ink, var(--accent)); }
     .coll-stat .cs-v span { font-size: .9rem; opacity: .7; }
     .coll-stat .cs-l { font-size: .72rem; color: var(--muted); font-weight: 700; margin-top: .1rem; }
     .coll-bar { height: 5px; border-radius: 999px; background: var(--cream); overflow: hidden; margin: 0 .6rem .3rem; }
@@ -929,7 +929,7 @@
     .coll-city { border: 1px solid var(--line); border-radius: 12px; margin: .4rem 0; overflow: hidden; }
     .coll-city > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .6rem .7rem; font-weight: 700; font-size: .9rem; background: var(--cream); }
     .coll-city > summary::-webkit-details-marker { display: none; }
-    .coll-city > summary b { color: var(--accent); font-size: .8rem; font-weight: 800; flex-shrink: 0; }
+    .coll-city > summary b { color: var(--accent-ink, var(--accent)); font-size: .8rem; font-weight: 800; flex-shrink: 0; }
     body.theme-dusk .coll-city > summary { background: #271e3a; }
     .coll-list { padding: .3rem .6rem .5rem; }
     .coll-row { display: flex; align-items: center; gap: .5rem; padding: .28rem 0; font-size: .86rem; }
@@ -943,7 +943,7 @@
     .trust-explain .te-row { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .45rem 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
     .trust-explain .te-row:last-of-type { border-bottom: 0; }
     .te-ok { color: var(--ok-ink, var(--ok)); font-weight: 700; white-space: nowrap; }
-    .te-todo { color: var(--accent); font-weight: 700; white-space: nowrap; }
+    .te-todo { color: var(--accent-ink, var(--accent)); font-weight: 700; white-space: nowrap; }
     .trust-explain .te-note { color: var(--muted); font-size: .78rem; margin: .65rem 0 0; line-height: 1.5; }
 
     .place { display: flex; flex-direction: column; gap: .15rem; padding: .9rem 0; border-bottom: 1px solid var(--line); border-radius: 12px; }
@@ -986,7 +986,7 @@
     /* 17/06 : Sécurité RESTE dans la barre du bas en Lite (5 onglets : Accueil·Lieux·Sécurité·Mates·Profil ; Jeux masqué). Ancienne règle de masquage retirée. */
     .secu-top { position: relative; color: var(--ok, #11B5A0); }                /* bouclier teal = sécurité, pas rouge (rouge réservé au danger) */
     .secu-top svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
-    .secu-top.active { background: var(--accent-soft); color: var(--accent); }
+    .secu-top.active { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
     .secu-top #navSecuLite { position: absolute; top: 2px; right: 2px; left: auto; }
     /* Utilitaire inverse de .beta-only : visible UNIQUEMENT en Lite. */
     .lite-only { display: none; }
@@ -1121,7 +1121,7 @@
     .leaflet-control-attribution a { color: var(--muted) !important; }
     .leaflet-control-zoom { border: 0 !important; box-shadow: var(--shadow-sm) !important; border-radius: 12px !important; overflow: hidden; margin: 12px !important; }
     .leaflet-control-zoom a { background: var(--card) !important; color: var(--ink) !important; border: 0 !important; width: 32px !important; height: 32px !important; line-height: 32px !important; font-size: 18px !important; font-weight: 700; }
-    .leaflet-control-zoom a:hover { background: var(--cream) !important; color: var(--accent) !important; }
+    .leaflet-control-zoom a:hover { background: var(--cream) !important; color: var(--accent-ink, var(--accent)) !important; }
     .leaflet-popup-content-wrapper { border-radius: 14px !important; box-shadow: 0 14px 34px rgba(0,0,0,.2) !important; }
     .leaflet-popup-content { margin: 12px 14px !important; font-size: .82rem; line-height: 1.45; }
     /* Carte d'accueil COURTE (200-240px) + overflow:hidden : un popup haut (quête : titre +
@@ -1221,7 +1221,7 @@
     .mappop-comm .comm-avs > *:first-child { margin-left: 0; }
     .mappop-comm .comm-n { font-weight: 700; font-size: .82rem; color: var(--ink); }
     .mappop-comm .comm-names { font-size: .74rem; margin-bottom: .1rem; }
-    .mappop-comm .comm-q { font-size: .76rem; font-weight: 700; color: var(--accent); margin-top: .15rem; }
+    .mappop-comm .comm-q { font-size: .76rem; font-weight: 700; color: var(--accent-ink, var(--accent)); margin-top: .15rem; }
     /* 🌍 Cartes HISTOIRES de pays (« Découvrir » → popInfo, carte #5 v2) */
     .cstory-facts { display: flex; flex-direction: column; gap: .6rem; text-align: left; }
     .cstory-fact { display: flex; gap: .6rem; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: .65rem .7rem;
@@ -1251,7 +1251,7 @@
     .mappop-fact { margin: 6px 0 2px; padding: .4rem .55rem; border-radius: 9px; background: var(--accent-soft); color: var(--accent-ink, var(--ink)); font-size: .76rem; line-height: 1.35; text-align: left; }
     .mappop-btn { display: block; width: 100%; margin-top: 6px; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: .4rem .6rem; cursor: pointer; font-weight: 700; font-size: .8rem; }
     .mappop-btn.alt { background: #7a5cff; }
-    .mappop-btn.ghost { background: transparent; color: var(--accent); border: 1px solid rgba(255,90,77,.4); }
+    .mappop-btn.ghost { background: transparent; color: var(--accent-ink, var(--accent)); border: 1px solid rgba(255,90,77,.4); }
 
     /* --------------------- Grille cartes accueil -------------------- */
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; min-width: 0; }
@@ -1299,10 +1299,10 @@
     .feature .body .sub { font-size: .85rem; opacity: .95; }
     .feature .tags { display: flex; gap: .4rem; margin-top: .5rem; }
     .feature .tags span { background: rgba(255,255,255,.25); backdrop-filter: blur(4px); padding: .2rem .6rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
-    .feature .rating { position: absolute; top: .9rem; right: .9rem; background: #fff; color: var(--accent); padding: .25rem .6rem; border-radius: 999px; font-weight: 800; font-size: .8rem; }
+    .feature .rating { position: absolute; top: .9rem; right: .9rem; background: #fff; color: var(--accent-ink, var(--accent)); padding: .25rem .6rem; border-radius: 999px; font-weight: 800; font-size: .8rem; }
 
     /* ----------------------------- Stats ---------------------------- */
-    .stat { font-size: 2.2rem; font-weight: 800; color: var(--accent); line-height: 1; }
+    .stat { font-size: 2.2rem; font-weight: 800; color: var(--accent-ink, var(--accent)); line-height: 1; }
     .stat-row { display: flex; gap: .6rem; }
     .stat-box { flex: 1; min-width: 0; background: var(--accent-soft); border-radius: var(--radius-sm); padding: .9rem .5rem; text-align: center; }
     .stat-box .stat { font-size: 1.2rem; } /* chiffres plus discrets : l'identité (nom/ville) prime */
@@ -1378,7 +1378,7 @@
     /* Barre du bas : icônes TRAIT (line-art) qui suivent la couleur (gris au repos → accent actif) */
     .bottom-nav button .ni { display: grid; place-items: center; line-height: 1; transition: transform .2s ease; }
     .bottom-nav button .ni svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
-    .bottom-nav button.active { color: var(--accent); }
+    .bottom-nav button.active { color: var(--accent-ink, var(--accent)); }
     .bottom-nav button.active .ni { transform: translateY(-1px); }
     .bottom-nav button.active .ni svg { opacity: 1; stroke-width: 2.2; }
     .bottom-nav button.active::before { display: none; }
@@ -1425,7 +1425,7 @@
     .xpl-card { display: block !important; background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(255,138,61,.12)); border: 1px solid rgba(201,138,30,.2); border-radius: 14px; padding: .7rem .85rem; margin: .4rem 0 .2rem; }
     .xpl-top { display: flex; align-items: center; gap: .5rem; }
     .xpl-lvl { font-weight: 800; font-size: .92rem; color: #B5740E; }
-    .xpl-xp { font-weight: 800; font-size: .8rem; color: var(--accent); }
+    .xpl-xp { font-weight: 800; font-size: .8rem; color: var(--accent-ink, var(--accent)); }
     .xpl-top .xp-info { margin-left: auto; background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .95rem; padding: .1rem .3rem; }
     .xpl-bar { height: 7px; background: rgba(0,0,0,.08); border-radius: 999px; margin: .45rem 0 .3rem; overflow: hidden; }
     .xpl-bar span { display: block; height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width .5s cubic-bezier(.2,.8,.3,1); }
@@ -1450,7 +1450,7 @@
     body.theme-dusk .xp-banner b { color: #ffce8a; }
     /* Emoji = grand, centré, intégré dans l'en-tête (plus de carré blanc qui « flotte au milieu »). */
     .gcard .gemoji { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 40px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.22)); z-index: 1; pointer-events: none; }
-    .gcard .grate { position: absolute; top: .5rem; right: .5rem; background: #fff; color: var(--accent); font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 999px; z-index: 2; }
+    .gcard .grate { position: absolute; top: .5rem; right: .5rem; background: #fff; color: var(--accent-ink, var(--accent)); font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 999px; z-index: 2; }
     .gcard .gdone { position: absolute; top: .5rem; left: .5rem; background: rgba(255,177,60,.95); color: #6b4a00; font-size: .68rem; font-weight: 800; padding: .12rem .45rem; border-radius: 999px; z-index: 2; }
     .gcard .gbody { padding: .7rem .8rem; }
     .gcard .gname { font-weight: 700; color: var(--ink); font-size: .9rem; line-height: 1.2; }
@@ -1461,7 +1461,7 @@
        qui se chevauchaient/débordaient sur le header). Tons DA (corail/doré), pas de flou. */
     .gcard .gtag { display: inline-block; font-size: .68rem; font-weight: 800; text-transform: uppercase; /* Lot D : MAJUSCULES ~10px → ~11px */ letter-spacing: .02em; padding: .15rem .5rem; border-radius: 999px; }
     .gcard .gtag-mini { background: rgba(0,0,0,.06); color: var(--muted); }
-    .gcard .gtag-quest { background: var(--accent-soft); color: var(--accent); }
+    .gcard .gtag-quest { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
     .gcard .gtag-done { background: rgba(255,177,60,.24); color: #6b4a00; }
     .gcard .gbody .gname { margin-top: .35rem; }
     .gcard .gplay { display: inline-flex; align-items: center; gap: .25rem; margin-top: .5rem; font-size: .76rem; font-weight: 800; color: #fff; background: var(--accent-grad); padding: .32rem .8rem; border-radius: 999px; box-shadow: 0 3px 9px rgba(45,38,52,.28); }
@@ -1475,7 +1475,7 @@
     .sugg-count { background: var(--accent); color: #fff; font-size: .7rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 .3rem; }
     .q-inprog { margin-left: .4rem; font-size: .68rem; font-weight: 700; color: #B5740E; background: rgba(255,177,60,.18); padding: .08rem .45rem; border-radius: 999px; }
     .quest-counter { font-size: .76rem; color: var(--muted); font-weight: 600; }
-    .quest-counter b { color: var(--accent); }
+    .quest-counter b { color: var(--accent-ink, var(--accent)); }
     /* Tuiles « ouvrir en feuille » (Quêtes / Jeux), anti-scroll */
     .jeux-open { display: flex; align-items: center; gap: .8rem; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: .85rem 1rem; margin-bottom: .7rem; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform .12s, box-shadow .15s; }
     .jeux-open:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
@@ -1493,8 +1493,8 @@
     #detailBadgeIco { width: 54px; height: 54px; background: transparent; }
     #detailBadgeRow { align-items: center; }
     .qrow .qname { font-weight: 600; color: var(--ink); flex: 1; min-width: 0; overflow-wrap: anywhere; } /* P8 : un nom long REVIENT à la ligne (plus de « s » mangé) */
-    .qrow .qrow-sub { font-weight: 600; font-size: .73rem; color: var(--accent); margin-top: .15rem; }
-    .qrow .qarrow { color: var(--accent); font-weight: 800; }
+    .qrow .qrow-sub { font-weight: 600; font-size: .73rem; color: var(--accent-ink, var(--accent)); margin-top: .15rem; }
+    .qrow .qarrow { color: var(--accent-ink, var(--accent)); font-weight: 800; }
 
     /* Badges hexagonaux */
     .bgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem .6rem; }
@@ -1517,11 +1517,11 @@
     .lb-rank { width: 26px; text-align: center; font-weight: 800; font-size: 1rem; color: var(--muted); flex-shrink: 0; }
     .lb-info { flex: 1; min-width: 0; }
     .lb-name { font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .lb-val { flex-shrink: 0; font-weight: 800; color: var(--accent); }
+    .lb-val { flex-shrink: 0; font-weight: 800; color: var(--accent-ink, var(--accent)); }
     .lb-val span { font-size: .7rem; font-weight: 700; color: var(--muted); }
     .lb-me { border: 1.5px solid var(--accent); background: var(--accent-soft); }
     .lb-you { font-size: .62rem; font-weight: 800; background: var(--accent); color: #fff; padding: .04rem .35rem; border-radius: 999px; vertical-align: middle; }
-    .lb-tip { margin-top: .6rem; text-align: center; font-size: .82rem; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 12px; padding: .6rem .8rem; }
+    .lb-tip { margin-top: .6rem; text-align: center; font-size: .82rem; font-weight: 600; color: var(--accent-ink, var(--accent)); background: var(--accent-soft); border-radius: 12px; padding: .6rem .8rem; }
     .lb-optin { background: var(--cream); border: 1px solid var(--line); border-radius: 14px; padding: .9rem; margin-bottom: .8rem; text-align: center; }
     .admin-mhead { display: flex; align-items: center; gap: .8rem; background: var(--accent-grad); border-radius: 14px; padding: .8rem .9rem; margin-bottom: .3rem; }
     .admin-mhead .avatar.lg { width: 56px; height: 56px; font-size: 22px; border: 2px solid rgba(255,255,255,.6); }
@@ -1578,7 +1578,7 @@
     /* Catalogue des fonctionnalités (knowledge base admin) */
     .feat-zone { display: flex; align-items: center; gap: .5rem; font-weight: 800; font-size: .9rem; margin: 1rem 0 .5rem; padding-bottom: .35rem;
       border-bottom: 1px solid var(--line); color: var(--ink); }
-    .feat-go { margin-left: auto; border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent); font-weight: 800; font-size: .72rem; border-radius: 999px; padding: .25rem .6rem; cursor: pointer; }
+    .feat-go { margin-left: auto; border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent-ink, var(--accent)); font-weight: 800; font-size: .72rem; border-radius: 999px; padding: .25rem .6rem; cursor: pointer; }
     .feat-go:active { transform: scale(.96); }
     .feat-item { display: flex; gap: .7rem; align-items: flex-start; padding: .55rem .65rem; margin-bottom: .4rem;
       background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
@@ -1597,7 +1597,7 @@
     .wg-chev { color: var(--muted); font-size: .9rem; transition: transform .2s; }
     details.wg-card[open] .wg-chev { transform: rotate(180deg); }
     details.wg-card:not([open]) .wg-head { margin-bottom: 0; }
-    .wg-count { font-size: .76rem; color: var(--accent); background: var(--accent-soft, rgba(255,170,90,.16)); border-radius: 999px; padding: .1rem .5rem; }
+    .wg-count { font-size: .76rem; color: var(--accent-ink, var(--accent)); background: var(--accent-soft, rgba(255,170,90,.16)); border-radius: 999px; padding: .1rem .5rem; }
     .wg-goal { display: flex; align-items: center; gap: .6rem; margin-bottom: .55rem; }
     .wg-goal:last-of-type { margin-bottom: 0; }
     .wg-ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-size: 15px; background: var(--accent-soft, rgba(255,170,90,.16)); flex-shrink: 0; }
@@ -1607,7 +1607,7 @@
     .wg-bar { height: 6px; background: var(--line); border-radius: 999px; margin-top: .25rem; overflow: hidden; }
     .wg-bar span { display: block; height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width .4s ease; }
     .wg-val { font-size: .74rem; font-weight: 800; color: var(--muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
-    .wg-goal.done .wg-val { color: var(--accent); }
+    .wg-goal.done .wg-val { color: var(--accent-ink, var(--accent)); }
     .wg-alldone { margin-top: .6rem; text-align: center; font-size: .8rem; font-weight: 700; color: #B5740E; }
     body.theme-dusk .wg-alldone { color: #ffce8a; }
     /* Conseil sécurité du jour */
@@ -1641,7 +1641,7 @@
     body.theme-dusk .shop-ic-none { background: var(--dcard,#2a2140); }
     .shop-name { font-size: .82rem; font-weight: 700; line-height: 1.2; }
     .shop-meta { font-size: .72rem; color: var(--muted); }
-    .shop-item.on .shop-meta { color: var(--accent); font-weight: 700; }
+    .shop-item.on .shop-meta { color: var(--accent-ink, var(--accent)); font-weight: 700; }
     /* SunCoins (P2.17) : solde dans la bannière + états achetable/verrouillé des items. */
     .shop-coins { font-weight: 800; color: #B5740E; } .shop-coins b { font-family: "Fraunces", serif; }
     body.theme-dusk .shop-coins { color: #ffce8a; }
@@ -1758,7 +1758,7 @@
       background-color:rgba(255,255,255,.18); background-size:cover; background-position:center center; background-repeat:no-repeat; }
     .player-badge .pb-lvl{ z-index:1; }
     .player-badge .pb-lvl{ position:absolute; bottom:-4px; right:-5px; min-width:24px; height:24px; padding:0 5px; border-radius:999px;
-      background:#fff; color:var(--accent); font-weight:900; font-size:.8rem; display:grid; place-items:center; border:2px solid var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.22); }
+      background:#fff; color:var(--accent-ink, var(--accent)); font-weight:900; font-size:.8rem; display:grid; place-items:center; border:2px solid var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.22); }
     .player-hero{ position:relative; overflow:hidden; border-radius:var(--radius); padding:.8rem .95rem .9rem; margin:.2rem 0 .85rem;
       background: radial-gradient(120% 130% at 18% -10%, rgba(255,255,255,.22), rgba(255,255,255,0) 46%), var(--accent-grad);
       box-shadow:var(--shadow); color:#fff; isolation:isolate; }
@@ -1805,7 +1805,7 @@
     .nq-emblem::after{ content:"ⓘ"; position:absolute; right:-6px; bottom:-4px; font-size:13px; color:#fff; background:var(--accent-grad); border-radius:50%; width:16px; height:16px; line-height:16px; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,.25); }
     @keyframes nqPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.08); } }
     .nq-body{ flex:1; min-width:0; }
-    .nq-lbl{ font-size:.7rem; font-weight:800; color:var(--accent); letter-spacing:.02em; }
+    .nq-lbl{ font-size:.7rem; font-weight:800; color:var(--accent-ink, var(--accent)); letter-spacing:.02em; }
     .nq-title{ font-weight:800; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .nq-meta{ font-size:.8rem; }
     .nq-go{ flex-shrink:0; padding:.45rem .7rem; font-size:.82rem; white-space:nowrap; }
@@ -1851,7 +1851,7 @@
     .hm-album[open] > summary::after{ content:" ▴"; }
     .hm-city-row{ display:flex; align-items:center; gap:.5rem; font-size:.84rem; }
     .hm-city-row .hc-name{ flex:1; font-weight:700; color:var(--ink); }
-    .hm-city-row .hc-n{ color:var(--accent); font-weight:800; }
+    .hm-city-row .hc-n{ color:var(--accent-ink, var(--accent)); font-weight:800; }
     /* Capitale du jour */
     .capitale{ display:flex; align-items:center; gap:.7rem; width:100%; text-align:left; margin:.2rem 0 .9rem; padding:.7rem .85rem; border:0; border-radius:var(--radius); cursor:pointer;
       background:radial-gradient(120% 130% at 15% -10%, rgba(255,255,255,.26), rgba(255,255,255,0) 46%), linear-gradient(135deg,#6C4DE0,#C04AC9 52%,#FF7A4D); color:#fff; box-shadow:var(--shadow-pop); }
@@ -1865,7 +1865,7 @@
     .qcoll{ background:linear-gradient(135deg, rgba(255,201,60,.13), rgba(255,138,61,.1)); border:1px solid rgba(201,138,30,.2); border-radius:14px; padding:.8rem .9rem; margin:.4rem 0 .9rem; }
     body.theme-dusk .qcoll{ background:linear-gradient(135deg, rgba(255,201,60,.11), rgba(255,138,61,.08)); border-color:rgba(255,201,60,.18); }
     .qcoll-head{ display:flex; justify-content:space-between; align-items:center; font-size:.88rem; font-weight:800; color:var(--ink); margin-bottom:.5rem; }
-    .qcoll-head b{ font-size:.76rem; color:var(--accent); background:var(--accent-soft, rgba(255,170,90,.16)); border-radius:999px; padding:.1rem .5rem; }
+    .qcoll-head b{ font-size:.76rem; color:var(--accent-ink, var(--accent)); background:var(--accent-soft, rgba(255,170,90,.16)); border-radius:999px; padding:.1rem .5rem; }
     .qcoll-bar{ height:6px; border-radius:999px; background:var(--line); overflow:hidden; }
     .qcoll-bar > span{ display:block; height:100%; border-radius:999px; background:var(--accent-grad); transition:width .4s ease; }
 
@@ -1895,7 +1895,7 @@
     body.theme-dusk .qs-timer{ color:#cbbfdc; }
     .qs-xp b{ font-family:"Fraunces",serif; font-weight:900; } .qs-dot{ color:var(--muted); } .qs-badge-hint b{ color:var(--ink); font-weight:800; }
     .qs-mode{ display:flex; gap:.2rem; padding:.22rem; background:var(--accent-soft); border-radius:999px; margin:0 .4rem .7rem; }
-    .qs-mode-btn{ flex:1; min-height:40px; border:0; background:none; cursor:pointer; font-weight:800; font-size:.82rem; color:var(--accent);
+    .qs-mode-btn{ flex:1; min-height:40px; border:0; background:none; cursor:pointer; font-weight:800; font-size:.82rem; color:var(--accent-ink, var(--accent));
       border-radius:999px; padding:.5rem; transition:background .18s, color .18s, transform .12s; }
     .qs-mode-btn i{ font-style:normal; font-size:.7rem; opacity:.85; font-weight:700; }
     .qs-mode-btn.active{ background:var(--accent-grad); color:#fff; box-shadow:0 6px 14px rgba(45,38,52,.16); } .qs-mode-btn:active{ transform:scale(.96); }
@@ -1907,7 +1907,7 @@
     /* --- 3. Missions rapides + rail badges --- */
     .qm-strip, .badge-rail{ margin:0 0 1rem; }
     .qm-head{ display:flex; align-items:baseline; justify-content:space-between; margin:.2rem 0 .55rem; }
-    .qm-head h3{ margin:0; } .qm-all{ font-size:.82rem; font-weight:700; color:var(--accent); cursor:pointer; white-space:nowrap; }
+    .qm-head h3{ margin:0; } .qm-all{ font-size:.82rem; font-weight:700; color:var(--accent-ink, var(--accent)); cursor:pointer; white-space:nowrap; }
     .qm-rail{ display:flex; gap:.6rem; overflow-x:auto; padding:.2rem .25rem .5rem; margin:0 -.25rem; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
     .qm-rail::-webkit-scrollbar{ display:none; }
     .qm-card{ scroll-snap-align:start; flex:0 0 auto; width:118px; min-height:124px; display:flex; flex-direction:column; align-items:flex-start; gap:.3rem;
@@ -1943,7 +1943,7 @@
     .sp-streak:active{ transform:scale(.96); } .sp-fire{ font-size:.95rem; }
     .sp-stats{ display:flex; gap:.5rem; margin:.85rem 0 .9rem; }
     .sp-stat{ flex:1; text-align:center; padding:.55rem .3rem; border-radius:var(--radius-sm); background:rgba(255,255,255,.55); border:1px solid rgba(201,138,30,.14); }
-    .sp-stat b{ display:block; font-family:"Fraunces",serif; font-weight:800; font-size:1.35rem; color:var(--accent); line-height:1; }
+    .sp-stat b{ display:block; font-family:"Fraunces",serif; font-weight:800; font-size:1.35rem; color:var(--accent-ink, var(--accent)); line-height:1; }
     .sp-stat span{ display:block; margin-top:.2rem; font-size:.7rem; font-weight:700; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .sp-next{ display:flex; align-items:center; gap:.7rem; padding:.6rem .65rem; border-radius:var(--radius-sm); background:rgba(255,138,61,.10); border:1px solid rgba(255,138,61,.20); }
     .sp-next-bdg{ font-size:1.7rem; line-height:1; flex-shrink:0; filter:drop-shadow(0 3px 6px rgba(255,90,77,.25)); }
@@ -2018,7 +2018,7 @@
     .qstep { display: flex; flex-direction: column; align-items: center; gap: .2rem; flex: 0 0 auto; font-size: .68rem; font-weight: 700; color: var(--muted); }
     .qstep .qstep-n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--cream); border: 1.5px solid var(--line); color: var(--muted); font-size: .8rem; }
     .qstep.done .qstep-n { background: var(--accent-grad); color: #fff; border-color: transparent; }
-    .qstep.cur .qstep-n { border-color: var(--accent); color: var(--accent); }
+    .qstep.cur .qstep-n { border-color: var(--accent); color: var(--accent-ink, var(--accent)); }
     .qstep.done, .qstep.cur { color: var(--ink); }
     .qstep-line { flex: 1; height: 2px; background: var(--line); border-radius: 2px; }
     body.theme-dusk .qstep .qstep-n { background: var(--dcard,#2a2140); }
@@ -2037,7 +2037,7 @@
     .tph-online { background: rgba(255,201,60,.96); color: #6b4a00; }
     .tp-hero .dh-name { font-size: 1.6rem; }
     /* Stats de la fiche profil : chiffre en accent */
-    #matesProfile .dstat b { color: var(--accent); font-size: 1.15rem; font-weight: 800; }
+    #matesProfile .dstat b { color: var(--accent-ink, var(--accent)); font-size: 1.15rem; font-weight: 800; }
     /* Fiche Mate : photo en PORTRAIT (plus haute) + actions en rangée compacte */
     .tp-hero { height: 280px; }
     .tp-actions2 { display: flex; gap: .5rem; margin-top: .7rem; }
@@ -2080,7 +2080,7 @@
     @keyframes vrPulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
     .bubble-audio { display: inline-flex; align-items: center; gap: .5rem; }
     .bubble-audio button { background: rgba(255,255,255,.28); border: 0; color: inherit; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: .8rem; line-height: 1; flex-shrink: 0; display: grid; place-items: center; padding: 0 0 0 2px; }
-    .bubble.them .bubble-audio button { background: var(--accent-soft); color: var(--accent); }
+    .bubble.them .bubble-audio button { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
     .chat-header .backbtn { margin-bottom: 0; padding: .4rem .7rem; }
     /* Vue chat = vraie messagerie : occupe l'espace entre l'en-tête et la barre du bas,
        le corps défile tout seul et la zone de saisie reste collée en bas. */
@@ -2113,7 +2113,7 @@
     .gallery { display: flex; gap: .5rem; margin-bottom: 1rem; }
     .gallery .g { flex: 1; height: 56px; border-radius: 12px; background: var(--accent-soft); display: grid; place-items: center; font-size: 22px; }
     .hashtags { margin-top: .6rem; }
-    .hashtags span { color: var(--accent); font-weight: 600; font-size: .85rem; margin-right: .5rem; }
+    .hashtags span { color: var(--accent-ink, var(--accent)); font-weight: 600; font-size: .85rem; margin-right: .5rem; }
 
     /* -------------------- PROFIL : chips / complétion --------------- */
     .chips.wrap { flex-wrap: wrap; overflow: visible; margin-bottom: .3rem; }
@@ -2232,9 +2232,9 @@
     .hm-plan > summary:active { transform: scale(.99); }
     /* Toasts : emojis dimensionnels (même relief que l'onboarding) */
     #toastWrap .tico, .toast .tico { filter: var(--relief); }
-    .prof-badges .pb-more { font-size: .76rem; font-weight: 800; color: var(--accent); }
+    .prof-badges .pb-more { font-size: .76rem; font-weight: 800; color: var(--accent-ink, var(--accent)); }
     .prof-badges .pb-lbl { font-size: .78rem; font-weight: 700; color: var(--muted); }
-    .prof-badges .pb-edit { margin-left: auto; font-size: .76rem; font-weight: 700; color: var(--accent); }
+    .prof-badges .pb-edit { margin-left: auto; font-size: .76rem; font-weight: 700; color: var(--accent-ink, var(--accent)); }
     /* Mon parcours */
     .parcours-today { font-size: .88rem; margin-bottom: .7rem; }
     .parcours-stats { display: flex; gap: .5rem; margin-bottom: .7rem; }
@@ -2267,8 +2267,8 @@
 
     /* ------------------------ Compatibilité ------------------------- */
     .compat { display: inline-block; padding: .28rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 800; }
-    .compat.high { background: var(--accent-soft); color: var(--accent); }
-    .compat.mid  { background: var(--accent-soft); color: var(--accent); }
+    .compat.high { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
+    .compat.mid  { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
     .compat.low  { background: #f1f2f5; color: var(--muted); }
 
     /* ------------------------ Avatars / photos --------------------- */
@@ -2282,7 +2282,7 @@
     .detail-hero.has-photo .dh-emoji { display: none; }
 
     /* ------------------- Matchmaking : pastilles & recos ----------- */
-    .afn { display: inline-block; background: var(--accent-soft); color: var(--accent); font-size: .7rem; font-weight: 600; padding: .18rem .5rem; border-radius: 999px; margin: .25rem .25rem 0 0; }
+    .afn { display: inline-block; background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-size: .7rem; font-weight: 600; padding: .18rem .5rem; border-radius: 999px; margin: .25rem .25rem 0 0; }
     #recoList { display: flex; gap: .7rem; overflow-x: auto; padding-bottom: .3rem; scrollbar-width: none; }
     #recoList::-webkit-scrollbar { display: none; }
     .reco { flex: 0 0 134px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: .85rem .7rem; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); }
@@ -2290,8 +2290,8 @@
     .reco .avatar { margin: 0 auto .5rem; }
     .reco-name { font-weight: 700; color: var(--ink); font-size: .9rem; line-height: 1.1; }
     .reco-meta { color: var(--muted); font-size: .75rem; }
-    .reco-pct { color: var(--accent); font-weight: 800; font-size: .9rem; margin-top: .35rem; }
-    .reco-reason { font-size: .68rem; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: .15rem .45rem; margin-top: .35rem; display: inline-block; }
+    .reco-pct { color: var(--accent-ink, var(--accent)); font-weight: 800; font-size: .9rem; margin-top: .35rem; }
+    .reco-reason { font-size: .68rem; color: var(--accent-ink, var(--accent)); background: var(--accent-soft); border-radius: 999px; padding: .15rem .45rem; margin-top: .35rem; display: inline-block; }
     /* Cartes « Découvrir » premium (refonte Mates) */
     .tcard { position: relative; overflow: hidden; background: var(--card); border: 1px solid var(--line); border-radius: 18px;
       padding: .9rem; margin-bottom: .7rem; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform .16s cubic-bezier(.2,.8,.3,1), box-shadow .16s; }
@@ -2302,11 +2302,11 @@
     .tcard-id { flex: 1; min-width: 0; }
     .tcard-name { font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: .35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tcard-city { color: var(--muted); font-size: .79rem; margin-top: .12rem; }
-    .tcard-online { color: var(--accent); font-weight: 700; }
+    .tcard-online { color: var(--accent-ink, var(--accent)); font-weight: 700; }
     .tcard-compat { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       min-width: 64px; padding: .45rem .4rem; border-radius: 14px; background: var(--accent-soft, rgba(255,170,90,.16)); line-height: 1; }
     .tcard-compat span { font-size: .85rem; }
-    .tcard-compat b { font-size: 1.05rem; font-weight: 800; color: var(--accent); margin-top: .15rem; }
+    .tcard-compat b { font-size: 1.05rem; font-weight: 800; color: var(--accent-ink, var(--accent)); margin-top: .15rem; }
     .tcard-compat small { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: .12rem; } /* Lot D : MAJUSCULES 9px → ~11px */
     .tcard-compat.high { background: linear-gradient(135deg, rgba(255,90,77,.2), rgba(255,138,61,.16)); }
     .tcard-compat.low { background: var(--cream); }
@@ -2451,8 +2451,8 @@
 
     /* --- Accueil : titre dégradé, vignettes en relief --- */
     /* « Bonjour {pseudo} » en corail/rouge (l'âme SunMates) · couleur d'accent, qui DIFFÈRE jour/nuit. */
-    #homeHello { color: var(--accent); }
-    #homeHello .hello-name { color: var(--accent); }
+    #homeHello { color: var(--accent-ink, var(--accent)); }
+    #homeHello .hello-name { color: var(--accent-ink, var(--accent)); }
     /* Série de jours (streak), gamification douce près du Bonjour */
     .hello-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: .1rem; flex-wrap: nowrap; } /* v570 ergo : nowrap → le chip « Dispo ? » reste stable à droite (fini le wrap désordonné) */
     .hello-row #homeSubtitle { min-width: 0; flex: 1; }
@@ -2475,12 +2475,12 @@
     .hm-inspo { background: linear-gradient(135deg, rgba(122,92,255,.12), rgba(255,138,61,.1)); border: 1px solid rgba(122,92,255,.18); }
     .hm-inspo-top { display: flex; align-items: center; gap: .7rem; }
     .hm-inspo-flag { font-size: 2rem; }
-    .hm-inspo-ttl { font-size: .72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+    .hm-inspo-ttl { font-size: .72rem; font-weight: 800; color: var(--accent-ink, var(--accent)); text-transform: uppercase; letter-spacing: .04em; }
     .hm-inspo-city { font-weight: 800; font-size: 1.15rem; }
     .hm-inspo-desc { font-size: .84rem; color: var(--muted); margin-top: .4rem; line-height: 1.4; }
     .hm-inspo-tip { font-size: .78rem; color: var(--ink); margin-top: .45rem; padding: .4rem .6rem; border-radius: 10px; background: rgba(255,201,60,.14); font-weight: 600; }
     body.theme-dusk .hm-inspo-tip { background: rgba(255,201,60,.12); color: #f3e9f3; }
-    .prep-cat { font-size: .72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; margin: .7rem 0 .3rem; }
+    .prep-cat { font-size: .72rem; font-weight: 800; color: var(--accent-ink, var(--accent)); text-transform: uppercase; letter-spacing: .04em; margin: .7rem 0 .3rem; }
     .prep-cat:first-of-type { margin-top: .3rem; }
     .solo-annex { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin: -.4rem 0 1rem; }
     .sa-tile { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .6rem .3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-size: .68rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-sm); text-align: center; }
@@ -2496,7 +2496,7 @@
     .hm-host-ic { font-size: 1.8rem; flex-shrink: 0; }
     .nt-set { display: flex; align-items: center; gap: .7rem; }
     .nt-ic { font-size: 1.8rem; flex-shrink: 0; }
-    .nt-count { font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1; }
+    .nt-count { font-weight: 800; font-size: 1.4rem; color: var(--accent-ink, var(--accent)); line-height: 1; }
     .nt-form input { margin-top: .4rem; }
     .wish-wrap { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .6rem; }
     .wish-chip { display: inline-flex; align-items: center; gap: .3rem; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--ink); border-radius: 999px; padding: .3rem .35rem .3rem .65rem; font-size: .82rem; font-weight: 600; }
@@ -2523,7 +2523,7 @@
     .prep-country:active { transform: scale(.99); }
     .prep-label { flex: 1; font-size: .85rem; font-weight: 600; }
     .prep-item.done .prep-label { color: var(--muted); text-decoration: line-through; }
-    .prep-go { border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent); width: 24px; height: 24px; border-radius: 50%; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; display: grid; place-items: center; padding: 0; }
+    .prep-go { border: 0; background: var(--accent-soft, rgba(255,170,90,.16)); color: var(--accent-ink, var(--accent)); width: 24px; height: 24px; border-radius: 50%; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; display: grid; place-items: center; padding: 0; }
     /* Retour tactile sur les nouveaux éléments cliquables (cohérence premium) */
     .wish-chip.ntpick, .hm-visitor, .wg-goal[data-wggo] { transition: transform .1s ease; }
     .wish-chip.ntpick:active, .hm-visitor:active, .wg-goal[data-wggo]:active, .mode-switch button:active, .streak-chip:active { transform: scale(.97); }
@@ -2670,7 +2670,7 @@
     .section-head a { color: var(--retro-teal); }
 
     /* --- Séparateurs de sections dans le formulaire de profil --- */
-    .pfield-sep { font-size: .98rem; margin: 1.5rem 0 .3rem; padding-top: 1rem; border-top: 1px dashed rgba(255,90,77,.28); color: var(--accent); }
+    .pfield-sep { font-size: .98rem; margin: 1.5rem 0 .3rem; padding-top: 1rem; border-top: 1px dashed rgba(255,90,77,.28); color: var(--accent-ink, var(--accent)); }
     /* --- Fiche profil détaillée : grille d'infos --- */
     .pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: .4rem; }
     .pgrid .pcell { background: var(--cream); border: 1px solid rgba(255,90,77,.12); border-radius: 12px; padding: .55rem .7rem; }
@@ -2747,7 +2747,7 @@
     .mseg button [data-smicon] { display: inline-flex; align-items: center; }
     .mseg button.active { background: var(--accent-grad); color: #fff; }
     .mseg .segb { position: absolute; top: 2px; right: 5px; background: var(--accent); color: #fff; font-size: .56rem; min-width: 15px; height: 15px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
-    .mseg button.active .segb { background: #fff; color: var(--accent); }
+    .mseg button.active .segb { background: #fff; color: var(--accent-ink, var(--accent)); }
     /* #profSegNav (Premium / Admin) : 2 vrais boutons-cartes DISTINCTS et bien séparés
        (avant : 2 libellés texte flottant dans un bandeau beige = « pas scindé / moche »). */
     #profSegNav { background: transparent !important; border: 0 !important; padding: 0 !important; gap: .55rem; margin: .7rem 0 .2rem; }
@@ -2793,15 +2793,15 @@
     body.theme-dusk .au-fbtn { background: var(--dcard,#2a2140); color: #eee; border-color: rgba(255,255,255,.1); }
     .mates-stat { display: flex; width: fit-content; align-items: center; gap: .5rem; margin: .3rem auto .8rem; background: var(--accent-soft); border: 1px solid rgba(255,90,77,.22); border-radius: 999px; padding: .4rem .95rem; cursor: pointer; transition: transform .1s; }
     .mates-stat:active { transform: scale(.97); }
-    .mates-stat b { font-size: 1.35rem; color: var(--accent); line-height: 1; }
+    .mates-stat b { font-size: 1.35rem; color: var(--accent-ink, var(--accent)); line-height: 1; }
     /* Cartes « Découvrir » plus riches */
     .trav-open { border-bottom: 0 !important; border: 1px solid var(--line); border-radius: 14px; margin-bottom: .55rem; padding: .7rem .8rem !important; transition: transform .12s, box-shadow .15s; }
     .trav-open:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
     .trav-open .avatar { width: 50px; height: 50px; }
     .trav-tags { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .3rem; }
-    .trav-tags span { font-size: .68rem; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: .08rem .45rem; border-radius: 999px; }
+    .trav-tags span { font-size: .68rem; font-weight: 700; color: var(--accent-ink, var(--accent)); background: var(--accent-soft); padding: .08rem .45rem; border-radius: 999px; }
     .mates-stat span { font-size: .85rem; color: var(--ink-warm); font-weight: 700; }
-    .mates-stat b { font-family: "Fraunces", serif; font-size: 1.5rem; color: var(--accent); }
+    .mates-stat b { font-family: "Fraunces", serif; font-size: 1.5rem; color: var(--accent-ink, var(--accent)); }
     .mates-stat span { color: var(--muted); font-size: .85rem; }
 
     /* Feed "posts" de l'accueil */
@@ -2824,7 +2824,7 @@
     .conv-unread { background: var(--accent); color: #fff; font-size: .62rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
     /* Actions sur ses propres messages (éditer / supprimer) */
     .msg-quest { display: inline-block; margin-top: .4rem; background: rgba(255,255,255,.25); color: inherit; border: 1px solid rgba(255,255,255,.4); border-radius: 999px; padding: .2rem .7rem; font-size: .76rem; font-weight: 700; cursor: pointer; }
-    .bubble.them .msg-quest { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+    .bubble.them .msg-quest { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); border-color: transparent; }
     /* Chaque message vit dans une LIGNE pleine largeur. L'heure est posée dans une COLONNE
        fixe au bord droit (mêmes coordonnées pour tous → alignées, jamais collées à la bulle).
        Cachée par défaut ; révélée en touchant un message OU en glissant (peek façon Insta). */
@@ -2962,7 +2962,7 @@
     .btn-primary { background: var(--accent) !important; color: #fff; box-shadow: 0 8px 20px rgba(190,86,64,.26) !important; }
     .btn-primary::before, .btn-danger::before { display: none !important; } /* on retire la brillance pour un rendu net */
     .btn-primary:hover { filter: brightness(1.04); transform: translateY(-1px); box-shadow: 0 12px 26px rgba(45,38,52,.24) !important; } /* Lot C : halo de survol dé-rougi (la couche v3 ne couvrait pas le :hover) → gris chaud */
-    .btn-accent { background: var(--accent-soft); color: var(--accent); }
+    .btn-accent { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
     .btn-ghost { background: transparent; border: 1.5px solid var(--line); color: var(--ink); }
     .btn-danger { background: var(--danger) !important; color: #fff; box-shadow: 0 8px 20px rgba(178,58,46,.3) !important; }
 
@@ -2978,7 +2978,7 @@
     /* --- Navigation basse : icônes en traits --- */
     .bottom-nav { background: rgba(255,252,246,.86); box-shadow: 0 -8px 28px rgba(70,45,20,.08); }
     .bottom-nav button { color: var(--muted); font-weight: 600; font-size: .7rem; }
-    .bottom-nav button.active { color: var(--accent); }
+    .bottom-nav button.active { color: var(--accent-ink, var(--accent)); }
     .bottom-nav svg { width: 22px; height: 22px; display: block; margin: 0 auto 2px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
     .bottom-nav button.active::before { background: var(--accent); }
 
@@ -3107,7 +3107,7 @@
     /* Navigation : icônes vives */
     .bottom-nav { background: #fff7f2; box-shadow: 0 -8px 28px rgba(45,38,52,.10); }
     .bottom-nav button { color: var(--muted); }
-    .bottom-nav button.active { color: var(--accent); }
+    .bottom-nav button.active { color: var(--accent-ink, var(--accent)); }
     .bottom-nav button.active::before { background: var(--accent); }
 
     /* Héros & ambiances photo (jeux / quêtes) */
@@ -3169,8 +3169,8 @@
     body.theme-dusk .badge.no { background: rgba(255,255,255,.08); color: var(--muted); border-color: rgba(255,255,255,.16); }
     body.theme-dusk label, body.theme-dusk .muted { color: var(--muted); }
     /* Bouton « Retour » : même teinte que les autres actions (corail) */
-    .backbtn { color: var(--accent) !important; background: transparent; font-weight: 700; }
-    body.theme-dusk .backbtn { color: var(--accent) !important; }
+    .backbtn { color: var(--accent-ink, var(--accent)) !important; background: transparent; font-weight: 700; }
+    body.theme-dusk .backbtn { color: var(--accent-ink, var(--accent)) !important; }
     /* Boutons secondaires uniformes en sombre */
     body.theme-dusk .btn-accent { background: rgba(255,106,93,.18) !important; color: var(--accent-2) !important; }
     body.theme-dusk .section-head a { color: var(--accent-2); }
@@ -3207,19 +3207,19 @@
     /* Œil pour révéler le mot de passe */
     .pw-eye { position: absolute; right: .35rem; top: 50%; transform: translateY(-50%); background: none; border: 0; cursor: pointer; padding: .3rem; line-height: 1; color: var(--muted); min-width: 40px; min-height: 40px; display: grid; place-items: center; }
     .pw-eye svg { display: block; }
-    .pw-eye:hover { color: var(--accent); }
+    .pw-eye:hover { color: var(--accent-ink, var(--accent)); }
     /* Aperçu « vue Gratuit » (admin) : les fonctions Gold se grisent */
     body.gold-free .gold-feature { opacity: .5; filter: grayscale(.4); pointer-events: none; }
     .gold-only-note { display: none; }
     body.gold-free .gold-only-note { display: block; background: rgba(255,201,60,.18); border: 1px dashed #C98A1E; color: #8a5a00; border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 600; }
     /* Sécurité : jamais monnayée. Note rassurante « inclus pour tous », ton DA corail. */
-    .safe-free-note { background: var(--accent-soft); border: 1px solid rgba(255,90,77,.22); color: var(--accent); border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 700; }
+    .safe-free-note { background: var(--accent-soft); border: 1px solid rgba(255,90,77,.22); color: var(--accent-ink, var(--accent)); border-radius: 10px; padding: .5rem .7rem; font-size: .8rem; margin: .5rem 0; text-align: center; font-weight: 700; }
     body.theme-dusk .safe-free-note { background: rgba(255,90,77,.14); color: #ffb0a6; border-color: rgba(255,90,77,.3); }
     /* FAQ premiers secours / voyage : accordéon sobre dans la DA */
     .faq-secu details { border: 1px solid var(--line); border-radius: 12px; padding: .55rem .8rem; margin-bottom: .5rem; background: var(--cream); }
     .faq-secu summary { cursor: pointer; font-weight: 700; color: var(--ink); list-style: none; font-size: .9rem; }
     .faq-secu summary::-webkit-details-marker { display: none; }
-    .faq-secu details[open] summary { margin-bottom: .4rem; color: var(--accent); }
+    .faq-secu details[open] summary { margin-bottom: .4rem; color: var(--accent-ink, var(--accent)); }
     .faq-secu p { margin: 0; font-size: .84rem; line-height: 1.55; color: var(--text); }
     /* Numéros d'urgence par pays */
     /* Fluidité : fondu doux à chaque changement d'onglet / de vue + défilement à inertie */
@@ -3275,7 +3275,7 @@
     .tile.soon { opacity: .5; cursor: default; position: relative; filter: grayscale(.5); }
     .tile.soon:hover { transform: none; box-shadow: none; }
     .tile.soon .thumb { background: linear-gradient(135deg,#d9cdb8,#b3a079) !important; }
-    .tile.soon .t-meta { color: var(--accent); font-weight: 700; }
+    .tile.soon .t-meta { color: var(--accent-ink, var(--accent)); font-weight: 700; }
 
     /* ===================== SÉLECTEUR DA CUSTOM =====================
        Chaque <select> natif est gardé (valeur + handlers change) mais masqué ;
@@ -3291,7 +3291,7 @@
     .sm-sel { min-width: 0; max-width: 100%; } /* jamais plus large que sa colonne (cases Du/Au) */
     .sm-sel-trigger .sm-sel-val.placeholder { color: var(--muted); font-weight: 600; }
     .sm-sel-trigger .sm-sel-chev { flex-shrink: 0; width: 22px; height: 22px; border-radius: 8px; display: grid; place-items: center;
-      background: var(--accent-soft); color: var(--accent); font-size: .68rem; font-weight: 900; }
+      background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-size: .68rem; font-weight: 900; }
     body.theme-dusk .sm-sel-trigger { background: var(--card); border-color: rgba(255,255,255,.12); color: var(--ink); }
     /* Contextes flex (le select était enfant flex direct) : le wrapper reprend le flex. */
     .city-pick .sm-sel, #advFilters .sm-sel { flex: 1 1 auto; min-width: 0; }
@@ -3299,7 +3299,7 @@
     .city-pick .sm-sel-trigger { border-radius: 999px; font-weight: 700; padding: .4rem .7rem; font-size: .82rem;
       background: linear-gradient(180deg, var(--cream), var(--card)); border: 1px solid rgba(232,150,31,.28); box-shadow: none; } /* Bug « tuile trop balèze » : allégé (700, sans ombre, plus compact) */
     .city-pick .sm-sel-trigger .sm-sel-val::before { content: "📍 "; }
-    .city-pick .sm-sel-trigger .sm-sel-chev { color: var(--accent); }
+    .city-pick .sm-sel-trigger .sm-sel-chev { color: var(--accent-ink, var(--accent)); }
     body.theme-dusk .city-pick .sm-sel-trigger { background: var(--dcard, #2a2140); border-color: rgba(255,209,92,.22); }
     /* Retour Maxime : la ville était ÉCRASÉE par « À faire » + « Filtres » (il ne restait que
        « Cho… ») → la ville prend SA ligne entière, les 2 outils se partagent la ligne dessous. */
@@ -3326,12 +3326,12 @@
     .sm-selopt { display: flex; align-items: center; justify-content: space-between; gap: .6rem; width: 100%; text-align: left;
       padding: .72rem .8rem; border-radius: 12px; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: .92rem; cursor: pointer; }
     .sm-selopt:active { background: var(--cream); }
-    .sm-selopt.sel { background: var(--accent-soft); color: var(--accent); font-weight: 800; }
-    .sm-selopt .sm-selopt-check { color: var(--accent); opacity: 0; font-weight: 900; }
+    .sm-selopt.sel { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-weight: 800; }
+    .sm-selopt .sm-selopt-check { color: var(--accent-ink, var(--accent)); opacity: 0; font-weight: 900; }
     .sm-selopt.sel .sm-selopt-check { opacity: 1; }
 
     /* Filtres carte = bouton « Calques » → panneau de toggles (fini le scroll horizontal des chips). */
-    .hm-layers-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .42rem .8rem; border-radius: 999px; border: 1.5px solid var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: .82rem; cursor: pointer; white-space: nowrap; }
+    .hm-layers-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .42rem .8rem; border-radius: 999px; border: 1.5px solid var(--accent); background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-weight: 800; font-size: .82rem; cursor: pointer; white-space: nowrap; }
     .hm-layers-btn .hlb-cnt { background: var(--accent); color: #fff; border-radius: 999px; min-width: 18px; height: 18px; display: inline-grid; place-items: center; font-size: .68rem; padding: 0 5px; }
     #homeMapFilters.as-btn { flex-wrap: nowrap !important; overflow: visible; }
     #homeMapFilters.as-btn .chip { display: none !important; }   /* chips gardées (logique) mais masquées */
@@ -3369,8 +3369,8 @@
     .hmg-av { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-weight: 800; font-size: .85rem;
       color: #fff; background-color: var(--accent); background-size: cover; background-position: center; border: 2px solid #fff; margin-left: -10px; }
     .hm-gal-open .hmg-av:first-child { margin-left: 0; }
-    .hmg-more { font-size: .74rem; font-weight: 800; color: var(--accent); margin-left: .3rem; }
-    .hmg-lbl { margin-left: auto; font-weight: 800; font-size: .82rem; color: var(--accent); white-space: nowrap; }
+    .hmg-more { font-size: .74rem; font-weight: 800; color: var(--accent-ink, var(--accent)); margin-left: .3rem; }
+    .hmg-lbl { margin-left: auto; font-weight: 800; font-size: .82rem; color: var(--accent-ink, var(--accent)); white-space: nowrap; }
     body.theme-dusk .hm-gal-open { background: linear-gradient(135deg, var(--dcard3,#2c2140), var(--dcard2,#241b35)); border-color: rgba(255,170,130,.22); }
     body.theme-dusk .hmg-av { border-color: var(--dcard2,#241b35); }
     .hmg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .55rem; }
@@ -3391,7 +3391,7 @@
     #smDateOv .sm-selsheet { max-height: calc(100dvh - 16px); overflow-y: auto; padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
     body.theme-dusk .sm-date-col { border-color: rgba(255,255,255,.1); }
     /* Aperçu vivant de la date composée (« mercredi 11 juin 2026 ») */
-    .sm-date-preview { text-align: center; font-weight: 800; color: var(--accent); font-size: .95rem;
+    .sm-date-preview { text-align: center; font-weight: 800; color: var(--accent-ink, var(--accent)); font-size: .95rem;
       padding: .45rem .6rem; margin: 0 0 .55rem; background: linear-gradient(135deg, #FFF6E9, #FFE7DA);
       border-radius: 12px; text-transform: capitalize; }
     body.theme-dusk .sm-date-preview { background: linear-gradient(135deg, var(--dcard3,#2c2140), var(--dcard2,#241b35)); color: #ffc8a8; }
@@ -3405,7 +3405,7 @@
       padding: .8rem .8rem calc(.8rem + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; box-shadow: 0 -18px 44px rgba(0,0,0,.3); animation: gchatIn .28s cubic-bezier(.22,.8,.3,1); }
     @keyframes gchatIn { from { transform: translateY(40px); opacity: .4; } to { transform: none; opacity: 1; } }
     .gchat-card .chat-body { flex: 1; min-height: 0; overflow-y: auto; }
-    .gchat-who { font-size: .68rem; font-weight: 800; color: var(--accent); margin-bottom: .12rem; }
+    .gchat-who { font-size: .68rem; font-weight: 800; color: var(--accent-ink, var(--accent)); margin-bottom: .12rem; }
 
     /* #6 : bannière « pas encore connectés » dans le chat (explication + CTA demande) */
     .chat-conn-notice { margin: .8rem auto .4rem; max-width: 92%; text-align: center; font-size: .82rem; line-height: 1.5; color: var(--ink);
@@ -3561,7 +3561,7 @@
     [data-coll].coll-closed .section-head button { display: none !important; }
     [data-coll].coll-closed .section-head { margin: 0 !important; min-height: 0 !important; }
     [data-coll].coll-closed { padding-top: .85rem !important; padding-bottom: .85rem !important; }
-    [data-coll] .coll-chev { color: var(--accent); font-size: .85em; font-weight: 800; }
+    [data-coll] .coll-chev { color: var(--accent-ink, var(--accent)); font-size: .85em; font-weight: 800; }
 
     /* ====== 🥚 Easter eggs (effets visuels · jamais documentés côté public) ====== */
     /* (Golden Hour « 7 taps » SUPPRIMÉ · retour Maxime, il ne l'aimait pas au final.
@@ -3600,7 +3600,7 @@
     /* #38 : album souvenir PLUS PRÉSENT (lignes plus grandes, accents chauds) */
     .gal-city { padding: .65rem .55rem !important; font-size: .95rem; border: 1px solid var(--line); border-radius: 12px; margin-top: .4rem; background: var(--card); }
     .gal-city .hc-name { font-weight: 700; }
-    .gal-city .hc-n { color: var(--accent); font-weight: 800; }
+    .gal-city .hc-n { color: var(--accent-ink, var(--accent)); font-weight: 800; }
     body.theme-dusk .gal-city { background: var(--dcard, #2a2140); border-color: rgba(255,255,255,.08); }
 
     /* #37 : pastille météo · pilule chaude cliquable, déclinée par mode.
@@ -3617,7 +3617,7 @@
     .weather-chip .wc-uv { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font-weight: 800; font-size: .7rem;
       padding: .08rem .4rem; border-radius: 999px; }
     .weather-chip .wc-sep { color: var(--muted); }
-    .weather-chip .wc-hint { color: var(--accent); font-weight: 800; margin-right: .2rem; }
+    .weather-chip .wc-hint { color: var(--accent-ink, var(--accent)); font-weight: 800; margin-right: .2rem; }
     body.theme-dusk .weather-chip { background: var(--dcard, #2a2140); border-color: rgba(255,209,92,.2); color: #f3e9f3; }
     body.theme-dusk .weather-chip .wc-ic, body.theme-dusk .weather-chip .wc-uv { background: rgba(255,255,255,.1); }
 
@@ -3639,7 +3639,7 @@
     /* #39 : « Créer MON rituel » enfin VISIBLE (carte chaude liseré accent, sous-ligne explicative) */
     .rit-row.rit-add { background: linear-gradient(135deg, var(--accent-soft), rgba(255,255,255,0)); border: 1.5px dashed var(--accent) !important; }
     .rit-row.rit-add .rit-name { display: flex; flex-direction: column; line-height: 1.25; }
-    .rit-row.rit-add .rit-name b { color: var(--accent); }
+    .rit-row.rit-add .rit-name b { color: var(--accent-ink, var(--accent)); }
     .rit-row.rit-add .rit-sub { font-size: .7rem; color: var(--muted); font-weight: 600; }
     body.theme-dusk .rit-row.rit-add { background: rgba(255,126,114,.10); }
 

@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=643"></script>
+  <script src="sunmates-badges.js?v=644"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -527,7 +527,7 @@
       color: var(--ink); font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; transition: background .15s, border-color .15s;
     }
     #geoNowCard .geo-idea:hover, #geoNowCard .geo-idea:focus-visible { background: var(--accent-soft); border-color: var(--accent); outline: none; }
-    #geoNowCard .geo-idea .gi-arrow { color: var(--accent); font-weight: 800; }
+    #geoNowCard .geo-idea .gi-arrow { color: var(--accent-ink, var(--accent)); font-weight: 800; }
     /* Bulle de suggestion « Ici, maintenant » (contenu réel : défi / voyageurs / lieu) */
     #geoNowCard .geo-result { display: flex; align-items: center; gap: .5rem; margin-top: .55rem; padding: .55rem .65rem; border-radius: 12px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 6px 14px -10px rgba(120,40,30,.5); animation: geoPop .22s ease; }
     @keyframes geoPop { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -546,7 +546,7 @@
     .perm-state { flex: 0 0 auto; font-size: .72rem; font-weight: 800; letter-spacing: .02em; color: var(--muted); white-space: nowrap; padding: .24rem .62rem; border-radius: 999px; background: var(--line, rgba(20,18,40,.06)); }
     .perm-state.state-granted { color: var(--ok); background: rgba(30,122,90,.13); }
     .perm-state.state-denied { color: var(--danger); background: rgba(239,68,68,.13); }
-    .perm-state.state-prompt { color: var(--accent); background: var(--accent-soft); }
+    .perm-state.state-prompt { color: var(--accent-ink, var(--accent)); background: var(--accent-soft); }
     .perm-state.state-unsupported { color: var(--muted); background: var(--line, rgba(20,18,40,.06)); }
     /* Messages — recherche dans les conversations (filtre client, façon Insta) */
     .conv-search { display: flex; align-items: center; gap: .5rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: .5rem .7rem; margin: 0 0 .5rem; }
@@ -667,14 +667,14 @@
     #convList .conv-open.conv-unread .conv-preview { color: var(--ink); font-weight: 600; }
     #convList .conv-meta { display: flex; flex-direction: column; align-items: flex-end; gap: .3rem; flex-shrink: 0; }
     #convList .conv-time { color: var(--muted); font-size: .7rem; white-space: nowrap; font-weight: 600; }
-    #convList .conv-open.conv-unread .conv-time { color: var(--accent); }
+    #convList .conv-open.conv-unread .conv-time { color: var(--accent-ink, var(--accent)); }
     #convList .conv-dot {
       width: 9px; height: 9px; border-radius: 50%; background: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-soft); flex-shrink: 0;
     }
     /* La flèche › n'apparaît qu'au survol (moins de bruit visuel au repos) */
     #convList .conv-open .qarrow {
-      color: var(--accent); font-weight: 800; font-size: 1.05rem; line-height: 1;
+      color: var(--accent-ink, var(--accent)); font-weight: 800; font-size: 1.05rem; line-height: 1;
       opacity: 0; transform: translateX(-3px); transition: opacity .16s ease, transform .16s var(--mate-ease-out);
     }
     #convList .conv-open:hover .qarrow { opacity: 1; transform: translateX(0); }
@@ -699,7 +699,7 @@
     #matesChat #chatName { font-family: "Fraunces", serif; font-weight: 700; font-size: 1.06rem; line-height: 1.15; }
     /* Statut sous le nom : « en ligne » = point ambré DA, pas de vert */
     #matesChat #chatStatus { display: flex; align-items: center; gap: .3rem; font-size: .76rem; color: var(--muted); }
-    #matesChat #chatStatus.is-online { color: var(--accent); font-weight: 700; }
+    #matesChat #chatStatus.is-online { color: var(--accent-ink, var(--accent)); font-weight: 700; }
     #matesChat #chatStatus.is-online::before {
       content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-soft); display: inline-block; flex-shrink: 0;
@@ -1052,10 +1052,10 @@
     #geoNowCard .geo-now-head { display: flex; align-items: center; gap: .6rem; width: 100%; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; text-align: left; font: inherit; color: inherit; }
     #geoNowCard .gn-sun { font-size: 1.5rem; line-height: 1; flex: 0 0 auto; }
     #geoNowCard .gn-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .04rem; }
-    #geoNowCard .gn-eyebrow { font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+    #geoNowCard .gn-eyebrow { font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-ink, var(--accent)); }
     #geoNowCard .gn-where { font-weight: 800; font-size: .98rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #geoNowCard .gn-moment { font-size: .76rem; font-weight: 600; color: var(--muted); }
-    #geoNowCard .gn-chev { flex: 0 0 auto; font-size: 1.25rem; font-weight: 800; color: var(--accent); transform: rotate(90deg); transition: transform .28s cubic-bezier(.22,1,.36,1); }
+    #geoNowCard .gn-chev { flex: 0 0 auto; font-size: 1.25rem; font-weight: 800; color: var(--accent-ink, var(--accent)); transform: rotate(90deg); transition: transform .28s cubic-bezier(.22,1,.36,1); }
     #geoNowCard.gn-collapsed .gn-chev { transform: rotate(0deg); }
     #geoNowCard .gn-body { overflow: hidden; max-height: 320px; opacity: 1; margin-top: .55rem; transition: max-height .3s cubic-bezier(.22,1,.36,1), opacity .22s ease, margin-top .3s ease; }
     #geoNowCard.gn-collapsed .gn-body { max-height: 0; opacity: 0; margin-top: 0; }
@@ -1131,7 +1131,7 @@
       #appView > .bottom-nav button .nav-lbl { display: block; font-size: .96rem; }
       #appView > .bottom-nav button { color: var(--text); }
       #appView > .bottom-nav button .ni svg { width: 23px; height: 23px; }
-      #appView > .bottom-nav button.active { background: var(--accent-soft); color: var(--accent); }
+      #appView > .bottom-nav button.active { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
       #appView > .bottom-nav button.active .ni { transform: none; }
       #appView > .bottom-nav button:hover { background: var(--accent-soft); }
       #appView > .bottom-nav .navbadge { margin-left: auto; }
@@ -2031,9 +2031,9 @@
             .solo-alldone { grid-column: 1 / -1; text-align: center; font-size: .82rem; font-weight: 700; color: var(--ink);
               background: linear-gradient(135deg, rgba(255,201,60,.18), rgba(255,138,61,.12)); border: 1px dashed rgba(232,150,31,.45);
               border-radius: 14px; padding: .65rem .8rem; margin-top: .15rem; }
-            .rit-row.rit-all .rit-name { color: var(--accent); font-weight: 800; }
+            .rit-row.rit-all .rit-name { color: var(--accent-ink, var(--accent)); font-weight: 800; }
             .hm-inspo-nav { display: flex; gap: .3rem; flex-shrink: 0; }
-            .hm-inspo-nav button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--accent); font-size: 1.05rem; font-weight: 800; cursor: pointer; display: grid; place-items: center; line-height: 1; padding: 0; }
+            .hm-inspo-nav button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--accent-ink, var(--accent)); font-size: 1.05rem; font-weight: 800; cursor: pointer; display: grid; place-items: center; line-height: 1; padding: 0; }
             .tile { position: relative; }
             .tile .tile-dot { position: absolute; top: .55rem; right: .55rem; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--accent); color: #fff; font-size: .64rem; font-weight: 900; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(45,38,52,.16); }
             .hm-mateday { display: flex; align-items: center; gap: .6rem; background: var(--cream); border: 1px solid var(--line); border-radius: 14px; padding: .55rem .7rem; margin: .15rem 0 .55rem; }
@@ -2281,7 +2281,7 @@
             <input id="spotInput" type="text" maxlength="60" placeholder="Ex : Café cosy à Lisbonne ☕" data-i18n-ph="spot.ph" />
             <button class="btn-primary" id="spotSave" data-i18n="spot.save">Publier</button>
           </div>
-          <div style="text-align:right;margin-top:.4rem"><a id="spotClear" style="cursor:pointer;display:none;color:var(--accent);font-weight:600;font-size:.82rem" data-i18n="spot.clear">Effacer</a></div>
+          <div style="text-align:right;margin-top:.4rem"><a id="spotClear" style="cursor:pointer;display:none;color:var(--accent-ink, var(--accent));font-weight:600;font-size:.82rem" data-i18n="spot.clear">Effacer</a></div>
           <div class="msg" id="spotMsg" style="text-align:center"></div>
         </details>
 
@@ -2366,7 +2366,7 @@
                 <button class="chip" data-filter="affinity" data-i18n="filter.affinity">Affinité 50%+</button>
               </div>
               <details id="advFilters" style="margin-bottom:.7rem">
-                <summary style="cursor:pointer;font-size:.85rem;font-weight:700;color:var(--accent)">🔎 Filtres avancés</summary>
+                <summary style="cursor:pointer;font-size:.85rem;font-weight:700;color:var(--accent-ink, var(--accent))">🔎 Filtres avancés</summary>
                 <div class="row" style="margin-top:.5rem">
                   <div style="flex:1"><label>Âge min</label><input id="fAgeMin" type="number" min="18" max="99" placeholder="18" /></div>
                   <div style="flex:1"><label>Âge max</label><input id="fAgeMax" type="number" min="18" max="99" placeholder="99" /></div>
@@ -2531,7 +2531,7 @@
 
           <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1.2rem">
             <button id="sosLogo" class="sos-logo" aria-label="Ouvrir les actions d'urgence" title="Actions d'urgence">🆘</button>
-            <h2 style="margin:.5rem 0 .2rem;color:var(--accent)">Besoin d'aide ?</h2>
+            <h2 style="margin:.5rem 0 .2rem;color:var(--accent-ink, var(--accent))">Besoin d'aide ?</h2>
             <p class="muted" style="font-size:.85rem;margin:0 0 1.2rem;max-width:300px">Partage de position, alerte d'urgence, cercle de confiance et plus.</p>
             <button class="btn-danger" id="needHelpBtn" style="font-size:1.15rem;padding:1.1rem 1rem;width:100%;max-width:320px">J'ai besoin d'aide</button>
             <!-- note 'sécurité gratuite' retirée (note back-office, jamais affichée) -->
@@ -2588,7 +2588,7 @@
             <button class="btn-accent btn-block" id="shareLocBtn" style="margin-top:.55rem">📍 Partager ma position (sans urgence)</button>
             <div class="msg" id="locMsg" style="text-align:center"></div>
             <div class="secu-explain">
-              <div><b style="color:var(--accent)">📍 Ma position</b> : partagée avec ton <b>cercle de confiance</b> (connexions acceptées), visible 24 h.</div>
+              <div><b style="color:var(--accent-ink, var(--accent))">📍 Ma position</b> : partagée avec ton <b>cercle de confiance</b> (connexions acceptées), visible 24 h.</div>
               <div style="margin-top:.35rem"><b style="color:var(--danger)">🚨 Alerte</b> : diffuse aussitôt ta position à ton cercle en cas d'urgence.</div>
             </div>
           </div>
@@ -3262,7 +3262,7 @@
           </div>
           <p class="muted" style="margin-top:.2rem">Relève des défis, gagne de l'XP et débloque des coupons.</p>
           <!-- Anticipation : combien il manque pour le prochain niveau, visible SANS ouvrir la modale -->
-          <div class="jh-next" id="jhNext" style="font-size:.8rem;font-weight:800;color:var(--accent);margin:.15rem 0 .3rem"></div>
+          <div class="jh-next" id="jhNext" style="font-size:.8rem;font-weight:800;color:var(--accent-ink, var(--accent));margin:.15rem 0 .3rem"></div>
           <!-- Vignette de niveau gardée mais MASQUÉE (renderPlayerHero la remplit toujours ; le badge + la modale lisent ses valeurs). -->
           <section class="player-hero" id="playerHero" aria-label="Ta progression" style="display:none">
             <div class="ph-glow" aria-hidden="true"></div>
@@ -3507,7 +3507,7 @@
     <main>
       <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1.2rem;margin-top:.4rem">
         <div style="font-size:2.8rem;line-height:1">🤝</div>
-        <h2 style="margin:.5rem 0 .2rem;color:var(--accent)">Participez à l'aventure SunMates</h2>
+        <h2 style="margin:.5rem 0 .2rem;color:var(--accent-ink, var(--accent))">Participez à l'aventure SunMates</h2>
         <p class="muted" style="font-size:.85rem;margin:0 0 1.2rem;max-width:300px">Faites de votre établissement un lieu sûr repéré par les voyageurs solo.</p>
         <button class="btn-primary" id="b2bScrollCta" style="font-size:1.15rem;padding:1.1rem 1rem;width:100%;max-width:320px">📩 Participer à l'aventure</button>
       </div>
@@ -7873,7 +7873,7 @@
       if (ids.length) { const { data: ps } = await db.from("profiles").select("id,username,avatar_url").in("id", ids); (ps || []).forEach((p) => names[p.id] = p); }
       const avg = rows.length ? rows.reduce((s, r) => s + r.rating, 0) / rows.length : 0;
       $("reviewsAvg").innerHTML = rows.length
-        ? `<b style="font-size:1.5rem;color:var(--accent)">⭐ ${avg.toFixed(1)}</b> <span class="muted">/5 · ${rows.length} avis</span>`
+        ? `<b style="font-size:1.5rem;color:var(--accent-ink, var(--accent))">⭐ ${avg.toFixed(1)}</b> <span class="muted">/5 · ${rows.length} avis</span>`
         : '<span class="muted">Aucun avis, sois le·la premier·ère ! ✨</span>';
       const mine = rows.find((r) => r.user_id === myUserId);
       if (mine) { setStars(mine.rating); $("reviewComment").value = mine.comment || ""; $("reviewSubmit").textContent = "Modifier mon avis"; }
@@ -9437,7 +9437,7 @@
           <div style="display:flex;justify-content:center;margin-bottom:.4rem">${avatarMarkup(r.username, r.avatar_url)}</div>
           <div style="font-weight:800;font-size:1.1rem">${escapeHtml(r.username || "Voyageur")}${r.is_verified ? ' <span class="vchip" title="Vérifié">✓</span>' : ""}</div>
           <div class="muted">${escapeHtml(r.city || "—")}</div>
-          <div style="margin:.6rem 0;font-weight:800;color:var(--accent)">#${rows.indexOf(r) + 1} au classement · ${r.value} ${metricLbl}</div>
+          <div style="margin:.6rem 0;font-weight:800;color:var(--accent-ink, var(--accent))">#${rows.indexOf(r) + 1} au classement · ${r.value} ${metricLbl}</div>
           ${r.id !== myUserId ? '<button class="btn-primary btn-block" id="lbViewProfile">👤 Voir le profil</button>' : '<p class="muted" style="margin:0">C\'est toi 🌟</p>'}
         </div>`);
         setTimeout(() => { const b = $("lbViewProfile"); if (b) b.onclick = () => { closePicker(); const pr = travelerMap[r.id]; if (pr) { goToTab("connexions"); openTravelerProfile(pr); } else toast("🤷", "Profil indisponible"); }; }, 40);
@@ -9629,7 +9629,7 @@
             <div class="name">${escapeHtml(nameOf(l.user_id))}
             ${l.is_emergency ? '<span class="sos-tag">' + i18nT("🚨 URGENCE") + '</span>' : ''}</div>
             <div class="meta">${timeAgo(l.created_at)} · ${new Date(l.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
-            <a href="https://www.google.com/maps?q=${l.lat},${l.lng}" target="_blank" rel="noopener" style="color:var(--accent);font-size:.85rem;font-weight:600">${i18nT("Voir sur la carte 📍")}</a>
+            <a href="https://www.google.com/maps?q=${l.lat},${l.lng}" target="_blank" rel="noopener" style="color:var(--accent-ink, var(--accent));font-size:.85rem;font-weight:600">${i18nT("Voir sur la carte 📍")}</a>
           </div>`).join("")
         : emptyState("🛟", i18nT("Aucune position partagée"), i18nT("Personne de ton cercle n'a partagé de position dans la dernière heure."), i18nT("📍 Partager ma position"), "shareloc");
     }
@@ -9860,7 +9860,7 @@
           <input id="fcNameInput" type="text" maxlength="24" placeholder="Ex : Maman, Le boulot…" value="${escapeHtml(saved)}" autocomplete="off" autocapitalize="words" autocorrect="off" name="sm-fake-caller" data-lpignore="true" data-1p-ignore data-form-type="other" style="width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin:.3rem 0 .6rem" />
           <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem">${names.map((n) => `<button class="btn-ghost fc-pickname" data-n="${escapeHtml(n)}" style="flex:0 0 auto;padding:.35rem .7rem;font-size:.82rem">${escapeHtml(n)}</button>`).join("")}</div>
           <label style="font-weight:700;font-size:.85rem">Sonne dans</label>
-          <div style="display:flex;gap:.4rem;margin:.3rem 0 .7rem">${FC_DELAYS.map(([s, l]) => `<button class="btn-ghost fc-delay${s === curDelay ? " active" : ""}" data-s="${s}" style="flex:1;padding:.42rem .2rem;font-size:.82rem${s === curDelay ? ";background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:800" : ""}">${l}</button>`).join("")}</div>
+          <div style="display:flex;gap:.4rem;margin:.3rem 0 .7rem">${FC_DELAYS.map(([s, l]) => `<button class="btn-ghost fc-delay${s === curDelay ? " active" : ""}" data-s="${s}" style="flex:1;padding:.42rem .2rem;font-size:.82rem${s === curDelay ? ";background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink, var(--accent));font-weight:800" : ""}">${l}</button>`).join("")}</div>
           <button class="btn-ghost btn-block" id="fcRingBtn" style="margin-bottom:.6rem">${ringTxt}</button>
           <button class="btn-primary btn-block" id="fcLaunch">📞 Lancer l'appel (dans ${_fcDelayTxt(curDelay)})</button>
           <p class="muted" style="font-size:.74rem;text-align:center;margin:.5rem 0 0">Range ton téléphone sans fermer l'app, et laisse la magie opérer 😉</p>
@@ -9869,7 +9869,7 @@
         document.querySelectorAll(".fc-pickname").forEach((bt) => bt.onclick = () => { const i = $("fcNameInput"); if (i) { i.value = bt.dataset.n; } });
         document.querySelectorAll(".fc-delay").forEach((bt) => bt.onclick = () => {
           try { localStorage.setItem("sm_fc_delay", bt.dataset.s); } catch (e) {}
-          document.querySelectorAll(".fc-delay").forEach((x) => { const on = x === bt; x.classList.toggle("active", on); x.style.cssText = "flex:1;padding:.42rem .2rem;font-size:.82rem" + (on ? ";background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:800" : ""); });
+          document.querySelectorAll(".fc-delay").forEach((x) => { const on = x === bt; x.classList.toggle("active", on); x.style.cssText = "flex:1;padding:.42rem .2rem;font-size:.82rem" + (on ? ";background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink, var(--accent));font-weight:800" : ""); });
           const lb2 = $("fcLaunch"); if (lb2) lb2.textContent = "📞 Lancer l'appel (dans " + _fcDelayTxt(+bt.dataset.s) + ")";
         });
         const mg = $("fcManage"); if (mg) mg.onclick = () => openFcContacts();
@@ -10785,7 +10785,7 @@
         }
       } else if (key === "decide") {
         const opts = ["✅ Fonce, c'est oui !", "❌ Pas cette fois.", "🤷 À toi de voir… relance !", "🔥 Carrément, vas-y à fond !", "⏳ Attends un peu.", "💯 Aucun doute, go !"];
-        popInfo("🪙", "Décide pour moi", "<p style='font-size:1.25rem;font-weight:900;margin:.5rem 0;color:var(--accent)'>" + escapeHtml(opts[Math.floor(Math.random() * opts.length)]) + "</p>" + reBtn);
+        popInfo("🪙", "Décide pour moi", "<p style='font-size:1.25rem;font-weight:900;margin:.5rem 0;color:var(--accent-ink, var(--accent))'>" + escapeHtml(opts[Math.floor(Math.random() * opts.length)]) + "</p>" + reBtn);
         setTimeout(() => { const b = $("gameAgain"); if (b) b.onclick = () => playGame(key); wireChallenge(""); }, 30);
       } else if (key === "bingo") {
         let st = {}; try { st = JSON.parse(localStorage.getItem("sm_bingo_" + (myUserId || "x")) || "{}") || {}; } catch (e) {}
@@ -10978,7 +10978,7 @@
           : `<div class="hex ${badgeStyle(b.key)}">${b.emoji || "🏅"}</div>`;
         return `<div class="bitem ${done ? "" : "locked"}" data-badge="${escapeHtml(b.key)}" style="cursor:pointer">
           ${bvis}
-          <div class="bname">${escapeHtml(b.name || "")}${b.is_secret && isAdmin ? ' <span style="font-size:.55rem;color:var(--accent)">🔒</span>' : ""}</div>
+          <div class="bname">${escapeHtml(b.name || "")}${b.is_secret && isAdmin ? ' <span style="font-size:.55rem;color:var(--accent-ink, var(--accent))">🔒</span>' : ""}</div>
           <div class="bprog">${done ? '<span class="vchip" style="width:12px;height:12px;font-size:8px;vertical-align:-1px">✓</span> débloqué' : "🔒 à débloquer"}</div>
         </div>`;
       }).join("");
@@ -11380,7 +11380,7 @@
           // Moment de victoire MIS EN SCÈNE (avant : la modale se mettait juste à jour discrètement)
           if (q) {
             const badgeLine = q.badge_name ? "<div style='margin-top:.3rem'>🏅 <b>" + escapeHtml(q.badge_name) + "</b> " + i18nT("débloqué !") + "</div>" : "";
-            popInfo("🎉", i18nT("Quête accomplie !"), "<div style='text-align:center;line-height:1.6'><div style='font-size:2.6rem;filter:var(--relief)'>" + (q.emoji || "🎯") + "</div><b>" + escapeHtml(q.title || "") + "</b><div style='color:var(--accent);font-weight:800;font-size:1.05rem;margin-top:.3rem'>+" + (q.points || 0) + " XP</div>" + badgeLine + "</div>");
+            popInfo("🎉", i18nT("Quête accomplie !"), "<div style='text-align:center;line-height:1.6'><div style='font-size:2.6rem;filter:var(--relief)'>" + (q.emoji || "🎯") + "</div><b>" + escapeHtml(q.title || "") + "</b><div style='color:var(--accent-ink, var(--accent));font-weight:800;font-size:1.05rem;margin-top:.3rem'>+" + (q.points || 0) + " XP</div>" + badgeLine + "</div>");
           }
         }
       });
@@ -13051,7 +13051,7 @@
         if (error) { toast("⚠️", errFr(error)); }
         else {
           const row = document.querySelector('[data-secu="contact"]'); const nm = row && row.querySelector(".qname");
-          if (nm) { const base = i18nT("Qui peut me contacter"); nm.innerHTML = base + ' <span style="color:var(--accent);font-weight:700;font-size:.8rem">· ' + (next === "connections" ? i18nT("connexions seulement ✓") : i18nT("tout le monde ✓")) + "</span>"; setTimeout(() => { nm.textContent = base; }, 5200); }
+          if (nm) { const base = i18nT("Qui peut me contacter"); nm.innerHTML = base + ' <span style="color:var(--accent-ink, var(--accent));font-weight:700;font-size:.8rem">· ' + (next === "connections" ? i18nT("connexions seulement ✓") : i18nT("tout le monde ✓")) + "</span>"; setTimeout(() => { nm.textContent = base; }, 5200); }
         }
       } else if (action === "secours") {
         showInfo("Premiers secours · l'essentiel 🩺", `<div class="faq-secu">
@@ -15195,7 +15195,7 @@
           <div class="msg" id="proMsg" style="text-align:center"></div>
         </div>
         <div class="card"><h3 style="margin-top:0">🔑 Ton code de check-in</h3>
-          <div style="text-align:center;font:800 1.8rem Fraunces,serif;letter-spacing:.2em;color:var(--accent);padding:.4rem 0">${escapeHtml(d.code || "—")}</div>
+          <div style="text-align:center;font:800 1.8rem Fraunces,serif;letter-spacing:.2em;color:var(--accent-ink, var(--accent));padding:.4rem 0">${escapeHtml(d.code || "—")}</div>
           <p class="muted" style="font-size:.78rem;margin:0">Affiche-le au comptoir : les voyageurs le saisissent dans l'app pour valider leur passage (anti-triche). Demande un nouveau code à l'équipe si besoin.</p>
         </div>
         <div class="card"><h3 style="margin-top:0">🚀 Booster ta visibilité</h3>
@@ -15405,7 +15405,7 @@
     document.querySelectorAll("#b2bView [data-adv]").forEach((c) => c.addEventListener("click", () => {
       const a = ADV_INFO[c.dataset.adv]; if (!a) return;
       showInfo(a.t, `<div style="text-align:center;padding:.4rem 0"><div style="font-size:3rem">${a.e}</div>
-        <div style="font-family:'Fraunces',serif;font-size:1.8rem;color:var(--accent);font-weight:700">${a.n}</div>
+        <div style="font-family:'Fraunces',serif;font-size:1.8rem;color:var(--accent-ink, var(--accent));font-weight:700">${a.n}</div>
         <p class="muted" style="margin:.5rem 0 0">${a.d}</p>
         <button class="btn-primary btn-block" id="advCta" style="margin-top:1rem">Participer à l'aventure</button></div>`);
       const cta = $("advCta"); if (cta) cta.addEventListener("click", () => { closePicker(); b2bScrollToForm(); });
@@ -15560,7 +15560,7 @@
         + "<div style='font-size:3rem;filter:var(--relief)'>🎟️</div>"
         + "<b style='font-size:1.05rem'>" + escapeHtml((c && c.title) || "Coupon") + "</b>"
         + (c && c.descr ? "<div class='muted' style='font-size:.85rem;margin-top:.25rem'>" + escapeHtml(c.descr) + "</div>" : "")
-        + "<div style='margin:.7rem 0;padding:.55rem;border:1.5px dashed var(--accent);border-radius:12px;font-weight:800;color:var(--accent)'>" + i18nT("Montre cet écran au partenaire 😎") + "</div>"
+        + "<div style='margin:.7rem 0;padding:.55rem;border:1.5px dashed var(--accent);border-radius:12px;font-weight:800;color:var(--accent-ink, var(--accent))'>" + i18nT("Montre cet écran au partenaire 😎") + "</div>"
         + "<button class='btn-primary btn-block' id='couponMarkUsed'>" + i18nT("✅ C'est validé · marquer utilisé") + "</button>"
         + "<p class='muted' style='font-size:.72rem;margin:.5rem 0 0'>" + i18nT("Une fois marqué utilisé, le coupon ne peut plus servir.") + "</p></div>");
       setTimeout(() => { const b = $("couponMarkUsed"); if (b) b.onclick = () => once("usecoupon:" + id, async () => {
@@ -16682,7 +16682,7 @@
       const rits = _allRituals();
       const hasCustom = rits.some((r) => r.custom);
       const todo = rits.filter((r) => !done[r.key]);
-      list.innerHTML = rits.map((r) => '<button class="rit-row' + (done[r.key] ? " is-done" : "") + (r.custom ? " rit-custom" : "") + '" data-rit="' + r.key + '"><span class="rit-ic">' + r.emoji + '</span><span class="rit-name">' + escapeHtml(r.title) + (r.custom ? ' <span style="font-size:.66rem;color:var(--accent);font-weight:800">· ma routine ✎</span>' : "") + '</span><span class="rit-box">✓</span></button>').join("")
+      list.innerHTML = rits.map((r) => '<button class="rit-row' + (done[r.key] ? " is-done" : "") + (r.custom ? " rit-custom" : "") + '" data-rit="' + r.key + '"><span class="rit-ic">' + r.emoji + '</span><span class="rit-name">' + escapeHtml(r.title) + (r.custom ? ' <span style="font-size:.66rem;color:var(--accent-ink, var(--accent));font-weight:800">· ma routine ✎</span>' : "") + '</span><span class="rit-box">✓</span></button>').join("")
         // Matin motivé : tout cocher d'un geste (au lieu de 3-4 taps)
         + (todo.length >= 2 ? '<button class="rit-row rit-all" id="ritAllBtn"><span class="rit-ic">✨</span><span class="rit-name">' + i18nT("Tout cocher d'un coup") + '</span><span class="rit-box">✓✓</span></button>' : "")
         // Tout est coché → petit mot chaleureux (pas une liste éteinte)

@@ -1,10 +1,10 @@
 {
-  "candidate": "v643",
+  "candidate": "v644",
   "items": [
-    "🆘 Tes contacts d'urgence te suivent partout : ils sont maintenant enregistrés sur ton compte (privés, toi seul·e y as accès) au lieu de rester bloqués sur un seul appareil. Tes contacts déjà saisis sont récupérés automatiquement.",
+    "👀 Lisibilité renforcée : en mode jour, le texte corail (petits labels, pourcentages, liens) passe à un corail un peu plus profond pour être bien lisible sur fond clair — conforme aux standards d'accessibilité. Le corail vif de la marque reste sur les boutons, icônes et dégradés.",
+    "🆘 Tes contacts d'urgence te suivent partout : enregistrés sur ton compte (privés) au lieu d'un seul appareil ; tes contacts déjà saisis sont récupérés automatiquement.",
     "🔑 Mot de passe oublié : depuis l'écran de connexion, touche « Mot de passe oublié ? », reçois un lien par email, et choisis un nouveau mot de passe en deux clics.",
     "🌅 Le bandeau « hors-ligne » se fait tout doux : fini le rouge qui fait peur, place à un ton chaleureux et un message qui rassure.",
-    "🔐 Connexion plus pratique : ton gestionnaire de mots de passe et le remplissage automatique fonctionnent enfin, et la touche « Entrée » valide toujours.",
-    "👁️ La petite icône « voir le mot de passe » est redessinée maison (un œil-soleil SunMates) et plus facile à toucher."
+    "🔐 Connexion plus pratique : ton gestionnaire de mots de passe et le remplissage automatique fonctionnent enfin, et la touche « Entrée » valide toujours."
   ]
 }
