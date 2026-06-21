@@ -294,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=623"></script>
+  <script src="sunmates-badges.js?v=624"></script>
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
@@ -1028,6 +1028,22 @@
       min-height: 0 !important; font-size: .95rem !important; line-height: 1.25 !important;
     }
     body.sm-lite #helpAround + .grid2 .tile .t-meta { white-space: normal !important; }
+
+    /* ============================================================
+       « Ici & maintenant » REPLIABLE (bulle) 21/06 — geoNowCard pliable, DA inchangée.
+       En-tête tappable (lieu + moment + chevron) ; les 3 idées se déplient/replient.
+       ============================================================ */
+    #geoNowCard .geo-now-head { display: flex; align-items: center; gap: .6rem; width: 100%; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+    #geoNowCard .gn-sun { font-size: 1.5rem; line-height: 1; flex: 0 0 auto; }
+    #geoNowCard .gn-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .04rem; }
+    #geoNowCard .gn-eyebrow { font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+    #geoNowCard .gn-where { font-weight: 800; font-size: .98rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #geoNowCard .gn-moment { font-size: .76rem; font-weight: 600; color: var(--muted); }
+    #geoNowCard .gn-chev { flex: 0 0 auto; font-size: 1.25rem; font-weight: 800; color: var(--accent); transform: rotate(90deg); transition: transform .28s cubic-bezier(.22,1,.36,1); }
+    #geoNowCard.gn-collapsed .gn-chev { transform: rotate(0deg); }
+    #geoNowCard .gn-body { overflow: hidden; max-height: 320px; opacity: 1; margin-top: .55rem; transition: max-height .3s cubic-bezier(.22,1,.36,1), opacity .22s ease, margin-top .3s ease; }
+    #geoNowCard.gn-collapsed .gn-body { max-height: 0; opacity: 0; margin-top: 0; }
+    @media (prefers-reduced-motion: reduce) { #geoNowCard .gn-chev, #geoNowCard .gn-body { transition: none; } }
   </style>
 
   <!-- ============================================================
@@ -14115,12 +14131,25 @@
       const moment = escapeHtml(_momentLabel());
       const meteo = _geoMeteo();
       const top = (ideas && ideas.length ? ideas : _ruleSuggest()).slice(0, 3);
+      // Bulle REPLIABLE : en-tête tappable (lieu + moment) + chevron ; les 3 idées se déplient/replient.
+      // (l'état gn-collapsed persiste entre les repaints car on ne remplace QUE innerHTML, pas l'élément #geoNowCard)
       card.innerHTML =
-        '<div style="font-weight:800;font-size:.95rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline">📍 ' + escapeHtml(where) +
-        '<span class="muted" style="font-weight:600;font-size:.78rem">' + moment + (meteo ? " · " + escapeHtml(meteo) : "") + '</span></div>' +
-        '<div class="geo-ideas">' +
+        '<button type="button" class="geo-now-head">' +
+          '<span class="gn-sun" aria-hidden="true">🌅</span>' +
+          '<span class="gn-tx">' +
+            '<span class="gn-eyebrow">' + i18nT("Ici & maintenant") + '</span>' +
+            '<span class="gn-where">📍 ' + escapeHtml(where) + '</span>' +
+            '<span class="gn-moment">' + moment + (meteo ? " · " + escapeHtml(meteo) : "") + '</span>' +
+          '</span>' +
+          '<span class="gn-chev" aria-hidden="true">›</span>' +
+        '</button>' +
+        '<div class="gn-body"><div class="geo-ideas">' +
         top.map((s, i) => '<button type="button" class="geo-idea" data-idea="' + i + '">' + escapeHtml(s) + '<span class="gi-arrow">›</span></button>').join("") +
-        '</div>';
+        '</div></div>';
+      const _head = card.querySelector(".geo-now-head");
+      const _syncAria = () => { if (_head) _head.setAttribute("aria-expanded", card.classList.contains("gn-collapsed") ? "false" : "true"); };
+      if (_head) _head.addEventListener("click", () => { card.classList.toggle("gn-collapsed"); _syncAria(); if (window.SMSound) SMSound.play("tap"); });
+      _syncAria();
       // GEO-TRIGGER : clic sur une idée → une BULLE qui pop avec une VRAIE suggestion + « Voir » (pas un tab mort).
       card.querySelectorAll(".geo-idea").forEach((b) => b.addEventListener("click", () => _geoSuggestBubble(card, top[Number(b.dataset.idea)] || "")));
       card.classList.remove("hidden");
