@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=645"></script>
+  <script src="sunmates-badges.js?v=646"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -4308,7 +4308,7 @@
       "⭐ Niveau {n} · tes récompenses": "⭐ Level {n} · your rewards",
       "souhaite se connecter": "wants to connect",
       "{n} souhaite se connecter": "{n} wants to connect",
-      "{t} (visible 1 h sur la carte)": "{t} (visible 1 h on the map)",
+      "{t} (visible 24 h sur la carte)": "{t} (visible 24 h on the map)",
       "✨ Choisir une humeur": "✨ Pick a mood",
       "📍 Choisir un spot": "📍 Pick a spot",
       "🗂️ Filtres": "🗂️ Filters",
@@ -8770,7 +8770,7 @@
         run: () => { A(() => goToTab("jeux")); A(() => { if (typeof showJeuxView === "function") showJeuxView("jeuxCoupons"); }); } },
       { title: "🛡️ La sécurité", text: "La sécurité est le filet qui permet de profiter l'esprit léger.", ms: 5500,
         run: () => { adCleanup(); A(() => goToTab("securite")); A(() => { if (typeof showSecuView === "function") showSecuView("secuHome"); }); } },
-      { title: "🆘 SOS & cercle de confiance", text: "L'écran d'aide réunit tout : bouton SOS, alerte d'urgence diffusée à ton cercle de confiance, partage de position en direct visible 1 h, aide à proximité (police et hôpital géolocalisés) et les numéros d'urgence 112, 114, 116 117 et 116 000.", ms: 9500,
+      { title: "🆘 SOS & cercle de confiance", text: "L'écran d'aide réunit tout : bouton SOS, alerte d'urgence diffusée à ton cercle de confiance, partage de position en direct visible 24 h, aide à proximité (police et hôpital géolocalisés) et les numéros d'urgence 112, 114, 116 117 et 116 000.", ms: 9500,
         run: () => { A(() => goToTab("securite")); setTimeout(() => { if (typeof showSecuView === "function") showSecuView("secuHelp"); window.scrollTo({ top: 0, behavior: "smooth" }); }, 450); } },
       { title: "🛡️ Le score de confiance", text: "On clique le score et une pop-up détaille les vraies preuves : vérification, check-ins, lieux, Mates. Transparent.", ms: 7000,
         run: () => { adCleanup(); A(() => goToTab("profil")); setTimeout(() => { if (typeof openTrustModal === "function") openTrustModal(); }, 600); } },
@@ -9509,10 +9509,11 @@
           else {
             cooldownStamp(cdKey); // succès → démarre le cooldown anti-spam
             // Confirmation VISIBLE en haut (toast), pas seulement un message en bas.
-            toast(isEmergency ? "🚨" : "📍", i18nT("{t} (visible 1 h sur la carte)", { t: okText }));
+            toast(isEmergency ? "🚨" : "📍", i18nT("{t} (visible 24 h sur la carte)", { t: okText }));
             await loadCircleLocations();
             if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap();
             if (isEmergency && typeof setAlertActive === "function") setAlertActive(true); // alerte → carte « Je vais bien » + pastille onglet
+            if (isEmergency && typeof maybeAlertIceContacts === "function") maybeAlertIceContacts(g); // + propose un SMS pré-rempli aux contacts d'urgence (numéros hors-app)
             // Badge "Veilleur" au 1er partage de position
             if (typeof allBadgeDefs !== "undefined" && allBadgeDefs.some((b) => b.key === "badge_guardian_helper") && !myBadgeKeys.has("badge_guardian_helper")) {
               grantBadgeServer("badge_guardian_helper").then(() => { if (typeof loadGameData === "function") loadGameData(); });
@@ -9521,6 +9522,32 @@
           resolve();
         }, () => { msg.textContent = ""; toast("📍", i18nT("Autorise la géolocalisation pour partager ta position.")); resolve(); });
       }));
+    }
+
+    // SOS → contacts d'urgence (numéros tel HORS app) : le partage de position ne touche QUE le cercle
+    // (connexions acceptées). Pour les proches qui n'ont pas SunMates, on prépare un SMS pré-rempli avec
+    // la position (lien maps). 100% client (lien sms:), gratuit, aucun backend SMS. L'utilisateur n'a qu'à envoyer.
+    function _smsHref(numbers, body) {
+      const list = numbers.map((n) => String(n).replace(/[^+\d]/g, "")).filter(Boolean).join(",");
+      // iOS sépare le corps avec « & », Android/autres avec « ? » → on adapte pour un brouillon pré-rempli fiable.
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      return "sms:" + list + (isIOS ? "&" : "?") + "body=" + encodeURIComponent(body);
+    }
+    async function maybeAlertIceContacts(g) {
+      try {
+        if (!g || typeof loadIce !== "function") return;
+        const ice = loadIce().filter((c) => c && c.phone);
+        if (!ice.length) return; // pas de contact d'urgence enregistré → rien à proposer
+        const mapUrl = "https://www.google.com/maps?q=" + Number(g.lat).toFixed(5) + "," + Number(g.lng).toFixed(5);
+        const who = (myProfile && (myProfile.first_name || myProfile.username)) || i18nT("Un proche");
+        const body = "🆘 " + who + " : " + i18nT("j'ai déclenché une alerte d'urgence sur SunMates. Voici ma position :") + " " + mapUrl;
+        const names = ice.map((c) => c.name).filter(Boolean).join(", ");
+        let ok = true;
+        if (typeof smConfirmP === "function") ok = await smConfirmP("🆘", i18nT("Prévenir aussi tes contacts d'urgence ?"), i18nT("On prépare un SMS pour {names} avec ta position — tu n'as plus qu'à l'envoyer.", { names: names }), i18nT("Préparer le SMS"));
+        if (!ok) return;
+        const href = _smsHref(ice.map((c) => c.phone), body);
+        try { location.href = href; } catch (e) { if (typeof toast === "function") toast("📵", i18nT("Impossible d'ouvrir l'app SMS sur cet appareil.")); }
+      } catch (e) {}
     }
 
     // ===== « Rentrée en sécurité » : minuteur « je suis bien arrivé·e » =====
@@ -9616,9 +9643,10 @@
         db.from("profiles").select("id, username"),
       ]);
       const nameOf = (id) => (profiles || []).find((p) => p.id === id)?.username || "Voyageur";
-      // Les positions partagées EXPIRENT après 1 h (cohérent avec le message « visible 1 h » à l'envoi).
-      const cutoff = Date.now() - 60 * 60 * 1000;
-      circleLocs = (locs || []).filter((l) => new Date(l.created_at).getTime() > cutoff); // carte d'accueil : pas de position de + d'1 h
+      // Les positions partagées EXPIRENT après 24 h (cohérent avec le message « visible 24 h » à l'envoi
+      // ET avec la policy RLS + la purge serveur, toutes deux à 24 h).
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      circleLocs = (locs || []).filter((l) => new Date(l.created_at).getTime() > cutoff); // carte d'accueil : pas de position de + de 24 h
       // On ne garde que la DERNIÈRE position de chaque personne : un « je vais bien »
       // (position non urgente plus récente) remplace ainsi son alerte dans la liste.
       const seen = new Set();
@@ -14082,6 +14110,7 @@
       const cafeById = {}; places.forEach((c) => { cafeById[c.id] = c; });
       // Un check-in expire après 1 h (la personne n'y est généralement plus)
       const HOUR = 3600000, nowMs = Date.now();
+      const SHARE_TTL = 24 * HOUR; // une POSITION partagée reste visible 24 h (≠ check-in 1 h) — aligné base+purge
       const recentCks = cks.filter((ck) => nowMs - new Date(ck.created_at).getTime() < HOUR);
       const ckByCafe = {}; recentCks.forEach((ck) => { ckByCafe[ck.cafe_id] = (ckByCafe[ck.cafe_id] || 0) + 1; });
       // Dernier check-in RÉCENT par utilisateur = sa vraie position connue (sinon il n'y est plus)
@@ -14188,16 +14217,17 @@
         mk.smType = "mypins"; homeMarkersByType.mypins.push(mk); allMarkers.push(mk);
       });
 
-      // 🛟 Positions partagées au cercle (GPS réel), visibles 1 h puis expirées
-      const recentShares = (circleLocs || []).filter((l) => l.lat != null && nowMs - new Date(l.created_at).getTime() < HOUR);
+      // 🛟 Positions partagées au cercle (GPS réel), visibles 24 h puis expirées
+      const recentShares = (circleLocs || []).filter((l) => l.lat != null && nowMs - new Date(l.created_at).getTime() < SHARE_TTL);
       let myShare = null; const seenShareUser = new Set();
       recentShares.forEach((l) => {
         if (l.user_id === myUserId) { if (!myShare) myShare = l; return; }
         if (seenShareUser.has(l.user_id)) return; seenShareUser.add(l.user_id); // 1 seul marqueur (le + récent) par membre
         const name = travelerMap[l.user_id]?.username || "Un Mate";
-        const mins = Math.max(1, Math.round((HOUR - (nowMs - new Date(l.created_at).getTime())) / 60000));
+        const leftMs = SHARE_TTL - (nowMs - new Date(l.created_at).getTime());
+        const expLbl = leftMs >= HOUR ? ("~" + Math.round(leftMs / HOUR) + " h") : ("~" + Math.max(1, Math.round(leftMs / 60000)) + " min");
         const mk = L.marker([l.lat, l.lng], { icon: epinIcon(l.is_emergency ? "🚨" : "🛟", l.is_emergency ? "#e23b3b" : "#7a5cff", "me"), zIndexOffset: 900 })
-          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(name)}</b>${l.is_emergency ? ' <span style="color:#e23b3b;font-weight:800">🚨 URGENCE</span>' : ''}<br>position partagée · ${timeAgo(l.created_at)}<br><span class="muted">expire dans ~${mins} min</span><br><button class="mappop-btn" data-hmchat="${l.user_id}">💬 Message</button></div>`);
+          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(name)}</b>${l.is_emergency ? ' <span style="color:#e23b3b;font-weight:800">🚨 URGENCE</span>' : ''}<br>position partagée · ${timeAgo(l.created_at)}<br><span class="muted">expire dans ${expLbl}</span><br><button class="mappop-btn" data-hmchat="${l.user_id}">💬 Message</button></div>`);
         mk.smType = "mates"; homeMarkersByType.mates.push(mk); allMarkers.push(mk);
       });
 
@@ -14840,7 +14870,7 @@
       const fullCorner = $("hmFullCorner"); if (fullCorner) fullCorner.addEventListener("click", () => { if (!homeLeaf) renderHomeMap(); toggleHomeFull(true); });
       const fullC = $("hmFullClose"); if (fullC) fullC.addEventListener("click", () => toggleHomeFull(false));
       document.addEventListener("keydown", (e) => { if (e.key === "Escape") toggleHomeFull(false); });
-      // Rafraîchit la carte toutes les 2,5 min : check-ins / positions de + d'1 h disparaissent tout seuls
+      // Rafraîchit la carte toutes les 2,5 min : check-ins de + d'1 h / positions de + de 24 h disparaissent tout seuls
       setInterval(() => { if (homeLeaf && !document.hidden) renderHomeMap(); }, 150000);
       const as = $("actSave"); if (as) as.addEventListener("click", saveMapActivity);
       const ac = $("actCancel"); if (ac) ac.addEventListener("click", () => $("actCreate").classList.add("hidden"));

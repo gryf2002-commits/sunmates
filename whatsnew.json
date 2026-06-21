@@ -1,10 +1,10 @@
 {
-  "candidate": "v645",
+  "candidate": "v646",
   "items": [
-    "🛠️ Fiabilité : les notifications de messages sont plus justes (fini la pastille « non lu » qui réapparaît alors que tu lis la conversation), et les listes ne restent plus bloquées si ta connexion saute une seconde (un message clair + nouvel essai automatique).",
+    "🛡️ Partage de position fidèle à sa promesse : ta position reste visible par ton cercle de confiance pendant 24 h (au lieu de disparaître après 1 h). Aligné partout : carte, libellés et base de données.",
+    "🆘 SOS plus complet : quand tu déclenches une alerte, en plus de ton cercle, on te propose d'envoyer un SMS pré-rempli à tes contacts d'urgence avec ta position — tu n'as qu'à appuyer sur Envoyer.",
     "🔒 Contacts d'urgence cloisonnés par compte : sur un appareil partagé, chaque compte ne voit QUE ses propres contacts.",
-    "👀 Lisibilité renforcée (mode jour) : le texte corail passe à un corail un peu plus profond pour être bien lisible sur fond clair. Le corail vif de la marque reste sur les boutons et icônes.",
-    "🆘 Tes contacts d'urgence te suivent partout : enregistrés sur ton compte (privés), récupérés automatiquement.",
-    "🔑 Mot de passe oublié : depuis l'écran de connexion, reçois un lien par email et choisis un nouveau mot de passe en deux clics."
+    "🛠️ Fiabilité : notifications de messages plus justes et listes qui ne restent plus bloquées si la connexion saute.",
+    "👀 Lisibilité renforcée (mode jour) : le texte corail devient bien lisible sur fond clair."
   ]
 }
