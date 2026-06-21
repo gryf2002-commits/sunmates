@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=650"></script>
+  <script src="sunmates-badges.js?v=651"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <style>
@@ -2337,7 +2337,6 @@
           <button class="chip" data-cf="near">📍 Près de moi</button>
         </div>
         <div id="cafesCount" class="muted" style="font-size:.8rem;margin-bottom:.5rem"></div>
-        <div class="gold-only-note" style="margin-bottom:.7rem">👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.</div>
         <div id="cafesList"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div></div>
         <div class="msg" id="cafesMsg"></div>
       </div>
@@ -4108,7 +4107,6 @@
       "Dis où tu traînes aujourd'hui, visible 24 h, façon story.": "Say where you're hanging out today, visible 24 h, story-style.",
       "🌱 Éco-responsables": "🌱 Eco-friendly",
       "📍 Près de moi": "📍 Near me",
-      "👑 Gratuit : 1 check-in par jour. Gold : check-ins illimités + bonus de points.": "👑 Free: 1 check-in a day. Gold: unlimited check-ins + bonus points.",
       "🔍 Découvrir": "🔍 Discover",
       "Vérifiés": "Verified",
       "Même ville": "Same city",
@@ -8835,7 +8833,7 @@
         run: () => { adCleanup(); A(() => goToTab("profil")); setTimeout(() => { if (typeof showProfileSegment === "function") showProfileSegment("edit"); const heads = document.querySelectorAll('[data-psegpanel="edit"] .pf-head'); heads.forEach((h, i) => { if (i < 2 && h.parentElement && !h.parentElement.classList.contains("open")) setTimeout(() => h.click(), 400 * i); }); adInto('[data-psegpanel="edit"] .pf-section', 600, "start"); }, 500); } },
       { title: "📍 Tes check-ins", text: "Ton historique de check-ins, regroupés par lieu.", ms: 5500,
         run: () => { A(() => goToTab("profil")); setTimeout(() => { if (typeof showProfileSegment === "function") showProfileSegment("checkins"); }, 400); } },
-      { title: "✨ SunMates Gold", text: "À 9,99 €/mois, l'abonnement premium débloque : Mates illimités, check-ins illimités, filtres de recherche avancés, BFF du moment, lieux et quêtes exclusifs, mode incognito et profil mis en avant. Un comparatif Gratuit/Gold détaille tout.", ms: 9500,
+      { title: "✨ SunMates Gold", text: "À 9,99 €/mois, l'abonnement premium débloque : Mates illimités, filtres de recherche avancés, BFF du moment, lieux et quêtes exclusifs, mode incognito et profil mis en avant. Un comparatif Gratuit/Gold détaille tout.", ms: 9500,
         run: () => { adCleanup(); A(() => goToTab("profil")); setTimeout(() => { if (typeof showProfileSegment === "function") showProfileSegment("premium"); window.scrollTo({ top: 0 }); adInto('[data-psegpanel="premium"]', 250, "start"); }, 450); } },
       { title: "⚙️ Paramètres du compte", text: "On peut changer son email, son mot de passe, et revoir la présentation animée à tout moment.", ms: 7000,
         run: () => { adCleanup(); A(() => goToTab("profil")); setTimeout(() => adClick("profileSettingsBtn"), 500); } },
@@ -10258,12 +10256,13 @@
       const q = _deburr(query);
       let list = travelersCache
         .filter((p) => {
+          if (p.id === myUserId) return false; // jamais soi-même dans la découverte
           const nameHit = _deburr(p.username).includes(q);
           const cityHit = _deburr(p.city).includes(q);
-          // Profils démo (IA) : toujours visibles dans la découverte.
-          if (p.is_demo) return !q || nameHit || cityHit;
-          // Vrais utilisateurs : trouvables UNIQUEMENT en cherchant leur pseudo.
-          return q && nameHit;
+          // Démo (IA) ET vrais utilisateurs : visibles PAR DÉFAUT (triés par compatibilité ci-dessous),
+          // + trouvables par pseudo/ville. (Avant : les vrais profils n'apparaissaient QUE sur recherche
+          // exacte → un nouvel inscrit voyait une découverte quasi vide.)
+          return !q || nameHit || cityHit;
         })
         .map((p) => ({ p, pct: compatibility(myMatchProfile, p), reasons: matchReasons(myMatchProfile, p) }));
       if (travFilters.verified) list = list.filter((o) => o.p.is_verified);
@@ -10307,6 +10306,9 @@
         : y.pct - x.pct);
       // P2.17 boost « Coup de projecteur » : les profils en vedette remontent en tête de Découvrir.
       if (typeof _isSpotlighted === "function") list.sort((x, y) => (_isSpotlighted(y.p) ? 1 : 0) - (_isSpotlighted(x.p) ? 1 : 0));
+      // Découverte par défaut (sans recherche) : on borne à 50 cartes (les plus compatibles) — perf + lisibilité.
+      // La recherche par pseudo/ville, elle, montre tous les résultats correspondants.
+      if (!q) list = list.slice(0, 50);
       $("travelersList").innerHTML = list.length
         ? `<div class="trav-count">🌍 ${list.length} voyageur${list.length > 1 ? "s" : ""} ${q ? ("trouvé" + (list.length > 1 ? "s" : "")) : "à découvrir"}</div>` + list.map(({ p, pct, reasons }) => {
             const tg = [...(p.intent || []).slice(0, 1), ...(p.interests || []).slice(0, 3)];
@@ -10326,7 +10328,7 @@
           }).join("")
         : (q || travFilters.verified || travFilters.active || travFilters.city || travFilters.affinity || advActive
             ? emptyState("🔍", "Aucun voyageur trouvé", "Essaie d'élargir tes filtres ou de modifier ta recherche.", "🔄 Réinitialiser les filtres", "resetfilters")
-            : '<p class="muted">Découvre nos voyageurs ci-dessus 🌍 Pour trouver une vraie personne, tape son pseudo dans la recherche.</p>');
+            : '<p class="muted">Personne dans le coin pour l\'instant 🌍 Reviens vite, ou tape un pseudo / une ville dans la recherche.</p>');
       $("travelersList").querySelectorAll("[data-profile]").forEach((el) =>
         el.addEventListener("click", () => openTravelerProfile(travelerMap[el.dataset.profile])));
     }
@@ -14909,7 +14911,14 @@
 
     // Calques de la carte : bouton → panneau DA de toggles (remplace le scroll horizontal des chips).
     const HM_LAYERS = [["places", "📍", "Lieux"], ["mates", "🧑", "Mates"], ["community", "🌍", "Communauté"], ["activities", "🎉", "Activités"], ["checkins", "✅", "Check-ins"], ["quests", "🎯", "Quêtes"], ["mypins", "📌", "Mes adresses"]];
-    function updateLayersBtn() { const c = $("hmLayersCnt"); if (c) c.textContent = Object.values(homeLayerOn).filter(Boolean).length; }
+    // Badge Filtres : on affiche le nombre de calques MASQUÉS (= filtres réellement actifs), et on cache
+    // la pastille quand tout est affiché (avant : on montrait le nb de calques actifs → « Filtres 5/6/7 » sans sens).
+    function updateLayersBtn() {
+      const c = $("hmLayersCnt"); if (!c) return;
+      const off = Object.values(homeLayerOn).filter((v) => !v).length;
+      c.textContent = off ? String(off) : "";
+      c.style.display = off ? "" : "none";
+    }
     function openLayersSheet() {
       let ov = $("hmLayersOv");
       if (!ov) {
@@ -15481,7 +15490,6 @@
     // Vignette Gold de l'accueil : cliquable seulement pour l'admin en vue Gold
     const GOLD_FEATURES = [
       { e: "🔓", t: "Sécurité complète", d: "Partage de position, alerte d'urgence et cercle de confiance, pas seulement le 112." },
-      { e: "♾️", t: "Check-ins illimités", d: "Aucune limite quotidienne + bonus de points de confiance." },
       { e: "🎯", t: "Quêtes illimitées", d: "Toutes les quêtes et activités chaque jour, sans restriction." },
       { e: "🔎", t: "Filtres avancés", d: "Filtre par âge, langues, mode de vie, signe astro…" },
       { e: "⭐", t: "BFF du moment", d: "Mets en avant ton meilleur Mate sur ton profil." },
