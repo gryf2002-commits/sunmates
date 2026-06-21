@@ -63,7 +63,9 @@ action/question à la fois.
 
 ## Déploiement
 Publié automatiquement par GitHub Pages à chaque `git push` sur `main`.
-URL : `https://gryf2002-commits.github.io/bootcamp-projet/`
+URL de PROD (domaine officiel) : `https://sunmatesapp.com`
+(source Pages : `https://gryf2002-commits.github.io/bootcamp-projet/`, redirigée vers le domaine custom).
+⚠️ Toujours utiliser `sunmatesapp.com` dans les nouveaux liens/redirects/CORS — pas `github.io`.
 
 ## Règles produit (durables — décidées avec l'auteur)
 - **Sécurité jamais monnayée** : toutes les features de sécurité sont gratuites pour tous.

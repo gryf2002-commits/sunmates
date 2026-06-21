@@ -72,3 +72,12 @@ _da_shots/
 *.SAVE*
 *.orig
 *.tmp
+
+# Creds de test / scripts QA connectés (NE JAMAIS publier) — visual.js contient un compte de test
+test/visual.js
+test/invest/
+test/shots/
+
+# Photos privées partagees par Maxime (briefs) — hors repo public Pages
+WhatsApp Image*.jpeg
+WhatsApp Image*.jpg
