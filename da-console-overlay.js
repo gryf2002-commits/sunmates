@@ -118,12 +118,8 @@
       var modeSel=cls?'.'+cls.split(/\s+/).join('.'):':not(.theme-dusk):not(.theme-winter):not(.theme-tropic)';
       var pre='html body.sm-da-on'+modeSel+' ';
       var d='';
-      // v689 (retour Maxime « enlever les arrières-tuiles des icônes ») : pour les VIGNETTES d'icône
-      // (.thumb/.cic/.smgem/.jo-ic) on N'ÉMET PLUS de fond coloré → juste l'emoji, homogène tous modes.
-      // Les autres surfaces (boutons, chips…) gardent leur couleur DA.
-      var isIcon=/\.(thumb|cic|smgem|jo-ic)\b/.test(sel);
-      if(o.bg){var bd=mix(o.bg,'#000',0.18);d+=(isIcon?'':'background:linear-gradient(160deg,'+o.bg+','+bd+') !important;background-image:linear-gradient(160deg,'+o.bg+','+bd+') !important;')+'--ic1:'+o.bg+' !important;--ic2:'+bd+' !important;';}
-      else if(o.j1)d+='--ic1:'+o.j1+' !important;--ic2:'+(o.j2||o.j1)+' !important;'+(isIcon?'':'background:linear-gradient(160deg,'+o.j1+','+(o.j2||o.j1)+') !important;background-image:linear-gradient(160deg,'+o.j1+','+(o.j2||o.j1)+') !important;');
+      if(o.bg){var bd=mix(o.bg,'#000',0.18);d+='background:linear-gradient(160deg,'+o.bg+','+bd+') !important;background-image:linear-gradient(160deg,'+o.bg+','+bd+') !important;--ic1:'+o.bg+' !important;--ic2:'+bd+' !important;';} // UNE couleur → fond visible sur tout (tuile, bouton, texte-conteneur)
+      else if(o.j1)d+='--ic1:'+o.j1+' !important;--ic2:'+(o.j2||o.j1)+' !important;background:linear-gradient(160deg,'+o.j1+','+(o.j2||o.j1)+') !important;background-image:linear-gradient(160deg,'+o.j1+','+(o.j2||o.j1)+') !important;';
       if(o.scale)d+='transform:scale('+o.scale+');'; // taille par élément (clic) — fond + emoji ensemble, pas de désync
       if(o.textColor)d+='color:'+o.textColor+' !important;';
       // Spécificité GONFLÉE sur le MÊME élément (pas un descendant) : on répète la classe compound
