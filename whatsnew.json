@@ -1,8 +1,8 @@
 {
-  "candidate": "v681",
+  "candidate": "v682",
   "items": [
-    "✨ Coup de neuf visuel : titres de section plus présents avec une barre d'accent dégradé sunset, et plus d'air entre les blocs — l'app respire.",
-    "🎴 Tuiles refondues (icônes 44px, texte centré, rayons/ombres unifiés) · 📸 vraies photos de lieux (Unsplash).",
-    "🗺️ Carte plein écran réparée · 🔥 streak corrigée · 🎨 emojis identiques partout."
+    "✨ Grosse passe d'harmonisation (audit complet de l'app, 20 écrans) : textes plus lisibles (contraste), tailles et coins arrondis unifiés, effets de survol/pression cohérents partout, focus accessible.",
+    "⚡ Fluidité : l'app ne se fige plus à chaque clic / recherche / changement d'écran (emojis désormais non-bloquants + transitions d'écran accélérées 340→150ms).",
+    "🌙 Mode nuit : boutons SOS / urgence et offre Gold beaucoup plus lisibles. 🗺️ carte plein écran OK · 📸 vraies photos de lieux."
   ]
 }

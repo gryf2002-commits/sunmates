@@ -4455,3 +4455,59 @@
     @media (prefers-reduced-motion: no-preference) {
       .section-head > h3::before, .qm-head > h3::before { transition: none; }
     }
+
+    /* ============================================================
+       FLUIDITÉ v682 — changements d'écran/onglet plus VIFS (260-340ms → 150ms), actions fréquentes
+       (retour Maxime : « un switch d'écran me prend autant de temps »). Emil : les actions répétées
+       doivent être quasi-instantanées. (Le parsing Twemoji est aussi passé en non-bloquant, cf. JS.)
+       ============================================================ */
+    .tab-panel:not(.hidden), .mates-view:not(.hidden), .jeux-view:not(.hidden),
+    .secu-view:not(.hidden), .prof-seg:not(.hidden) { animation-duration: .15s !important; }
+    .tab-panel[data-panel="accueil"]:not(.hidden) { animation-duration: .15s !important; }
+    #homeHomeMode, #homeTravelMap { animation-duration: .15s !important; }
+
+    /* ============================================================
+       === v682 HARMONISATION (refonte d'après audit 20 agents — 267 constats) ===
+       ~70% des constats = règles transverses. Bloc en fin de fichier → gagne la cascade.
+       DA sunset uniquement. À fusionner proprement plus tard.
+       ============================================================ */
+    /* A1 — Contraste : --muted était sous WCAG AA (~4.1:1). Remonté. */
+    :root { --muted: #6f7682; }
+    body.theme-dusk { --muted: #b8aecb; }
+    body.theme-winter { --muted: #5a6b7a; }
+    body.theme-tropic { --muted: #5f6b52; }
+    /* A2 — Rayons unifiés (tuiles/cartes mineures = 14px) */
+    .starterCard, .tb-card, .tile, .qm-card, .gcard, .pcard, .cat-tile,
+    .su-btn, .gp-tile, .pf-section, .mseg, .pcell, #profSegNav button { border-radius: var(--radius-sm) !important; }
+    /* A4 — Feedback hover/active cohérent sur toutes les tuiles/cartes interactives */
+    .tile, .cat-tile, .qm-card, .gcard, .gp-tile, .card[data-adv] { cursor: pointer; }
+    @media (hover: hover) {
+      .tile:hover, .cat-tile:hover, .qm-card:hover, .gcard:hover, .gp-tile:hover, .card[data-adv]:hover {
+        transform: translateY(-2px); box-shadow: var(--shadow);
+      }
+    }
+    .tile:active, .cat-tile:active, .qm-card:active, .gcard:active, .gp-tile:active,
+    .card[data-adv]:active, .homemap-fsclose:active, .mode-switch button:active { transform: scale(.97); }
+    /* A5 — Focus-visible unifié (anneau doré, visible jour ET nuit) + cibles tactiles 44px */
+    :where(button, a, [role="button"], .cat-tile, .tile, .gp-tile, .pf-head, .onb-skip, .onb-prev):focus-visible {
+      outline: 3px solid var(--accent-3); outline-offset: 2px; box-shadow: var(--ring);
+    }
+    .hm-inspo-nav button, #chatMenuBtn, .homemap-fsopen { min-width: 44px; min-height: 44px; }
+    /* A7 — Respiration : sections majeures aérées */
+    .tab-panel > section, .tab-panel > .section-head { margin-top: 1.9rem; }
+
+    /* ===== (D) Corrections contraste MODE NUIT prioritaires ===== */
+    /* Sécurité : SOS/appel + bloc urgence lisibles en nuit */
+    body.theme-dusk .su-sos, body.theme-dusk .su-call { background: linear-gradient(135deg, #FF8A5C, #FF6A6A) !important; }
+    body.theme-dusk .secu-urgent { border-color: rgba(255,106,93,.45) !important;
+      background: linear-gradient(180deg, rgba(255,106,93,.10), transparent 60%) !important; }
+    /* Premium/Gold : tuiles perks lisibles en nuit */
+    body.theme-dusk .gp-tile b { color: #ede6f2 !important; }
+    body.theme-dusk .gp-tile span { color: #d4c8e0 !important; }
+    body.theme-dusk .gp-tile { border-color: rgba(255,209,92,.35) !important; }
+    .gp-tile .gp-ic { font-size: 1.3rem !important; }
+    /* Onboarding : bouton « Précédent » plus présent + skip plus lisible */
+    .onb-prev { border: 1.5px solid rgba(255,255,255,.32) !important; }
+    .onb-prev:hover { background: rgba(255,255,255,.18); }
+    .onb-prev:active { transform: scale(.97); }
+    .onb-skip { color: rgba(255,255,255,.95) !important; }

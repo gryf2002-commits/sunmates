@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=681"></script>
+  <script src="sunmates-badges.js?v=682"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -353,7 +353,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=681">
+  <link rel="stylesheet" href="styles.css?v=682">
   <!-- ============================================================
        FEEL v667 (inline preview) — allègement visuel : tuiles Lite centrées + vignettes
        plus petites (moins « imposant »), carte d'accueil plus présente sur mobile.
@@ -19982,22 +19982,31 @@
     // On parse seulement le sous-arbre qui change (pas tout le body), SANS déconnecter :
     // on ignore nos propres <img.twe> pour éviter la boucle. Les callbacks d'observer étant
     // asynchrones, twemoji.parse() ne provoque pas de ré-entrance.
-    var observer = null;
+    var observer = null, _q = new Set(), _raf = 0;
     function parseEl(node) { if (node && node.nodeType === 1) parse(node); }
+    // FLUIDITÉ : on ne parse PLUS synchrone à chaque mutation (ça bloquait chaque clic/recherche/switch).
+    // On accumule les nœuds changés et on parse UNE fois par frame (requestAnimationFrame) → non bloquant,
+    // le contenu s'affiche tout de suite, l'emoji bascule à la frame suivante (~16ms, imperceptible).
+    function _flush() {
+      _raf = 0;
+      var nodes = []; _q.forEach(function (n) { nodes.push(n); }); _q.clear();
+      for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].isConnected) parseEl(nodes[i]); }
+    }
     function onMut(muts) {
       for (var i = 0; i < muts.length; i++) {
         var m = muts[i];
-        if (m.type === "characterData") { var p = m.target.parentNode; if (p) parseEl(p); continue; }
+        if (m.type === "characterData") { var p = m.target.parentNode; if (p && p.nodeType === 1) _q.add(p); continue; }
         for (var j = 0; j < m.addedNodes.length; j++) {
           var nd = m.addedNodes[j];
           if (nd.nodeType === 1) {
-            if (nd.tagName === "IMG" && nd.className === "twe") continue; // notre propre sortie → anti-boucle
-            parseEl(nd);
+            if (nd.tagName === "IMG" && nd.className === "twe") continue; // notre propre sortie → anti-boucle (pas de re-queue)
+            _q.add(nd);
           } else if (nd.nodeType === 3 && m.target && m.target.nodeType === 1) {
-            parseEl(m.target);
+            _q.add(m.target);
           }
         }
       }
+      if (_q.size && !_raf) _raf = (window.requestAnimationFrame || function (f) { return setTimeout(f, 16); })(_flush);
     }
     function boot() {
       if (!window.twemoji) { return setTimeout(boot, 80); }
