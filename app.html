@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=666"></script>
+  <script src="sunmates-badges.js?v=667"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -354,6 +354,21 @@
     }
   </script>
   <link rel="stylesheet" href="styles.css?v=663">
+  <!-- ============================================================
+       FEEL v667 (inline preview) — allègement visuel : tuiles Lite centrées + vignettes
+       plus petites (moins « imposant »), carte d'accueil plus présente sur mobile.
+       À fusionner dans styles.css au push.
+       ============================================================ -->
+  <style id="feel-v667">
+    /* Tuiles Lite : texte centré + vignette/emoji plus sobres (retour Maxime : « trop imposant, pas centré ») */
+    body.sm-lite .tile { text-align: center; }
+    body.sm-lite .tile .thumb { height: 60px; font-size: 24px; margin-bottom: .45rem; border-radius: 14px; }
+    body.sm-lite .tile .thumb img.twe { width: 1.05em; height: 1.05em; }
+    body.sm-lite .tile .t-name { font-size: .86rem; }
+    body.sm-lite .tile .t-meta { font-size: .74rem; }
+    /* Carte d'accueil plus présente sur mobile (était 200px → trop petite « tout en bas ») */
+    @media (max-width: 820px) { .homemap { height: 268px; } }
+  </style>
   <!-- ============================================================
        PREVIEW FIXES (inline, scopé preview) — 19/06 : header mobile,
        onglet Messages, idées geo cliquables, centrage, contrôle saison.
@@ -3030,7 +3045,7 @@
             <div id="featureCatalog"></div>
             <!-- Réservé admin : back-office, JAMAIS montré au public ni dans la démo -->
             <details class="card admin-only-cat" id="adminOnlyCat" style="margin-top:.8rem">
-              <summary style="font-weight:800;cursor:pointer">🛡️ Réservé admin (back-office) <span class="muted" style="font-weight:400;font-size:.78rem">· non public</span></summary>
+              <summary style="font-weight:800;cursor:pointer">🛡️ Réservé admin <span class="muted" style="font-weight:400;font-size:.78rem">· non public</span></summary>
               <div id="adminOnlyList"></div>
             </details>
           </div>
@@ -8765,7 +8780,7 @@
         ["✍️", "Pseudo dès l'inscription", "Le pseudo se choisit à la création du compte, fini l'email affiché au premier Bonjour."],
         ["💼", "Espace Pro / B2B", "Pitch partenaires + demande de partenariat ; les comptes partenaires (bar, auberge, café) ont leur TABLEAU DE BORD : stats réelles (check-ins, visiteurs uniques, avis), offre du moment affichée sur leur fiche, horaires/prix éditables, code de check-in."],
       ]],
-      ["🛡️ Admin (back-office)", [
+      ["🛡️ Réservé admin (non public)", [
         ["🎬", "Démo guidée UNIQUE (A→Z)", "Un seul parcours commenté de 80+ chapitres : auto OU pas-à-pas (Précédent/Suivant/Pause). Chaque « Voir » du catalogue l'ouvre au bon chapitre. (Fusion tuto + démo)"],
         ["🗄️", "Données (base)", "Vue admin sur la base Supabase (tables/compteurs) + le contenu de jeu (quêtes par ville, badges, défis) + schéma/sécurité."],
         ["📊", "Tableau de bord (KPIs)", "Membres ACTIFS (bannis exclus), suspendus & admins à part, check-ins, quêtes… cellules cliquables → segment."],
@@ -18446,8 +18461,16 @@
     // qui jurait avec le contenu (« séparation nette / grain de couleur en haut »). On lit le --bg
     // calculé du body APRÈS bascule des classes → correct dans les 6 modes, sans rien coder en dur.
     function _smSyncStatusColor() {
-      try { var bg = getComputedStyle(document.body).getPropertyValue("--bg").trim();
-        var m = document.querySelector('meta[name="theme-color"]'); if (m && bg) m.setAttribute("content", bg); } catch (e) {}
+      // La status-bar (theme-color) doit matcher le HAUT RÉEL de la page = le 1er stop du
+      // dégradé --bg-grad (ex. #ffe6d2), PAS --bg (plus foncé) → sinon cassure de couleur
+      // avec la barre native du téléphone (heure/batterie). Lecture générique, tous thèmes.
+      try {
+        var cs = getComputedStyle(document.body);
+        var grad = (cs.getPropertyValue("--bg-grad") || "").trim();
+        var hit = grad.match(/#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}/);
+        var top = hit ? hit[0] : cs.getPropertyValue("--bg").trim();
+        var m = document.querySelector('meta[name="theme-color"]'); if (m && top) m.setAttribute("content", top);
+      } catch (e) {}
     }
     // ---- Thème : jour (aube) ↔ nuit (crépuscule plage) ----
     function applyTheme(t) {
