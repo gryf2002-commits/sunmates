@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=686"></script>
+  <script src="sunmates-badges.js?v=687"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -2183,10 +2183,12 @@
             </div>
           </details>
 
-          <!-- Voyageurs de passage dans ta ville -->
+          <!-- Voyageurs de passage dans ta ville (v687 : enveloppé → masquable via Personnaliser, masqué par défaut) -->
+          <section id="homeVisitorsSection">
           <div class="section-head"><h3 style="margin-top:.4rem">De passage chez toi 👋</h3></div>
           <p class="muted" style="margin:-.2rem 0 .6rem;font-size:.84rem">Des voyageurs explorent <b id="hmCityName">ta ville</b> en ce moment.</p>
           <div id="visitorsList"></div>
+          </section>
 
           <!-- Devenir hôte : REPLIÉ par défaut (sobriété) — recrutement secondaire, rien n'est supprimé -->
           <details class="hm-plan">
@@ -2281,6 +2283,8 @@
           <div class="qm-rail" id="badgeRail"></div>
         </section>
 
+        <!-- v687 : enveloppé pour être masquable/déplaçable via Personnaliser (masqué par défaut en mode épuré). -->
+        <section id="homeFeedSection">
         <div class="section-head">
           <h3 style="margin-top:.4rem">Le fil ✨</h3>
           <div style="display:flex;gap:1rem;align-items:center">
@@ -2313,7 +2317,10 @@
           <div class="msg" id="feedComposerMsg" style="text-align:center"></div>
         </div>
         <div id="homeFeed"><div class="skel-row"><div class="skel skel-av"></div><div class="skel-lines"><div class="skel skel-line m"></div><div class="skel skel-line s"></div></div></div></div>
+        </section>
 
+        <!-- v687 : enveloppé pour être masquable/déplaçable via Personnaliser (masqué par défaut en mode épuré). -->
+        <section id="homeTripsSection">
         <!-- ✈️ Mes voyages : matching dans le temps + l'espace (feature signature) -->
         <div class="section-head"><h3>Mes voyages ✈️</h3><a id="tripAddLink" style="cursor:pointer">+ Ajouter</a></div>
         <button type="button" id="globeOpenBtn" class="globe-cta">🌍 Voir mon globe</button>
@@ -2327,6 +2334,7 @@
         </div>
         <div id="tripTimeline" class="trip-timeline" hidden></div>
         <div id="myTrips"></div>
+        </section>
 
         <!-- v684 : « Accès rapides » devient une section pilotée par le customizer (groupe travel),
              remontée par défaut JUSTE SOUS la carte (avant : tout en bas, sous le fil + les voyages). -->
@@ -20146,20 +20154,33 @@
         { id: "homeTravelMap", title: "Explore autour de toi" },
         { id: "homeQuickAccess", title: "Accès rapides", head: ".section-head" },
         { id: "geoNowCard", title: "Ici & maintenant" },
-        { id: "todayBand", title: "Aujourd'hui" },
-        { id: "starterCard", title: "Bien démarrer" }
+        { id: "todayBand", title: "Aujourd'hui", defHidden: true },
+        { id: "starterCard", title: "Bien démarrer" },
+        // v687 (Maxime « accueil ultra-épuré ») : le bas de page devient masquable et MASQUÉ PAR DÉFAUT.
+        { id: "badgeRailSection", title: "À débloquer", defHidden: true },
+        { id: "homeFeedSection", title: "Le fil", defHidden: true },
+        { id: "homeTripsSection", title: "Mes voyages", defHidden: true }
       ]},
       { key: "home", parent: "#homeHomeMode", anchor: null, title: "Personnaliser « À la maison »", sections: [
         { id: "soloProgress", head: ".sp-head", title: "Ta progression solo" },
-        { id: "homeMates", head: ".qm-head", title: "Tes souvenirs" },
-        { id: "soloChallenges", head: ".qm-head", title: "Défis solo de ta ville" },
-        { id: "soloRituals", head: ".qm-head", title: "Rituels du jour" },
-        { id: "hmInspo", title: "Inspiration du jour" }
+        { id: "homeMates", head: ".qm-head", title: "Tes souvenirs", defHidden: true },
+        { id: "soloChallenges", head: ".qm-head", title: "Défis solo de ta ville", defHidden: true },
+        { id: "soloRituals", head: ".qm-head", title: "Rituels du jour", defHidden: true },
+        { id: "hmInspo", title: "Inspiration du jour", defHidden: true },
+        { id: "homeVisitorsSection", title: "De passage chez toi", defHidden: true }
       ]}
     ];
     function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
     var state = load(); state.collapsed = state.collapsed || {}; state.hidden = state.hidden || {}; state.order = state.order || {};
+    // v687 : applique UNE FOIS le défaut « ultra-épuré » (sections non vitales masquées), sans jamais
+    // écraser un choix EXPLICITE déjà mémorisé pour une section donnée. _dv = version des défauts.
+    var DEFAULTS_VER = 2;
+    if ((state._dv || 0) < DEFAULTS_VER) {
+      GROUPS.forEach(function (g) { g.sections.forEach(function (s) { if (s.defHidden && state.hidden[s.id] == null) state.hidden[s.id] = true; }); });
+      state._dv = DEFAULTS_VER;
+    }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+    save(); // persiste le seed des défauts dès le 1er chargement
 
     function freeze(parent) {
       parent.style.display = "flex"; parent.style.flexDirection = "column";
