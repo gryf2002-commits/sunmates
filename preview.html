@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=678"></script>
+  <script src="sunmates-badges.js?v=679"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -20049,7 +20049,9 @@
     .hcust-reset:active { transform: scale(.98); }
     .hcust-drag { flex: 0 0 auto; color: var(--muted); font-size: 1.1rem; line-height: 1; cursor: grab; touch-action: none; padding: 0 .15rem; user-select: none; }
     .hcust-row.dragging { opacity: .7; background: var(--accent-soft); border-radius: 10px; cursor: grabbing; }
-    /* Vue Voyage : sur-conteneurs repliables des bandes (le DOM de la bande peut se re-rendre, le shell reste) */
+    /* Masquage utilisateur (Personnaliser) — via classe pour coexister avec le .hidden géré par l'app. */
+    .hcust-userhidden { display: none !important; }
+    /* (héritage : anciens sur-conteneurs .vb-shell désormais dé-enveloppés au runtime — CSS gardé inerte) */
     .vb-shell { position: relative; }
     .vb-fold { position: absolute; top: .55rem; right: .55rem; z-index: 6; width: 30px; height: 30px; border-radius: 50%;
       border: 0; background: rgba(120,60,30,.07); color: var(--muted); display: grid; place-items: center; cursor: pointer;
@@ -20144,11 +20146,15 @@
       injectOpener(g, parent, null, anchor);
       var cursor = parent.querySelector('.hcust-open[data-g="' + g.key + '"]') || anchor;
       ord.forEach(function (id) {
-        var s = pres.find(function (x) { return x.id === id; }); if (!s) return;
-        var shell = ensureShell(s); if (!shell) return;
-        shell.style.display = state.hidden[id] ? "none" : "";
-        shell.classList.toggle("vb-collapsed", !!(s.collapsible && state.collapsed[id]));
-        cursor.insertAdjacentElement("afterend", shell); cursor = shell; // place après l'élément précédent
+        var el = document.getElementById(id); if (!el) return;
+        // On déplace l'ÉLÉMENT directement (PAS de sur-conteneur) : #homeTravelMap doit rester
+        // ENFANT DIRECT du panneau, sinon la règle plein écran (l.1094 `> *:not(#homeTravelMap)`)
+        // masque son wrapper → la carte disparaissait en grand. On dé-enveloppe les anciens .vb-shell.
+        if (el.parentNode && el.parentNode.classList && el.parentNode.classList.contains("vb-shell")) {
+          var sh = el.parentNode; sh.parentNode.insertBefore(el, sh); sh.parentNode.removeChild(sh);
+        }
+        el.classList.toggle("hcust-userhidden", !!state.hidden[id]); // masquer via classe (coexiste avec .hidden de l'app)
+        cursor.insertAdjacentElement("afterend", el); cursor = el;
       });
       // la carte a bougé dans le DOM → resynchroniser Leaflet
       try { if (window.homeLeaf && homeLeaf.invalidateSize) setTimeout(function () { homeLeaf.invalidateSize({ animate: false }); }, 80); } catch (e) {}

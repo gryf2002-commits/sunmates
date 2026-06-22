@@ -1,8 +1,7 @@
 {
-  "candidate": "v678",
+  "candidate": "v679",
   "items": [
-    "🎴 Tuiles homogénéisées dans toute l'app : mêmes tailles d'icônes (44px), textes centrés, vignettes d'accueil plus sobres — c'est nettement plus net et cohérent.",
-    "🔥 Streak réparée : elle ne se réinitialise plus en passant en mode Lite (le calcul se fait toujours, même quand le compteur est masqué).",
-    "📸 Photos des lieux réparées (picsum HS → loremflickr) · 🎨 haut d'écran raccord avec la barre du téléphone."
+    "🗺️ Carte plein écran RÉPARÉE : elle ne s'affichait plus en grand (un conteneur que j'avais ajouté la masquait) — c'est corrigé, et l'accueil reste map-first.",
+    "🎴 Tuiles homogénéisées (icônes 44px, texte centré) · 🔥 streak réparée · 📸 photos lieux (loremflickr)."
   ]
 }
