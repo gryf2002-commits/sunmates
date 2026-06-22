@@ -4432,3 +4432,26 @@
     }
     /* Texte centré sur les tuiles en colonne (cohérence visuelle) */
     .cat-tile, .qm-card, .gp-tile, .sa-tile, .sp-stat { text-align: center; }
+
+    /* ============================================================
+       PASSE DESIGN v681 — hiérarchie + respiration BOLD (retour Maxime : « pas trop subtil »).
+       Titres de section plus présents (Fraunces, +gros) + BARRE D'ACCENT dégradé sunset devant
+       chaque titre + plus d'air entre les sections. Distinctif, premium, dans la DA, app-wide.
+       ============================================================ */
+    .section-head > h3, .qm-head > h3, .sp-head > .sp-title {
+      position: relative; padding-left: .7rem;
+      font-family: "Fraunces", Georgia, serif !important; font-size: 1.2rem !important; font-weight: 700 !important;
+      letter-spacing: -.01em; line-height: 1.2;
+    }
+    .section-head > h3::before, .qm-head > h3::before, .sp-head > .sp-title::before {
+      content: ""; position: absolute; left: 0; top: .18em; bottom: .18em; width: 4px; border-radius: 3px;
+      background: var(--accent-grad);
+    }
+    /* Plus de respiration verticale entre les blocs de l'accueil */
+    .tab-panel[data-panel="accueil"] > section,
+    .tab-panel[data-panel="accueil"] > .section-head,
+    .tab-panel[data-panel="accueil"] > #homeTravelMap { margin-top: 1.7rem; }
+    .section-head { margin-bottom: .35rem; }
+    @media (prefers-reduced-motion: no-preference) {
+      .section-head > h3::before, .qm-head > h3::before { transition: none; }
+    }

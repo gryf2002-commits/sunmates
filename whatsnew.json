@@ -1,8 +1,8 @@
 {
-  "candidate": "v680",
+  "candidate": "v681",
   "items": [
-    "📸 VRAIES photos des lieux (Unsplash) au lieu des placeholders qui tombaient en panne — par thème (café, bar, ville), stables et fiables.",
-    "🎴 Refonte des tuiles dans toute l'app : tailles d'icônes unifiées (44px), texte centré, rayons et ombres cohérents — un vrai coup de propre.",
-    "🗺️ Carte plein écran réparée · 🔥 streak corrigée."
+    "✨ Coup de neuf visuel : titres de section plus présents avec une barre d'accent dégradé sunset, et plus d'air entre les blocs — l'app respire.",
+    "🎴 Tuiles refondues (icônes 44px, texte centré, rayons/ombres unifiés) · 📸 vraies photos de lieux (Unsplash).",
+    "🗺️ Carte plein écran réparée · 🔥 streak corrigée · 🎨 emojis identiques partout."
   ]
 }
