@@ -1,10 +1,8 @@
 {
-  "candidate": "v659",
+  "candidate": "v660",
   "items": [
-    "✅ Mission du jour : la bande « Aujourd'hui » s'ouvre maintenant sur une petite mission canapé qui change chaque jour (réponds à la question, apprends le mot du jour, ajoute une destination rêvée…). Touche quand c'est fait pour gagner un peu d'XP. 100% cosy, aucune sortie obligatoire.",
-    "☀️ + la question, le quiz, ton Mate et le mot du jour.",
-    "🌠 Wishlist enregistrée sur ton compte.",
-    "🙋 Cherche un·e accompagnateur·rice + 📍 mi-chemin + 🤝 « On s'est vus ».",
-    "🚶 Marche avec moi + 🌙 Veilleur de nuit + 🌍 Découvrir vivant."
+    "✨ Boutons plus vivants : chaque bouton répond maintenant au doigt avec un petit effet de pression, comme une vraie app native.",
+    "🗺️ Accueil plus fluide et qui chauffe moins : les pulsations de la carte tournent désormais sur la carte graphique, et le flou est allégé sur mobile.",
+    "🌙 Mouvements unifiés et plus doux partout (mêmes courbes, mêmes durées)."
   ]
 }
