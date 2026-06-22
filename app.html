@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=688"></script>
+  <script src="sunmates-badges.js?v=689"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -1425,10 +1425,20 @@
     body.theme-winter.theme-dusk .cic[data-smicon], body.theme-winter.theme-dusk .jo-ic[data-smicon], body.theme-winter.theme-dusk .smgem, body.theme-winter.theme-dusk .thumb { --emb:#EAF6FF; }
     body.theme-tropic.theme-dusk .cic[data-smicon], body.theme-tropic.theme-dusk .jo-ic[data-smicon], body.theme-tropic.theme-dusk .smgem, body.theme-tropic.theme-dusk .thumb { --emb:#E6FFF5; }
 
-    /* DA sticker : joyau SOBRE (ombre douce + léger reflet haut) + icône sticker en relief */
-    .cic[data-smicon], .jo-ic[data-smicon], .smgem, .thumb { box-shadow: 0 6px 14px -6px rgba(45,28,18,.38), inset 0 1px 1px rgba(255,255,255,.26) !important; position: relative; overflow: hidden; }
-    .cic[data-smicon]::after, .jo-ic[data-smicon]::after, .smgem::after, .thumb::after { content:""; position:absolute; left:0; right:0; top:0; height:44%; background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0)); pointer-events:none; z-index:0; }
-    .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
+    /* v689 (retour Maxime « enlever les arrières-tuiles des icônes : pas homogènes selon le mode/tuile,
+       gain visuel de TOUT enlever ») : plus de carré coloré/relief derrière les emojis — juste l'emoji,
+       propre et STRICTEMENT identique dans tous les modes. On NEUTRALISE ici (dernier style statique du
+       <head>, après styles.css → gagne) fond + ombre + reflet de toutes les vignettes d'icône. */
+    .cic[data-smicon], .jo-ic[data-smicon], .smgem, .thumb {
+      background: none !important; background-image: none !important; box-shadow: none !important;
+      border: 0 !important; overflow: visible !important; }
+    .cic[data-smicon]::after, .cic[data-smicon]::before,
+    .jo-ic[data-smicon]::after, .jo-ic[data-smicon]::before,
+    .smgem::after, .smgem::before, .thumb::after, .thumb::before { content: none !important; display: none !important; }
+    .tile .thumb { font-size: 34px !important; height: 46px !important; width: auto !important; min-width: 46px; }
+    .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 1px 2px rgba(30,14,6,.30)); }
+    .thumb { filter: drop-shadow(0 1px 2px rgba(45,38,52,.22)) !important; }
+    body.theme-dusk .thumb { filter: drop-shadow(0 1px 3px rgba(0,0,0,.5)) !important; }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
   <link rel="stylesheet" href="sunmates-lite.css?v=600">
@@ -20008,7 +20018,7 @@
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
-  <script src="da-console-overlay.js?v=571"></script>
+  <script src="da-console-overlay.js?v=689"></script>
 
   <!-- 🎨 Twemoji init — emojis cohérents pour tous. Parse au boot + observer idle (childList+characterData),
        déconnecté PENDANT le parse (anti-boucle, car twemoji insère des <img>). Skip champs de saisie. -->

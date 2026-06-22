@@ -1318,6 +1318,23 @@
     .tile .t-name { font-weight: 700; color: var(--ink); font-size: .92rem; }
     .tile .t-meta { color: var(--muted); font-size: .78rem; }
 
+    /* ============================================================
+       v689 (retour Maxime « les arrières-tuiles des icônes : pas homogènes selon le mode/tuile,
+       gain visuel de TOUT enlever ») : on retire le CARRÉ COLORÉ derrière chaque emoji/icône de
+       tuile (.thumb). Résultat : juste l'emoji, propre, STRICTEMENT identique dans tous les modes
+       (plus de fond corail/dégradé/loader incohérent). On neutralise fond + ombre + reflets, et on
+       agrandit l'emoji puisqu'il n'a plus de cadre. L'emoji garde un léger relief (depth) sans cadre.
+       ============================================================ */
+    .thumb, .tile .thumb {
+      background: none !important; background-image: none !important;
+      box-shadow: none !important; border: 0 !important;
+      filter: drop-shadow(0 1px 2px rgba(45,38,52,.20)) !important;
+    }
+    body.theme-dusk .thumb, body.theme-dusk .tile .thumb { filter: drop-shadow(0 1px 3px rgba(0,0,0,.45)) !important; }
+    .thumb::before, .thumb::after,
+    .tile .thumb::before, .tile .thumb::after { display: none !important; content: none !important; background: none !important; box-shadow: none !important; }
+    .tile .thumb { font-size: 34px !important; height: 46px !important; }
+
     /* ----------------------- Carte « featured » --------------------- */
     .feature {
       border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 1.2rem;
@@ -3136,11 +3153,14 @@
        des couleurs froides distinctes (vert/teal/bleu) « qui ne collent pas à la DA » : TOUTES les
        tuiles suivent le dégradé-accent du preset courant (--accent-grad) → corail/rosé en RH,
        et se ré-teintent automatiquement en nuit/hiver/tropiques + en admin. Cohésion totale. */
+    /* v689 (retour Maxime « enlever les arrières-tuiles des icônes ») : ces familles peignaient le carré
+       coloré derrière chaque emoji (var(--accent-grad) !important). On le RETIRE à la source → plus de
+       fond, plus d'ombre de cadre : juste l'emoji, homogène dans tous les modes/toutes les tuiles. */
     .thumb.green, .thumb.blue, .thumb.purp, .thumb.coral, .thumb.lime, .thumb.indigo, .thumb.rose, .thumb.gold, .thumb.teal, .thumb.red {
-      background: var(--accent-grad) !important;
-      box-shadow: 0 4px 12px rgba(40,18,8,.12) !important; }
+      background: none !important;
+      box-shadow: none !important; }
     body.theme-dusk .thumb.green, body.theme-dusk .thumb.blue, body.theme-dusk .thumb.purp, body.theme-dusk .thumb.coral, body.theme-dusk .thumb.lime, body.theme-dusk .thumb.indigo, body.theme-dusk .thumb.rose, body.theme-dusk .thumb.gold, body.theme-dusk .thumb.teal, body.theme-dusk .thumb.red {
-      box-shadow: 0 4px 12px rgba(0,0,0,.26) !important; }
+      box-shadow: none !important; }
 
     /* Navigation : icônes vives */
     .bottom-nav { background: #fff7f2; box-shadow: 0 -8px 28px rgba(45,38,52,.10); }

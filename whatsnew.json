@@ -1,8 +1,8 @@
 {
-  "candidate": "v688",
+  "candidate": "v689",
   "items": [
-    "🎯 Haut d'écran enfin parfait : fond strictement uniforme — la barre native, le header et le contenu ont exactement la même couleur (jour ET nuit). Fini la tache et le header plus foncé.",
-    "✨ « Personnaliser » nouvelle génération : un vrai panneau premium — sections groupées « Affichées » / « Masquées », chacune avec son icône, sa description et un interrupteur. Glisse pour réordonner.",
-    "👆 Tout reste à 1 tap : un interrupteur pour afficher/masquer chaque bloc de l'accueil, exactement comme tu le veux."
+    "🧼 Icônes épurées : on a retiré les carrés colorés derrière les emojis des tuiles. Résultat : juste l'emoji, propre et identique dans tous les modes — fini les fonds de couleurs incohérentes d'une tuile à l'autre.",
+    "📐 Plus homogène et plus léger : les accès rapides, la Sécurité, les Lieux… tout respire de la même façon.",
+    "🎯 Haut d'écran : on continue d'affiner le raccord avec la barre native du téléphone."
   ]
 }
