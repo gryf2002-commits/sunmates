@@ -70,7 +70,7 @@
        crème-rosé du :root transparaissait (le fameux « arrière-plan rose », un BUG, pas une DA).
        Et le calque body::before (bande unie sur la zone status bar) est SUPPRIMÉ : c'est LUI qui
        créait la coupure nette au-dessus du fondu du header · le header peint déjà cette zone. */
-    html { background: #fbeee9; }
+    html { background: #FFF4E6; } /* = le --bg JOUR effectif (dernier :root l.3004) + theme-color → la zone haute/safe-area ne fait plus une bande plus foncée (#fbeee9 mort) avec la barre native */
     html:has(body.theme-dusk) { background: #190E2E; } /* Bug haut/overscroll : aligné sur le VRAI --bg nuit (#190E2E), avant #171026 = liseré au rebond */
     html:has(body.theme-winter) { background: #EAF3FB; }
     html:has(body.theme-tropic) { background: #F7F9EC; }

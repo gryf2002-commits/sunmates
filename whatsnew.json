@@ -1,8 +1,8 @@
 {
-  "candidate": "v674",
+  "candidate": "v675",
   "items": [
-    "✋ « Personnaliser l'accueil » : glisse-dépose les sections pour les réordonner (en plus des flèches), et le bouton pour tout réafficher.",
-    "🗺️ Accueil map-first · ✨ Gold partout · emojis cohérents.",
-    "🧹 Coulisses (admin, Espace Pro) rangées."
+    "🩹 Haut de l'écran : la couleur du fond tout en haut est alignée sur le reste de l'app (le fond de page utilisait une vieille teinte un peu plus foncée).",
+    "✋ « Personnaliser l'accueil » : glisser-déposer + tout réafficher.",
+    "🗺️ Accueil map-first · ✨ Gold partout."
   ]
 }
