@@ -1,8 +1,8 @@
 {
-  "candidate": "v664",
+  "candidate": "v665",
   "items": [
-    "🎨 Emojis vraiment identiques partout : avant, beaucoup gardaient le style de ton téléphone (iPhone, Android, Samsung…) — maintenant c'est le même dessin pour tous, jusque dans les notifications et les animations.",
-    "🗂️ Nouveau : personnalise ton accueil « À la maison » — replie, masque ou réordonne les sections (bouton « Personnaliser »).",
-    "✨ Boutons plus vivants + accueil plus fluide qui chauffe moins."
+    "🗂️ Range ton accueil comme tu veux : touche « Personnaliser » en haut pour masquer les sections qui ne te servent pas et les remettre dans l'ordre qui te plaît.",
+    "🏠 En mode « À la maison », tu peux aussi replier chaque section d'un simple toucher sur son titre.",
+    "🎨 Emojis identiques partout (rappel v664) + boutons plus vivants."
   ]
 }
