@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=672"></script>
+  <script src="sunmates-badges.js?v=673"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -3077,7 +3077,7 @@
               <label>Nom</label><input id="apName" maxlength="80" placeholder="Le Comptoir Solaire" />
               <div class="row" style="margin-top:0">
                 <div style="flex:1"><label>Ville</label><input id="apCity" maxlength="60" placeholder="Lisbonne" /></div>
-                <div style="flex:1"><label>Catégorie</label><input id="apCat" maxlength="40" placeholder="Café partenaire" /></div>
+                <div style="flex:1"><label>Catégorie</label><input id="apCat" maxlength="40" placeholder="Café, Bar, Auberge…" /></div>
               </div>
               <label>Note de sécurité</label><input id="apNote" maxlength="140" placeholder="Personnel formé, lieu passant…" />
               <div class="row" style="margin-top:0">
@@ -15758,8 +15758,8 @@
     // CÂBLAGE : profiles.partner_place_id → partner_cafes.id (migration supabase_migration_pro.sql).
     // Sans compte associé, l'ADMIN voit deux DÉMOS complètes : le cas BAR et le cas AUBERGE.
     const PRO_PRESETS = {
-      bar: { demo: true, name: "Le Comptoir Solaire", cat: "Bar partenaire", emoji: "🍹", city: "Lisbonne", code: "SOLEIL", hours: "Mar–Dim · 17h–01h", price: "€€", offer: "1 mocktail offert au 1ᵉʳ check-in SunMates", ck7: 23, ckAll: 412, uniq: 187, revN: 34, revAvg: 4.6 },
-      hostel: { demo: true, name: "Sunset Hostel", cat: "Auberge partenaire", emoji: "🛏️", city: "Porto", code: "DODO", hours: "Réception 24/7 · check-in dès 14h", price: "€", offer: "−10 % sur le dortoir en montrant l'app", ck7: 11, ckAll: 268, uniq: 154, revN: 51, revAvg: 4.8 },
+      bar: { demo: true, name: "Le Comptoir Solaire", cat: "Bar", emoji: "🍹", city: "Lisbonne", code: "SOLEIL", hours: "Mar–Dim · 17h–01h", price: "€€", offer: "1 mocktail offert au 1ᵉʳ check-in SunMates", ck7: 23, ckAll: 412, uniq: 187, revN: 34, revAvg: 4.6 },
+      hostel: { demo: true, name: "Sunset Hostel", cat: "Auberge", emoji: "🛏️", city: "Porto", code: "DODO", hours: "Réception 24/7 · check-in dès 14h", price: "€", offer: "−10 % sur le dortoir en montrant l'app", ck7: 11, ckAll: 268, uniq: 154, revN: 51, revAvg: 4.8 },
     };
     function renderProPanel(d) {
       const box = $("proPanel"); if (!box) return;
@@ -20035,6 +20035,9 @@
     .hcust-mv button:active, .hcust-eye:active { transform: scale(.92); }
     .hcust-mv button:disabled { opacity: .3; cursor: default; }
     .hcust-eye.off { opacity: .5; }
+    .hcust-reset { display: block; width: 100%; margin: .9rem 0 .2rem; padding: .6rem; border: 0; border-radius: 12px;
+      background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font: 700 .82rem/1 "Manrope", system-ui, sans-serif; cursor: pointer; }
+    .hcust-reset:active { transform: scale(.98); }
     /* Vue Voyage : sur-conteneurs repliables des bandes (le DOM de la bande peut se re-rendre, le shell reste) */
     .vb-shell { position: relative; }
     .vb-fold { position: absolute; top: .55rem; right: .55rem; z-index: 6; width: 30px; height: 30px; border-radius: 50%;
@@ -20176,9 +20179,15 @@
       var ov = document.getElementById("hcustOv");
       if (!ov) {
         ov = document.createElement("div"); ov.id = "hcustOv"; ov.className = "hcust-ov hidden";
-        ov.innerHTML = '<div class="hcust-sheet" role="dialog" aria-label="Personnaliser l\'accueil"><div class="hcust-h"><h3 id="hcustTitle"></h3><button type="button" aria-label="Fermer">✕</button></div><p class="hcust-sub" id="hcustSub"></p><div id="hcustList"></div></div>';
+        ov.innerHTML = '<div class="hcust-sheet" role="dialog" aria-label="Personnaliser l\'accueil"><div class="hcust-h"><h3 id="hcustTitle"></h3><button type="button" aria-label="Fermer">✕</button></div><p class="hcust-sub" id="hcustSub"></p><div id="hcustList"></div><button type="button" id="hcustReset" class="hcust-reset">↺ Tout réafficher · ordre par défaut</button></div>';
         document.body.appendChild(ov);
         ov.addEventListener("click", function (e) { if (e.target === ov || e.target.closest(".hcust-h button")) closeSheet(); });
+        document.getElementById("hcustReset").addEventListener("click", function () {
+          var g = activeGroup; if (!g) return;
+          delete state.order[g.key];
+          g.sections.forEach(function (s) { delete state.hidden[s.id]; delete state.collapsed[s.id]; var sh = document.querySelector('.vb-shell[data-for="' + s.id + '"]'); if (sh) sh.classList.remove("vb-collapsed"); var el = document.getElementById(s.id); if (el) el.classList.remove("hsec-collapsed"); });
+          save(); applyGroup(g); renderList();
+        });
       }
       document.getElementById("hcustTitle").textContent = g.title;
       document.getElementById("hcustSub").textContent = g.key === "home"

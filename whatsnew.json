@@ -1,8 +1,8 @@
 {
-  "candidate": "v672",
+  "candidate": "v673",
   "items": [
-    "✨ L'offre premium s'appelle désormais « Gold » partout — fini le mélange « Premium / Gold », c'est plus clair.",
-    "🗺️ Rappel v671 : accueil map-first (la carte en haut) et bandes repliables.",
-    "🧹 Coulisses admin réorganisées (onglets groupés par thème)."
+    "↺ « Personnaliser l'accueil » plus complet : un bouton pour tout réafficher et remettre l'ordre par défaut.",
+    "🧹 Espace Pro : catégories plus nettes (Café, Bar, Auberge).",
+    "✨ Suite : Gold partout, accueil map-first, emojis cohérents."
   ]
 }
