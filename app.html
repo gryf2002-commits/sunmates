@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=682"></script>
+  <script src="sunmates-badges.js?v=683"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -569,7 +569,8 @@
     #wwmOv .wwm-act { background: rgba(255,255,255,.12); color: #f3ecf6; }
     #wwmOv .wwm-act:active, #wwmOv .wwm-sos:active { transform: scale(.97); }
     #wwmOv .wwm-exit { margin-top: .8rem; background: none; border: 1px solid rgba(255,255,255,.25); color: #f3ecf6; border-radius: 999px; padding: .7rem 1.6rem; font: inherit; font-weight: 700; cursor: pointer; }
-    #wwmOv .wwm-snd { position: absolute; top: -.2rem; right: -.2rem; background: rgba(255,255,255,.1); border: 0; color: #fff; width: 42px; height: 42px; border-radius: 50%; font-size: 1.05rem; cursor: pointer; }
+    #wwmOv .wwm-snd { position: absolute; top: -.2rem; right: -.2rem; background: rgba(255,255,255,.1); border: 0; color: #fff; width: 42px; height: 42px; border-radius: 50%; font-size: 1.05rem; cursor: pointer; display: grid; place-items: center; line-height: 1; padding: 0; }
+    #wwmOv .wwm-snd:active { transform: scale(.9); }
     /* « Aujourd'hui » : bande de cartes-rituel quotidien (scroll horizontal) */
     #todayBand { margin: .6rem 0 .2rem; }
     #todayBand .tb-head { font-size: .92rem; font-weight: 800; color: var(--ink); margin: 0 0 .5rem; }
@@ -5603,6 +5604,9 @@
         if (typeof updateSafetyBadge === "function") updateSafetyBadge();
         if (typeof maybeShowOnboarding === "function") maybeShowOnboarding();
         loadNotified(myUserId); // recharge les événements déjà signalés (anti re-notif au reconnect)
+        // Anti-doublons : on FERME tout canal realtime resté ouvert (reconnexion réseau / re-login) AVANT
+        // de se réabonner → sinon deux abonnements pour le même canal = chaque notif arrive 2-3 fois.
+        try { unsubscribeMessages(); unsubscribeConnections(); unsubscribeSuggestions(); } catch (e) {}
         subscribeToCircle();
         subscribeMessages();
         subscribeConnections();
@@ -5948,6 +5952,7 @@
           }
         } catch (e) {}
       }
+      window._streakHydrated = true; // base consultée → on peut afficher sans risque de flash
       if (typeof updateStreak === "function") updateStreak();
     }
     window.hydrateStreak = hydrateStreak;
@@ -5986,8 +5991,14 @@
         if (typeof toast === "function") toast("🔥", i18nT("{n} jours de série, tu es en feu ! Continue 🌟", { n: n }));
         if (typeof celebrate === "function") setTimeout(celebrate, 1200);
       }
-      // Affichage du chip — seulement s'il est présent (n'empêche plus le calcul ci-dessus).
+      // Affichage : tant que la base n'a pas été consultée (utilisateur connecté), on N'AFFICHE PAS la
+      // valeur locale (potentiellement périmée → c'était le flash « 10 jours » puis « 2 jours »).
+      // Une fois hydraté, on met à jour les 3 emplacements (accueil + Jeux + Progression) d'un coup.
+      const _hydr = window._streakHydrated || !window.db || !myUserId;
+      const _phn = $("phStreakN"); if (_phn && _hydr) _phn.textContent = n;
+      const _spn = $("spStreakN"); if (_spn && _hydr) _spn.textContent = n;
       const chip = $("homeStreak"); if (!chip) return;
+      if (!_hydr) { show(chip, false); return; } // pas encore hydraté → on garde le chip masqué (zéro flash)
       const enLang = (currentLang === "en");
       chip.textContent = "🔥 " + n + " " + (enLang ? (n > 1 ? "days" : "day") : (n > 1 ? "jours" : "jour"));
       show(chip, true);
@@ -10983,34 +10994,13 @@
     // #25 : pools THÉMATIQUES triés à la planche-contact (_sheet2.png) · la photo raconte enfin
     // ce qu'est la quête / le lieu (café → tasse, rando → canyon, soirée → lanternes…).
     // Toujours DÉTERMINISTE (même clé → même photo, ne change plus jamais) + cache média SW.
-    const PHOTO_POOLS = {
-      cafe: [30, 63, 192, 225, 326],
-      food: [292, 429, 488, 493],
-      nature: [28, 29, 206, 257, 287, 511],
-      eau: [122, 124, 384, 501],
-      nuit: [158, 232, 249, 274, 305],
-      culture: [24, 164, 320],
-      route: [49, 101, 155, 339, 514],
-      ville: [1, 45, 56, 155, 210, 221, 232, 265, 320, 331, 342, 397, 419, 430, 441, 639, 672, 694, 815, 826, 859, 936, 947, 1013],
-    };
-    function _photoPool(kw) {
-      const k = String(kw || "").toLowerCase();
-      if (/(café|cafe|coffee|espresso|brunch|thé|tea|co-?living|cowork)/.test(k)) return PHOTO_POOLS.cafe;
-      if (/(food|resto|restaurant|cuisine|marché|market|gourmand|gastro|plat|dessert|goûte)/.test(k)) return PHOTO_POOLS.food;
-      if (/(parc|park|nature|rando|hik|jardin|montagne|mountain|alpes|interlaken|forêt|vert|cascade|panorama|pano)/.test(k)) return PHOTO_POOLS.nature;
-      if (/(plage|beach|mer\b|sea|ocean|océan|lac|lake|canal|rivière|river|île)/.test(k)) return PHOTO_POOLS.eau;
-      if (/(bar\b|nuit|night|soirée|party|cocktail|rooftop|club|concert|fête)/.test(k)) return PHOTO_POOLS.nuit;
-      if (/(musée|museum|culture|art\b|galerie|monument|histoire|librairie|book|église|cathédrale)/.test(k)) return PHOTO_POOLS.culture;
-      if (/(road|trip|train|tram|vélo|gare|aéroport|pont|bridge|van\b)/.test(k)) return PHOTO_POOLS.route;
-      return PHOTO_POOLS.ville;
-    }
     // VRAIES photos Unsplash (CDN stable images.unsplash.com), thématisées par mots-clés.
     // (picsum.photos et loremflickr/source.unsplash étaient HS → photos de lieux cassées.)
     const UNSPLASH_POOLS = {
-      cafe:   ["1442975631115-c4f7b05b8a2c", "1453614512568-c4024d13c247", "1501339847302-ac426a4a7cbb", "1521017432531-fbd92d768814", "1554118811-1e0d58224f24", "1559925393-8be0ec4767c8"],
-      bar:    ["1470337458703-46ad1756a187", "1514933651103-005eec06c04b", "1572116469696-31de0f17cc34"],
+      cafe:   ["1442975631115-c4f7b05b8a2c", "1453614512568-c4024d13c247", "1501339847302-ac426a4a7cbb", "1521017432531-fbd92d768814", "1554118811-1e0d58224f24", "1559925393-8be0ec4767c8", "1525610553991-2bede1a236e2", "1551024601-bec78aea704b", "1504674900247-0877df9cc836", "1559339352-11d035aa65de", "1517248135467-4c7edcad34c4"],
+      bar:    ["1470337458703-46ad1756a187", "1514933651103-005eec06c04b", "1572116469696-31de0f17cc34", "1424847651672-bf20a4b0982b", "1519671482749-fd09be7ccebf"],
       hostel: ["1455587734955-081b22074882", "1566073771259-6a8506099945"],
-      city:   ["1467269204594-9661b134dd2b", "1476514525535-07fb3b4ae5f1", "1499856871958-5b9627545d1a", "1502602898657-3e91760cbb34", "1513635269975-59663e0ac1ad"],
+      city:   ["1467269204594-9661b134dd2b", "1476514525535-07fb3b4ae5f1", "1499856871958-5b9627545d1a", "1502602898657-3e91760cbb34", "1513635269975-59663e0ac1ad", "1538688525198-9b88f6f53126", "1481833761820-0509d3217039", "1414235077428-338989a2e8c0", "1600891964599-f61ba0e24092"],
     };
     function _photoPool(keywords) {
       const kw = String(keywords || "").toLowerCase();
@@ -16839,7 +16829,7 @@
         im.src = u;
       };
       _setAv(av, url, "🧭");
-      try { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("phStreakN").textContent = st.count || 1; } catch (e) {}
+      try { if (window._streakHydrated || !window.db || !myUserId) { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("phStreakN").textContent = st.count || 1; } } catch (e) {}
       // Plaque HUD d'en-tête : niveau + avatar + barre d'XP vivante.
       const pbLvl = $("pbLvl"); if (pbLvl) pbLvl.textContent = lvl;
       _setAv($("pbAv"), url, "🧭");
@@ -17243,7 +17233,7 @@
       const sd = $("spDone"); if (sd) sd.textContent = total;
       const sr = $("spRit"); if (sr) sr.textContent = ritDone + "/" + (typeof _allRituals === "function" ? _allRituals().length : SOLO_RITUALS.length);
       const sx = $("spXp"); if (sx) sx.textContent = xp;
-      try { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("spStreakN").textContent = st.count || 1; } catch (e) {}
+      try { if (window._streakHydrated || !window.db || !myUserId) { const st = JSON.parse(localStorage.getItem("sm_streak_" + (myUserId || "x")) || "{}") || {}; $("spStreakN").textContent = st.count || 1; } } catch (e) {}
       // Mini-jauge vers le prochain niveau (même barème que Jeux : 100 XP / niveau)
       const lvl = Math.floor(xp / 100) + 1, inLvl = xp % 100;
       const f = $("spFill"); if (f) f.style.width = inLvl + "%";
@@ -18301,8 +18291,11 @@
           warm(196, 1.5, 0.04, n); warm(196, 1.3, 0.035, n + 0.85); // bourdon de brousse
         },
       };
+      let _lastSnd = 0;
       function play(name, force) {
         if (!on && !force) return; const c = ac(); if (!c) return;
+        // Anti-spam : max 1 son / 90ms → fini la cacophonie aux clics rapides. Sons FORCÉS non throttlés.
+        if (!force) { const nw = (window.performance && performance.now) ? performance.now() : Date.now(); if (nw - _lastSnd < 90) return; _lastSnd = nw; }
         if (c.state === "suspended") { try { c.resume(); } catch (e) {} }
         _trim = TRIM[name] || 1;                  // normalisation : trim mesuré par son
         try { (SEQ[name] || SEQ.tap)(c.currentTime); } finally { _trim = 1; }
