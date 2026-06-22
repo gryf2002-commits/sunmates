@@ -81,9 +81,13 @@
        → séparation nette dans tous les modes (surtout en nuit : barre quasi-noire vs halo violet vif).
        Fix universel : on COIFFE le haut de #bgFx d'un aplat var(--bg) qui s'efface en descendant →
        le haut de l'app = var(--bg) = theme-color = barre native (fondu invisible), le halo reste plus bas. */
+    /* v686 (retour Maxime « le header pas tout à fait la même couleur » + « tache moche en haut au milieu, nuit ») :
+       on étend la COIFFE plate var(--bg) du sommet (64→138px solide) → tout le haut (status-bar + header
+       + un peu en dessous) est STRICTEMENT la même couleur que la barre native ; le halo (chaud le jour /
+       violet la nuit) ne bloome qu'EN DESSOUS et plus doucement → plus de cassure de teinte, plus de « tache ». */
     #bgFx::after { content: ""; position: absolute; top: 0; left: 0; right: 0;
-      height: calc(env(safe-area-inset-top, 0px) + 150px);
-      background: linear-gradient(180deg, var(--bg) 0, var(--bg) calc(env(safe-area-inset-top, 0px) + 64px), rgba(0,0,0,0) 100%);
+      height: calc(env(safe-area-inset-top, 0px) + 240px);
+      background: linear-gradient(180deg, var(--bg) 0, var(--bg) calc(env(safe-area-inset-top, 0px) + 138px), rgba(0,0,0,0) 100%);
       pointer-events: none; }
     /* Barre de défilement thémée DA (fini le blanc système). Firefox + WebKit/Blink.
        Les conteneurs en scrollbar-width:none (chips, etc.) restent masqués (specificité de classe). */
@@ -3065,10 +3069,10 @@
        de login cohérent. App-shell transparent (le calque porte le fond). Garde la chaleur DA (jour)
        et la richesse (nuit) sans uniformiser ni laguer (calque composité fixe). */
     .app-shell { background: transparent !important; }
-    #bgFx { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(135% 58% at 50% -26%, rgba(255,201,60,.30) 0%, rgba(255,138,61,.07) 46%, rgba(255,255,255,0) 72%), var(--bg); } /* Bug Maxime « barre qui sépare avec la status-bar en jour » : halo CALMÉ au sommet (centre remonté -8%→-26%, pic .42→.30) → le haut reste plat var(--bg), proche de la status-bar ; la chaleur bloom plus bas et doux */
+    #bgFx { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(150% 64% at 50% 12%, rgba(255,201,60,.16) 0%, rgba(255,138,61,.05) 46%, rgba(255,255,255,0) 74%), var(--bg); } /* v686 : halo chaud encore calmé (.30→.16) + centre descendu sous le header → le haut = EXACTEMENT var(--bg) = barre native (Maxime « pas tout à fait la même couleur »), la chaleur bloom plus bas */
     /* P14 (DA officielle, annoncée) : le halo rosé-orangé du haut du mode nuit est remplacé par
        une lueur VIOLETTE discrète → mode nuit homogène de haut en bas (plus de « fond rosé »). */
-    body.theme-dusk #bgFx { background: radial-gradient(125% 50% at 50% -8%, rgba(122,92,255,.18) 0%, rgba(122,92,255,.05) 40%, rgba(0,0,0,0) 66%), var(--bg); }
+    body.theme-dusk #bgFx { background: radial-gradient(150% 64% at 50% 10%, rgba(122,92,255,.09) 0%, rgba(122,92,255,.03) 46%, rgba(0,0,0,0) 72%), var(--bg); } /* v686 : halo violet fortement calmé (.18→.09) + centre descendu (-8%→10%) + plus large → fini la « tache moche » top-centre en nuit, bloom doux et bas */
 
     h1, h2, h3 { color: var(--ink); }
     .topbar { background: linear-gradient(var(--bg) 62%, rgba(255,244,230,0)); border-bottom: 0; }
@@ -3904,7 +3908,7 @@
       background: radial-gradient(130% 80% at 50% -8%, #1C3149 0%, #14253A 40%, #0F1B2B 100%);
     }
     body.theme-winter.theme-dusk .topbar { background: linear-gradient(#0F1B2B 62%, rgba(15,27,43,0)); border-bottom: 0; }
-    body.theme-winter.theme-dusk #bgFx { background:radial-gradient(120% 50% at 50% -8%, rgba(95,168,232,.22) 0%, rgba(15,27,43,0) 58%), var(--bg); }
+    body.theme-winter.theme-dusk #bgFx { background:radial-gradient(150% 64% at 50% 10%, rgba(95,168,232,.11) 0%, rgba(15,27,43,0) 70%), var(--bg); } /* v686 : halo calmé + descendu (cohérent dusk) */
     body.theme-winter.theme-dusk .app-shell { background: transparent !important; }
     body.theme-winter.theme-dusk .help-cta { background: var(--dcard2); border-color: rgba(140,196,242,.16); color:#EAF3FB; }
     body.theme-winter.theme-dusk .sm-date-preview { background: linear-gradient(135deg,#1D3048,#152436); color:#A8D0F0; }
@@ -3945,7 +3949,7 @@
       background: transparent !important; }
     body.sm-scrolled.theme-dusk .topbar, body.sm-scrolled.theme-winter.theme-dusk .topbar, body.sm-scrolled.theme-tropic.theme-dusk .topbar {
       background: transparent !important; }
-    body.theme-tropic.theme-dusk #bgFx { background:radial-gradient(120% 50% at 50% -8%, rgba(255,194,61,.16) 0%, rgba(12,29,23,0) 58%), var(--bg); }
+    body.theme-tropic.theme-dusk #bgFx { background:radial-gradient(150% 64% at 50% 10%, rgba(255,194,61,.09) 0%, rgba(12,29,23,0) 70%), var(--bg); } /* v686 : halo calmé + descendu (cohérent dusk) */
     body.theme-tropic.theme-dusk .app-shell { background: transparent !important; }
     body.theme-tropic.theme-dusk .help-cta { background: var(--dcard2); border-color: rgba(92,216,168,.16); color:#E9F7EF; }
     body.theme-tropic.theme-dusk .sm-date-preview { background: linear-gradient(135deg,#1A3A2E,#122A21); color:#9ADBBE; }

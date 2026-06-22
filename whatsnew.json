@@ -1,8 +1,8 @@
 {
-  "candidate": "v685",
+  "candidate": "v686",
   "items": [
-    "🎨 Carte plus cohérente : les points « Communauté » passent de l'ancien bleu vif à l'indigo de la charte (raccord avec le reste).",
-    "📱 Petits écrans : la barre de recherche et les onglets ne sont plus coupés sur les téléphones étroits.",
-    "🗺️ (Rappel v684) Carte agrandie, accès rapides compacts remontés sous la carte, header malin qui se cache au scroll, animations d'entrée partout."
+    "🎯 Haut d'écran parfait : le fond se fond exactement avec la barre native du téléphone (jour ET nuit) — fini la légère cassure de teinte et la tache violette en mode sombre.",
+    "🧹 « Personnaliser » : un seul bouton par mode (avant : deux en mode Maison).",
+    "🔽 Replier plus clair : flèches rondes nettes, en-tête cliquable en entier, et l'option de replier arrive aussi sur les Accès rapides."
   ]
 }

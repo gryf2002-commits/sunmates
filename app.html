@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=685"></script>
+  <script src="sunmates-badges.js?v=686"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -7023,6 +7023,7 @@
       mode = (mode === "home") ? "home" : "travel";
       if (persist !== false) { try { localStorage.setItem("sm_home_mode", mode); } catch (e) {} }
       const home = mode === "home";
+      document.body.classList.toggle("hm-maison", home); // v686 : pilote l'affichage du bon « Personnaliser » (un seul par mode)
       show($("homeHomeMode"), home);
       show($("homeTravelMap"), !home);
       document.querySelectorAll("#homeModeSwitch button").forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
@@ -20069,9 +20070,17 @@
        feuille. État mémorisé (sm_home_custom_v1). Respecte prefers-reduced-motion.
        ============================================================ -->
   <style id="home-customize-css">
-    .hsec-toggle { cursor: pointer; }
-    .hsec-chev { margin-left: auto; flex: 0 0 auto; color: var(--muted); font-size: 1.1rem; line-height: 1;
-      transition: transform .26s var(--ease-out, cubic-bezier(.22,1,.36,1)); }
+    /* v686 (retour Maxime « flèches pas optimales, pas cliquables partout ») : l'en-tête ENTIER est la
+       zone de tap (géré en JS : clic sur le head replie, sauf vrais liens/boutons), et la flèche devient
+       une vraie pastille ronde dans l'accent DA → repère clair et confortable. */
+    .hsec-toggle { cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 12px; transition: background .15s ease; }
+    .hsec-toggle:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+    .hsec-toggle:active { opacity: .82; }
+    .hsec-chev { margin-left: auto; flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--accent-ink, var(--accent));
+      background: var(--accent-soft, rgba(255,209,92,.16)); font-size: 1rem; line-height: 1;
+      transition: transform .26s var(--ease-out, cubic-bezier(.22,1,.36,1)), background .15s ease; }
+    .hsec-toggle:hover .hsec-chev { background: color-mix(in srgb, var(--accent) 22%, transparent); }
     .hsec-collapsed .hsec-chev { transform: rotate(-90deg); }
     .hsec-body { display: grid; grid-template-rows: 1fr; opacity: 1;
       transition: grid-template-rows .32s var(--ease-out, cubic-bezier(.22,1,.36,1)), opacity .22s ease; }
@@ -20081,6 +20090,11 @@
       background: none; border: 0; color: var(--muted); font: 700 .78rem/1 "Manrope", system-ui, sans-serif; cursor: pointer; padding: .3rem .2rem; }
     .hcust-open:active { transform: scale(.96); }
     .hcust-open svg { width: 15px; height: 15px; }
+    /* v686 (retour Maxime « deux Personnaliser dans Maison ») : en mode Maison, on ne montre QUE le
+       « Personnaliser » des sections Maison ; celui des sections Voyage (carte, accès rapides…) est
+       caché (ses sections se règlent en mode Voyage). En Voyage, l'opener Maison est déjà masqué
+       (dans #homeHomeMode en display:none). → un seul opener visible par mode. */
+    body.hm-maison .hcust-open[data-g="travel"] { display: none !important; }
     .hcust-ov { position: fixed; inset: 0; z-index: 6650; background: rgba(20,8,30,.5); display: flex; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity .25s ease; }
     .hcust-ov.on { opacity: 1; }
     .hcust-ov.hidden { display: none; }
@@ -20130,7 +20144,7 @@
     var GROUPS = [
       { key: "travel", parent: '.tab-panel[data-panel="accueil"]', physical: true, anchor: "#searchResults", title: "Personnaliser l'accueil", sections: [
         { id: "homeTravelMap", title: "Explore autour de toi" },
-        { id: "homeQuickAccess", title: "Accès rapides" },
+        { id: "homeQuickAccess", title: "Accès rapides", head: ".section-head" },
         { id: "geoNowCard", title: "Ici & maintenant" },
         { id: "todayBand", title: "Aujourd'hui" },
         { id: "starterCard", title: "Bien démarrer" }
@@ -20212,6 +20226,8 @@
         }
         el.classList.toggle("hcust-userhidden", !!state.hidden[id]); // masquer via classe (coexiste avec .hidden de l'app)
         cursor.insertAdjacentElement("afterend", el); cursor = el;
+        // v686 : repliage aussi sur les sections Voyage qui déclarent un en-tête (ex. Accès rapides)
+        var sc = pres.find(function (x) { return x.id === id; }); if (sc && sc.head) setupCollapse(el, sc);
       });
       // la carte a bougé dans le DOM → resynchroniser Leaflet
       try { if (window.homeLeaf && homeLeaf.invalidateSize) setTimeout(function () { homeLeaf.invalidateSize({ animate: false }); }, 80); } catch (e) {}
