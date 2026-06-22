@@ -4394,3 +4394,26 @@
     #themeToggle[data-season="tropic"]::after {
       content: ""; width: .7rem; height: .7rem; background: url("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f334.svg") center/contain no-repeat; /* 🌴 */
     }
+
+    /* ============================================================
+       HOMOGÉNÉISATION DES TUILES v678 (retours Maxime : « pas centrées, tailles pas
+       homogénéisées, trop imposantes »). Audit : 10 tailles d'icônes (30→64px),
+       alignements incohérents (centré vs gauche). On unifie : vignette standard 44px,
+       texte centré, vignettes d'accueil plus sobres, rayons cohérents. Bloc en fin de
+       fichier → gagne sur les règles d'origine (même spécificité, source plus tardive). */
+    /* Texte CENTRÉ sur les tuiles flex-colonne qui étaient à gauche (qm-card = quêtes, gp-tile = Gold) */
+    .qm-card, .gp-tile { text-align: center; align-items: center; }
+    .qm-card .qm-name, .qm-card .qm-meta, .gp-tile b, .gp-tile span { text-align: center; }
+    /* Vignette/icône STANDARD unifiée = 44px, emoji 1.25rem, rayon 12px */
+    .cat-tile .cic, .qm-card .qm-ic, .gp-tile .gp-ic, .act-tile .ic,
+    .prog-tile .cic, .jnav-primary .cat-tile .cic {
+      width: 44px !important; height: 44px !important; font-size: 1.25rem !important; border-radius: 12px !important; }
+    .cat-tile .cic img.twe, .qm-card .qm-ic img.twe, .gp-tile .gp-ic img.twe,
+    .act-tile .ic img.twe, .prog-tile .cic img.twe, .jnav-primary .cat-tile .cic img.twe { width: 1.1em; height: 1.1em; }
+    /* Tuiles d'ACCUEIL (.tile) : vignette nettement plus sobre (était 84px = « trop imposant ») */
+    .tile .thumb { height: 56px; font-size: 26px; }
+    .tile .thumb img.twe { width: 1.1em; height: 1.1em; }
+    /* Badge-rail : médaille ramenée à une taille raisonnable (était 64px) */
+    .br-medal { width: 48px; height: 48px; font-size: 26px; }
+    /* Rayons de conteneurs cohérents (14px) */
+    .cat-tile, .gp-tile, .qm-card, .act-tile, .sa-tile, .jeux-open { border-radius: 14px; }

@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=677"></script>
+  <script src="sunmates-badges.js?v=678"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -353,7 +353,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=677">
+  <link rel="stylesheet" href="styles.css?v=678">
   <!-- ============================================================
        FEEL v667 (inline preview) — allègement visuel : tuiles Lite centrées + vignettes
        plus petites (moins « imposant »), carte d'accueil plus présente sur mobile.
@@ -5952,7 +5952,9 @@
     }
     window.hydrateStreak = hydrateStreak;
     function updateStreak() {
-      const chip = $("homeStreak"); if (!chip) return;
+      // ⚠️ Le CALCUL + la SAUVEGARDE se font TOUJOURS, AVANT tout test d'UI : en mode Lite (ou si
+      // #homeStreak est masqué/absent), l'ancien `if(!chip) return` en tête sautait le recalcul →
+      // les autres vues (Jeux/Progression) lisaient un localStorage périmé = streak « réinitialisée ».
       const key = "sm_streak_" + (myUserId || "x");
       let st = {}; try { st = JSON.parse(localStorage.getItem(key) || "{}") || {}; } catch (e) { st = {}; }
       const today = new Date(); const todayStr = ymd(today);
@@ -5976,19 +5978,19 @@
         if (frozeNow && typeof toast === "function") toast("🧊", i18nT("Jour manqué rattrapé ! Ton <b>joker hebdo</b> a sauvé ta flamme 🔥"));
       }
       const n = st.count || 1;
-      const enLang = (currentLang === "en");
-      chip.textContent = "🔥 " + n + " " + (enLang ? (n > 1 ? "days" : "day") : (n > 1 ? "jours" : "jour"));
-      show(chip, true);
-      // Palier de série franchi aujourd'hui → on fête (une seule fois par palier).
+      // Palier de série franchi aujourd'hui → on fête (indépendant de l'affichage du chip).
       const MILESTONES = [3, 7, 14, 30, 60, 100];
       if (st._celebrated !== n && MILESTONES.includes(n)) {
         st._celebrated = n;
         _persistStreak(st); // local + base (user_streaks)
         if (typeof toast === "function") toast("🔥", i18nT("{n} jours de série, tu es en feu ! Continue 🌟", { n: n }));
-        // P2.9 : la fête attend la FIN du boot (1,2 s) · avant, les confettis partaient pile
-        // pendant le chargement (carte + données) et tout l'écran ramait.
         if (typeof celebrate === "function") setTimeout(celebrate, 1200);
       }
+      // Affichage du chip — seulement s'il est présent (n'empêche plus le calcul ci-dessus).
+      const chip = $("homeStreak"); if (!chip) return;
+      const enLang = (currentLang === "en");
+      chip.textContent = "🔥 " + n + " " + (enLang ? (n > 1 ? "days" : "day") : (n > 1 ? "jours" : "jour"));
+      show(chip, true);
     }
     { const sc = $("homeStreak"); if (sc) sc.addEventListener("click", () => {
       const key = "sm_streak_" + (myUserId || "x");

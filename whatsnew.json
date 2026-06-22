@@ -1,8 +1,8 @@
 {
-  "candidate": "v677",
+  "candidate": "v678",
   "items": [
-    "📸 Photos des lieux réparées : le service d'images externe (picsum) était en panne → bascule sur un service fiable, et photos plus pertinentes (café, bar…).",
-    "🎨 Haut d'écran : la couleur tout en haut est désormais raccord avec la barre du téléphone (le halo coloré démarre plus bas) — valable dans tous les modes.",
-    "🧹 Accueil : repliage cassé retiré, plus d'onglet « Tes badges » fantôme."
+    "🎴 Tuiles homogénéisées dans toute l'app : mêmes tailles d'icônes (44px), textes centrés, vignettes d'accueil plus sobres — c'est nettement plus net et cohérent.",
+    "🔥 Streak réparée : elle ne se réinitialise plus en passant en mode Lite (le calcul se fait toujours, même quand le compteur est masqué).",
+    "📸 Photos des lieux réparées (picsum HS → loremflickr) · 🎨 haut d'écran raccord avec la barre du téléphone."
   ]
 }
