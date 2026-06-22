@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=673"></script>
+  <script src="sunmates-badges.js?v=674"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -20038,6 +20038,8 @@
     .hcust-reset { display: block; width: 100%; margin: .9rem 0 .2rem; padding: .6rem; border: 0; border-radius: 12px;
       background: var(--accent-soft); color: var(--accent-ink, var(--accent)); font: 700 .82rem/1 "Manrope", system-ui, sans-serif; cursor: pointer; }
     .hcust-reset:active { transform: scale(.98); }
+    .hcust-drag { flex: 0 0 auto; color: var(--muted); font-size: 1.1rem; line-height: 1; cursor: grab; touch-action: none; padding: 0 .15rem; user-select: none; }
+    .hcust-row.dragging { opacity: .7; background: var(--accent-soft); border-radius: 10px; cursor: grabbing; }
     /* Vue Voyage : sur-conteneurs repliables des bandes (le DOM de la bande peut se re-rendre, le shell reste) */
     .vb-shell { position: relative; }
     .vb-fold { position: absolute; top: .55rem; right: .55rem; z-index: 6; width: 30px; height: 30px; border-radius: 50%;
@@ -20188,6 +20190,28 @@
           g.sections.forEach(function (s) { delete state.hidden[s.id]; delete state.collapsed[s.id]; var sh = document.querySelector('.vb-shell[data-for="' + s.id + '"]'); if (sh) sh.classList.remove("vb-collapsed"); var el = document.getElementById(s.id); if (el) el.classList.remove("hsec-collapsed"); });
           save(); applyGroup(g); renderList();
         });
+        // glisser-déposer (pointer = tactile + souris) : on déplace la ligne pendant le drag, on valide au relâché
+        var list = document.getElementById("hcustList"), dragRow = null;
+        list.addEventListener("pointerdown", function (e) {
+          var h = e.target.closest(".hcust-drag"); if (!h) return;
+          dragRow = h.closest(".hcust-row"); if (!dragRow) return;
+          dragRow.classList.add("dragging"); try { list.setPointerCapture(e.pointerId); } catch (er) {} e.preventDefault();
+        });
+        list.addEventListener("pointermove", function (e) {
+          if (!dragRow) return;
+          var rows = Array.prototype.slice.call(list.querySelectorAll(".hcust-row:not(.dragging)"));
+          var after = null;
+          for (var i = 0; i < rows.length; i++) { var b = rows[i].getBoundingClientRect(); if (e.clientY < b.top + b.height / 2) { after = rows[i]; break; } }
+          if (after) list.insertBefore(dragRow, after); else list.appendChild(dragRow);
+        });
+        var endDrag = function () {
+          if (!dragRow) return; dragRow.classList.remove("dragging"); dragRow = null;
+          var g = activeGroup; if (!g) return;
+          state.order[g.key] = Array.prototype.slice.call(list.querySelectorAll(".hcust-row")).map(function (r) { return r.dataset.id; });
+          save(); applyGroup(g); renderList();
+        };
+        list.addEventListener("pointerup", endDrag);
+        list.addEventListener("pointercancel", endDrag);
       }
       document.getElementById("hcustTitle").textContent = g.title;
       document.getElementById("hcustSub").textContent = g.key === "home"
@@ -20203,8 +20227,8 @@
       ord.forEach(function (id, i) {
         var s = g.sections.find(function (x) { return x.id === id; }); if (!s || !document.getElementById(id)) return;
         var hidden = !!state.hidden[id];
-        var row = document.createElement("div"); row.className = "hcust-row" + (hidden ? " is-hidden" : "");
-        row.innerHTML = '<span class="hcust-name">' + s.title + '</span><button class="hcust-eye' + (hidden ? " off" : "") + '" type="button" aria-label="Afficher ou masquer">' + (hidden ? "🙈" : "👁️") + '</button><span class="hcust-mv"><button class="mv-up" type="button" aria-label="Monter"' + (i === 0 ? " disabled" : "") + '>↑</button><button class="mv-dn" type="button" aria-label="Descendre"' + (i === ord.length - 1 ? " disabled" : "") + '>↓</button></span>';
+        var row = document.createElement("div"); row.className = "hcust-row" + (hidden ? " is-hidden" : ""); row.dataset.id = id;
+        row.innerHTML = '<span class="hcust-drag" aria-hidden="true" title="Glisser pour déplacer">⠿</span><span class="hcust-name">' + s.title + '</span><button class="hcust-eye' + (hidden ? " off" : "") + '" type="button" aria-label="Afficher ou masquer">' + (hidden ? "🙈" : "👁️") + '</button><span class="hcust-mv"><button class="mv-up" type="button" aria-label="Monter"' + (i === 0 ? " disabled" : "") + '>↑</button><button class="mv-dn" type="button" aria-label="Descendre"' + (i === ord.length - 1 ? " disabled" : "") + '>↓</button></span>';
         row.querySelector(".hcust-eye").onclick = function () { state.hidden[id] = !state.hidden[id]; save(); applyGroup(g); renderList(); };
         row.querySelector(".mv-up").onclick = function () { if (i > 0) { ord.splice(i - 1, 0, ord.splice(i, 1)[0]); save(); applyGroup(g); renderList(); } };
         row.querySelector(".mv-dn").onclick = function () { if (i < ord.length - 1) { ord.splice(i + 1, 0, ord.splice(i, 1)[0]); save(); applyGroup(g); renderList(); } };

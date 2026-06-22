@@ -1,8 +1,8 @@
 {
-  "candidate": "v673",
+  "candidate": "v674",
   "items": [
-    "↺ « Personnaliser l'accueil » plus complet : un bouton pour tout réafficher et remettre l'ordre par défaut.",
-    "🧹 Espace Pro : catégories plus nettes (Café, Bar, Auberge).",
-    "✨ Suite : Gold partout, accueil map-first, emojis cohérents."
+    "✋ « Personnaliser l'accueil » : glisse-dépose les sections pour les réordonner (en plus des flèches), et le bouton pour tout réafficher.",
+    "🗺️ Accueil map-first · ✨ Gold partout · emojis cohérents.",
+    "🧹 Coulisses (admin, Espace Pro) rangées."
   ]
 }
