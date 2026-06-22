@@ -299,9 +299,12 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=660"></script>
+  <script src="sunmates-badges.js?v=661"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
+  <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
+       qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
   <style>
     /* Banque d'icônes v2 : emblèmes sur pastilles-joyaux (couleur+gloss = DA). */
     .smicon { display: inline-block; vertical-align: middle; }
@@ -19923,5 +19926,61 @@
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
   <script src="da-console-overlay.js?v=571"></script>
+
+  <!-- 🎨 Twemoji init — emojis cohérents pour tous. Parse au boot + observer idle (childList+characterData),
+       déconnecté PENDANT le parse (anti-boucle, car twemoji insère des <img>). Skip champs de saisie. -->
+  <style id="twemoji-css">
+    img.twe { height: 1em; width: 1em; margin: 0 .05em 0 .1em; vertical-align: -.1em; display: inline-block;
+      object-fit: contain; -webkit-user-select: none; user-select: none; }
+    /* gros emojis (détails, héros, popinfo) : restent dimensionnés par le font-size du conteneur via 1em */
+  </style>
+  <script>
+  (function () {
+    var BASE = "https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/";
+    var OPTS = { base: BASE, folder: "svg", ext: ".svg", className: "twe" };
+    var ric = window.requestIdleCallback || function (f) { return setTimeout(function () { f({ timeRemaining: function () { return 0; } }); }, 120); };
+    function editable(n) { try { return n.closest && n.closest('textarea, input, [contenteditable="true"]'); } catch (e) { return false; } }
+    function parse(node) { try { if (window.twemoji && node && !editable(node)) twemoji.parse(node, OPTS); } catch (e) {} }
+    var observer = null, queue = new Set(), scheduled = false;
+    function connect() { if (observer) observer.observe(document.body, { childList: true, subtree: true, characterData: true }); }
+    function flush() {
+      scheduled = false;
+      var nodes = Array.prototype.slice.call(queue); queue.clear();
+      if (observer) observer.disconnect();
+      for (var i = 0; i < nodes.length; i++) { var n = nodes[i]; if (n && n.isConnected) parse(n); }
+      connect();
+    }
+    function schedule() { if (scheduled) return; scheduled = true; ric(flush, { timeout: 700 }); }
+    function onMut(muts) {
+      var added = false;
+      for (var i = 0; i < muts.length; i++) {
+        var m = muts[i];
+        if (m.type === "characterData") {
+          var p = m.target.parentNode;
+          if (p && p.nodeType === 1 && !(p.tagName === "IMG" && p.className === "twe")) { queue.add(p); added = true; }
+        } else {
+          for (var j = 0; j < m.addedNodes.length; j++) {
+            var nd = m.addedNodes[j];
+            if (nd.nodeType === 1) {
+              if (nd.tagName === "IMG" && nd.className === "twe") continue; // notre propre sortie
+              queue.add(nd); added = true;
+            } else if (nd.nodeType === 3 && m.target && m.target.nodeType === 1) {
+              queue.add(m.target); added = true;
+            }
+          }
+        }
+      }
+      if (added) schedule();
+    }
+    function boot() {
+      if (!window.twemoji) { return setTimeout(boot, 150); }
+      parse(document.body);
+      observer = new MutationObserver(onMut);
+      connect();
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(boot, 350); });
+    else setTimeout(boot, 350);
+  })();
+  </script>
 </body>
 </html>
