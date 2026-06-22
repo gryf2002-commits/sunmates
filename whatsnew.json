@@ -1,8 +1,8 @@
 {
-  "candidate": "v667",
+  "candidate": "v668",
   "items": [
-    "✨ Plus net en haut : la barre d'état du téléphone (heure, batterie) se fond avec l'app — fini la cassure de couleur.",
-    "🎴 Tuiles plus sobres : textes centrés et vignettes moins imposantes, c'est plus joli et plus léger.",
-    "🗺️ Carte d'accueil un peu plus présente sur mobile."
+    "🩹 Correctif : la couleur en haut de l'écran est de nouveau raccord avec la barre du téléphone (le réglage précédent créait une cassure, désolé).",
+    "🎴 Tuiles plus sobres et centrées · 🗺️ carte d'accueil plus présente sur mobile.",
+    "✨ Emojis identiques partout, sans rechargement."
   ]
 }

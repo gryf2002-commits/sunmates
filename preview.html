@@ -299,7 +299,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=667"></script>
+  <script src="sunmates-badges.js?v=668"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -18461,16 +18461,10 @@
     // qui jurait avec le contenu (« séparation nette / grain de couleur en haut »). On lit le --bg
     // calculé du body APRÈS bascule des classes → correct dans les 6 modes, sans rien coder en dur.
     function _smSyncStatusColor() {
-      // La status-bar (theme-color) doit matcher le HAUT RÉEL de la page = le 1er stop du
-      // dégradé --bg-grad (ex. #ffe6d2), PAS --bg (plus foncé) → sinon cassure de couleur
-      // avec la barre native du téléphone (heure/batterie). Lecture générique, tous thèmes.
-      try {
-        var cs = getComputedStyle(document.body);
-        var grad = (cs.getPropertyValue("--bg-grad") || "").trim();
-        var hit = grad.match(/#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}/);
-        var top = hit ? hit[0] : cs.getPropertyValue("--bg").trim();
-        var m = document.querySelector('meta[name="theme-color"]'); if (m && top) m.setAttribute("content", top);
-      } catch (e) {}
+      // status-bar (theme-color) = --bg du mode courant (= la couleur du haut du topbar) → pas de cassure.
+      // (v667 lisait le 1er stop du dégradé → status-bar plus CLAIRE que le topbar = cassure PIRE. Revert v668.)
+      try { var bg = getComputedStyle(document.body).getPropertyValue("--bg").trim();
+        var m = document.querySelector('meta[name="theme-color"]'); if (m && bg) m.setAttribute("content", bg); } catch (e) {}
     }
     // ---- Thème : jour (aube) ↔ nuit (crépuscule plage) ----
     function applyTheme(t) {
