@@ -1,8 +1,8 @@
 {
-  "candidate": "v692",
+  "candidate": "v693",
   "items": [
-    "🪄 Tuiles allégées : on a retiré le rectangle (la carte) derrière chaque accès rapide. Il ne reste que l'icône colorée + le titre, qui respirent — beaucoup plus aéré.",
-    "📐 Plus homogène : fini les boîtes empilées d'une tuile à l'autre.",
-    "📱 Barre native : elle suit le mode de l'app (clair/sombre) une fois l'app ouverte."
+    "🪄 Tuiles plates partout : on a retiré les cartes (rectangles) aussi sur les filtres (Lieux) et les autres tuiles d'icône — tout est homogène, juste l'icône colorée + le texte.",
+    "🎯 Filtres : l'état sélectionné se lit via un anneau coloré autour de l'icône + le libellé en couleur (au lieu d'une boîte).",
+    "🧼 Résultat : un affichage uniforme d'une tuile à l'autre, sur tous les écrans."
   ]
 }

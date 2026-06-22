@@ -1297,10 +1297,16 @@
        leur fond. Specificité gonflée (html body[.theme-x]) pour battre les `background … !important`
        (styles.css:3117/4321/4466) qui peignaient la carte. ============================================================ */
     html body .tile, html body.theme-dusk .tile, html body.theme-winter .tile, html body.theme-tropic .tile,
-    html body.theme-winter.theme-dusk .tile, html body.theme-tropic.theme-dusk .tile {
+    html body.theme-winter.theme-dusk .tile, html body.theme-tropic.theme-dusk .tile,
+    html body .cat-tile, html body.theme-dusk .cat-tile, html body.theme-winter .cat-tile, html body.theme-tropic .cat-tile,
+    html body.theme-winter.theme-dusk .cat-tile, html body.theme-tropic.theme-dusk .cat-tile {
       background: transparent !important; box-shadow: none !important; border: 0 !important; padding: .35rem .2rem !important; }
-    html body .tile:hover { box-shadow: none !important; transform: none; }
+    html body .tile:hover, html body .cat-tile:hover { box-shadow: none !important; transform: none; }
     html body .tile.soon:hover { transform: none; }
+    /* .cat-tile = filtre interactif : sans carte, l'état ACTIF se lit via un anneau accent sur l'icône + libellé accentué */
+    html body .cat-tile.active { border: 0 !important; box-shadow: none !important; }
+    html body .cat-tile.active .cic { box-shadow: 0 0 0 2.5px var(--accent), 0 4px 12px rgba(45,38,52,.18) !important; }
+    html body .cat-tile.active .clbl { color: var(--accent-ink, var(--accent)); }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */
