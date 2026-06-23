@@ -1827,6 +1827,23 @@
       font-weight: 700 !important; font-size: .95rem !important; color: var(--ink) !important; }
 
     /* ============================================================
+       v729 · AUDIT COHÉRENCE FINALE (agent) : derniers détails.
+       ============================================================ */
+    /* H1 · gros nombres amber INLINE (#B5740E) dans les modales showInfo → illisibles en NUIT
+       (texte amber foncé sur carte prune). Cible l'inline via sélecteur d'attribut. */
+    html body.theme-dusk :is(.popinfo-card, .act-card) [style*="#B5740E"],
+    html body[class*="theme-"].theme-dusk :is(.popinfo-card, .act-card) [style*="#B5740E"] { color: #FFD79A !important; }
+    /* M1 · .dstat (détail voyageur + récompense quête) : valeurs en Fraunces comme les autres stats */
+    html body .dstat b, html body[class*="theme-"] .dstat b {
+      font-family: "Fraunces", Georgia, serif !important; font-size: 1.4rem !important; font-weight: 800 !important; color: var(--ink) !important; line-height: 1.05; }
+    html body .dstat span, html body[class*="theme-"] .dstat span { color: var(--muted) !important; }
+    /* M2 · .coll-stat .cs-v (stats Quêtes) : famille Fraunces (v714 ne l'incluait que pour le poids) */
+    html body .coll-stat .cs-v, html body[class*="theme-"] .coll-stat .cs-v { font-family: "Fraunces", Georgia, serif !important; }
+    /* B1 · vert hors-DA (#2a9d5c, indicateur joker) → ton sunset (règle produit : pas de vert criard) */
+    html body :is(.popinfo-card, .act-card) [style*="#2a9d5c"],
+    html body[class*="theme-"] :is(.popinfo-card, .act-card) [style*="#2a9d5c"] { color: var(--accent-ink, var(--accent)) !important; }
+
+    /* ============================================================
        v708 (liste Maxime, lot 2) : à débloquer retiré, titres moins balèzes, cercle/SOS normé,
        textareas raisonnables + fond non-prune.
        ============================================================ */
