@@ -5439,3 +5439,28 @@
     html body :is(.feature, .ptrip-section, .aseg-nav, .stat-row-3 .stat-box + .stat-box, #convList .person, .set-grouptitle, .da-comp-row, .num-here, .coll-city, .review-item, .te-row, .ptl-row),
     html.sm-app body :is(.feature, .ptrip-section, .aseg-nav, .stat-row-3 .stat-box + .stat-box, #convList .person, .set-grouptitle, .da-comp-row, .num-here, .coll-city, .review-item, .te-row, .ptl-row) {
       border-color: var(--sep) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v752 · RECONSTRUCTION DIFFÉRENCIATION (retour Maxime, conception 3 agents).
+       App plate = fade/indistinct → on RECONSTRUIT la structure SANS boîtes :
+       en-têtes Fraunces FORTS + marqueur-joyau, espacement marqué (groupage par
+       proximité), zone-wash très douce sur les grands blocs de contenu. Observable
+       + propre + adaptatif (couleurs dérivées des tokens de mode). ════════════════ */
+    /* en-têtes de section = ancres FORTES (Fraunces gros + pastille-joyau) */
+    html body :is(.section-head > h3, .qm-head > h3), html.sm-app body :is(.section-head > h3, .qm-head > h3) {
+      font-family: "Fraunces", Georgia, serif !important; font-weight: 700 !important; font-size: 1.34rem !important;
+      letter-spacing: -.015em !important; color: var(--ink) !important; display: flex !important; align-items: center; gap: .6rem; }
+    html body :is(.section-head > h3, .qm-head > h3)::before, html.sm-app body :is(.section-head > h3, .qm-head > h3)::before {
+      content: "" !important; display: block !important; position: static !important; width: 24px !important; height: 24px !important;
+      border-radius: 8px !important; flex-shrink: 0; background: var(--accent-grad) !important; transform: rotate(-5deg);
+      box-shadow: 0 5px 12px -5px color-mix(in oklab, var(--accent) 60%, transparent) !important; opacity: 1 !important; }
+    /* kickers uppercase (JOUER/PROGRESSER…) plus présents + pastille */
+    html body .jnav-cap, html.sm-app body .jnav-cap { font-size: .8rem !important; font-weight: 800 !important; letter-spacing: .08em !important; color: var(--ink) !important; }
+    /* espacement marqué entre groupes (la proximité fait la structure) */
+    html body :is(.section-head, .qm-head, .jnav-cap), html.sm-app body :is(.section-head, .qm-head, .jnav-cap) { margin-top: 2.1rem !important; }
+    html body .tab-panel > :first-child, html body .jeux-view > :first-child { margin-top: .6rem !important; }
+    /* zone-wash DOUCE sur les grands blocs de contenu (groupage observable, pas une boîte) */
+    html body :is(#jeuxNav, .cat-row.jnav-primary, .cat-row.jnav-secondary, .qm-rail, .grid2),
+    html.sm-app body :is(#jeuxNav, .cat-row.jnav-primary, .cat-row.jnav-secondary, .qm-rail, .grid2) {
+      background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 6%, transparent), color-mix(in oklab, var(--accent) 2%, transparent)) !important;
+      border-radius: 20px !important; padding: 14px 12px !important; }
