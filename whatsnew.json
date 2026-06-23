@@ -1,6 +1,6 @@
 {
-  "candidate": "v718",
+  "candidate": "v719",
   "items": [
-    "🎮 Onglet Jeux repensé : ta progression mise à l'honneur (plaque de niveau + jauge d'XP en pleine largeur, en haut), la Quête du jour remontée juste en dessous (le rendez-vous quotidien), puis Jouer / Progresser, puis tes objectifs. Vérifié jour + nuit."
+    "🧭 Motion de la barre du bas : la pastille de l'onglet actif GLISSE d'un onglet à l'autre (au lieu d'apparaître sèchement), avec un petit ressort. L'icône active garde son léger rebond."
   ]
 }

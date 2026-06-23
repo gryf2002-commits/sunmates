@@ -1668,6 +1668,20 @@
     html body .jh-head .player-badge.player-hud::after { display: none !important; } /* l'anneau pulsé n'a pas de sens sur une pilule pleine largeur */
 
     /* ============================================================
+       v719 · MOTION barre de NAVIGATION : un indicateur (pilule sunset) qui GLISSE d'un onglet à
+       l'autre (au lieu d'apparaître sec sur le nouvel onglet). Le pill per-bouton est remplacé par
+       cet indicateur unique animé. + l'icône active garde son petit « pop ».
+       ============================================================ */
+    html body .nav-ind {
+      position: absolute; top: .45rem; bottom: calc(.45rem + env(safe-area-inset-bottom, 0px));
+      left: 0; width: 0; border-radius: 15px; background: var(--accent-soft);
+      transform: translateX(0); opacity: 0; pointer-events: none; z-index: 0;
+      transition: transform .36s cubic-bezier(.34,1.25,.4,1), width .36s cubic-bezier(.34,1.25,.4,1), opacity .25s ease; }
+    html body .bottom-nav button { z-index: 1; }
+    /* on retire le fond per-bouton (remplacé par l'indicateur glissant) */
+    html body .bottom-nav button.active, html body[class*="theme-"] .bottom-nav button.active { background: transparent !important; }
+
+    /* ============================================================
        v714b · AUDIT EXHAUSTIF cartes résiduelles (agent) : dernières surfaces échappant à v692→v713
        (Admin, Réglages, Sécurité, Jeux). ENCARTS → transparent ; CELLULES répétées → filet bas.
        (.detail-hero NON aplati ici = hero à texte blanc, risque d'illisibilité.)

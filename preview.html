@@ -300,13 +300,13 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=718"></script>
+  <script src="sunmates-badges.js?v=719"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
        CSS (SMMotion.* devient no-op). Aucune dépendance dure → l'app marche identiquement sans réseau. -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script defer src="sunmates-motion.js?v=718"></script>
+  <script defer src="sunmates-motion.js?v=719"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -5607,6 +5607,8 @@
       if (!b || b.classList.contains("smb-done")) return;
       b.classList.add("smb-done");
       setTimeout(function () { try { b.style.display = "none"; } catch (e) {} }, 550);
+      // l'app devient visible → place l'indicateur d'onglet glissant sous l'onglet actif
+      setTimeout(function () { try { if (window._smNavInd) _smNavInd(); } catch (e) {} }, 120);
     }
     window._smBootDone = _smBootDone;
     setTimeout(_smBootDone, 8000); // filet de sécurité
@@ -5808,6 +5810,25 @@
     { const gt = $("goldTile"); if (gt) gt.addEventListener("click", () => { if (!(myProfile && myProfile.is_admin)) return; goToTab("profil"); if (typeof showProfileSegment === "function") showProfileSegment("premium"); }); }
 
     let __lastTab = null;
+    // Indicateur d'onglet actif qui GLISSE (motion nav) : pilule positionnée sous le bouton actif,
+    // animée par CSS (transform+width). Recalculée au changement d'onglet, au load et au resize.
+    function _smNavInd() {
+      var nav = document.querySelector(".bottom-nav"); if (!nav) return;
+      var ind = nav.querySelector(".nav-ind");
+      if (!ind) { ind = document.createElement("div"); ind.className = "nav-ind"; ind.setAttribute("aria-hidden", "true"); nav.insertBefore(ind, nav.firstChild); }
+      var act = nav.querySelector("button.active");
+      if (!act || act.offsetParent === null) { ind.style.opacity = "0"; return; }
+      var first = !ind._init; ind._init = 1;
+      if (first) ind.style.transition = "none";
+      ind.style.opacity = "1";
+      ind.style.width = act.offsetWidth + "px";
+      ind.style.transform = "translateX(" + act.offsetLeft + "px)";
+      if (first) requestAnimationFrame(function () { ind.style.transition = ""; });
+    }
+    window._smNavInd = _smNavInd;
+    window.addEventListener("resize", function () { try { _smNavInd(); } catch (e) {} });
+    window.addEventListener("load", function () { setTimeout(function () { try { _smNavInd(); } catch (e) {} }, 200); });
+
     function goToTab(target) {
       const changed = target !== __lastTab;
       // P2.4 : on QUITTE un onglet → on vide sa recherche (sinon on revient sur d'anciens résultats).
@@ -5821,6 +5842,7 @@
       }
       if (typeof toggleHomeFull === "function" && document.querySelector(".homemap-card.fs")) toggleHomeFull(false); // sort du plein écran seulement si actif
       document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle("active", b.dataset.tab === target));
+      try { _smNavInd(); } catch (e) {} // motion : l'indicateur glisse vers le nouvel onglet
       document.querySelectorAll(".tab-panel").forEach((p) => show(p, p.dataset.panel === target));
       // Taper une tuile du bas revient TOUJOURS à l'écran principal de l'onglet (même si déjà dessus).
       // PERF : revenir sur Jeux ne re-télécharge PAS tout si les données ont <60 s (re-rendu
