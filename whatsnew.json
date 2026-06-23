@@ -1,9 +1,9 @@
 {
-  "candidate": "v707",
+  "candidate": "v708",
   "items": [
-    "👤 Profil revu : avatar en cercle avec anneau, nom et stats en grand (Fraunces) avec séparateurs — propre et plat.",
-    "🎮 Onglet Jeux mis à l'honneur : plaque de niveau plus présente (texte lisible nuit), anneau qui respire, barre d'XP animée, tuiles « Jouer » qui apparaissent en relief.",
-    "✈️ Mes voyages : « Mon globe » et « Mon année » côte à côte en duo (au lieu de 2 gros boutons empilés).",
-    "🛠️ « Personnaliser » en mode Maison déplacé en bas (il était collé tout en haut)."
+    "🗺️ Carte VRAIMENT agrandie (la bonne règle cette fois : 268→400px).",
+    "🧹 « À débloquer » retiré complètement. Halo gris au survol et coloration bizarre au clic : supprimés (juste un enfoncement net au tap).",
+    "⚡ Plus fluide : la cascade d'animations qui re-jouait à chaque clic (depop/repop) est retirée.",
+    "✂️ Titres moins gros, cercle de confiance/SOS normé, textareas raisonnables (auto-grow, fond corrigé)."
   ]
 }

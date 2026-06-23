@@ -1419,10 +1419,8 @@
       cursor: pointer; border-radius: 14px;
       transition: transform .16s var(--ease-out, cubic-bezier(.22,1,.36,1)), background-color .15s ease; -webkit-tap-highlight-color: transparent; }
     html body :is(.tile, .cat-tile, .qrow, .lb-row, .person, .gp-tile, .reward-card, .trip-card, .hm-visitor, .rit-row, .sa-tile, [data-goto], [data-secuquick], [data-protile], .stat-click, [data-spstat]):active { transform: scale(.97); }
-    @media (hover: hover) and (pointer: fine) {
-      html body :is(.tile, .cat-tile, .qrow, .lb-row, .person, .gp-tile, .reward-card, .trip-card, .hm-visitor, .rit-row, .sa-tile, [data-goto], [data-secuquick], [data-protile], .stat-click, [data-spstat]):hover {
-        background: color-mix(in srgb, var(--accent) 7%, transparent) !important; }
-    }
+    /* v708 : la teinte accent au survol créait un « halo gris » (retour Maxime) → on garde juste le
+       léger soulèvement (translateY) défini plus bas, sans fond. */
     /* moins d'air entre les sections de l'accueil (l'aération était excessive) */
     html body .tab-panel[data-panel="accueil"] > section,
     html body .tab-panel[data-panel="accueil"] > .section-head,
@@ -1455,16 +1453,9 @@
       html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(7) { animation-delay: 270ms; }
       html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(8) { animation-delay: 310ms; }
       @keyframes qaIn { to { opacity: 1; transform: none; } }
-      /* v705 (Maxime « plus de motion grâce à Emil x100 ») : la cascade s'applique à TOUTES les grilles
-         de contenu révélées (accueil, lieux, jeux…), pas juste les accès rapides. Filet : .in force la fin. */
-      html body .sm-reveal :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > * { opacity: 0; transform: translateY(10px); }
-      html body .sm-reveal.in :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > * { animation: qaIn .46s var(--ease-out, cubic-bezier(.22,1,.36,1)) both; }
-      html body .sm-reveal.in :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > *:nth-child(1){animation-delay:30ms}
-      html body .sm-reveal.in :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > *:nth-child(2){animation-delay:70ms}
-      html body .sm-reveal.in :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > *:nth-child(3){animation-delay:110ms}
-      html body .sm-reveal.in :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > *:nth-child(4){animation-delay:150ms}
-      html body .sm-reveal.in :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > *:nth-child(5){animation-delay:185ms}
-      html body .sm-reveal.in :is(.grid2, .qm-rail, .cat-rail, .sc-grid, .gp-grid) > *:nth-child(n+6){animation-delay:215ms}
+      /* v708 (Maxime « ça rame, depop/repop à chaque clic ») : la cascade GÉNÉRIQUE sur toutes les grilles
+         re-déclenchait à chaque navigation = sensation de lag/depop. RETIRÉE. On garde uniquement la cascade
+         CONTENUE des accès rapides (ci-dessus) + le reveal de section (léger). App plus fluide. */
     }
 
     /* ============================================================
@@ -1506,10 +1497,10 @@
        le titre est DANS #homeTravelMap (pas un enfant direct du panneau) → la règle d'origine ne le cachait pas. */
     body:has(.homemap-card.fs) #homeTravelMap > :not(.homemap-card) { display: none !important; }
     body:has(.homemap-card.fs) .tab-panel[data-panel="accueil"] > .section-head { display: none !important; }
-    /* RETOUR TACTILE mobile (Maxime « le survol n'existe pas sur mobile ») : au TAP (:active) on montre la
-       teinte accent + le scale → feedback tangible au doigt (le :hover ne se déclenche pas au toucher). */
+    /* v708 (Maxime « la tuile se colore bizarrement au clic ») : au TAP, on garde UNIQUEMENT le press-feedback
+       (scale), SANS teinte de fond (la teinte accent washait toute la tuile = moche). Retour tactile net. */
     html body :is(.tile, .cat-tile, .qrow, .lb-row, .person, .gp-tile, .reward-card, .trip-card, .hm-visitor, .rit-row, .sa-tile, .btn-ghost, .iconbtn, .chip, [data-goto], [data-secuquick], [data-protile], .stat-click, [data-spstat]):active {
-      transform: scale(.97); background: color-mix(in srgb, var(--accent) 12%, transparent) !important; transition: transform .1s ease, background-color .05s ease; }
+      transform: scale(.96); transition: transform .1s ease; }
     /* CONTRASTE GOLD/QUÊTES en mode SOMBRE (Maxime : « illisible ») : textes codés en dur sombre → adaptatifs.
        En nuit, un texte brun (#8a5a00, #5a3d00…) sur fond gold pâle ne se lit pas → on force --ink/--text. */
     html body.theme-dusk :is(.gold-only-note, .gp-note, .gold-note), html body.theme-winter.theme-dusk :is(.gold-only-note), html body.theme-tropic.theme-dusk :is(.gold-only-note) {
@@ -1625,6 +1616,26 @@
        ============================================================ */
     html body .trip-cta-duo { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin: .2rem 0 .8rem; }
     html body .trip-cta-duo > :is(.globe-cta, .wrapped-cta) { margin: 0 !important; width: 100% !important; min-width: 0; font-size: .9rem !important; padding: .8rem .6rem !important; }
+
+    /* ============================================================
+       v708 (liste Maxime, lot 2) : à débloquer retiré, titres moins balèzes, cercle/SOS normé,
+       textareas raisonnables + fond non-prune.
+       ============================================================ */
+    /* 2 · « À débloquer » retiré complètement */
+    html body #badgeRailSection, html body[class*="theme-"] #badgeRailSection { display: none !important; }
+    /* 9 · titres affirmés mais MOINS balèzes (étaient trop gros) */
+    html body :is(.section-head > h3, .qm-head > h3, .sp-title),
+    html body[class*="theme-"] :is(.section-head > h3, .qm-head > h3, .sp-title) { font-size: 1.04rem !important; font-weight: 700 !important; }
+    html body :is(.tab-panel .jnav-cap, .jeux-view .jnav-cap),
+    html body[class*="theme-"] :is(.tab-panel .jnav-cap, .jeux-view .jnav-cap) { font-size: .76rem !important; font-weight: 700 !important; }
+    html body h1, html body[class*="theme-"] h1 { font-size: 1.5rem !important; }
+    /* 16 · cercle de confiance / SOS normé (plus petit, comme les contacts) */
+    html body .secu-view #secuHome > .card:first-of-type .sos-logo { font-size: 2.1rem !important; }
+    /* 7 · textareas : auto-grow raisonnable (pas géant) + fond cohérent (fini le prune) */
+    html body :is(textarea, .feed-composer textarea, #feedInput, #spotInput),
+    html body[class*="theme-"] :is(textarea, .feed-composer textarea, #feedInput, #spotInput) { min-height: 2.6em !important; field-sizing: content; }
+    html body.theme-dusk :is(textarea, .feed-composer textarea, #feedInput, #spotInput, .feed-composer),
+    html body[class*="theme-"].theme-dusk :is(textarea, .feed-composer textarea, #feedInput, #spotInput) { background: var(--dcard2, #241b35) !important; color: var(--ink) !important; }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */
