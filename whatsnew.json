@@ -1,6 +1,6 @@
 {
-  "candidate": "v730",
+  "candidate": "v731",
   "items": [
-    "🧹 Nettoyage technique (invisible) : suppression de règles CSS en double (titres de section définis 3 fois, fonds de coupons morts). Rendu strictement identique, code plus propre."
+    "⚡ Fluidité : optimisation des sélecteurs CSS (les ~85 règles d'habillage utilisaient un filtre coûteux re-évalué à chaque scroll/changement d'onglet → remplacé par un sélecteur de classe rapide). Scrolling et recalculs nettement allégés, rendu identique."
   ]
 }
