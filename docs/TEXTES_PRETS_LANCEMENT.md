@@ -2,7 +2,7 @@
 
 > Ton fun d'abord (aventure, rencontres, jeu). On ne met PAS la sécurité en avant comme argument.
 > Lien actuel (en attendant le nom de domaine) :
-> **App / Landing → https://gryf2002-commits.github.io/bootcamp-projet/presentation.html**
+> **App / Landing → https://sunmatesapp.com/presentation.html**
 > (depuis la landing, le bouton « Rejoindre l'aventure » ouvre l'app)
 
 ---
@@ -14,7 +14,7 @@
 > ensemble (quêtes, badges, bons plans locaux 🎮).
 >
 > Je cherche **10 testeurs** cette semaine 🙏 Tu l'ouvres ici 👉
-> https://gryf2002-commits.github.io/bootcamp-projet/presentation.html
+> https://sunmatesapp.com/presentation.html
 > tu crées un compte, tu fais ton profil, et tu me dis TOUT ce qui te gêne (même un pixel 😅).
 >
 > En échange : ma reconnaissance éternelle + le badge **« Pionnier »** dans l'app 😎

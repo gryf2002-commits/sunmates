@@ -3,7 +3,7 @@
 (function () {
   'use strict';
 
-  var APP_URL = 'https://gryf2002-commits.github.io/bootcamp-projet/';
+  var APP_URL = 'https://sunmatesapp.com/';
   var page = document.body.getAttribute('data-page') || '';
 
   var NAV = [
