@@ -1403,6 +1403,29 @@
     html body .tab-panel[data-panel="jeux"] > .section-head, html body .tab-panel[data-panel="connexions"] > .section-head,
     html body .tab-panel[data-panel="profil"] > .section-head, html body .secu-view > .section-head {
       border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); padding-top: 1.4rem; margin-top: 1.9rem; }
+
+    /* ============================================================
+       v699 (carte blanche · design EMIL + principes UI/UX) :
+       1) AFFORDANCE — la carte ayant disparu, on signale qu'un bloc est CLIQUABLE par un retour au
+          survol (teinte accent douce) + un press-feedback (scale .97). Touch-safe (@media hover).
+       2) MOINS d'air (Maxime « parfois trop d'espace aéré ») 3) centrage cohérent des tuiles.
+       ============================================================ */
+    html body :is(.tile, .cat-tile, .qrow, .lb-row, .person, .gp-tile, .reward-card, .trip-card, .hm-visitor, .rit-row, .sa-tile, .qm-card, .wish-chip, [data-goto], [data-secuquick], [data-protile], [data-adv], .stat-click, [data-spstat]) {
+      cursor: pointer; border-radius: 14px;
+      transition: transform .16s var(--ease-out, cubic-bezier(.22,1,.36,1)), background-color .15s ease; -webkit-tap-highlight-color: transparent; }
+    html body :is(.tile, .cat-tile, .qrow, .lb-row, .person, .gp-tile, .reward-card, .trip-card, .hm-visitor, .rit-row, .sa-tile, [data-goto], [data-secuquick], [data-protile], .stat-click, [data-spstat]):active { transform: scale(.97); }
+    @media (hover: hover) and (pointer: fine) {
+      html body :is(.tile, .cat-tile, .qrow, .lb-row, .person, .gp-tile, .reward-card, .trip-card, .hm-visitor, .rit-row, .sa-tile, [data-goto], [data-secuquick], [data-protile], .stat-click, [data-spstat]):hover {
+        background: color-mix(in srgb, var(--accent) 7%, transparent) !important; }
+    }
+    /* moins d'air entre les sections de l'accueil (l'aération était excessive) */
+    html body .tab-panel[data-panel="accueil"] > section,
+    html body .tab-panel[data-panel="accueil"] > .section-head,
+    html body .tab-panel[data-panel="accueil"] > #homeQuickAccess,
+    html body .tab-panel[data-panel="accueil"] > #homeTravelMap { margin-top: 1.5rem !important; padding-top: 1.15rem !important; }
+    /* centrage cohérent du contenu des tuiles (icône + textes alignés pareil partout) */
+    html body :is(.tile, .cat-tile) { text-align: center !important; }
+    html body :is(.tile, .cat-tile) :is(.t-name, .t-meta, .clbl) { text-align: center !important; width: 100%; }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */

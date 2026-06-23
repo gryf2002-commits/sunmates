@@ -1,9 +1,8 @@
 {
-  "candidate": "v698",
+  "candidate": "v699",
   "items": [
-    "🔤 Titres revus partout : titres de section en Fraunces avec une barre d'accent, sous-titres calmés — une hiérarchie claire adaptée à la DA plate.",
-    "🎨 Couleurs homogénéisées : on a calmé les fonds dorés/corail résiduels (cartes d'astuces, récompenses, boutique) au profit d'un accent unique.",
-    "🧭 Mieux délimité : de fines lignes structurent les sections sur tous les écrans, sans réintroduire de boîtes.",
-    "🎐 Encore des cartes retirées (héros, récompenses, astuces)."
+    "👆 On voit enfin ce qui est cliquable : au survol, un bloc s'éclaire d'une touche d'accent, et il s'enfonce légèrement quand on appuie (feedback façon app native, design Emil).",
+    "📐 Moins de vide : on a resserré l'espacement entre les sections (c'était parfois trop aéré) et centré les tuiles de façon homogène.",
+    "📱 Barre du téléphone : couleur de lancement repassée en clair (le fond et la barre native sont désormais alignés, jour comme nuit — pense à réinstaller l'app)."
   ]
 }
