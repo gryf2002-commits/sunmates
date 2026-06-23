@@ -5272,3 +5272,35 @@
     html body :is(.chips, .fc-chips, .search-scopes, #homeMapFilters),
     html.sm-app body :is(.chips, .fc-chips, .search-scopes, #homeMapFilters) {
       flex-wrap: wrap !important; overflow-x: visible !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v743 · CHASSE BUGS AFFICHAGE (retour Maxime) — arrière-cartes + filets.
+       A) Aplatit les cartes de contenu OUBLIÉES (fond/ombre opaques résiduels).
+       B) Filets de séparation : doctrine UNIQUE = 1px solid var(--line)
+          (fini les color-mix(--ink %), les pointillés hors-DA, les dépassements).
+       Réversible. Mode-safe (var(--line)/transparent). ════════════════════════ */
+
+    /* — A · ARRIÈRE-CARTES restantes → plates — */
+    html body :is(.feed-card, .pcell, .pprompt, .reco),
+    html.sm-app body :is(.feed-card, .pcell, .pprompt, .reco) {
+      background: transparent !important; box-shadow: none !important; }
+    html body .reco:hover, html.sm-app body .reco:hover { box-shadow: none !important; }
+    html body .feed-card + .feed-card, html.sm-app body .feed-card + .feed-card { border-top: 1px solid var(--line); }
+    /* progression : tuiles plates, séparées par UN filet vertical (pas une boîte chacune) */
+    html body :is(.prog-split, .prog-tile), html.sm-app body :is(.prog-split, .prog-tile) {
+      background: transparent !important; box-shadow: none !important; border: 0 !important; }
+    html body .prog-tile + .prog-tile, html.sm-app body .prog-tile + .prog-tile { border-left: 1px solid var(--line) !important; }
+
+    /* — B · FILETS DE SÉPARATION : doctrine unique 1px var(--line) — */
+    /* B1 · filet qui DÉPASSE sous la dernière entrée du carnet de voyages */
+    html body .tj-card:last-child, html.sm-app body .tj-card:last-child { border-bottom: 0 !important; }
+    /* B2 · pointillés hors-doctrine → filets pleins thémés */
+    html body .trip-matches, html.sm-app body .trip-matches { border-top: 1px solid var(--line) !important; }
+    html body .da-comp-row, html.sm-app body .da-comp-row { border-bottom: 1px solid var(--line) !important; }
+    html body .pfield-sep, html.sm-app body .pfield-sep { border-top: 1px solid var(--line) !important; border-bottom: 0 !important; }
+    /* B3 · prog-row : couleur ad-hoc legacy → --line (l'override nuit devient inutile) */
+    html body .prog-row, html.sm-app body .prog-row { border-bottom: 1px solid var(--line) !important; }
+    /* B4 · harmonise les filets gris-encre (color-mix --ink %) vers --line (cohérence app) */
+    html body :is(.stat-row-3 .stat-box + .stat-box, #convList .person.conv-open, .tj-card, .ptrip-section, .pf-section),
+    html.sm-app body :is(.stat-row-3 .stat-box + .stat-box, #convList .person.conv-open, .tj-card, .ptrip-section, .pf-section) {
+      border-color: var(--line) !important; }

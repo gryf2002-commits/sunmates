@@ -1,6 +1,6 @@
 {
-  "candidate": "v742",
+  "candidate": "v743",
   "items": [
-    "🎬 Suite de la DA de Motion dans l'app : les compteurs de notifications (cloche, messages) « poppent » à l'arrivée, en plus des compteurs du profil et des jauges qui se remplissent. La migration continue feature par feature."
+    "🐛 Chasse aux bugs d'affichage : le switch « En voyage / À la maison » ne clignote plus (pop/depop corrigé), les tuiles qui redirigent (Gold, Pro, Admin) descendent INSTANTANÉMENT au lieu de scroller lentement, les dernières cartes oubliées sont aplaties, et les traits de séparation sont harmonisés (fini les filets dépassants, pointillés ou couleurs incohérentes)."
   ]
 }
