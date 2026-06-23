@@ -1307,6 +1307,20 @@
     html body .cat-tile.active { border: 0 !important; box-shadow: none !important; }
     html body .cat-tile.active .cic { box-shadow: 0 0 0 2.5px var(--accent), 0 4px 12px rgba(45,38,52,.18) !important; }
     html body .cat-tile.active .clbl { color: var(--accent-ink, var(--accent)); }
+    /* ============================================================
+       v694 (Maxime « tout aplatir, même le contenu ») : on retire le FOND des cartes de CONTENU
+       (affichage), pour un rendu ultra-plat homogène. On NE touche PAS aux modales (.act-card,
+       .picker-card, .popinfo-card), aux CHAMPS (inputs, .feed-composer, .sscope…), ni aux cellules
+       interactives (.poll-opt, .lb-row…) qui ont besoin de leur surface. Double préfixe (html body +
+       html body[class*=theme-]) pour battre les `background var(--card)/gradient !important` jour ET modes. */
+    html body :is(.card, .post, .fpost, .pf-section, .gcard, .pcard, .qm-card, .tcard, .trip-card, .souvenir-card, .solo-prog, .solo-ch, .solo-rit, .hm-souv, .hm-hero, .hm-mateday, .reco, .ban-card, .adm-live, .cstory-fact, .gal-city, .prep-item, .hm-inspo, .badge-rail),
+    html body[class*="theme-"] :is(.card, .post, .fpost, .pf-section, .gcard, .pcard, .qm-card, .tcard, .trip-card, .souvenir-card, .solo-prog, .solo-ch, .solo-rit, .hm-souv, .hm-hero, .hm-mateday, .reco, .ban-card, .adm-live, .cstory-fact, .gal-city, .prep-item, .hm-inspo, .badge-rail) {
+      background: transparent !important; box-shadow: none !important; border-color: transparent !important; }
+    /* v694 (idée Maxime « un petit fondu de couleur juste au-dessus de SunMates ») : le sommet du header
+       redevient un aplat var(--bg) (= couleur du mode = barre native via theme-color) qui se fond doucement
+       vers le contenu → jointure adoucie avec la barre native du téléphone. */
+    html body .topbar, html body[class*="theme-"] .topbar {
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg) calc(env(safe-area-inset-top, 0px) + 58%), rgba(0,0,0,0) 100%) !important; }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */
