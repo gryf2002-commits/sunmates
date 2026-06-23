@@ -1555,6 +1555,25 @@
     html body .gold-hero :is(.gh-title, .gh-tag, .msg, .gh-test, h2, h3),
     html body[class*="theme-"] .gold-hero :is(.gh-title, .gh-tag, .msg, .gh-test, h2, h3) { color: #FFF3CE !important; }
     html body .gold-hero .gh-price, html body[class*="theme-"] .gold-hero .gh-price { color: #FFD15C !important; }
+
+    /* ============================================================
+       v710 (liste Maxime, lot 3) : feed démarcations, onboarding contenu, Mon parcours, scrim.
+       ============================================================ */
+    /* 14 · FEED : filet de séparation entre les posts */
+    html body :is(#homeFeed, #feed) > .fpost + .fpost,
+    html body[class*="theme-"] :is(#homeFeed, #feed) > .fpost + .fpost {
+      border-top: 1px solid color-mix(in srgb, var(--ink) 9%, transparent) !important; margin-top: .9rem; padding-top: .9rem; }
+    /* 11 · ONBOARDING : contention STRICTE des slides (ne peuvent plus fuir dans un coin) */
+    html body .onb-stage { position: relative !important; overflow: hidden; }
+    html body .onb-step { position: absolute !important; inset: 0 !important; }
+    /* 20 · « Mon parcours » : chiffres prominents (Fraunces) comme le profil refait */
+    html body .parcours-card .pc-stat .pc-n, html body[class*="theme-"] .parcours-card .pc-stat .pc-n {
+      font-family: "Fraunces", Georgia, serif !important; font-size: 1.45rem !important; font-weight: 800 !important; }
+    html body .parcours-card .pc-head b, html body[class*="theme-"] .parcours-card .pc-head b { font-size: 1.02rem !important; }
+    /* 19 · « gros encart noir » au clic des tuiles Jeux : le scrim modal était très sombre (.55) →
+       adouci, surtout en mode JOUR (scrim clair) pour ne plus avoir ce gros pavé noir. */
+    html body .act-overlay, html body[class*="theme-"] .act-overlay { background: rgba(12,7,32,.42) !important; }
+    html body:not(.theme-dusk):not([class*="dusk"]) .act-overlay { background: rgba(30,18,46,.28) !important; }
     html body .gp-tile span:last-child, html body[class*="theme-"] .gp-tile span:last-child { color: var(--text) !important; }
     /* 3 · barre de recherche : fond neutre cohérent en nuit (fini le prune saturé) */
     html body.theme-dusk .search input, html body[class*="theme-"].theme-dusk .search input { background: var(--dcard2, #241b35) !important; color: var(--ink) !important; border-color: var(--line) !important; }

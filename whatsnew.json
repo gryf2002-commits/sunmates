@@ -1,6 +1,9 @@
 {
-  "candidate": "v709",
+  "candidate": "v710",
   "items": [
-    "✨ Gold enfin lisible en mode JOUR : l'écrin Gold reste sombre avec son texte doré, au lieu de devenir clair (texte invisible). Je l'ai reproduit en testant vraiment le mode clair."
+    "🧵 Le fil (feed) a maintenant des séparations claires entre les publications.",
+    "🧭 « Mon parcours » revu : chiffres en grand (Fraunces), plus présent.",
+    "⬛ Le « gros encart noir » au clic des tuiles Jeux : voile assombri adouci (surtout en mode jour).",
+    "🎚️ Onboarding renforcé : les slides ne peuvent plus partir dans un coin."
   ]
 }
