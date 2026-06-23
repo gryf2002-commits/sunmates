@@ -362,8 +362,13 @@ body.sm-lite #consentYes { background: var(--accent) !important; }
    On MASQUE le hors-MVP (le complet n'est jamais touché). Markup/handlers intacts ;
    tout reste réversible et réapparaît en mode complet. (`:has()` déjà utilisé l.1290.)
    ============================================================ */
-/* Onglet « Jeux » retiré de la nav → 4 onglets : Accueil · Lieux · Mates · Profil (+ Sécurité haut-droite). */
-body.sm-lite .bottom-nav button[data-tab="jeux"] { display:none !important; }
+/* v710 (retour Maxime « il faut un onglet léger Jeux en bas ») : l'onglet Jeux est REMIS dans la nav Lite.
+   (avant il était masqué → Maxime le veut accessible.) */
+body.sm-lite .bottom-nav button[data-tab="jeux"] { display: inline-flex !important; }
+/* v710 (Maxime « pas assez d'aération sur la Lite ») : un peu plus de respiration entre les sections. */
+body.sm-lite .section-head { margin-top: 1.35rem; }
+body.sm-lite .tab-panel > section + section { margin-top: 1.15rem; }
+body.sm-lite .qm-rail, body.sm-lite .grid2 { gap: .8rem; }
 
 /* Accueil SIMPLE : carte + qui est autour. On masque le mode Maison, le fil, « Mes voyages », les accès jeu. */
 body.sm-lite #homeModeSwitch { display:none !important; }                          /* plus de bascule Voyage/Maison */

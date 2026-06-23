@@ -1,9 +1,7 @@
 {
-  "candidate": "v710",
+  "candidate": "v711",
   "items": [
-    "🧵 Le fil (feed) a maintenant des séparations claires entre les publications.",
-    "🧭 « Mon parcours » revu : chiffres en grand (Fraunces), plus présent.",
-    "⬛ Le « gros encart noir » au clic des tuiles Jeux : voile assombri adouci (surtout en mode jour).",
-    "🎚️ Onboarding renforcé : les slides ne peuvent plus partir dans un coin."
+    "🎮 L'onglet Jeux est de retour dans la barre du bas en mode Lite.",
+    "🌬️ Plus d'aération sur la Lite (espaces entre sections augmentés)."
   ]
 }
