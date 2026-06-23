@@ -242,10 +242,11 @@
       try { if (window.posthog && posthog.capture) posthog.capture(name, props || {}); } catch (e) {}
     };
   </script>
-  <!-- viewport-fit=cover : l'app passe sous l'encoche / status bar (on gère les safe-area en CSS).
-       a11y (WCAG 1.4.4) : zoom au pincement AUTORISÉ (maximum-scale=5, plus de user-scalable=no).
-       En PWA installée la sensation app reste, mais les malvoyants peuvent agrandir. -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover" />
+  <!-- v701 (retour Maxime « barre d'ombre sous la barre native ») : on RETIRE viewport-fit=cover.
+       En edge-to-edge (cover), Android dessine un SCRIM (dégradé d'ombre) sous la status-bar pour
+       protéger ses icônes → c'était LA barre d'ombre. Sans cover : la status-bar = un bandeau plein
+       theme-color (= --bg de l'app, donc fondu invisible) SANS scrim. a11y : zoom pincement gardé. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
   <title>SunMates · pars solo, trouve ta bande</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -276,7 +277,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <!-- black-translucent : le fond de l'app passe SOUS la status bar (plus de bande corail fixe) ;
        la couleur réelle vient de theme-color, mis à jour dynamiquement selon le thème jour/nuit. -->
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="SunMates" />
   <!-- Leaflet : carte interactive des lieux sûrs (defer = ne bloque PAS le rendu initial) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -299,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=700"></script>
+  <script src="sunmates-badges.js?v=701"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung

@@ -1,8 +1,8 @@
 {
-  "candidate": "v700",
+  "candidate": "v701",
   "items": [
-    "🎚️ Onglets du profil unifiés : Gold / Espace Pro / Admin ont le même style propre (neutre, et accent quand c'est actif) — fini les pastilles multicolores.",
-    "✨ Motion : les accès rapides apparaissent en cascade douce (effet façon app native).",
-    "🧹 Suite du nettoyage et de la cohérence sur Profil & Messages."
+    "📱 Barre d'ombre sous la barre native : retirée. Elle venait du mode « plein écran » qui faisait dessiner à Android une ombre de protection — l'app n'y passe plus, la barre est un bandeau plein de la couleur du fond (pense à réinstaller).",
+    "🎬 Transitions d'onglets : un fondu doux et rapide à chaque changement d'onglet (façon app native, design Emil).",
+    "💬 Chat à plat : les bulles reçues adoptent une surface neutre et cohérente, les tiennes gardent l'accent."
   ]
 }

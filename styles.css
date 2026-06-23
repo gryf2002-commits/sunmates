@@ -1451,6 +1451,21 @@
       html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(8) { animation-delay: 310ms; }
       @keyframes qaIn { to { opacity: 1; transform: none; } }
     }
+
+    /* ============================================================
+       v701 (carte blanche, suite) : transitions d'onglets (Emil : subtil + rapide, onglets = action
+       fréquente) + chat à plat (bulle reçue neutre, bulle envoyée accent).
+       ============================================================ */
+    @media (prefers-reduced-motion: no-preference) {
+      html body main > .tab-panel:not(.hidden) { animation: tabIn .19s var(--ease-out, cubic-bezier(.22,1,.36,1)) both; }
+      @keyframes tabIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    }
+    /* CHAT : la bulle REÇUE devient une surface neutre cohérente (au lieu du rose figé), la bulle
+       ENVOYÉE garde l'accent (signature). Radius asymétrique conservé. */
+    html body .bubble.them, html body[class*="theme-"] .bubble.them {
+      background: color-mix(in srgb, var(--ink) 7%, transparent) !important; color: var(--ink) !important; box-shadow: none !important; }
+    html body .bubble.me, html body[class*="theme-"] .bubble.me {
+      box-shadow: none !important; }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */
