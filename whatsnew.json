@@ -1,6 +1,6 @@
 {
-  "candidate": "v741",
+  "candidate": "v742",
   "items": [
-    "🎬 La DA de Motion se déploie dans l'app, écran par écran : les compteurs du profil s'incrémentent, et la jauge d'XP (et l'exploration des villes) se remplissent en douceur. La suite des features suit au fur et à mesure."
+    "🎬 Suite de la DA de Motion dans l'app : les compteurs de notifications (cloche, messages) « poppent » à l'arrivée, en plus des compteurs du profil et des jauges qui se remplissent. La migration continue feature par feature."
   ]
 }
