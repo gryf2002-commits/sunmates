@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SunMates · DA de Motion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,800;9..144,900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
+<style>
+  :root{ --bg:#FFF4E6; --card:#fff; --ink:#39203A; --text:#5B4455; --muted:#AC93A3; --line:#F6E3D6;
+    --accent:#FF5A4D; --accent-soft:#FFE6DC; --accent-ink:#C4402F; --teal:#11B5A0; --violet:#7A5CFF; --gold:#FFD15C;
+    --grad:linear-gradient(135deg,#FFC93C 0%,#FF7A3D 46%,#FF4F6D 100%); --shadow:0 1px 2px rgba(45,38,52,.04),0 12px 28px -16px rgba(45,38,52,.2); }
+  body.night{ --bg:#190E2E; --card:#271641; --ink:#FCEFE9; --text:#E7D7E4; --muted:#9E86A8; --line:#3A2552;
+    --accent:#FF6A5D; --accent-soft:#3a2342; --accent-ink:#FFB9AE; --teal:#2BE0B0; --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 30px -16px rgba(0,0,0,.6); }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ margin:0; background:var(--bg); color:var(--text); font-family:Manrope,system-ui,sans-serif; transition:background .5s cubic-bezier(.22,1,.36,1),color .3s; }
+  .wrap{ max-width:880px; margin:0 auto; padding:0 18px 80px; }
+  /* hero */
+  header{ text-align:center; padding:54px 0 18px; }
+  .eyebrow{ font-size:.72rem; font-weight:800; letter-spacing:.22em; text-transform:uppercase; color:var(--accent-ink); }
+  h1{ font-family:Fraunces,serif; font-weight:600; font-size:clamp(2.2rem,7vw,3.4rem); color:var(--ink); margin:.2rem 0 .3rem; letter-spacing:-.03em; }
+  h1 i{ font-style:italic; background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .tagline{ color:var(--muted); font-size:1rem; max-width:520px; margin:0 auto; line-height:1.6; }
+  /* nav chips */
+  .chips{ position:sticky; top:0; z-index:30; display:flex; gap:8px; overflow-x:auto; padding:12px 0; margin:8px -18px 24px; padding-left:18px;
+    background:linear-gradient(var(--bg) 80%,transparent); scrollbar-width:none; }
+  .chips::-webkit-scrollbar{ display:none; }
+  .chips a{ flex:0 0 auto; font-size:.78rem; font-weight:700; color:var(--text); text-decoration:none; padding:.42rem .8rem; border-radius:999px; border:1px solid var(--line); background:var(--card); white-space:nowrap; }
+  /* principes */
+  .princ{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:14px; }
+  .princ .p{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:var(--shadow); }
+  .princ .p b{ font-family:Fraunces,serif; color:var(--ink); font-size:1rem; display:block; margin-bottom:4px; }
+  .princ .p span{ font-size:.84rem; color:var(--text); line-height:1.5; }
+  /* sections */
+  section{ margin:38px 0; scroll-margin-top:70px; }
+  .sh{ display:flex; align-items:baseline; gap:10px; margin:0 0 4px; }
+  .sh h2{ font-family:Fraunces,serif; font-weight:600; color:var(--ink); font-size:1.5rem; margin:0; letter-spacing:-.02em; }
+  .sh .n{ font-size:.72rem; font-weight:800; color:var(--accent-ink); letter-spacing:.12em; }
+  .lead{ color:var(--muted); font-size:.9rem; margin:0 0 16px; max-width:560px; line-height:1.55; }
+  .demos{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+  .demo{ background:var(--card); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:var(--shadow); }
+  .stage{ position:relative; height:150px; display:grid; place-items:center; overflow:hidden; background:color-mix(in oklab,var(--accent) 4%,var(--card)); }
+  .cap{ padding:10px 12px 12px; border-top:1px solid var(--line); }
+  .cap b{ font-size:.86rem; color:var(--ink); font-weight:700; } .cap span{ display:block; font-size:.74rem; color:var(--muted); margin-top:2px; }
+  .replay{ position:absolute; top:8px; right:8px; z-index:5; font-size:.68rem; font-weight:700; color:var(--accent-ink); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.25rem .55rem; cursor:pointer; }
+  /* éléments de démo réutilisables */
+  .tile{ width:58px; height:58px; border-radius:16px; display:grid; place-items:center; color:#fff; font-size:1.5rem; position:relative;
+    box-shadow:0 8px 16px -7px rgba(60,28,14,.34),inset 0 2px 2px rgba(255,255,255,.7),inset 0 -10px 16px -8px rgba(120,40,20,.5); }
+  .t-coral{ background:radial-gradient(120% 90% at 28% 18%,#FF9A6E,#FF5A4D 60%,#E23B4E); }
+  .t-teal{ background:radial-gradient(120% 90% at 28% 18%,#5FE3CE,#11B5A0 60%,#0A8C7C); }
+  .t-violet{ background:radial-gradient(120% 90% at 28% 18%,#B79BFF,#7A5CFF 60%,#5028b0); }
+  .t-gold{ background:radial-gradient(120% 90% at 28% 18%,#FFEFCF,#FFD15C 45%,#E8961F); }
+  .btn{ height:42px; padding:0 18px; border:0; border-radius:999px; background:var(--grad); color:#fff; font:800 .9rem Manrope; cursor:pointer; box-shadow:0 10px 22px -10px rgba(255,90,77,.5); }
+  .pill{ font-size:.7rem; font-weight:800; color:#fff; background:var(--accent); border-radius:999px; min-width:22px; height:22px; display:inline-grid; place-items:center; padding:0 6px; }
+  .bar{ width:120px; height:12px; border-radius:999px; background:color-mix(in oklab,var(--ink) 10%,transparent); overflow:hidden; }
+  .bar > i{ display:block; height:100%; width:0; background:linear-gradient(90deg,#FF8A3D,#FFC93C 60%,#FFE9A8); box-shadow:0 0 10px rgba(255,200,90,.8); }
+  .num{ font-family:Fraunces,serif; font-weight:800; font-size:2rem; color:var(--ink); }
+  .pin{ width:30px; height:38px; position:relative; }
+  .pin svg{ width:100%; height:100%; filter:drop-shadow(0 4px 5px rgba(0,0,0,.3)); }
+  .dot{ width:14px; height:14px; border-radius:50%; background:var(--accent); position:relative; }
+  .toast{ width:170px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:9px 11px; display:flex; gap:8px; align-items:center; box-shadow:0 14px 30px -12px rgba(40,20,50,.4); transform:translateY(-160%); }
+  .toast .k{ width:24px;height:24px;border-radius:50%;background:var(--teal);display:grid;place-items:center;color:#fff;font-size:.8rem;flex-shrink:0; }
+  .toast b{ font-size:.78rem;color:var(--ink); } .toast span{ font-size:.68rem;color:var(--muted);display:block; }
+  .skel{ width:150px; } .skel div{ height:12px; border-radius:6px; margin-bottom:8px; background:linear-gradient(90deg,color-mix(in oklab,var(--ink) 8%,transparent) 25%,color-mix(in oklab,var(--ink) 4%,transparent) 37%,color-mix(in oklab,var(--ink) 8%,transparent) 63%); background-size:400% 100%; }
+  .toggle{ position:fixed; top:14px; right:14px; z-index:99; background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.4rem .8rem; font:600 .8rem Manrope; cursor:pointer; color:var(--ink); box-shadow:var(--shadow); }
+  .swrow{ position:relative; width:170px; }
+  .swrow .act{ position:absolute; inset:0; border-radius:14px; background:var(--teal); color:#fff; display:grid; place-items:center; font-weight:800; font-size:.8rem; }
+  .swrow .fg{ position:relative; z-index:1; height:46px; border-radius:14px; background:var(--card); border:1px solid var(--line); display:flex; align-items:center; padding:0 14px; color:var(--ink); font-weight:700; font-size:.85rem; }
+  .tog{ width:52px; height:30px; border-radius:999px; background:var(--line); position:relative; cursor:pointer; }
+  .tog i{ position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.25); }
+  .tog.on{ background:var(--teal); } .tog.on i{ left:25px; }
+  .flame{ font-size:2rem; transform-origin:50% 90%; }
+  .ring{ width:60px; height:60px; }
+</style>
+</head>
+<body>
+<button class="toggle" id="modeBtn">🌙 Nuit</button>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SunMates · Système de mouvement</div>
+    <h1>La DA de <i>Motion</i></h1>
+    <p class="tagline">« Le mouvement du couchant » — un langage de mouvement chaud, fluide et joaillier, défini de A à Z pour tout ce qui vit dans l'app.</p>
+  </header>
+
+  <nav class="chips">
+    <a href="#fond">Fondations</a><a href="#app">Apparition</a><a href="#nav">Navigation</a><a href="#cartes">Cartes</a>
+    <a href="#jeux">Jeux</a><a href="#notif">Notifications</a><a href="#map">Map &amp; Pins</a><a href="#joyaux">Icônes &amp; Joyaux</a>
+    <a href="#feuilles">Feuilles</a><a href="#controles">Contrôles</a>
+  </nav>
+
+  <!-- ░░ FONDATIONS ░░ -->
+  <section id="fond">
+    <div class="sh"><span class="n">00</span><h2>Fondations</h2></div>
+    <p class="lead">Les 7 principes et les tokens qui donnent à TOUT le même ADN : décélération chaude, poids de joyau, cascade, continuité spatiale, calme par défaut, 60 fps.</p>
+    <div class="princ" id="princ"></div>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="ease">▶</button><div class="stage"><div id="easeBall" style="width:26px;height:26px;border-radius:50%;background:var(--grad);position:absolute;left:16px"></div></div><div class="cap"><b>Décélération chaude</b><span>back.out — pose avec poids</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ APPARITION ░░ -->
+  <section id="app">
+    <div class="sh"><span class="n">01</span><h2>Apparition</h2></div>
+    <p class="lead">Rien ne surgit du néant. Tout entre en y + scale + opacité, en cascade orchestrée (stagger).</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="reveal">▶</button><div class="stage"><div style="display:flex;gap:8px" id="revRow"><span class="tile t-coral" style="width:30px;height:30px;border-radius:10px"></span><span class="tile t-teal" style="width:30px;height:30px;border-radius:10px"></span><span class="tile t-violet" style="width:30px;height:30px;border-radius:10px"></span><span class="tile t-gold" style="width:30px;height:30px;border-radius:10px"></span></div></div><div class="cap"><b>Cascade</b><span>reveal() · stagger 60ms</span></div></div>
+      <div class="demo"><button class="replay" data-d="press">▶</button><div class="stage"><button class="btn" id="pressBtn">Appuie-moi</button></div><div class="cap"><b>Tactile</b><span>press · compression .95</span></div></div>
+      <div class="demo"><button class="replay" data-d="count">▶</button><div class="stage"><span class="num" id="cntEl">0</span></div><div class="cap"><b>Compteur</b><span>countUp() · chiffres héros</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ NAVIGATION ░░ -->
+  <section id="nav">
+    <div class="sh"><span class="n">02</span><h2>Navigation</h2></div>
+    <p class="lead">On ne coupe pas, on glisse. Indicateurs à dépassement, pilules ressort, et la continuité spatiale (morph) entre une carte et son détail.</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="seg">▶</button><div class="stage"><div class="seg2" id="seg2" style="position:relative;display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;width:200px"><span id="seg2pill" style="position:absolute;top:4px;bottom:4px;border-radius:999px;background:var(--grad);z-index:0"></span><button class="s2 on" style="flex:1;z-index:1;border:0;background:none;padding:.4rem 0;font:700 .8rem Manrope;color:#fff;cursor:pointer">Tous</button><button class="s2" style="flex:1;z-index:1;border:0;background:none;padding:.4rem 0;font:700 .8rem Manrope;color:var(--muted);cursor:pointer">Éco</button><button class="s2" style="flex:1;z-index:1;border:0;background:none;padding:.4rem 0;font:700 .8rem Manrope;color:var(--muted);cursor:pointer">Près</button></div></div><div class="cap"><b>Segmenté</b><span>pilule · back.out(1.6)</span></div></div>
+      <div class="demo" style="grid-column:span 2"><button class="replay" data-d="morph">▶ tape la tuile</button><div class="stage" id="morphStage" style="height:180px"><div id="mCard" style="cursor:pointer;width:120px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)"><div id="mImg" class="t-coral" style="height:70px"></div><div style="padding:8px"><b style="font-family:Fraunces;color:var(--ink);font-size:.85rem">Café du Levant</b></div></div><div id="mDetail" style="position:absolute;inset:0;background:var(--bg);visibility:hidden"><div id="mImgWrap" style="height:110px;position:relative"></div><div style="padding:12px"><b style="font-family:Fraunces;color:var(--ink)">Café du Levant</b><p style="font-size:.78rem;color:var(--muted);margin:6px 0 0">Lieu validé · 4.8 ★ · 230 check-ins</p><button id="mBack" style="margin-top:10px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:.3rem .8rem;font:700 .76rem Manrope;color:var(--ink);cursor:pointer">← retour</button></div></div></div><div class="cap"><b>Morph élément partagé</b><span>morph() · l'image voyage (Flip)</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ CARTES & LISTES ░░ -->
+  <section id="cartes">
+    <div class="sh"><span class="n">03</span><h2>Cartes &amp; listes</h2></div>
+    <p class="lead">Le geste fait partie du design : swipe pour agir, retour élastique, expand/collapse fluide.</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="swipe">▶</button><div class="stage"><div class="swrow"><div class="act">＋ Enregistré</div><div class="fg" id="swFg">Glisse →</div></div></div><div class="cap"><b>Swipe-to-save</b><span>retour elastic.out</span></div></div>
+      <div class="demo"><button class="replay" data-d="expand">▶</button><div class="stage"><div id="expCard" style="width:160px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden"><div style="padding:10px;font:700 .82rem Manrope;color:var(--ink)">Détails ▾</div><div id="expBody" style="height:0;overflow:hidden;padding:0 10px"><p style="font-size:.74rem;color:var(--muted);margin:0 0 10px">Contenu qui se déplie en douceur, sans à-coup.</p></div></div></div><div class="cap"><b>Expand / collapse</b><span>hauteur · power3.out</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ JEUX ░░ -->
+  <section id="jeux">
+    <div class="sh"><span class="n">04</span><h2>Jeux &amp; gamification</h2></div>
+    <p class="lead">Là où la fête est permise. Jauges qui se remplissent, niveaux qui éclatent, badges qui se débloquent avec un reflet, séries vivantes.</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="xp">▶</button><div class="stage"><div class="bar"><i id="xpFill"></i></div></div><div class="cap"><b>Jauge XP</b><span>fillBar() · lumineuse</span></div></div>
+      <div class="demo"><button class="replay" data-d="unlock">▶</button><div class="stage"><div class="tile t-gold" id="badge" style="opacity:0">🏅</div></div><div class="cap"><b>Déblocage de badge</b><span>unlock() · chute + reflet</span></div></div>
+      <div class="demo"><button class="replay" data-d="level">▶</button><div class="stage"><div class="tile t-violet" id="lvlTile">⭐</div></div><div class="cap"><b>Niveau supérieur</b><span>levelUp() + confettis</span></div></div>
+      <div class="demo"><button class="replay" data-d="flame">▶</button><div class="stage"><span class="flame" id="flame">🔥</span></div><div class="cap"><b>Série vivante</b><span>flamme qui respire</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ NOTIFICATIONS ░░ -->
+  <section id="notif">
+    <div class="sh"><span class="n">05</span><h2>Notifications &amp; feedback</h2></div>
+    <p class="lead">Chaque réponse de l'app a sa voix : toast qui glisse, compteur qui pop, halo de présence, secousse de refus, coche de succès qui se dessine.</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="toast">▶</button><div class="stage"><div class="toast" id="toastEl"><div class="k">✓</div><div><b>Check-in validé</b><span>+10 confiance</span></div></div></div><div class="cap"><b>Toast</b><span>toast() · entrée/sortie</span></div></div>
+      <div class="demo"><button class="replay" data-d="badgepop">▶</button><div class="stage"><div style="position:relative"><div class="tile t-coral" style="width:46px;height:46px">🔔</div><span class="pill" id="notifPill" style="position:absolute;top:-6px;right:-6px;opacity:0">3</span></div></div><div class="cap"><b>Compteur notif</b><span>pop() · back.out</span></div></div>
+      <div class="demo"><button class="replay" data-d="pulse">▶</button><div class="stage"><div class="dot" id="liveDot"></div></div><div class="cap"><b>Présence live</b><span>pulse() · halo (signal)</span></div></div>
+      <div class="demo"><button class="replay" data-d="shake">▶</button><div class="stage"><div class="fg" id="shakeF" style="width:140px;border-color:#F0384E;color:#F0384E">Champ requis</div></div><div class="cap"><b>Refus</b><span>shake() · secousse</span></div></div>
+      <div class="demo"><button class="replay" data-d="check">▶</button><div class="stage"><svg width="60" height="60" viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="none" stroke="var(--teal)" stroke-width="3" opacity=".25"/><path id="checkP" d="M15 27l8 8 15-16" fill="none" stroke="var(--teal)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cap"><b>Succès</b><span>checkDraw() · coche tracée</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ MAP & PINS ░░ -->
+  <section id="map">
+    <div class="sh"><span class="n">06</span><h2>Map &amp; pins</h2></div>
+    <p class="lead">La carte est vivante : les pins tombent en cascade, la position pulse en ondes, les clusters s'ouvrent.</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="pins">▶</button><div class="stage"><div style="display:flex;gap:14px" id="pinRow"></div></div><div class="cap"><b>Chute de pins</b><span>pinDrop() · stagger + rebond</span></div></div>
+      <div class="demo"><button class="replay" data-d="ripple">▶</button><div class="stage"><div style="position:relative;width:16px;height:16px"><span id="rip" style="position:absolute;inset:0;border-radius:50%;border:2px solid var(--accent)"></span><span style="position:absolute;inset:4px;border-radius:50%;background:var(--accent)"></span></div></div><div class="cap"><b>Ma position</b><span>ripple() · ondes live</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ ICÔNES & JOYAUX ░░ -->
+  <section id="joyaux">
+    <div class="sh"><span class="n">07</span><h2>Icônes &amp; joyaux</h2></div>
+    <p class="lead">Les surfaces-joyaux captent la lumière en mouvement ; les icônes réagissent à la sélection.</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="shine">▶</button><div class="stage"><div class="tile t-coral" id="shineTile">🎯</div></div><div class="cap"><b>Reflet qui glisse</b><span>shine() · lumière joaillière</span></div></div>
+      <div class="demo"><button class="replay" data-d="iconpop">▶</button><div class="stage"><div class="tile t-teal" id="iconPop" style="font-size:1.6rem">🛡️</div></div><div class="cap"><b>Sélection d'icône</b><span>rebond elastic</span></div></div>
+      <div class="demo"><button class="replay" data-d="shimmer">▶</button><div class="stage"><div class="skel" id="skel"><div style="width:100%"></div><div style="width:75%"></div><div style="width:60%"></div></div></div><div class="cap"><b>Chargement</b><span>skeleton shimmer</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ FEUILLES & MODALES ░░ -->
+  <section id="feuilles">
+    <div class="sh"><span class="n">08</span><h2>Feuilles &amp; modales</h2></div>
+    <p class="lead">Les surfaces montent au ressort et obéissent au geste (drag-to-dismiss). Les modales s'ouvrent depuis leur déclencheur.</p>
+    <div class="demos">
+      <div class="demo" style="grid-column:span 2"><button class="replay" data-d="sheet">▶ ouvrir</button><div class="stage" id="sheetStage" style="height:200px;align-items:flex-end"><div id="sgScrim" style="position:absolute;inset:0;background:rgba(20,8,30,.4);opacity:0;visibility:hidden"></div><div id="sgSheet" style="position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:22px 22px 0 0;padding:8px 16px 18px;transform:translateY(110%);box-shadow:0 -16px 40px -16px rgba(0,0,0,.4)"><div style="width:38px;height:5px;border-radius:999px;background:var(--line);margin:6px auto 12px"></div><b style="font-family:Fraunces;color:var(--ink)">Ajouter un lieu</b><p style="font-size:.76rem;color:var(--muted);margin:4px 0 12px">Glisse vers le bas pour fermer.</p><button class="btn" id="sgOk" style="width:100%">Proposer</button></div></div><div class="cap"><b>Bottom sheet</b><span>ressort + drag-to-dismiss</span></div></div>
+    </div>
+  </section>
+
+  <!-- ░░ CONTRÔLES & LOADERS ░░ -->
+  <section id="controles">
+    <div class="sh"><span class="n">09</span><h2>Contrôles &amp; loaders</h2></div>
+    <p class="lead">Le détail invisible : interrupteurs à ressort, pull-to-refresh, retours d'état immédiats.</p>
+    <div class="demos">
+      <div class="demo"><button class="replay" data-d="toggle">▶</button><div class="stage"><div class="tog" id="tog"><i></i></div></div><div class="cap"><b>Interrupteur</b><span>ressort sur le pouce</span></div></div>
+      <div class="demo"><button class="replay" data-d="ptr">▶</button><div class="stage"><div id="ptrSun" style="width:26px;height:26px;border-radius:50%;background:var(--grad);box-shadow:0 0 16px rgba(255,138,61,.6)"></div></div><div class="cap"><b>Pull-to-refresh</b><span>soleil qui tourne</span></div></div>
+    </div>
+  </section>
+
+  <p style="text-align:center;color:var(--muted);font-size:.78rem;margin-top:40px">SunMates · DA de Motion — noyau <code>sm-motion-da.js</code> · réutilisable dans l'app</p>
+</div>
+
+<script src="sm-motion-da.js"></script>
+<script>
+const M = window.SM_MOTION;
+/* principes */
+const PR=[["Décélération chaude","L'action arrive vite et se pose en douceur (ease-out)."],["Poids de joyau","Pose avec un léger dépassement maîtrisé (back.out)."],["Lumière qui glisse","Les surfaces-joyaux captent un reflet en mouvement."],["Cascade orchestrée","Les éléments entrent en chœur (stagger), pas en bloc."],["Continuité spatiale","On ne coupe pas, on transforme : l'objet voyage."],["Calme par défaut","Micro discret ; la fête pour les grands moments."],["Zéro friction · 60fps","transform/opacity only · reduced-motion respecté."]];
+document.getElementById('princ').innerHTML = PR.map(p=>`<div class="p"><b>${p[0]}</b><span>${p[1]}</span></div>`).join('');
+/* pins */
+const PINSVG='<svg viewBox="0 0 24 30"><path d="M12 0C5.4 0 0 5.2 0 11.6 0 20 12 30 12 30s12-10 12-18.4C24 5.2 18.6 0 12 0z" fill="#FF5A4D"/><circle cx="12" cy="11.5" r="4.5" fill="#fff"/></svg>';
+document.getElementById('pinRow').innerHTML = Array(4).fill(0).map(()=>`<span class="pin">${PINSVG}</span>`).join('');
+
+/* dispatcher de démos */
+const DEMOS = {
+  ease(){ gsap.fromTo('#easeBall',{x:0},{x:160,duration:.7,ease:M.EASE.spring}); },
+  reveal(){ M.reveal('#revRow .tile'); },
+  press(){ const b=document.getElementById('pressBtn'); gsap.fromTo(b,{scale:.95},{scale:1,duration:.5,ease:M.EASE.spring}); },
+  count(){ M.countUp('#cntEl',230); },
+  seg(){ const bs=[...document.querySelectorAll('#seg2 .s2')]; let i=(window._si=(window._si||0)+1)%3; bs.forEach(b=>{b.classList.remove('on');b.style.color='var(--muted)';}); bs[i].classList.add('on');bs[i].style.color='#fff';
+    const r=bs[i].getBoundingClientRect(),sr=document.getElementById('seg2').getBoundingClientRect(); gsap.to('#seg2pill',{x:r.left-sr.left,width:r.width,duration:.5,ease:'back.out(1.6)'}); },
+  morph(){ openMorph(); },
+  swipe(){ const f=document.getElementById('swFg'); gsap.timeline().to(f,{x:120,duration:.3,ease:'power3.out'}).to(f,{x:0,duration:.7,ease:'elastic.out(1,.5)'},'+=.2'); M.burst('#swFg',{shape:'heart',count:8,rise:90,spread:120}); },
+  expand(){ const b=document.getElementById('expBody'); const open=b._o; gsap.to(b,{height:open?0:54,duration:.45,ease:'power3.out'}); b._o=!open; },
+  xp(){ M.fillBar('#xpFill',Math.round(40+Math.random()*55)); },
+  unlock(){ M.unlock('#badge'); },
+  level(){ M.levelUp('#lvlTile'); },
+  flame(){ gsap.fromTo('#flame',{scale:1,rotation:-6},{scale:1.18,rotation:6,duration:.5,ease:'sine.inOut',yoyo:true,repeat:3}); },
+  toast(){ M.toast('#toastEl'); },
+  badgepop(){ M.pop('#notifPill'); },
+  pulse(){ gsap.killTweensOf('#liveDot'); M.pulse('#liveDot'); },
+  shake(){ M.shake('#shakeF'); },
+  check(){ M.checkDraw('#checkP'); },
+  pins(){ const ps=document.querySelectorAll('#pinRow .pin'); gsap.set(ps,{opacity:0}); M.pinDrop(ps,{stagger:.1}); },
+  ripple(){ gsap.killTweensOf('#rip'); M.ripple('#rip'); },
+  shine(){ M.shine('#shineTile'); },
+  iconpop(){ gsap.fromTo('#iconPop',{scale:.6,rotation:-12},{scale:1,rotation:0,duration:.7,ease:'elastic.out(1,.45)'}); },
+  shimmer(){ gsap.fromTo('#skel div',{backgroundPosition:'100% 0'},{backgroundPosition:'-100% 0',duration:1.2,ease:'none',repeat:1}); },
+  sheet(){ openSheet(); },
+  toggle(){ document.getElementById('tog').classList.toggle('on'); const t=document.getElementById('tog'); gsap.fromTo(t.querySelector('i'),{scale:.8},{scale:1,duration:.5,ease:'back.out(2)'}); },
+  ptr(){ gsap.fromTo('#ptrSun',{rotation:0,y:-10},{rotation:720,y:0,duration:1,ease:'power2.inOut'}); },
+};
+document.querySelectorAll('.replay').forEach(b=>b.addEventListener('click',()=>{ const fn=DEMOS[b.dataset.d]; fn&&fn(); }));
+
+/* morph (élément partagé) */
+const mCard=document.getElementById('mCard'),mImg=document.getElementById('mImg'),mDetail=document.getElementById('mDetail'),mImgWrap=document.getElementById('mImgWrap');
+let mOpen=false;
+function openMorph(){ if(mOpen)return; mOpen=true; const st=Flip.getState(mImg); mImgWrap.appendChild(mImg); mImg.style.height='110px'; mDetail.style.visibility='visible';
+  Flip.from(st,{duration:.55,ease:'power3.inOut',absolute:true,scale:true}); gsap.fromTo('#mDetail b,#mDetail p,#mBack',{opacity:0,y:10},{opacity:1,y:0,duration:.4,delay:.18,stagger:.05,ease:'power3.out'}); }
+function closeMorph(){ if(!mOpen)return; const st=Flip.getState(mImg); mCard.insertBefore(mImg,mCard.children[1]); mImg.style.height='70px';
+  Flip.from(st,{duration:.5,ease:'power3.inOut',absolute:true,scale:true,onComplete:()=>{mDetail.style.visibility='hidden';mOpen=false;}}); }
+mCard.addEventListener('click',openMorph); document.getElementById('mBack').addEventListener('click',e=>{e.stopPropagation();closeMorph();});
+
+/* sheet + drag */
+const sgSheet=document.getElementById('sgSheet'),sgScrim=document.getElementById('sgScrim');
+function openSheet(){ sgScrim.style.visibility='visible'; gsap.to(sgScrim,{opacity:1,duration:.3}); gsap.fromTo(sgSheet,{y:'110%'},{y:0,duration:.6,ease:'back.out(1.1)'}); }
+function closeSheet(){ gsap.to(sgScrim,{opacity:0,duration:.3,onComplete:()=>sgScrim.style.visibility='hidden'}); gsap.to(sgSheet,{y:'110%',duration:.4,ease:'power3.in'}); }
+sgScrim.addEventListener('click',closeSheet); document.getElementById('sgOk').addEventListener('click',closeSheet);
+(function(){let sy=0,dy=0,drag=false; sgSheet.addEventListener('pointerdown',e=>{if(e.target.closest('.btn'))return;sy=e.clientY;dy=0;drag=true;sgSheet.setPointerCapture(e.pointerId);gsap.killTweensOf(sgSheet);});
+  sgSheet.addEventListener('pointermove',e=>{if(!drag)return;dy=Math.max(0,e.clientY-sy);sgSheet.style.transform=`translateY(${dy}px)`;});
+  sgSheet.addEventListener('pointerup',()=>{drag=false;if(dy>80)closeSheet();else gsap.to(sgSheet,{y:0,duration:.5,ease:'back.out(1.2)'});});})();
+
+/* entrée + mode */
+window.addEventListener('load',()=>{ M.reveal('.princ .p',{stagger:.05}); M.reveal('.demo',{stagger:.04,delay:.1}); M.press('.btn'); });
+document.getElementById('modeBtn').addEventListener('click',function(){document.body.classList.toggle('night');this.textContent=document.body.classList.contains('night')?'☀️ Jour':'🌙 Nuit';});
+</script>
+</body>
+</html>
