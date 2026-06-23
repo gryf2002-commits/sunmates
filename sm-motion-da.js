@@ -196,6 +196,77 @@
     G.fromTo(el, { scale: 0.5, opacity: 0.6 }, { scale: 2.4, opacity: 0, duration: 1.8, ease: "power2.out", repeat: -1 });
   }
 
+  /* ── PROFONDEUR : LISTES, COFFRES, ITINÉRAIRES, PILES, UNDO ──────────────── */
+
+  // Classement / liste qui se réordonne en place (Flip sur les enfants).
+  // orderFn = comparateur appliqué aux noeuds enfants.
+  function reorder(container, orderFn) {
+    container = nodes(container)[0]; if (!container || !global.Flip) return;
+    var items = [].slice.call(container.children);
+    if (reduce()) { items.sort(orderFn).forEach(function (it) { container.appendChild(it); }); return; }
+    var st = global.Flip.getState(items);
+    items.sort(orderFn).forEach(function (it) { container.appendChild(it); });
+    global.Flip.from(st, { duration: DUR.slow, ease: EASE.io, absolute: false, stagger: 0.04 });
+  }
+
+  // Coffre / récompense : secousse d'anticipation puis éclat (grand moment).
+  function chest(sel) {
+    var el = nodes(sel)[0]; if (!el) return; if (reduce()) { burst(el); return; }
+    G.timeline()
+      .to(el, { rotation: -7, duration: 0.07, repeat: 5, yoyo: true, ease: "sine.inOut" })
+      .to(el, { rotation: 0, scale: 1.16, duration: 0.22, ease: EASE.springBig })
+      .to(el, { scale: 1, duration: 0.3, ease: EASE.out })
+      .add(function () { burst(el, { count: 34, rise: 300 }); shine(el); }, "-=0.25");
+  }
+
+  // Tracé d'itinéraire / trajectoire sur la carte (path SVG qui se dessine).
+  function routeDraw(pathSel, opt) {
+    var p = nodes(pathSel)[0]; if (!p || !p.getTotalLength) return; opt = opt || {};
+    var len = p.getTotalLength();
+    p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+    if (reduce()) { p.style.strokeDashoffset = 0; return; }
+    G.to(p, { strokeDashoffset: 0, duration: opt.duration || 1.1, ease: opt.ease || EASE.io, delay: opt.delay || 0 });
+  }
+
+  // Pile de notifications groupées qui se déploie.
+  function notifStack(sel) {
+    var els = nodes(sel); if (!els.length) return;
+    if (reduce()) { G && G.set(els, { opacity: 1, y: 0, scale: 1 }); return; }
+    G.fromTo(els, { y: function (i) { return -i * 7; }, scale: function (i) { return 1 - i * 0.05; }, opacity: 0 },
+      { y: 0, scale: 1, opacity: 1, duration: DUR.slow, ease: EASE.spring, stagger: 0.07 });
+  }
+
+  // Toast UNDO avec compte à rebours (anneau SVG qui se vide pendant `hold`).
+  function undo(toastEl, ringSel, opt) {
+    opt = opt || {}; toast(toastEl, opt);
+    var r = nodes(ringSel)[0]; if (!r || !r.getTotalLength || reduce()) return;
+    var len = r.getTotalLength(); r.style.strokeDasharray = len;
+    G.fromTo(r, { strokeDashoffset: 0 }, { strokeDashoffset: len, duration: opt.hold || 3, ease: "none" });
+  }
+
+  /* ── SIGNATURES PAR FEATURE (compositions « waouh ») ─────────────────────── */
+
+  // CHECK-IN : pulse de validation → coche tracée → confettis → +points (countUp).
+  function checkIn(opt) {
+    opt = opt || {}; var origin = opt.origin, check = opt.check, points = opt.points, to = opt.to || 10;
+    if (check) checkDraw(check);
+    burst(origin, { count: 28, rise: 300 });
+    if (points) countUp(points, to, { prefix: "+", suffix: opt.suffix || "", delay: 0.2 });
+  }
+
+  // SOS : anneau d'urgence qui pulse fort (signal de sécurité, rouge protégé).
+  function sos(sel) {
+    var el = nodes(sel)[0]; if (!el || reduce()) return;
+    G.fromTo(el, { boxShadow: "0 0 0 0 rgba(240,56,78,.6)" },
+      { boxShadow: "0 0 0 22px rgba(240,56,78,0)", duration: 1.2, ease: "power2.out", repeat: -1 });
+  }
+
+  // DÉBLOCAGE DE CONFIANCE : le sceau s'illumine (reflet) + le score s'incrémente.
+  function trustReveal(sealSel, scoreSel, to) {
+    var seal = nodes(sealSel)[0]; if (seal && !reduce()) { G.fromTo(seal, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: DUR.grand, ease: EASE.celebrate }); shine(seal); }
+    if (scoreSel != null) countUp(scoreSel, to, { delay: 0.25 });
+  }
+
   /* ── EXPORT ──────────────────────────────────────────────────────────────── */
   global.SM_MOTION = {
     DUR: DUR, EASE: EASE, STAGGER: STAGGER, COLORS: COLORS, reduce: reduce,
@@ -203,5 +274,7 @@
     pop: pop, pulse: pulse, shake: shake, toast: toast, checkDraw: checkDraw,
     burst: burst, fillBar: fillBar, unlock: unlock, levelUp: levelUp, shine: shine,
     pinDrop: pinDrop, ripple: ripple,
+    reorder: reorder, chest: chest, routeDraw: routeDraw, notifStack: notifStack, undo: undo,
+    checkIn: checkIn, sos: sos, trustReveal: trustReveal,
   };
 })(window);

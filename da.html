@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SunMates · Centre DA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#190E2E; --card:#271641; --ink:#FCEFE9; --text:#E7D7E4; --muted:#9E86A8; --line:#3A2552;
+    --accent:#FF6A5D; --gold:#FFD15C; --teal:#2BE0B0; --violet:#9B7BFF; --grad:linear-gradient(135deg,#FFC93C,#FF7A3D 46%,#FF4F6D); }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ margin:0; background:
+    radial-gradient(120% 60% at 80% -10%, rgba(255,138,61,.16), transparent 60%),
+    radial-gradient(120% 60% at 10% 110%, rgba(122,92,255,.18), transparent 55%), var(--bg);
+    color:var(--text); font-family:Manrope,system-ui,sans-serif; min-height:100vh; }
+  .wrap{ max-width:1000px; margin:0 auto; padding:0 20px 80px; }
+  header{ padding:64px 0 30px; }
+  .eyebrow{ font-size:.72rem; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); }
+  h1{ font-family:Fraunces,serif; font-weight:600; font-size:clamp(2.4rem,7vw,3.6rem); color:var(--ink); margin:.25rem 0 .35rem; letter-spacing:-.03em; }
+  .sub{ color:var(--muted); font-size:1.02rem; max-width:560px; line-height:1.6; }
+  .grp{ margin-top:38px; }
+  .grp h2{ font-family:Fraunces,serif; font-weight:600; color:var(--ink); font-size:1.05rem; margin:0 0 14px; display:flex; align-items:center; gap:10px; }
+  .grp h2::before{ content:""; width:18px; height:3px; border-radius:3px; background:var(--grad); }
+  .cards{ display:grid; grid-template-columns:repeat(auto-fill,minmax(248px,1fr)); gap:14px; }
+  a.card{ display:block; text-decoration:none; background:var(--card); border:1px solid var(--line); border-radius:20px; padding:18px;
+    box-shadow:0 1px 2px rgba(0,0,0,.3),0 18px 36px -22px rgba(0,0,0,.7); transition:transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s, border-color .22s; position:relative; overflow:hidden; }
+  a.card:hover{ transform:translateY(-4px); border-color:color-mix(in oklab,var(--accent) 40%,var(--line)); box-shadow:0 24px 44px -22px rgba(255,138,61,.4); }
+  a.card .ic{ width:42px; height:42px; border-radius:13px; display:grid; place-items:center; font-size:1.4rem; margin-bottom:12px;
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.4),inset 0 -8px 12px -6px rgba(0,0,0,.3); }
+  a.card b{ font-family:Fraunces,serif; font-weight:600; color:var(--ink); font-size:1.04rem; display:block; }
+  a.card span{ display:block; color:var(--muted); font-size:.82rem; margin-top:4px; line-height:1.45; }
+  a.card .tag{ position:absolute; top:14px; right:14px; font-size:.6rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+  .g-coral{ background:radial-gradient(120% 90% at 28% 18%,#FF9A6E,#FF5A4D 60%,#E23B4E); }
+  .g-gold{ background:radial-gradient(120% 90% at 28% 18%,#FFEFCF,#FFD15C 45%,#E8961F); }
+  .g-teal{ background:radial-gradient(120% 90% at 28% 18%,#5FE3CE,#11B5A0 60%,#0A8C7C); }
+  .g-violet{ background:radial-gradient(120% 90% at 28% 18%,#B79BFF,#7A5CFF 60%,#5028b0); }
+  footer{ margin-top:50px; color:var(--muted); font-size:.78rem; text-align:center; line-height:1.7; }
+  code{ background:rgba(255,255,255,.08); padding:1px 6px; border-radius:6px; font-size:.85em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SunMates</div>
+    <h1>Centre DA</h1>
+    <p class="sub">Tout le système de design au même endroit : motion, couleurs, icônes, vitrines et docs. Le point d'entrée pour retrouver et piloter la DA.</p>
+  </header>
+
+  <div class="grp">
+    <h2>🎬 Motion</h2>
+    <div class="cards">
+      <a class="card" href="motion-da.html" target="_blank"><span class="tag">À jour</span><div class="ic g-coral">🎬</div><b>DA de Motion</b><span>« Le mouvement du couchant » — 7 principes, tokens, 11 catégories rejouables.</span></a>
+      <a class="card" href="motion-proto.html" target="_blank"><div class="ic g-violet">🧪</div><b>Motion Lab</b><span>Prototype à ressentir : morph, sheet, pull-to-refresh, célébrations.</span></a>
+      <a class="card" href="sm-motion-da.js" target="_blank"><div class="ic g-gold">⚙️</div><b>Noyau (source)</b><span><code>sm-motion-da.js</code> — 24 helpers réutilisables dans l'app.</span></a>
+    </div>
+  </div>
+
+  <div class="grp">
+    <h2>🎨 Couleurs &amp; tokens</h2>
+    <div class="cards">
+      <a class="card" href="da-console-v2.html" target="_blank"><div class="ic g-coral">🎛️</div><b>Console DA</b><span>Piloter les tokens de la DA (couleurs, modes).</span></a>
+      <a class="card" href="da-galerie/index.html" target="_blank"><div class="ic g-violet">🖼️</div><b>Galerie DA</b><span>Aperçus des écrans et variantes de la DA.</span></a>
+      <a class="card" href="DESIGN.md" target="_blank"><div class="ic g-gold">📐</div><b>Design System</b><span>Palette, typo, composants, règles (DESIGN.md).</span></a>
+      <a class="card" href="DESIGN_SYSTEM.md" target="_blank"><div class="ic g-teal">📖</div><b>Dossier d'âme</b><span>Gouvernance, moteurs de badges (DESIGN_SYSTEM.md).</span></a>
+    </div>
+  </div>
+
+  <div class="grp">
+    <h2>✨ Icônes</h2>
+    <div class="cards">
+      <a class="card" href="icones-modes.html" target="_blank"><div class="ic g-teal">🌗</div><b>Icônes · modes</b><span>Les icônes dans les 6 modes.</span></a>
+      <a class="card" href="icones-contexte.html" target="_blank"><div class="ic g-coral">🧭</div><b>Icônes · contexte</b><span>Les icônes en situation.</span></a>
+      <a class="card" href="icones-preview.html" target="_blank"><div class="ic g-gold">👁️</div><b>Icônes · aperçu</b><span>Aperçu rapide de la banque d'icônes.</span></a>
+    </div>
+  </div>
+
+  <div class="grp">
+    <h2>🪟 Vitrines</h2>
+    <div class="cards">
+      <a class="card" href="sunmates-showcase.html" target="_blank"><div class="ic g-coral">🌅</div><b>Showcase</b><span>Landing premium cinématique.</span></a>
+      <a class="card" href="presentation.html" target="_blank"><div class="ic g-violet">📊</div><b>Présentation</b><span>Deck de présentation produit.</span></a>
+      <a class="card" href="sunmates-plaquette.html" target="_blank"><div class="ic g-gold">📄</div><b>Plaquette</b><span>Plaquette de l'app.</span></a>
+    </div>
+  </div>
+
+  <div class="grp">
+    <h2>📱 App</h2>
+    <div class="cards">
+      <a class="card" href="preview.html?beta=1" target="_blank"><span class="tag">Live</span><div class="ic g-teal">📱</div><b>L'app (preview)</b><span>La vraie app, mode complet.</span></a>
+    </div>
+  </div>
+
+  <footer>SunMates · Centre DA — accessible à <code>sunmatesapp.com/da.html</code><br>Mis à jour avec la DA de Motion.</footer>
+</div>
+</body>
+</html>
