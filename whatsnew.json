@@ -1,7 +1,7 @@
 {
-  "candidate": "v716",
+  "candidate": "v717",
   "items": [
-    "⏳ Fini l'app à moitié chargée : un écran de chargement brandé (logo qui respire + roue sunset) reste affiché jusqu'à ce que l'essentiel soit prêt — on ne voit plus le contenu se remplir derrière.",
-    "🅰️ Couleurs des titres : laissées telles quelles (je ne touche plus qu'à la taille/au poids pour l'homogénéité)."
+    "➡️ Double flèche du « spot du jour » : réglée (le texte « Ajouter le tien › » avait sa propre flèche en plus du chevron).",
+    "🔔 Cloche et messages dans le header : juste l'icône, plus de petit pavé gris autour."
   ]
 }

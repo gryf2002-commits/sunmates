@@ -1636,6 +1636,11 @@
     /* 4 · LISIBILITÉ MODE SOMBRE : amber gameplay #B5740E -> ambre clair (les ~23 sans override dusk) */
     html body.theme-dusk :is(.xp-banner b,.xpl-lvl,.xpl-xp,.q-inprog,.ci-count,.rate-chip,.qm-xp,.sc-xp,.rit-cnt,.boost-card .boost-meta,.tip-title,.profile-title,.wg-alldone,.tcard-vedette,.mappop-quest .mq-rew,.shop-coins){ color:#FFD79A !important; }
 
+    /* v717 · boutons cloche/messages du header (Maxime « pareil pour les logos notifs/messages ») :
+       juste l'ICÔNE, plus de petit pavé gris autour. Cible tactile conservée (44px). */
+    html body .topbar-actions .iconbtn, html body[class*="theme-"] .topbar-actions .iconbtn {
+      background: transparent !important; border: 0 !important; box-shadow: none !important; }
+
     /* ============================================================
        v714b · AUDIT EXHAUSTIF cartes résiduelles (agent) : dernières surfaces échappant à v692→v713
        (Admin, Réglages, Sécurité, Jeux). ENCARTS → transparent ; CELLULES répétées → filet bas.
