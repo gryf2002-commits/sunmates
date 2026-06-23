@@ -1426,6 +1426,31 @@
     /* centrage cohérent du contenu des tuiles (icône + textes alignés pareil partout) */
     html body :is(.tile, .cat-tile) { text-align: center !important; }
     html body :is(.tile, .cat-tile) :is(.t-name, .t-meta, .clbl) { text-align: center !important; width: 100%; }
+
+    /* ============================================================
+       v700 (carte blanche, suite) : segments Profil homogénéisés + motion EMIL (stagger).
+       ============================================================ */
+    /* Segments Profil (Gold/Espace Pro/Admin) : fini le multicolore — neutre inactif + accent actif.
+       Le rôle reste lisible via l'icône + le libellé. */
+    html body #profSegNav button[data-pseg], html body[class*="theme-"] #profSegNav button[data-pseg] {
+      background: color-mix(in srgb, var(--ink) 5%, transparent) !important; border: 1px solid var(--line) !important; color: var(--muted) !important; box-shadow: none !important; }
+    html body #profSegNav button[data-pseg].active, html body[class*="theme-"] #profSegNav button[data-pseg].active {
+      background: var(--accent-grad) !important; color: #fff !important; border-color: transparent !important; box-shadow: 0 4px 12px rgba(45,38,52,.16) !important; }
+    /* MOTION (Emil) : entrée en cascade des tuiles d'accès rapides quand la section se révèle.
+       Filet : par défaut (pas de .sm-reveal) les tuiles restent visibles ; reduced-motion neutralise. */
+    @media (prefers-reduced-motion: no-preference) {
+      html body #homeQuickAccess.sm-reveal .grid2 > .tile { opacity: 0; transform: translateY(9px); }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile { animation: qaIn .44s var(--ease-out, cubic-bezier(.22,1,.36,1)) both; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(1) { animation-delay: 30ms; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(2) { animation-delay: 70ms; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(3) { animation-delay: 110ms; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(4) { animation-delay: 150ms; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(5) { animation-delay: 190ms; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(6) { animation-delay: 230ms; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(7) { animation-delay: 270ms; }
+      html body #homeQuickAccess.sm-reveal.in .grid2 > .tile:nth-child(8) { animation-delay: 310ms; }
+      @keyframes qaIn { to { opacity: 1; transform: none; } }
+    }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */

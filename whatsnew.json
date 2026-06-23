@@ -1,8 +1,8 @@
 {
-  "candidate": "v699",
+  "candidate": "v700",
   "items": [
-    "👆 On voit enfin ce qui est cliquable : au survol, un bloc s'éclaire d'une touche d'accent, et il s'enfonce légèrement quand on appuie (feedback façon app native, design Emil).",
-    "📐 Moins de vide : on a resserré l'espacement entre les sections (c'était parfois trop aéré) et centré les tuiles de façon homogène.",
-    "📱 Barre du téléphone : couleur de lancement repassée en clair (le fond et la barre native sont désormais alignés, jour comme nuit — pense à réinstaller l'app)."
+    "🎚️ Onglets du profil unifiés : Gold / Espace Pro / Admin ont le même style propre (neutre, et accent quand c'est actif) — fini les pastilles multicolores.",
+    "✨ Motion : les accès rapides apparaissent en cascade douce (effet façon app native).",
+    "🧹 Suite du nettoyage et de la cohérence sur Profil & Messages."
   ]
 }
