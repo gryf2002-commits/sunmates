@@ -1,6 +1,7 @@
 {
-  "candidate": "v713",
+  "candidate": "v714",
   "items": [
-    "🃏 Encore plus à plat : les cellules cliquables que je gardais en carte (options de sondage, lignes de classement, check-ins, ouvreurs, collections, objectifs) passent en liste épurée (séparateur au lieu de boîte). Les états (résultats de vote, rituel fait, podium) restent visibles."
+    "🔤 Typographie harmonisée partout : une seule échelle de titres (Fraunces), un seul système de poids, sous-titres et libellés uniformes — fini le « pas pareil d'un écran à l'autre ».",
+    "🌙 Lisibilité nuit : les chiffres de jeu (XP, niveaux, compteurs) en or foncé illisibles passent en or clair."
   ]
 }

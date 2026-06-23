@@ -1594,6 +1594,33 @@
     html body .cat-tile, html body[class*="theme-"] .cat-tile {
       border-color: transparent !important; box-shadow: none !important; }
     html body .gp-tile span:last-child, html body[class*="theme-"] .gp-tile span:last-child { color: var(--text) !important; }
+
+    /* ============================================================
+       v714 · HARMONISATION TYPO (audit agent) : échelle + familles + poids + couleurs UNIFORMES,
+       dans les 2 modes. Dernier bloc → gagne sur les 4 couches concurrentes (.section-head>h3 définie 3×).
+       N'écrase PAS : logo, prix Gold, .match-card h3 (dégradé), retro-8bit, chiffres-héros.
+       ============================================================ */
+    /* 1 · FAMILLES : titres = Fraunces */
+    html body :is(h1,h2,h3,h4,.section-head>h3,.qm-head>h3,.sp-title,.qs-title,.su-head .su-t,.tz-name,.cstory-bd b,.pf-head,.ph-name,.sv-name,.detail-hero .dh-name,.parcours-card .pc-head b),
+    html body[class*="theme-"] :is(h1,h2,h3,h4,.section-head>h3,.qm-head>h3,.sp-title,.qs-title,.su-head .su-t,.tz-name,.cstory-bd b,.pf-head,.ph-name,.sv-name,.detail-hero .dh-name,.parcours-card .pc-head b){
+      font-family:"Fraunces",Georgia,serif !important; font-optical-sizing:auto; }
+    /* 2 · ÉCHELLE + POIDS UNIQUE (700 titres ; --ink lisible jour+nuit) */
+    html body h1, html body[class*="theme-"] h1{ font-size:1.5rem !important; font-weight:700 !important; line-height:1.14 !important; letter-spacing:-.02em !important; color:var(--ink) !important; }
+    html body h2, html body[class*="theme-"] h2{ font-size:1.25rem !important; font-weight:700 !important; line-height:1.18 !important; letter-spacing:-.015em !important; color:var(--ink) !important; }
+    html body :is(.section-head>h3,.qm-head>h3,.sp-title),
+    html body[class*="theme-"] :is(.section-head>h3,.qm-head>h3,.sp-title){ font-size:1.1rem !important; font-weight:700 !important; line-height:1.2 !important; letter-spacing:-.01em !important; color:var(--ink) !important; }
+    html body h3, html body[class*="theme-"] h3{ font-size:1rem !important; font-weight:700 !important; line-height:1.25 !important; letter-spacing:-.01em !important; color:var(--ink) !important; }
+    html body :is(.qs-title,.tz-name,.su-head .su-t,.cstory-bd b,.pf-head),
+    html body[class*="theme-"] :is(.qs-title,.tz-name,.su-head .su-t,.cstory-bd b,.pf-head){ font-weight:700 !important; }
+    html body :is(.ph-name,.sv-name,.sv-stat .sv-n,.ph-xp-val b,.stat,.sp-stat b,.coll-stat .cs-v),
+    html body[class*="theme-"] :is(.ph-name,.sv-name,.sv-stat .sv-n,.ph-xp-val b,.stat,.sp-stat b,.coll-stat .cs-v){ font-weight:800 !important; }
+    /* 3 · SOUS-TITRES / META / MUETS homogènes (Manrope .82rem --muted) */
+    html body :is(.muted,.meta,.st-sub,.sc-sub,.feat-desc,.boost-desc,.gcard .gdesc,.completion-txt,.popinfo-b,.tour-pop p),
+    html body[class*="theme-"] :is(.muted,.meta,.st-sub,.sc-sub,.feat-desc,.boost-desc,.gcard .gdesc,.completion-txt){ font-size:.82rem !important; font-weight:500 !important; line-height:1.45 !important; color:var(--muted) !important; }
+    html body :is(label,.lbl,.jnav-cap,.set-grouptitle,.spot-step),
+    html body[class*="theme-"] :is(label,.lbl,.jnav-cap,.set-grouptitle,.spot-step){ font-size:.72rem !important; font-weight:700 !important; letter-spacing:.04em !important; }
+    /* 4 · LISIBILITÉ MODE SOMBRE : amber gameplay #B5740E -> ambre clair (les ~23 sans override dusk) */
+    html body.theme-dusk :is(.xp-banner b,.xpl-lvl,.xpl-xp,.q-inprog,.ci-count,.rate-chip,.qm-xp,.sc-xp,.rit-cnt,.boost-card .boost-meta,.tip-title,.profile-title,.wg-alldone,.tcard-vedette,.mappop-quest .mq-rew,.shop-coins){ color:#FFD79A !important; }
     /* 3 · barre de recherche : fond neutre cohérent en nuit (fini le prune saturé) */
     html body.theme-dusk .search input, html body[class*="theme-"].theme-dusk .search input { background: var(--dcard2, #241b35) !important; color: var(--ink) !important; border-color: var(--line) !important; }
     /* 4 · sélecteur de ville : pilule lisible (fini le gris terne) */
