@@ -5392,3 +5392,34 @@
     html body :is(.pcard-actions button, .place button):not(.btn-primary):not(.btn-danger),
     html.sm-app body :is(.pcard-actions button, .place button):not(.btn-primary):not(.btn-danger) {
       background: transparent !important; box-shadow: none !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v749 · SÉPARATEURS SunMates — doctrine « filet sable » (conception impeccable).
+       Token --sep dérivé de --ink → s'adapte AUX 6 MODES sans redéclaration.
+       Filet de rangée SIGNATURE : plein au centre, fondu aux bords (::after dégradé),
+       jamais un hairline gris bord-à-bord. + on RETIRE le sur-clôturage (trait de
+       section + barre accent) : sur app plate, le titre + l'espace séparent, pas un trait.
+       Réversible. ════════════════════════════════════════════════════════════════ */
+    :root, body { --sep: color-mix(in srgb, var(--ink) 7%, transparent); --sep-strong: color-mix(in srgb, var(--ink) 11%, transparent); }
+    body.theme-dusk { --sep: color-mix(in srgb, var(--ink) 9%, transparent); --sep-strong: color-mix(in srgb, var(--ink) 14%, transparent); }
+
+    /* 1 · FILET DE RANGÉE signature (fondu aux extrémités), une seule source */
+    html body :is(.place,.qrow,.person,.te-row,.review-item,.ptl-row,.num-row,.prog-row,.da-comp-row,.trip-matches,.act-search-results li,.set-row,.lb-row),
+    html.sm-app body :is(.place,.qrow,.person,.te-row,.review-item,.ptl-row,.num-row,.prog-row,.da-comp-row,.trip-matches,.act-search-results li,.set-row,.lb-row) {
+      position: relative; border-top: 0 !important; border-bottom: 0 !important; }
+    html body :is(.place,.qrow,.person,.te-row,.review-item,.ptl-row,.num-row,.prog-row,.da-comp-row,.trip-matches,.act-search-results li,.set-row,.lb-row)::after,
+    html.sm-app body :is(.place,.qrow,.person,.te-row,.review-item,.ptl-row,.num-row,.prog-row,.da-comp-row,.trip-matches,.act-search-results li,.set-row,.lb-row)::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; pointer-events: none;
+      background: linear-gradient(90deg, transparent 0%, var(--sep) 14%, var(--sep) 86%, transparent 100%); }
+    html body :is(.place,.qrow,.person,.te-row,.review-item,.ptl-row,.num-row,.prog-row,.da-comp-row,.trip-matches,.act-search-results li,.set-row,.lb-row):last-child::after,
+    html.sm-app body :is(.place,.qrow,.person,.te-row,.review-item,.ptl-row,.num-row,.prog-row,.da-comp-row,.trip-matches,.act-search-results li,.set-row,.lb-row):last-child::after { display: none; }
+
+    /* 2 · SECTIONS séparées par l'ESPACE, pas par un trait (retire border-top de section) */
+    html body :is(.section-head, .qm-head), html.sm-app body :is(.section-head, .qm-head) {
+      border-top: 0 !important; padding-top: 0 !important; margin-top: 1.7rem; }
+    /* set-grouptitle (réglages) : avait SON border-top en plus → espace seul */
+    html body .set-grouptitle, html.sm-app body .set-grouptitle { border-top: 0 !important; padding-top: 0 !important; margin-top: 1.3rem; }
+
+    /* 3 · pointillés hors-doctrine restants → filet calme --sep */
+    html body :is(.bubble-tr, .pfield-sep, .cstory-hl), html.sm-app body :is(.bubble-tr, .pfield-sep, .cstory-hl) {
+      border-top: 1px solid var(--sep) !important; border-bottom: 0 !important; }
