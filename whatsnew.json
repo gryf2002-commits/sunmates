@@ -1,6 +1,6 @@
 {
-  "candidate": "v747",
+  "candidate": "v748",
   "items": [
-    "🧹 Aplatissement étendu à TOUS les écrans : fiches Lieux, carte Sécurité, Messages. Les fiches gardent leur photo mais perdent leur boîte, et les boutons secondaires deviennent des contours fins (plats mais cliquables). Seul le bouton d'action principal garde son fond."
+    "🧹 Aplatissement TOTAL : crush final des dernières boîtes (switch, segmentés, badges, boutons, pilules) jour ET nuit. Il ne reste de surface que sur le strictement fonctionnel — champs, photos, avatars, bouton d'action principal, et l'indicateur de sélection. L'app respire enfin."
   ]
 }

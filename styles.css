@@ -5376,3 +5376,19 @@
       border: 1px solid color-mix(in oklab, var(--accent) 30%, transparent) !important;
       color: var(--accent-ink, var(--accent)) !important; }
     html body :is(.iconbtn, .backbtn), html.sm-app body :is(.iconbtn, .backbtn) { border-color: var(--line) !important; color: var(--ink) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v748 · CRUSH FINAL des boîtes résiduelles (jour ET nuit, haute spécificité
+       pour battre les overrides body.theme-dusk !important). Aplatit TOUT le reste
+       sauf le whitelist (champs, .sl, btn-primary/danger, joyaux .cic/.jo-ic,
+       avatars, photos, indicateur ACTIF, carte). Switch/segmenté : track plat mais
+       l'élément .active/.on garde sa surface (indicateur de sélection). ═══════════ */
+    html body :is(.btn-ghost,.btn-accent,.iconbtn,.backbtn,.qs-mode-btn,.qs-mode,.qs-emblem,.mode-switch,.mseg,.pseg,.tvt-btn,.sscope,.badge,.inv-go,.sm-sel-trigger,.prof-trust,.pb-pill,.num-badge,.coll-stat,.mates-stat,.spot-live):not(.active):not(.on):not(.is-on),
+    html.sm-app body :is(.btn-ghost,.btn-accent,.iconbtn,.backbtn,.qs-mode-btn,.qs-mode,.qs-emblem,.mode-switch,.mseg,.pseg,.tvt-btn,.sscope,.badge,.inv-go,.sm-sel-trigger,.prof-trust,.pb-pill,.num-badge,.coll-stat,.mates-stat,.spot-live):not(.active):not(.on):not(.is-on),
+    html body.theme-dusk :is(.btn-ghost,.btn-accent,.iconbtn,.backbtn,.qs-mode-btn,.qs-mode,.qs-emblem,.mode-switch,.mseg,.pseg,.tvt-btn,.sscope,.badge,.inv-go,.sm-sel-trigger,.prof-trust,.pb-pill,.num-badge,.coll-stat,.mates-stat,.spot-live):not(.active):not(.on):not(.is-on),
+    html.sm-app body.theme-dusk :is(.btn-ghost,.btn-accent,.iconbtn,.backbtn,.qs-mode-btn,.qs-mode,.qs-emblem,.mode-switch,.mseg,.pseg,.tvt-btn,.sscope,.badge,.inv-go,.sm-sel-trigger,.prof-trust,.pb-pill,.num-badge,.coll-stat,.mates-stat,.spot-live):not(.active):not(.on):not(.is-on) {
+      background: transparent !important; box-shadow: none !important; }
+    /* boutons génériques des fiches lieux (pas les CTA) */
+    html body :is(.pcard-actions button, .place button):not(.btn-primary):not(.btn-danger),
+    html.sm-app body :is(.pcard-actions button, .place button):not(.btn-primary):not(.btn-danger) {
+      background: transparent !important; box-shadow: none !important; }
