@@ -34,9 +34,10 @@
     if (!fresh.length) return true; // déjà révélé → on dit "géré" mais on ne rejoue rien
     try {
       g.killTweensOf(fresh);
+      // v732 : plus SNAPPY (le contenu apparaît plus vite = ressenti plus fluide).
       g.fromTo(fresh,
-        { opacity: 0, y: 14 },
-        { opacity: 1, y: 0, duration: 0.5, ease: EASE, stagger: 0.05, clearProps: "all", overwrite: true });
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.34, ease: EASE, stagger: 0.035, clearProps: "all", overwrite: true });
     } catch (e) {}
     return true;
   };

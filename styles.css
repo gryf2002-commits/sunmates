@@ -148,8 +148,8 @@
     body.sm-hdrhide .topbar { transform: translateY(-101%); }
     @media (prefers-reduced-motion: reduce) { .topbar { transition: background .25s ease; } body.sm-hdrhide .topbar { transform: none; } }
     /* v684 · Motion d'entrée façon Emil (blocs qui se posent en glissant, stagger via --sm-rd) */
-    .sm-reveal { opacity: 0; transform: translateY(16px);
-      transition: opacity .55s cubic-bezier(.23,1,.32,1) var(--sm-rd, 0ms), transform .55s cubic-bezier(.23,1,.32,1) var(--sm-rd, 0ms); }
+    .sm-reveal { opacity: 0; transform: translateY(14px);
+      transition: opacity .38s cubic-bezier(.23,1,.32,1) var(--sm-rd, 0ms), transform .38s cubic-bezier(.23,1,.32,1) var(--sm-rd, 0ms); } /* v732 : plus snappy (ressenti) */
     .sm-reveal.in { opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce) { .sm-reveal { opacity: 1 !important; transform: none !important; transition: none !important; } }
     /* min-width:0 : le wordmark peut rétrécir au lieu de pousser les actions ; padding-right : espace constant avec le bouton thème */

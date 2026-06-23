@@ -1,6 +1,7 @@
 {
-  "candidate": "v731",
+  "candidate": "v732",
   "items": [
-    "⚡ Fluidité : optimisation des sélecteurs CSS (les ~85 règles d'habillage utilisaient un filtre coûteux re-évalué à chaque scroll/changement d'onglet → remplacé par un sélecteur de classe rapide). Scrolling et recalculs nettement allégés, rendu identique."
+    "⚡ Fluidité (suite) : les apparitions de contenu à chaque onglet sont plus vives (0,34 s au lieu de 0,55 s) → l'app paraît plus réactive.",
+    "🐞 Test complet effectué : 0 erreur, 0 contenu bloqué, pas de débordement — sur tous les écrans et les 2 modes."
   ]
 }
