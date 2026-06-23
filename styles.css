@@ -85,10 +85,10 @@
        on étend la COIFFE plate var(--bg) du sommet (64→138px solide) → tout le haut (status-bar + header
        + un peu en dessous) est STRICTEMENT la même couleur que la barre native ; le halo (chaud le jour /
        violet la nuit) ne bloome qu'EN DESSOUS et plus doucement → plus de cassure de teinte, plus de « tache ». */
-    #bgFx::after { content: ""; position: absolute; top: 0; left: 0; right: 0;
-      height: calc(env(safe-area-inset-top, 0px) + 240px);
-      background: linear-gradient(180deg, var(--bg) 0, var(--bg) calc(env(safe-area-inset-top, 0px) + 138px), rgba(0,0,0,0) 100%);
-      pointer-events: none; }
+    /* v703 : le fond est désormais STRICTEMENT plat var(--bg) partout (halos supprimés v688) → cette
+       coiffe en dégradé est DEVENUE INUTILE et c'était la dernière source possible de « dégradé » en haut.
+       On la NEUTRALISE complètement. */
+    #bgFx::after { content: none !important; display: none !important; }
     /* Barre de défilement thémée DA (fini le blanc système). Firefox + WebKit/Blink.
        Les conteneurs en scrollbar-width:none (chips, etc.) restent masqués (specificité de classe). */
     /* #7 : JOUR = barre neutre chaude discrète (le corail vif était trop agressif en clair) ;
@@ -1487,6 +1487,49 @@
       html body :is(.tile, .cat-tile, .qrow, .person, .reward-card, .gp-tile, .trip-card, [data-goto], [data-secuquick]):hover {
         transform: translateY(-2px); }
     }
+    /* ============================================================
+       v703 : bugs concrets — carte plein écran + retour tactile MOBILE.
+       ============================================================ */
+    /* « Explore autour de toi » (+ journée/météo) ne doit PLUS rester superposé à la carte plein écran :
+       le titre est DANS #homeTravelMap (pas un enfant direct du panneau) → la règle d'origine ne le cachait pas. */
+    body:has(.homemap-card.fs) #homeTravelMap > :not(.homemap-card) { display: none !important; }
+    body:has(.homemap-card.fs) .tab-panel[data-panel="accueil"] > .section-head { display: none !important; }
+    /* RETOUR TACTILE mobile (Maxime « le survol n'existe pas sur mobile ») : au TAP (:active) on montre la
+       teinte accent + le scale → feedback tangible au doigt (le :hover ne se déclenche pas au toucher). */
+    html body :is(.tile, .cat-tile, .qrow, .lb-row, .person, .gp-tile, .reward-card, .trip-card, .hm-visitor, .rit-row, .sa-tile, .btn-ghost, .iconbtn, .chip, [data-goto], [data-secuquick], [data-protile], .stat-click, [data-spstat]):active {
+      transform: scale(.97); background: color-mix(in srgb, var(--accent) 12%, transparent) !important; transition: transform .1s ease, background-color .05s ease; }
+    /* CONTRASTE GOLD/QUÊTES en mode SOMBRE (Maxime : « illisible ») : textes codés en dur sombre → adaptatifs.
+       En nuit, un texte brun (#8a5a00, #5a3d00…) sur fond gold pâle ne se lit pas → on force --ink/--text. */
+    html body.theme-dusk :is(.gold-only-note, .gp-note, .gold-note), html body.theme-winter.theme-dusk :is(.gold-only-note), html body.theme-tropic.theme-dusk :is(.gold-only-note) {
+      color: var(--ink) !important; background: color-mix(in srgb, var(--accent-3, #FFD15C) 12%, transparent) !important; border-color: color-mix(in srgb, var(--accent-3, #FFD15C) 30%, transparent) !important; }
+    html body.theme-dusk :is(.qs-title, .qd-title, .quest-title, .gp-tile .t-name, .gp-tile b) { color: var(--ink) !important; }
+
+    /* ============================================================
+       v703 (AUDIT LARGE agent) : contraste nuit + cartes résiduelles + délimitations manquantes.
+       ============================================================ */
+    /* A1 · pastilles/badges OR FONCÉ (#B5740E) restés illisibles sur fond prune en nuit → or clair lisible */
+    html body[class*="theme-"].theme-dusk :is(.badge.ok, .mappop-quest .mq-rew, .q-inprog, .ci-count, .rate-chip, .pf-pct.done, .num-badge) {
+      color: #FFD79A !important; }
+    html body[class*="theme-"].theme-dusk :is(.q-inprog, .ci-count, .rate-chip, .pf-pct.done, .num-badge, .badge.ok) {
+      background: color-mix(in srgb, #FFD15C 16%, transparent) !important; }
+    html body[class*="theme-"].theme-dusk .gold-only-note {
+      background: color-mix(in srgb, #FFD15C 16%, transparent) !important; color: #FFD79A !important; border-color: rgba(255,209,92,.4) !important; }
+    /* A2 · cartes de contenu résiduelles → aplaties comme le reste (dont LA « Quête du jour ») */
+    html body :is(.quest-spotlight, .sc-card, .sugg-card, .starterCard, .rit-row, .coupon, .faq-secu details),
+    html body[class*="theme-"] :is(.quest-spotlight, .sc-card, .sugg-card, .starterCard, .rit-row, .coupon, .faq-secu details) {
+      background: transparent !important; border-color: transparent !important; box-shadow: none !important; }
+    html body .quest-spotlight, html body[class*="theme-"] .quest-spotlight { padding-left: 1.1rem !important; }
+    html body .num-row.num-here, html body[class*="theme-"] .num-row.num-here {
+      background: color-mix(in srgb, var(--accent) 6%, transparent) !important; border-color: transparent !important; box-shadow: none !important; }
+    /* A3 · filets de séparation manquants (Sécurité, Profil, détail lieu, connexions) */
+    html body .secu-view > section, html body .secu-view > div[class*="card"],
+    html body .tab-panel[data-panel="profil"] .pf-section,
+    html body #placeDetail > section,
+    html body .tab-panel[data-panel="connexions"] > section {
+      border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); padding-top: 1.25rem; margin-top: 1.4rem; }
+    html body .secu-view > section:first-child,
+    html body .tab-panel[data-panel="profil"] .pf-section:first-of-type,
+    html body #placeDetail > section:first-child { border-top: 0 !important; margin-top: 0 !important; }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */
