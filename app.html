@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=706"></script>
+  <script src="sunmates-badges.js?v=707"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
@@ -2324,8 +2324,11 @@
         <section id="homeTripsSection">
         <!-- ✈️ Mes voyages : matching dans le temps + l'espace (feature signature) -->
         <div class="section-head"><h3>Mes voyages ✈️</h3><a id="tripAddLink" style="cursor:pointer">+ Ajouter</a></div>
-        <button type="button" id="globeOpenBtn" class="globe-cta">🌍 Voir mon globe</button>
-        <button type="button" id="wrappedOpenBtn" class="wrapped-cta">✨ Mon année SunMates</button>
+        <!-- v707 : globe + année en DUO côte à côte (au lieu de 2 gros boutons empilés) -->
+        <div class="trip-cta-duo">
+          <button type="button" id="globeOpenBtn" class="globe-cta">🌍 Mon globe</button>
+          <button type="button" id="wrappedOpenBtn" class="wrapped-cta">✨ Mon année</button>
+        </div>
         <div id="tripMatchBanner"></div>
         <!-- 🧳 Passeport de voyage (stats cosmétiques) + bascule de vue Cartes/Frise -->
         <div id="tripPassport"></div>
@@ -20320,10 +20323,10 @@
         ex.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h12M3 18h6"/></svg> Personnaliser';
         ex.addEventListener("click", function () { openSheet(g); });
         if (physAnchor) parent.insertBefore(ex, parent.firstChild); // (sera repositionné juste sous l'ancre par applyPhysical)
-        else { var a = g.anchor ? document.querySelector(g.anchor) : null; if (a && a.parentNode === parent) parent.insertBefore(ex, a); else parent.insertBefore(ex, parent.firstChild); }
+        else { var a = g.anchor ? document.querySelector(g.anchor) : null; if (a && a.parentNode === parent) parent.insertBefore(ex, a); else parent.appendChild(ex); }
       }
       if (physAnchor) { try { physAnchor.insertAdjacentElement("afterend", ex); } catch (e) {} ex.style.order = ""; }
-      else if (firstSlot != null) ex.style.order = String(firstSlot);
+      else ex.style.order = "9999"; // v707 : « Personnaliser » Maison en BAS de la liste (avant il était collé tout en haut, avant le hero)
     }
     var activeGroup = null;
     function openSheet(g) {

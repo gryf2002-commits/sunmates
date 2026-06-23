@@ -1,9 +1,9 @@
 {
-  "candidate": "v706",
+  "candidate": "v707",
   "items": [
-    "👁️ Lisibilité : popup au clic d'un pin de carte rendue lisible (jour + nuit), Gold lisible aussi en mode JOUR, textes de villes/recherche corrigés.",
-    "🎨 Cohérence : fond de la recherche (nuit) et du sélecteur de ville harmonisés (fini le prune/gris incohérents).",
-    "🐛 Bugs : double flèche du « spot du jour » supprimée, tuiles « ton prochain voyage » espacées, « À débloquer » ne s'affiche plus si vide, bloc SOS revenu à une taille normale.",
-    "✍️ Textareas qui montrent enfin tout le texte (auto-grow) + titres de catégories (Ton ambiance, Le top du coin, Jouer…) plus affirmés."
+    "👤 Profil revu : avatar en cercle avec anneau, nom et stats en grand (Fraunces) avec séparateurs — propre et plat.",
+    "🎮 Onglet Jeux mis à l'honneur : plaque de niveau plus présente (texte lisible nuit), anneau qui respire, barre d'XP animée, tuiles « Jouer » qui apparaissent en relief.",
+    "✈️ Mes voyages : « Mon globe » et « Mon année » côte à côte en duo (au lieu de 2 gros boutons empilés).",
+    "🛠️ « Personnaliser » en mode Maison déplacé en bas (il était collé tout en haut)."
   ]
 }

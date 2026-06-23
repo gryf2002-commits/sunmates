@@ -1581,6 +1581,50 @@
     html body :is(.tab-panel .jnav-cap, .jeux-view .jnav-cap),
     html body[class*="theme-"] :is(.tab-panel .jnav-cap, .jeux-view .jnav-cap) { font-size: .82rem !important; font-weight: 800 !important; letter-spacing: .02em !important; color: var(--ink) !important; }
     html body :is(.tab-panel .jnav-cap::before, .jeux-view .jnav-cap::before) { width: 4px !important; height: 1em !important; opacity: 1 !important; }
+
+    /* ============================================================
+       v707 · REDESIGN PROFIL (DA plate) : avatar circulaire à anneau accent, nom Fraunces,
+       stats prominentes avec séparateurs fins (au lieu de cartes/gros carré).
+       ============================================================ */
+    html body .prof-photo, html body[class*="theme-"] .prof-photo {
+      width: 104px !important; height: 104px !important; border-radius: 50% !important;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 60%, transparent), 0 0 0 7px color-mix(in srgb, var(--accent) 14%, transparent) !important; }
+    html body .prof-name, html body[class*="theme-"] .prof-name {
+      font-family: "Fraunces", Georgia, serif !important; font-size: 1.55rem !important; font-weight: 800 !important; letter-spacing: -.01em; }
+    html body .prof-title, html body[class*="theme-"] .prof-title { color: var(--muted) !important; font-weight: 600 !important; }
+    html body .stat-box .stat, html body[class*="theme-"] .stat-box .stat {
+      font-family: "Fraunces", Georgia, serif !important; font-size: 1.7rem !important; font-weight: 800 !important; color: var(--ink) !important; }
+    html body .stat-row-3 .stat-box + .stat-box { border-left: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); }
+    html body .stat-row-3 .stat-box { padding: .3rem .5rem !important; }
+
+    /* ============================================================
+       v707 · ONGLET JEUX mis à l'honneur + animé (Maxime « beaucoup plus animé »).
+       ============================================================ */
+    @media (prefers-reduced-motion: no-preference) {
+      /* plaque de niveau : anneau accent qui respire doucement (épouse la pilule) */
+      html body .jh-head .player-badge { position: relative; }
+      html body .jh-head .player-badge::after {
+        content: ""; position: absolute; inset: -3px; border-radius: inherit;
+        border: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+        animation: jxPulse 2.8s ease-in-out infinite; pointer-events: none; }
+      @keyframes jxPulse { 0%, 100% { transform: scale(1); opacity: .5; } 50% { transform: scale(1.06); opacity: 0; } }
+      /* barre d'XP (badge + héros) : remplissage animé + lueur dorée */
+      html body .hud-bar i, html body .ph-xp-fill { transition: width 1s var(--ease-out, cubic-bezier(.22,1,.36,1)) !important; }
+      html body .hud-bar i { box-shadow: 0 0 8px color-mix(in srgb, var(--accent-3, #FFD15C) 75%, transparent); }
+      /* tuiles « Jouer » : petit zoom d'emphase à l'apparition */
+      html body #jeuxNav .jnav-primary .cat-tile { animation: jxPop .5s var(--ease-out, cubic-bezier(.22,1,.36,1)) both; }
+      html body #jeuxNav .jnav-primary .cat-tile:nth-child(2) { animation-delay: .08s; }
+      @keyframes jxPop { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: none; } }
+    }
+    /* HUD niveau : texte lisible TOUS modes (était #B5740E or foncé = illisible en nuit) + plus présent */
+    html body .player-badge.player-hud .hud-lvl, html body[class*="theme-"] .player-badge.player-hud .hud-lvl { color: var(--ink) !important; font-weight: 900 !important; }
+    html body .player-badge.player-hud .hud-xp, html body[class*="theme-"] .player-badge.player-hud .hud-xp { color: var(--muted) !important; }
+
+    /* ============================================================
+       v707 · REDESIGN Mes voyages : globe + année en duo compact côte à côte.
+       ============================================================ */
+    html body .trip-cta-duo { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin: .2rem 0 .8rem; }
+    html body .trip-cta-duo > :is(.globe-cta, .wrapped-cta) { margin: 0 !important; width: 100% !important; min-width: 0; font-size: .9rem !important; padding: .8rem .6rem !important; }
     /* v684 (retour Maxime « les tuiles prennent énormément de place ») : vignette nettement plus
        compacte — l'icône passe de 84px à 50px → la rangée d'accès rapides ne bouffe plus l'écran,
        on en voit beaucoup plus d'un coup d'œil. */
