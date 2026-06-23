@@ -300,13 +300,16 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=739"></script>
+  <script src="sunmates-badges.js?v=740"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
        CSS (SMMotion.* devient no-op). Aucune dépendance dure → l'app marche identiquement sans réseau. -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script defer src="sunmates-motion.js?v=739"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
+  <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
+  <script defer src="sm-motion-da.js?v=740"></script>
+  <script defer src="sunmates-motion.js?v=740"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -7677,8 +7680,14 @@
       setV("pFitness", data.fitness); setV("pSleep", data.sleep_schedule); setV("pZodiac", data.zodiac); setV("pPersonality", data.personality);
       setV("pChildren", data.children); setV("pReligion", data.religion); setV("pPolitics", data.politics);
       setV("pFavPlaces", (data.favorite_places || []).join(", ")); setV("pBucket", data.bucket_list); setV("pInstagram", data.instagram);
-      $("trustScore").textContent = data.trust_score ?? 0;
-      { const xs = $("xpScore"); if (xs) xs.textContent = data.xp ?? 0; }
+      { // DA de Motion : compteurs qui s'incrémentent au 1er chargement (best-effort, sinon valeur directe)
+        const tv = data.trust_score ?? 0, xv = data.xp ?? 0, xs = $("xpScore");
+        if (window.SM_MOTION && !window._smProfAnim) {
+          window._smProfAnim = true;
+          try { SM_MOTION.countUp("#trustScore", tv); if (xs) SM_MOTION.countUp("#xpScore", xv); }
+          catch (e) { $("trustScore").textContent = tv; if (xs) xs.textContent = xv; }
+        } else { $("trustScore").textContent = tv; if (xs) xs.textContent = xv; }
+      }
       { const pub = $("publicToggle"); if (pub) pub.checked = data.is_public === true; } // privé par défaut (null/false = privé)
       if (typeof renderTrustExplain === "function") renderTrustExplain();
       // Sélections multiples (chips)
