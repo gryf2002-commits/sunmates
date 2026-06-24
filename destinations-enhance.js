@@ -83,10 +83,18 @@
     ".dest-sticky-in{max-width:var(--maxw,900px);margin:0 auto;display:flex;align-items:center;gap:.8rem}" +
     ".dest-sticky-tx{flex:1;min-width:0;font-size:.86rem;color:var(--muted,#C9B7E0)}" +
     ".dest-sticky-tx b{color:#fff}" +
-    /* bouton ambiance sonore */
-    ".dest-audio{position:fixed;right:14px;bottom:84px;z-index:31;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(15,10,25,.82);backdrop-filter:blur(8px);color:" + prof.grad[0] + ";font-size:1.15rem;cursor:pointer;box-shadow:0 8px 22px rgba(8,4,18,.5);display:grid;place-items:center;transition:transform .2s}" +
-    ".dest-audio:active{transform:scale(.92)}" +
-    ".dest-audio.on{background:" + G + ";color:#1a0e2e}";
+    /* lecteur d'ambiance sonore — MÊME composant que la vitrine principale (index.html) */
+    ".player{position:fixed;right:18px;bottom:84px;z-index:31;display:inline-flex;align-items:center;gap:.65rem;padding:.5rem .7rem;border-radius:999px;background:rgba(15,10,25,.92);border:1px solid rgba(255,255,255,.18);color:#fff;box-shadow:0 12px 30px rgba(8,4,18,.5);font-size:.85rem}" +
+    ".player button{background:none;border:0;color:inherit;cursor:pointer;font:inherit}" +
+    ".pl-toggle{width:30px;height:30px;border-radius:50%;background:" + G + ";color:#2a0d12;display:grid;place-items:center;font-size:.8rem;flex:none}" +
+    ".pl-chan{font-weight:700;white-space:nowrap}.pl-chan:hover{color:" + prof.grad[0] + "}" +
+    ".wf{display:inline-flex;align-items:flex-end;gap:2px;height:16px}" +
+    ".wf i{width:2.5px;height:25%;background:" + prof.grad[0] + ";border-radius:2px}" +
+    ".player.on .wf i{animation:wfd 1s ease-in-out infinite}" +
+    ".wf i:nth-child(2){animation-delay:.13s}.wf i:nth-child(3){animation-delay:.27s}.wf i:nth-child(4){animation-delay:.4s}.wf i:nth-child(5){animation-delay:.53s}" +
+    "@keyframes wfd{0%,100%{height:25%}50%{height:100%}}" +
+    ".pl-vol{width:64px;accent-color:" + prof.grad[0] + ";cursor:pointer}" +
+    "@media (max-width:560px){.player .pl-chan,.player .wf{display:none}}";
   var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
 
   // --- Logo SunMates (soleil crépuscule) dans la marque ------------------------------------------
@@ -140,25 +148,33 @@
   var stOn = false;
   window.addEventListener("scroll", function () { var show = window.scrollY > 520; if (show !== stOn) { stOn = show; sticky.classList.toggle("show", show); } }, { passive: true });
 
-  // --- Ambiance sonore qui REPRÉSENTE la ville (accord/mood par ville, génératif, sans asset) ----
-  var btn = document.createElement("button"); btn.className = "dest-audio"; btn.type = "button";
-  btn.setAttribute("aria-label", "Activer l'ambiance sonore de " + CITY); btn.textContent = "🔈";
-  document.body.appendChild(btn);
-  var actx = null, nodes = [], playing = false;
-  function startAudio() {
-    try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      var master = actx.createGain(); master.gain.value = 0; master.connect(actx.destination);
-      prof.chord.forEach(function (f, i) {
-        var o = actx.createOscillator(); o.type = i === 0 ? "sine" : "triangle"; o.frequency.value = f;
-        var g = actx.createGain(); g.gain.value = i === 0 ? 0.16 : 0.07;
-        var lfo = actx.createOscillator(); lfo.frequency.value = 0.05 + i * 0.02; var lg = actx.createGain(); lg.gain.value = 0.045;
-        lfo.connect(lg); lg.connect(g.gain); o.connect(g); g.connect(master); o.start(); lfo.start(); nodes.push(o, lfo);
-      });
-      master.gain.linearRampToValueAtTime(0.5, actx.currentTime + 1.4); nodes.push(master);
-      playing = true; btn.classList.add("on"); btn.textContent = "🔊";
-    } catch (e) {}
+  // --- Lecteur d'ambiance sonore : EXACTEMENT le même que la vitrine principale (#26 retour
+  // Maxime « le même toggle musique »). 3 canaux Mixkit réels, toggle/volume/waveform, opt-in.
+  // Le canal de DÉPART varie selon la ville (seed) → chaque page démarre sur une ambiance propre.
+  var CHANS = [
+    { name: "Golden Hour FM", url: "https://assets.mixkit.co/music/443/443.mp3" },
+    { name: "Terrasse Tardive", url: "https://assets.mixkit.co/music/175/175.mp3" },
+    { name: "Retour de Plage", url: "https://assets.mixkit.co/music/662/662.mp3" }
+  ];
+  var player = document.createElement("div"); player.className = "player"; player.id = "player"; player.setAttribute("role", "group"); player.setAttribute("aria-label", "Ambiance sonore");
+  var ci = SEED % CHANS.length;
+  player.innerHTML =
+    "<button class='pl-toggle' id='plToggle' type='button' aria-pressed='false' aria-label='Lancer l\\'ambiance sonore'>▶</button>" +
+    "<button class='pl-chan' id='plChan' type='button' aria-label='Changer de canal'>" + CHANS[ci].name + "</button>" +
+    "<span class='wf' aria-hidden='true'><i></i><i></i><i></i><i></i><i></i></span>" +
+    "<input class='pl-vol' id='plVol' type='range' min='0' max='100' value='58' aria-label='Volume de l\\'ambiance'>";
+  document.body.appendChild(player);
+  var tgl = player.querySelector("#plToggle"), chanBtn = player.querySelector("#plChan"), volEl = player.querySelector("#plVol");
+  var audio = new Audio(); audio.loop = false; audio.preload = "none"; audio.crossOrigin = "anonymous"; audio.volume = (+volEl.value) / 100;
+  var on = false;
+  audio.addEventListener("ended", function () { ci = (ci + 1) % CHANS.length; chanBtn.textContent = CHANS[ci].name; audio.src = CHANS[ci].url; if (on) audio.play().catch(function () {}); });
+  function setOn(v) {
+    on = v; player.classList.toggle("on", v); tgl.textContent = v ? "⏸" : "▶"; tgl.setAttribute("aria-pressed", v ? "true" : "false");
+    if (v) { if (!audio.src) audio.src = CHANS[ci].url; audio.volume = (+volEl.value) / 100; audio.play().catch(function () { on = false; player.classList.remove("on"); tgl.textContent = "▶"; }); }
+    else { audio.pause(); }
   }
-  function stopAudio() { try { nodes.forEach(function (n) { try { if (n.stop) n.stop(); else if (n.disconnect) n.disconnect(); } catch (e) {} }); } catch (e) {} nodes = []; playing = false; btn.classList.remove("on"); btn.textContent = "🔈"; }
-  btn.addEventListener("click", function () { if (playing) stopAudio(); else { if (actx && actx.resume) actx.resume(); startAudio(); } });
+  tgl.addEventListener("click", function () { setOn(!on); });
+  chanBtn.addEventListener("click", function () { ci = (ci + 1) % CHANS.length; chanBtn.textContent = CHANS[ci].name; audio.src = CHANS[ci].url; if (on) audio.play().catch(function () {}); });
+  volEl.addEventListener("input", function () { audio.volume = (+volEl.value) / 100; });
+  document.addEventListener("visibilitychange", function () { if (document.hidden && on) audio.pause(); else if (!document.hidden && on) audio.play().catch(function () {}); });
 })();
