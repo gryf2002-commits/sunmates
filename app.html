@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=791"></script>
+  <script src="sunmates-badges.js?v=793"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=791"></script>
+  <script defer src="sunmates-motion.js?v=793"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -361,7 +361,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=791">
+  <link rel="stylesheet" href="styles.css?v=793">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
@@ -1458,7 +1458,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=791">
+  <link rel="stylesheet" href="sunmates-lite.css?v=793">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -15409,6 +15409,16 @@
         return v;
       } catch (e) { return 0; }
     }
+    function _showStepsInfo() {
+      if (typeof showInfo !== "function") return;
+      const n = _stepCount(), goal = 8000, pct = Math.min(100, Math.round(n / goal * 100));
+      showInfo("👟 Tes pas du jour", '<div style="text-align:center;line-height:1.6">' +
+        '<div style="font-size:2.6rem;font-weight:800;color:var(--accent-ink, var(--accent))">' + n.toLocaleString("fr-FR") + '</div>' +
+        '<p style="margin:.2rem 0 .5rem">pas estimés aujourd\'hui. Chaque pas te rapproche d\'une rencontre ✨</p>' +
+        '<div style="background:var(--cream);border-radius:999px;height:9px;overflow:hidden;margin:.4rem 0"><div style="height:100%;width:' + pct + '%;background:var(--accent-grad);border-radius:999px"></div></div>' +
+        '<p class="muted" style="font-size:.8rem">Objectif ' + goal.toLocaleString("fr-FR") + ' pas · ' + pct + '%</p>' +
+        '<p class="muted" style="font-size:.74rem;margin-top:.4rem">Estimation conviviale (le web n\'a pas de podomètre fiable).</p></div>');
+    }
     function _paintGeoNow(card, where, ideas, country, near) {
       const moment = escapeHtml(_momentLabel());
       const meteo = _geoMeteo();
@@ -15429,11 +15439,15 @@
           '<span class="gn-tx">' +
             '<span class="gn-eyebrow">' + i18nT("Ici & maintenant") + '</span>' +
             '<span class="gn-where">📍 ' + escapeHtml(where) + '</span>' +
-            '<span class="gn-moment">' + moment + (meteo ? " · " + escapeHtml(meteo) : "") + '</span>' +
-            '<span class="gn-steps">👟 <b>' + _stepCount().toLocaleString("fr-FR") + '</b> pas aujourd\'hui</span>' +
+            '<span class="gn-moment">' + moment + '</span>' +
           '</span>' +
           '<span class="gn-chev" aria-hidden="true">›</span>' +
         '</button>' +
+        // #23 (retour Maxime) : météo + compteur de pas = 2 TUILES cliquables côte à côte, toujours visibles.
+        '<div class="gn-stats">' +
+          '<button type="button" class="gn-stat" data-gnstat="weather"><span class="gn-stat-ic">🌤️</span><span class="gn-stat-tx">' + (meteo ? '<b>' + escapeHtml(meteo) + '</b><span class="gn-stat-sub">météo locale</span>' : '<b>Météo</b><span class="gn-stat-sub">touche pour activer</span>') + '</span></button>' +
+          '<button type="button" class="gn-stat" data-gnstat="steps"><span class="gn-stat-ic">👟</span><span class="gn-stat-tx"><b>' + _stepCount().toLocaleString("fr-FR") + '</b><span class="gn-stat-sub">pas aujourd\'hui</span></span></button>' +
+        '</div>' +
         '<div class="gn-body"><div class="geo-ideas">' +
         nearIdea +
         ctryIdea +
@@ -15451,6 +15465,9 @@
         if (b.dataset.place) { goToTab("lieux"); setTimeout(() => { if (typeof focusCafeInList === "function") focusCafeInList(Number(b.dataset.place)); }, 120); return; } // lieu proche → check-in
         _geoSuggestBubble(card, top[Number(b.dataset.idea)] || "");
       }));
+      // tuiles météo + pas (cliquables) : pas → détail ; météo → (re)localiser pour rafraîchir
+      const _stp = card.querySelector("[data-gnstat='steps']"); if (_stp) _stp.addEventListener("click", _showStepsInfo);
+      const _wth = card.querySelector("[data-gnstat='weather']"); if (_wth) _wth.addEventListener("click", () => { if (typeof renderGeoNow === "function") renderGeoNow(); });
       card.classList.remove("hidden");
     }
     // « Ici, maintenant » actionnable : ouvre une bulle avec du CONTENU RÉEL (défi/voyageurs/lieu) + bouton Voir.
@@ -15649,13 +15666,19 @@
             '<span class="gn-eyebrow">' + i18nT("Ici & maintenant") + '</span>' +
             '<span class="gn-where">' + i18nT("Active ta position") + '</span>' +
             '<span class="gn-moment">' + i18nT("active ta position pour voir ton quartier") + '</span>' +
-            '<span class="gn-steps">👟 <b>' + _stepCount().toLocaleString("fr-FR") + '</b> ' + i18nT("pas aujourd'hui") + '</span>' +
           '</span>' +
           '<span class="gn-chev gn-chev-go" aria-hidden="true">›</span>' +
-        '</button>';
+        '</button>' +
+        '<div class="gn-stats">' +
+          '<button type="button" class="gn-stat" id="geoNowActivate2"><span class="gn-stat-ic">🌤️</span><span class="gn-stat-tx"><b>Météo</b><span class="gn-stat-sub">touche pour activer</span></span></button>' +
+          '<button type="button" class="gn-stat" data-gnstat="steps"><span class="gn-stat-ic">👟</span><span class="gn-stat-tx"><b>' + _stepCount().toLocaleString("fr-FR") + '</b><span class="gn-stat-sub">' + i18nT("pas aujourd'hui") + '</span></span></button>' +
+        '</div>';
       card.classList.remove("hidden", "gn-collapsed");
-      const h = card.querySelector("#geoNowActivate");
-      if (h) h.addEventListener("click", () => { if (typeof askGeoPermission === "function") askGeoPermission(); });
+      const h = card.querySelector("#geoNowActivate"), h2 = card.querySelector("#geoNowActivate2");
+      const _act = () => { if (typeof askGeoPermission === "function") askGeoPermission(); };
+      if (h) h.addEventListener("click", _act); if (h2) h2.addEventListener("click", _act);
+      const _stp = card.querySelector("[data-gnstat='steps']");
+      if (_stp) _stp.addEventListener("click", _showStepsInfo);
     }
     // Lieu sûr le plus proche (à check-in) — pur calcul local sur les lieux déjà chargés (allCafes). Null si trop loin.
     function _distLabel(km) { return km < 1 ? (Math.round(km * 1000) + " m") : (km.toFixed(km < 10 ? 1 : 0) + " km"); }
@@ -20475,7 +20498,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=791"></script>
+  <script src="sunmates-da-loader.js?v=793"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->

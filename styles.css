@@ -5580,7 +5580,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 791; }
+    :root { --sm-build: 793; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5844,7 +5844,7 @@
        Nucléaire fonds-nuit : transparent sur tout le contenu sombre SAUF whitelist
        (champs, joyaux à dégradé, avatars, CTA remplis, interrupteurs, états actifs,
        bulles de chat, modales, carte). Couvre dusk + winter-dusk + tropic-dusk. ══════ */
-    html.sm-app body.theme-dusk :is(.tab-panel:not([data-panel="accueil"]), #settingsCard, .mates-view) *:not(input):not(textarea):not(select):not(.cic):not(.jo-ic):not(.smgem):not(.pb-av):not(.prof-photo):not(.avatar):not(.btn-primary):not(.btn-danger):not(.btn-accent):not(.sl):not(.active):not(.on):not(.is-on):not(.epin):not(.epin-cluster):not([class*="leaflet"]):not(.bubble):not(.bubble-me):not(.act-card):not(.picker-card):not(.popinfo-card):not(.modal):not(.chat-input):not(.composer):not(.gp-tile):not(.gold-perks):not(.gold-hero):not(.gold-beta-note):not(.pcell):not(.pc-stat):not(.stat-box):not(.tgm-bubble):not(.gh-price) {
+    html.sm-app body.theme-dusk :is(.tab-panel:not([data-panel="accueil"]), #settingsCard, .mates-view) *:not(input):not(textarea):not(select):not(.cic):not(.jo-ic):not(.smgem):not(.pb-av):not(.prof-photo):not(.avatar):not(.btn-primary):not(.btn-danger):not(.btn-accent):not(.sl):not(.active):not(.on):not(.is-on):not(.epin):not(.epin-cluster):not([class*="leaflet"]):not(.bubble):not(.bubble-me):not(.act-card):not(.picker-card):not(.popinfo-card):not(.modal):not(.chat-input):not(.composer):not(.gp-tile):not(.gold-perks):not(.gold-hero):not(.gold-beta-note):not(.pcell):not(.pc-stat):not(.stat-box):not(.tgm-bubble):not(.gh-price):not(.pcard-photo):not(.card-photo):not(.place-photo):not(.detail-hero):not(.gal-city):not(.qs-hero):not(.hmg-av):not(.hmg-cell):not(.ghead):not([data-photo]):not([data-lazybg]) {
       background: transparent !important; }
 
     /* ════════════════════════════════════════════════════════════════════════
@@ -5964,3 +5964,26 @@
     /* v791 · #23/#6 compteur de pas RENDU VISIBLE : chip accent distinct (plus noyé dans le muted). */
     #geoNowCard .gn-steps { display: inline-flex; align-items: center; gap: .3rem; margin-top: .2rem; font-size: .8rem; font-weight: 800; color: var(--accent-ink, var(--accent)); }
     #geoNowCard .gn-steps b { font-variant-numeric: tabular-nums; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v793 · compteur de pas EN TUILE cliquable + TRAITS FLOUS retirés (retour Maxime).
+       ════════════════════════════════════════════════════════════════════════ */
+    /* météo + pas = 2 tuiles cliquables côte à côte (un peu comme la météo), toujours visibles */
+    #geoNowCard .gn-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .65rem; }
+    #geoNowCard .gn-stat { display: flex; align-items: center; gap: .5rem; padding: .6rem .7rem; border-radius: 14px;
+      background: color-mix(in srgb, var(--ink) 5%, transparent); border: 1px solid var(--line); cursor: pointer; text-align: left; font: inherit; color: var(--ink); transition: transform .12s ease, background .15s ease; }
+    #geoNowCard .gn-stat:active { transform: scale(.97); }
+    @media (hover:hover) { #geoNowCard .gn-stat:hover { background: color-mix(in srgb, var(--accent) 9%, transparent); } }
+    #geoNowCard .gn-stat-ic { font-size: 1.45rem; flex-shrink: 0; line-height: 1; }
+    #geoNowCard .gn-stat-tx { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+    #geoNowCard .gn-stat-tx b { font-size: .92rem; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #geoNowCard .gn-stat-sub { font-size: .68rem; color: var(--muted); }
+    body.theme-dusk #geoNowCard .gn-stat { background: rgba(255,255,255,.05); }
+
+    /* #3 · TRAITS FLOUS DE SÉPARATION (ex. au-dessus de « Explore autour de toi », et partout) :
+       une ombre douce sous une carte/section empilée = une ligne floue. On les RETIRE sur tout
+       le CONTENU. Les ombres ne restent QUE sur l'UI flottante (nav du bas, modales, toasts,
+       lecteur, FAB SOS, barre minuteur) et le liseré or des tuiles Gold (premium). */
+    html body :is(.card, .tile, .cat-tile, .pcard, .gcard, .sc-card, .feature, .quest-spotlight, .prog-card, .prog-row, .nq-card, .wg-card, .reward-card, .tip-card, .homemap-card, .homemap, .section-head, .qm-head, .fpost, .hm-hero, .hm-inspo, .solo-prog, .mod-card, .trip-card, .tj-card, .starterCard, .hm-souv, .hm-mateday, details, .hm-plan, .qcoll, .coupon, .lb-row, .person, .conv, .stat-box, .dstat, .pc-stat, .pcell, .reco, .sugg-card, .ci-card),
+    html.sm-app body :is(.card, .tile, .cat-tile, .pcard, .gcard, .sc-card, .feature, .quest-spotlight, .prog-card, .prog-row, .nq-card, .wg-card, .reward-card, .tip-card, .homemap-card, .homemap, .section-head, .qm-head, .fpost, .hm-hero, .hm-inspo, .solo-prog, .mod-card, .trip-card, .tj-card, .starterCard, .hm-souv, .hm-mateday, details, .hm-plan, .qcoll, .coupon, .lb-row, .person, .conv, .stat-box, .dstat, .pc-stat, .pcell, .reco, .sugg-card, .ci-card) {
+      box-shadow: none !important; }
