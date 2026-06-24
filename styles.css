@@ -5466,7 +5466,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 759; }
+    :root { --sm-build: 760; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5496,3 +5496,56 @@
       box-shadow: inset 0 1px 0 var(--contour-sheen), var(--contour-shadow) !important; }
     /* tuiles-icônes : un peu moins de radius pour rester nettes */
     html body :is(.tile, .cat-tile, .gp-tile), html.sm-app body :is(.tile, .cat-tile, .gp-tile) { border-radius: 20px !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v760 · SERTI PREMIUM — bonifie v759 (synthèse agents impeccable+huashu+emil).
+       Liseré DÉGRADÉ directionnel (lumière haut-gauche → ombre chaude bas-droite)
+       + double arête inset (épaisseur) + ombre DOUBLE couche + contour tiédi accent
+       + hiérarchie (carte maîtresse) + échelle radius + press scale. 6 modes via --ink.
+       ════════════════════════════════════════════════════════════════════════ */
+    :root, body {
+      --ease-out: cubic-bezier(.23,1,.32,1);
+      --contour:        color-mix(in oklab, color-mix(in oklab, var(--ink) 82%, var(--accent)) 15%, transparent);
+      --contour-sheen:  color-mix(in oklab, #ffffff 46%, transparent);
+      --contour-shade:  color-mix(in oklab, var(--ink) 17%, transparent);
+      --contour-fill:   color-mix(in oklab, var(--ink) 4.5%, transparent);
+      --contour-shadow: 0 1px 1px -.5px color-mix(in oklab, var(--ink) 20%, transparent),
+                        0 10px 24px -16px color-mix(in oklab, var(--ink) 36%, transparent); }
+    body.theme-dusk {
+      --contour:        color-mix(in oklab, color-mix(in oklab, #ffffff 80%, var(--accent)) 20%, transparent);
+      --contour-sheen:  color-mix(in oklab, #ffffff 16%, transparent);
+      --contour-shade:  color-mix(in oklab, #000000 30%, transparent);
+      --contour-fill:   color-mix(in oklab, #ffffff 5.5%, transparent);
+      --contour-shadow: 0 1px 1px -.5px rgba(0,0,0,.4), 0 12px 28px -16px rgba(0,0,0,.55); }
+
+    /* SERTI : bordure-dégradé (padding-box fill + border-box dégradé directionnel) + double inset + double ombre */
+    html body :is(.card,.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.wg-card,.pcell,.starterCard,.reward-card,.tip-card):not(.gold-hero):not(.hidden),
+    html.sm-app body :is(.card,.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.wg-card,.pcell,.starterCard,.reward-card,.tip-card):not(.gold-hero):not(.hidden) {
+      background:
+        linear-gradient(var(--contour-fill), var(--contour-fill)) padding-box,
+        linear-gradient(165deg, var(--contour-sheen) 0%, var(--contour) 40%, var(--contour) 64%, var(--contour-shade) 100%) border-box !important;
+      border: 1px solid transparent !important;
+      border-radius: 22px !important;
+      box-shadow: inset 0 1px 0 var(--contour-sheen), inset 0 -1px 0 var(--contour-shade), var(--contour-shadow) !important;
+      transition: transform .12s var(--ease-out), box-shadow .2s var(--ease-out) !important; }
+
+    /* échelle de radius par taille (une seule histoire) */
+    html body :is(.tile,.cat-tile,.gp-tile), html.sm-app body :is(.tile,.cat-tile,.gp-tile) { border-radius: 16px !important; }
+    html body :is(.pcell,.reward-card,.tip-card,.sc-card,.wg-card), html.sm-app body :is(.pcell,.reward-card,.tip-card,.sc-card,.wg-card) { border-radius: 20px !important; }
+
+    /* HIÉRARCHIE : la pièce maîtresse (quête) domine — plus de radius, ombre tiède marquée */
+    html body :is(.quest-spotlight,.nq-card), html.sm-app body :is(.quest-spotlight,.nq-card) {
+      --contour-fill: color-mix(in oklab, var(--accent) 6%, transparent);
+      border-radius: 24px !important;
+      box-shadow: inset 0 1px 0 var(--contour-sheen), inset 0 -1px 0 var(--contour-shade),
+        0 4px 10px -5px color-mix(in oklab, var(--accent) 26%, transparent),
+        0 18px 40px -22px color-mix(in oklab, var(--ink) 40%, transparent) !important; }
+
+    /* PRESS : feedback tactile net (scale), HOVER souris fine : léger lift */
+    html body :is(.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.pcell,.reward-card,.tip-card):not(.gold-hero):active,
+    html.sm-app body :is(.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.pcell,.reward-card,.tip-card):not(.gold-hero):active { transform: scale(.97) !important; }
+    @media (hover:hover) and (pointer:fine) {
+      html body :is(.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.pcell):not(.gold-hero):hover,
+      html.sm-app body :is(.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.pcell):not(.gold-hero):hover { transform: translateY(-1px); } }
+    @media (prefers-reduced-motion: reduce) {
+      html body :is(.card,.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.pcell):active { transform: none !important; } }
