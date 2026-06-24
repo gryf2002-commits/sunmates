@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=783"></script>
+  <script src="sunmates-badges.js?v=784"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=783"></script>
+  <script defer src="sunmates-motion.js?v=784"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -361,7 +361,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=783">
+  <link rel="stylesheet" href="styles.css?v=784">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
@@ -1458,7 +1458,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=783">
+  <link rel="stylesheet" href="sunmates-lite.css?v=784">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -3054,14 +3054,11 @@
             <div class="gp-tile"><span class="gp-ic">📊</span><b>Stats avancées</b><span>Vois qui s'intéresse à ton profil</span></div>
           </div>
 
-          <div class="card">
-            <h3 style="margin-top:0">Gratuit vs Gold : l'avant / après</h3>
-            <div id="goldCompare"></div>
-            <!-- P14b (demande Maxime) : pendant la bêta TOUT est ouvert ; si des limites freemium
-                 arrivent un jour, les bêta-testeurs ne paieront rien · dit noir sur blanc, no stress. -->
-            <p class="muted" style="font-size:.76rem;margin:.7rem 0 0;background:var(--accent-soft);border-radius:12px;padding:.55rem .7rem">🧪 <b>Tu fais partie de la bêta ?</b> Alors tout est déjà débloqué pour toi. Et si certaines fonctions deviennent un jour réservées à Gold, no stress : <b>rien ne sera jamais facturé à nos bêta-testeurs préférés</b> 💛</p>
-          </div>
-          <!-- promesse 'sécurité gratuite' retirée (note back-office) -->
+          <!-- #11 (retour Maxime « je ne veux QUE des tuiles, pas le listing moche gratuit avant/après ») :
+               le tableau comparatif « Gratuit vs Gold » est RETIRÉ. L'offre = les tuiles d'avantages
+               ci-dessus, point. (#goldCompare/buildGoldCompare conservés en JS, inertes sans l'élément.) -->
+          <p class="gold-beta-note" style="font-size:.78rem;background:var(--accent-soft);border-radius:14px;padding:.6rem .8rem;color:var(--ink)">🧪 <b>Tu fais partie de la bêta ?</b> Tout est déjà débloqué pour toi — et <b>rien ne sera jamais facturé à nos bêta-testeurs</b> 💛</p>
+        <!-- /gold listing retiré -->
         </div><!-- /prof-seg premium -->
 
         <!-- P14 : ESPACE PRO partenaires (bar, auberge, café…) · rempli par renderProPanel -->
@@ -20369,7 +20366,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=783"></script>
+  <script src="sunmates-da-loader.js?v=784"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->

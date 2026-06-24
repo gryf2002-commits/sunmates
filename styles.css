@@ -5580,7 +5580,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 783; }
+    :root { --sm-build: 784; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5873,3 +5873,14 @@
     html body :is(.tile,.cat-tile,.gp-tile,.qrow,.lb-row,.person,.reward-card,.trip-card,.stat-click,.sa-tile,.rit-row,.coupon,.jeux-open,.bitem,[data-goto],[data-secuquick],[data-protile],[data-spstat]):is(:hover,:active,:focus,:focus-visible),
     html.sm-app body :is(.tile,.cat-tile,.gp-tile,.qrow,.lb-row,.person,.reward-card,.trip-card,.stat-click,.sa-tile,.rit-row,.coupon,.jeux-open,.bitem,[data-goto],[data-secuquick],[data-protile],[data-spstat]):is(:hover,:active,:focus,:focus-visible) {
       background: transparent !important; background-color: transparent !important; outline: none !important; }
+
+    /* v784 · #11 Gold = QUE des tuiles premium (retour Maxime « affichage gold buggé, je ne veux
+       que des tuiles »). Le flat global avait vidé les tuiles d'avantages Gold (→ bare/« buggé »).
+       On leur redonne une surface dorée nette, tous modes (placé en fin = bat le flat à spécificité égale). */
+    html body .gold-perks .gp-tile, html.sm-app body .gold-perks .gp-tile {
+      background: color-mix(in srgb, #FFD15C 9%, var(--card)) !important;
+      border: 1px solid color-mix(in srgb, #FFD15C 38%, transparent) !important;
+      box-shadow: 0 2px 8px -5px rgba(232,150,31,.30) !important;
+      border-radius: 16px !important; display: flex !important; flex-direction: column; gap: .15rem; align-items: flex-start; }
+    html body .gold-perks .gp-tile .gp-ic, html.sm-app body .gold-perks .gp-tile .gp-ic { font-size: 1.55rem; }
+    html body .gold-perks .gp-tile b, html.sm-app body .gold-perks .gp-tile b { color: var(--ink) !important; font-size: .92rem; }
