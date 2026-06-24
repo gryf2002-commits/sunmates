@@ -5466,7 +5466,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 763; }
+    :root { --sm-build: 766; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5630,3 +5630,47 @@
       box-shadow: inset 0 1px 0 var(--contour-sheen),
         0 4px 12px -6px color-mix(in oklab, var(--accent) 24%, transparent),
         0 18px 40px -20px color-mix(in oklab, var(--ink) 36%, transparent) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v764 · GRAND NETTOYAGE (Maxime « trait sous barre niveau, bcp dans admin/mates/
+       réglages, retire tes arrière-tuiles moches »).
+       (A) FONDS de cartes retirés (les « arrière tuiles ») → cartes PLATES, transparentes,
+           zéro ombre/bordure. Le premium vient des joyaux + typo + motion, pas d'un cadre.
+       (B) TOUS les séparateurs restants tués (barre de niveau .player-badge, admin .mod-row/
+           .aseg, réglages .qrow/.set-row, mates, + le reste). ══════════════════════════ */
+    :root, body, body.theme-dusk { --contour-fill: transparent; }
+    html body :is(.card,.prog-card,.sc-card,.nq-card,.feature,.wg-card,.starterCard,.reward-card,.tip-card,.quest-spotlight):not(.gold-hero):not(.hidden),
+    html.sm-app body :is(.card,.prog-card,.sc-card,.nq-card,.feature,.wg-card,.starterCard,.reward-card,.tip-card,.quest-spotlight):not(.gold-hero):not(.hidden) {
+      background: transparent !important; border: 0 !important; box-shadow: none !important; }
+
+    /* (B) séparateurs — liste exhaustive + spécificité renforcée pour battre toute règle */
+    html body :is(.player-badge,.player-hud,.jh-head,.mod-row,.mod-card,.mod-info,.adm-live,.aseg,.admin-mhead,.arow,.rep-row,.qrow,.set-row,.set-grouptitle,.secu-explain,.da-comp-row,.num-row,.ptl-row,.review-item,.reviews-form,.person,.place,.te-row,.trust-explain .te-row,.trip-matches,.feed-card,.chat-header,.cstory-hl,.bubble-tr,.ptrip-section,.pfield-sep,.conv,.conv-row,.lb-row,.notif-card,.notif-item,.act-search-results li,.prog-row,.coll-city,.num-here),
+    html.sm-app body :is(.player-badge,.player-hud,.jh-head,.mod-row,.mod-card,.mod-info,.adm-live,.aseg,.admin-mhead,.arow,.rep-row,.qrow,.set-row,.set-grouptitle,.secu-explain,.da-comp-row,.num-row,.ptl-row,.review-item,.reviews-form,.person,.place,.te-row,.trust-explain .te-row,.trip-matches,.feed-card,.chat-header,.cstory-hl,.bubble-tr,.ptrip-section,.pfield-sep,.conv,.conv-row,.lb-row,.notif-card,.notif-item,.act-search-results li,.prog-row,.coll-city,.num-here),
+    html body.theme-dusk :is(.player-badge,.mod-row,.qrow,.set-row,.person,.place,.feed-card,.lb-row,.te-row),
+    html.sm-app body.theme-dusk :is(.player-badge,.mod-row,.qrow,.set-row,.person,.place,.feed-card,.lb-row,.te-row) {
+      border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v765 · DERNIERS « traits » admin/réglages = CONTRÔLES BORDÉS (pas séparateurs).
+       Admin nav (.aseg-nav button), bascule langue (.lang-seg), + balai sur les
+       conteneurs bordés. On GARDE les interrupteurs (.switch .sl = piste nécessaire)
+       et les joyaux (.cic). ════════════════════════════════════════════════════════ */
+    html body :is(.aseg-nav, .aseg-nav button, .aseg, .lang-seg button, .mod-card, .mod-row, .adm-card, .adm-row, .tbl-row, .data-row):not(.active),
+    html.sm-app body :is(.aseg-nav, .aseg-nav button, .aseg, .lang-seg button, .mod-card, .mod-row, .adm-card, .adm-row, .tbl-row, .data-row):not(.active) {
+      border: 0 !important; box-shadow: none !important; }
+    /* admin nav : fond très léger pour rester groupé sans trait (ou transparent) */
+    html body .aseg-nav, html.sm-app body .aseg-nav { background: transparent !important; }
+    html body .aseg-nav button:not(.active), html.sm-app body .aseg-nav button:not(.active) { background: color-mix(in srgb, var(--ink) 5%, transparent) !important; }
+    html body .lang-seg button:not(.active), html.sm-app body .lang-seg button:not(.active) { background: color-mix(in srgb, var(--ink) 5%, transparent) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v766 · NUCLÉAIRE ANTI-TRAITS (admin 145 traits résistants → on arrête de
+       cibler par classe). Zéro bordure + zéro ombre-ligne sur TOUT le contenu,
+       SAUF whitelist : champs, interrupteurs (.sl), joyaux (.cic/.jo-ic/.smgem),
+       avatars, épingles carte, CTA principal/SOS, carte Leaflet. ════════════════ */
+    html.sm-app body :is(.tab-panel:not([data-panel="accueil"]), #settingsCard, .mates-view) *:not(input):not(textarea):not(select):not(.sl):not(.cic):not(.jo-ic):not(.smgem):not(.pb-av):not(.prof-photo):not(.epin):not(.epin-cluster):not(.avatar):not(.btn-primary):not(.btn-danger):not(.leaflet-container):not([class*="leaflet"]) {
+      border-top-width: 0 !important; border-bottom-width: 0 !important; border-left-width: 0 !important; border-right-width: 0 !important;
+      box-shadow: none !important; }
+    /* arrière-tuiles : fonds de cartes/tuiles RETIRÉS (transparent), sauf surfaces utiles */
+    html.sm-app body :is(.card,.tile,.cat-tile,.gp-tile,.sc-card,.prog-card,.nq-card,.feature,.wg-card,.pcell,.pc-stat,.stat-box,.quest-spotlight,.reward-card,.tip-card,.starterCard,.feed-card,.mod-card,.adm-card):not(.gold-hero) {
+      background: transparent !important; }
