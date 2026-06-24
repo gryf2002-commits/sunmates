@@ -1,6 +1,6 @@
 {
-  "candidate": "v766",
+  "candidate": "v767",
   "items": [
-    "🧼 Nettoyage total des traits : plus aucune bordure ni ligne d'ombre dans le contenu (Admin, Réglages, Mates, partout) — la structure tient par l'espace, la typo et les joyaux. Fonds de tuiles retirés. Les interrupteurs, champs, avatars et la carte gardent ce qu'il leur faut."
+    "🚀 Fini le flash d'ancien design au chargement : l'app reste masquée le temps de vérifier sa version — si elle est périmée, elle se met à jour en restant cachée puis se révèle directement à neuf. Plus de 'vieux design qui apparaît avant'."
   ]
 }
