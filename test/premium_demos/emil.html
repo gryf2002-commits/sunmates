@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SunMates — Joaillerie du couchant</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+/* ============ TOKENS ============ */
+:root{
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* sunset jewel ramp */
+  --coral:#FF5A4D; --orange:#FF8A3D; --amber:#FFC93C;
+  --gold:#FFD15C; --gold-deep:#E8961F; --coral-pale:#FFE6DC;
+  --teal:#11B5A0; --violet:#7A5CFF;
+  --signature: linear-gradient(135deg,#FFC93C 0%,#FF7A3D 46%,#FF4F6D 100%);
+}
+
+/* ---- DAY scope ---- */
+.day{
+  --bg:#FFF4E6; --bg2:#FFEAD6;
+  --card:#FFFFFF; --card2:#FFFBF5;
+  --ink:#39203A; --sub:#5B4455; --line:#F6E3D6;
+  --glass: rgba(255,255,255,.62);
+  --glass-line: rgba(255,255,255,.85);
+  --shadow-warm: 38,16,32;       /* warm-grey shadow rgb */
+  --rim: rgba(255,255,255,.9);
+  --tile-face:#FFFFFF;
+  --tile-top: rgba(255,255,255,.95);
+}
+/* ---- NIGHT scope ---- */
+.night{
+  --bg:#190E2E; --bg2:#23123F;
+  --card:#271641; --card2:#2C1A49;
+  --ink:#FCEFE9; --sub:#C9B2D6; --line:rgba(255,255,255,.07);
+  --glass: rgba(58,32,74,.55);
+  --glass-line: rgba(255,255,255,.12);
+  --shadow-warm: 8,2,18;
+  --rim: rgba(255,210,170,.22);
+  --tile-face:#2E1B4D;
+  --tile-top: rgba(255,255,255,.07);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+body{
+  font-family:'Manrope',sans-serif;
+  background:#120a22;
+  display:flex; justify-content:center; gap:0;
+  padding:0;
+}
+.stage{display:flex;}
+
+/* ============ PHONE SHELL ============ */
+.phone{
+  width:440px; min-height:1500px;
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(120% 60% at 12% -8%, var(--bg2) 0%, transparent 60%),
+    radial-gradient(140% 80% at 100% 0%, color-mix(in srgb, var(--orange) 16%, transparent) 0%, transparent 42%),
+    var(--bg);
+  color:var(--ink);
+  padding:54px 25px 130px;
+}
+/* ambient sunset bloom top-left (light direction) */
+.phone::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(70% 38% at 18% 4%, color-mix(in srgb,var(--amber) 28%, transparent) 0%, transparent 70%),
+    radial-gradient(60% 30% at 88% 8%, color-mix(in srgb,var(--coral) 18%, transparent) 0%, transparent 70%);
+  mix-blend-mode:screen; opacity:.9;
+}
+.night.phone::before{opacity:.55;}
+/* fine grain so flats aren't dead */
+.phone::after{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
+.phone > *{position:relative; z-index:1;}
+
+/* ============ HEADER ============ */
+.hdr{display:flex;align-items:center;gap:11px;margin-bottom:30px;}
+.logo{
+  width:40px;height:40px;border-radius:13px;flex:none;position:relative;
+  background:var(--signature);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.6) inset,
+    0 -4px 10px rgba(180,40,30,.45) inset,
+    0 6px 16px rgba(var(--shadow-warm),.4),
+    0 2px 4px rgba(var(--shadow-warm),.3);
+}
+.logo::before{ /* sun + horizon emblem */
+  content:""; position:absolute; left:50%; top:46%; transform:translate(-50%,-50%);
+  width:16px;height:16px;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%, #FFF7E8, #FFD15C 60%, #E8961F);
+  box-shadow:0 0 7px rgba(255,240,200,.9);
+}
+.logo::after{
+  content:""; position:absolute; left:8px; right:8px; bottom:11px; height:2px; border-radius:2px;
+  background:rgba(255,255,255,.85); box-shadow:0 3px 0 rgba(255,255,255,.45);
+}
+.brand{font-family:'Fraunces',serif;font-weight:700;font-size:1.32rem;letter-spacing:-.01em;}
+.brand b{color:var(--gold-deep);}
+.night .brand b{color:var(--gold);}
+.hdr-sp{flex:1;}
+.iconbtn{
+  width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-size:1.05rem; cursor:pointer;
+  background:var(--glass);
+  border:1px solid var(--glass-line);
+  backdrop-filter:blur(14px) saturate(1.2);
+  box-shadow:
+    0 1px 0 var(--rim) inset,
+    0 6px 14px rgba(var(--shadow-warm),.18);
+  transition:transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+.iconbtn:active{transform:scale(.94);}
+.iconbtn .dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;
+  background:var(--coral);box-shadow:0 0 0 2px var(--card),0 0 8px var(--coral);}
+
+/* ============ GREETING ============ */
+.kicker{font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold-deep);margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.night .kicker{color:var(--gold);}
+.kicker::before{content:"";width:22px;height:2px;border-radius:2px;background:var(--signature);}
+.greet{font-family:'Fraunces',serif;font-weight:600;font-size:2.55rem;line-height:1.02;
+  letter-spacing:-.02em;margin-bottom:4px;}
+.greet .name{
+  font-weight:900;
+  background:var(--signature);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  /* warm shadow under the clipped text for depth */
+  filter:drop-shadow(0 2px 6px rgba(255,90,77,.28));
+}
+.greet-sub{color:var(--sub);font-size:.96rem;font-weight:500;margin-bottom:26px;}
+
+/* ============ SECTION TITLE ============ */
+.sec{font-family:'Fraunces',serif;font-weight:600;font-size:1.18rem;letter-spacing:-.01em;
+  margin:30px 2px 14px;display:flex;align-items:center;gap:9px;}
+.sec::before{content:"";width:4px;height:18px;border-radius:3px;background:var(--signature);
+  box-shadow:0 0 10px rgba(255,120,60,.5);}
+
+/* ============ JEWEL TILES ============ */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
+.tile{
+  position:relative; border-radius:22px; padding:18px 14px 16px; overflow:hidden;
+  background:var(--card);
+  border:1px solid var(--line);
+  box-shadow:
+    0 1px 0 var(--rim) inset,
+    0 10px 22px rgba(var(--shadow-warm),.14),
+    0 2px 6px rgba(var(--shadow-warm),.10);
+  transition:transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  isolation:isolate;
+}
+.tile:active{transform:translateY(1px) scale(.985);}
+/* jewel cap = bombé glossy */
+.cap{
+  width:52px;height:52px;border-radius:17px;margin-bottom:12px;position:relative;
+  display:grid;place-items:center;font-size:1.5rem;
+  box-shadow:
+    0 2px 1px rgba(255,255,255,.65) inset,      /* top rim light */
+    0 -8px 14px rgba(120,30,20,.5) inset,        /* bottom inner shade = bombé */
+    0 8px 16px rgba(var(--shadow-warm),.32),
+    0 2px 5px rgba(var(--shadow-warm),.28);
+}
+.cap::after{ /* glossy hotspot top-left */
+  content:"";position:absolute;left:8px;top:6px;width:22px;height:14px;border-radius:50%;
+  background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,0));
+  filter:blur(1px);
+}
+.cap.coral{background:radial-gradient(120% 120% at 30% 20%,#FF9A6E,#FF5A4D 55%,#E23B4E);}
+.cap.amber{background:radial-gradient(120% 120% at 30% 20%,#FFE39A,#FFC93C 52%,#E8961F);}
+.cap.teal {background:radial-gradient(120% 120% at 30% 20%,#7FE6D8,#11B5A0 55%,#0A8C7C);}
+.tile .t-k{font-family:'Fraunces',serif;font-weight:700;font-size:1.6rem;line-height:1;}
+.tile .t-l{font-size:.76rem;color:var(--sub);font-weight:600;margin-top:4px;}
+
+/* ============ PROFILE / TRUST SEAL ============ */
+.profcard{
+  margin-top:18px;border-radius:28px;padding:26px 22px 22px;position:relative;overflow:hidden;
+  background:
+    linear-gradient(180deg, var(--card2), var(--card));
+  border:1px solid var(--line);
+  box-shadow:
+    0 1px 0 var(--rim) inset,
+    0 18px 40px rgba(var(--shadow-warm),.18),
+    0 4px 12px rgba(var(--shadow-warm),.12);
+}
+.profcard::before{ /* sunrise sweep behind avatar */
+  content:"";position:absolute;left:50%;top:-30px;transform:translateX(-50%);
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle, color-mix(in srgb,var(--amber) 32%, transparent), transparent 62%);
+  filter:blur(6px);pointer-events:none;
+}
+.prof-top{display:flex;flex-direction:column;align-items:center;position:relative;}
+.avatar{
+  width:94px;height:94px;border-radius:50%;position:relative;display:grid;place-items:center;
+  font-family:'Fraunces',serif;font-weight:700;font-size:2.3rem;color:#fff;
+  background:radial-gradient(120% 120% at 32% 22%,#FFC56F,#FF7A3D 52%,#FF4F6D);
+  box-shadow:
+    0 2px 2px rgba(255,255,255,.5) inset,
+    0 -10px 20px rgba(150,30,40,.55) inset,
+    0 12px 26px rgba(255,90,77,.42),
+    0 4px 10px rgba(var(--shadow-warm),.3);
+}
+.avatar::after{content:"";position:absolute;left:18px;top:13px;width:30px;height:18px;border-radius:50%;
+  background:linear-gradient(160deg,rgba(255,255,255,.8),transparent);filter:blur(1.5px);}
+/* gold verified ring node */
+.avatar .vchip{
+  position:absolute;right:-2px;bottom:-2px;width:30px;height:30px;border-radius:50%;
+  display:grid;place-items:center;font-size:.8rem;
+  background:radial-gradient(120% 120% at 30% 20%,#FFE7A6,#FFD15C 55%,#E8961F);
+  color:#5b3a00;border:3px solid var(--card2);
+  box-shadow:0 4px 10px rgba(232,150,31,.5);
+}
+.pname{font-family:'Fraunces',serif;font-weight:700;font-size:1.5rem;margin-top:14px;
+  display:flex;align-items:center;gap:8px;}
+
+/* === SCEAU DE CONFIANCE — the warm jewel === */
+.seal{
+  margin-top:14px; position:relative; border-radius:999px;
+  padding:11px 20px 11px 13px; display:inline-flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#FFE7A6,#FFC93C 40%,#E8961F 100%);
+  border:1px solid rgba(255,255,255,.5);
+  box-shadow:
+    0 1.5px 1px rgba(255,255,255,.8) inset,
+    0 -7px 12px rgba(150,90,0,.4) inset,
+    0 10px 22px rgba(232,150,31,.42),
+    0 3px 7px rgba(var(--shadow-warm),.3);
+  overflow:hidden;
+}
+.seal::after{ /* moving sheen */
+  content:"";position:absolute;top:0;left:-60%;width:55%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);
+  transform:skewX(-18deg);
+  animation:sheen 3.6s var(--ease-in-out) infinite;
+}
+@keyframes sheen{0%,62%{left:-60%}82%,100%{left:130%}}
+.seal-medal{
+  width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:radial-gradient(120% 120% at 32% 24%,#FFF6DA,#FFD15C 50%,#C9760C);
+  box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 -4px 7px rgba(120,70,0,.5) inset,
+    0 3px 7px rgba(120,70,0,.4);
+  font-size:.95rem;color:#7a4a00;
+}
+.seal-txt{display:flex;flex-direction:column;line-height:1.05;}
+.seal-txt .lab{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#7a4a00;}
+.seal-txt .val{font-family:'Fraunces',serif;font-weight:900;font-size:1.18rem;color:#3a2200;}
+.seal .sv-stars{margin-left:2px;font-size:.7rem;color:#7a4a00;}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:24px;text-align:center;}
+.stat{position:relative;}
+.stat + .stat::before{content:"";position:absolute;left:0;top:14%;height:72%;width:1px;
+  background:linear-gradient(180deg,transparent,var(--line),transparent);}
+.stat .n{font-family:'Fraunces',serif;font-weight:900;font-size:1.85rem;line-height:1;
+  color:var(--ink);}
+.stat .l{font-size:.72rem;font-weight:600;color:var(--sub);margin-top:6px;letter-spacing:.02em;}
+
+/* progress */
+.prog-wrap{margin-top:22px;}
+.prog-meta{display:flex;justify-content:space-between;font-size:.76rem;font-weight:600;
+  color:var(--sub);margin-bottom:7px;}
+.prog-meta b{color:var(--gold-deep);font-family:'Fraunces',serif;}
+.night .prog-meta b{color:var(--gold);}
+.track{height:10px;border-radius:999px;background:var(--bg2);overflow:hidden;position:relative;
+  box-shadow:0 1px 2px rgba(var(--shadow-warm),.18) inset;}
+.night .track{background:rgba(0,0,0,.28);}
+.fill{height:100%;width:64%;border-radius:999px;background:var(--signature);position:relative;
+  box-shadow:0 0 12px rgba(255,120,60,.6),0 1px 0 rgba(255,255,255,.4) inset;}
+.fill::after{content:"";position:absolute;right:0;top:50%;transform:translate(40%,-50%);
+  width:16px;height:16px;border-radius:50%;background:#FFF3D6;
+  box-shadow:0 0 10px 2px rgba(255,200,90,.9);}
+
+/* ============ CTA ============ */
+.cta{
+  margin-top:26px;width:100%;border:none;cursor:pointer;
+  border-radius:20px;padding:18px;font-family:'Manrope';font-size:1.02rem;font-weight:800;
+  color:#fff;letter-spacing:.01em;position:relative;overflow:hidden;
+  background:var(--signature);
+  box-shadow:
+    0 1.5px 0 rgba(255,255,255,.5) inset,
+    0 -8px 16px rgba(170,30,40,.45) inset,
+    0 14px 30px rgba(255,90,77,.4),
+    0 4px 10px rgba(var(--shadow-warm),.3);
+  transition:transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+.cta:active{transform:scale(.978) translateY(1px);
+  box-shadow:0 -6px 12px rgba(170,30,40,.5) inset,0 6px 14px rgba(255,90,77,.35);}
+.cta::after{ /* top gloss */
+  content:"";position:absolute;left:6%;right:6%;top:5px;height:38%;border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),transparent);pointer-events:none;}
+.cta .ico{margin-right:8px;}
+
+/* the focus-ring demo (always shown on one element for the screenshot) */
+.cta.focused{
+  outline:none;
+}
+.cta.focused::before{
+  content:"";position:absolute;inset:-5px;border-radius:24px;
+  border:2.5px solid color-mix(in srgb,var(--orange) 70%, white);
+  box-shadow:0 0 0 4px rgba(255,138,61,.28);pointer-events:none;
+}
+
+/* ============ NAV ============ */
+.nav{
+  position:absolute;left:18px;right:18px;bottom:20px;height:74px;border-radius:26px;
+  display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:0 6px;
+  background:var(--glass);
+  border:1px solid var(--glass-line);
+  backdrop-filter:blur(20px) saturate(1.4);
+  box-shadow:
+    0 1px 0 var(--rim) inset,
+    0 -1px 0 rgba(var(--shadow-warm),.06) inset,
+    0 18px 40px rgba(var(--shadow-warm),.28);
+}
+.nav .item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.64rem;
+  font-weight:700;color:var(--sub);position:relative;height:100%;justify-content:center;}
+.nav .item .gi{font-size:1.15rem;opacity:.85;}
+.nav .item.active{color:#fff;}
+.nav .item.active .pill{
+  position:absolute;inset:9px 6px;border-radius:18px;z-index:-1;
+  background:var(--signature);
+  box-shadow:0 6px 16px rgba(255,90,77,.45),0 1px 0 rgba(255,255,255,.4) inset,
+    0 -6px 12px rgba(170,30,40,.4) inset;
+}
+.nav .item.active .gi{opacity:1;}
+
+/* mode label tag */
+.modetag{position:absolute;top:16px;right:16px;z-index:5;font-size:.62rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--sub);
+  padding:5px 11px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);
+  backdrop-filter:blur(10px);}
+
+@media (prefers-reduced-motion: reduce){ .seal::after{animation:none;} }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ================= DAY ================= -->
+  <div class="phone day">
+    <span class="modetag">Jour · sable</span>
+    <div class="hdr">
+      <div class="logo"></div>
+      <div class="brand">Sun<b>Mates</b></div>
+      <div class="hdr-sp"></div>
+      <div class="iconbtn">🔔<span class="dot"></span></div>
+      <div class="iconbtn">💬</div>
+    </div>
+
+    <div class="kicker">Bon retour</div>
+    <h1 class="greet">Bonjour <span class="name">Chloé</span></h1>
+    <p class="greet-sub">3 mates sont en ligne près de Lisbonne ✦</p>
+
+    <div class="tiles">
+      <div class="tile"><div class="cap coral">🧭</div><div class="t-k">12</div><div class="t-l">Voyages</div></div>
+      <div class="tile"><div class="cap amber">📍</div><div class="t-k">47</div><div class="t-l">Check-ins</div></div>
+      <div class="tile"><div class="cap teal">🛡️</div><div class="t-k">9</div><div class="t-l">Cercle sûr</div></div>
+    </div>
+
+    <div class="profcard">
+      <div class="prof-top">
+        <div class="avatar">C<div class="vchip">✓</div></div>
+        <div class="pname">Chloé Marin</div>
+        <div class="seal">
+          <div class="seal-medal">☀</div>
+          <div class="seal-txt">
+            <span class="lab">Sceau de confiance</span>
+            <span class="val">86 <span class="sv-stars">★★★★</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="n">86</div><div class="l">Confiance</div></div>
+        <div class="stat"><div class="n">218</div><div class="l">XP</div></div>
+        <div class="stat"><div class="n">14</div><div class="l">Mates</div></div>
+      </div>
+
+      <div class="prog-wrap">
+        <div class="prog-meta"><span>Profil vérifié</span><b>64 %</b></div>
+        <div class="track"><div class="fill"></div></div>
+      </div>
+    </div>
+
+    <button class="cta focused"><span class="ico">✦</span>Compléter ma vérification</button>
+
+    <div class="nav">
+      <div class="item active"><span class="pill"></span><span class="gi">🏠</span>Accueil</div>
+      <div class="item"><span class="gi">📍</span>Lieux</div>
+      <div class="item"><span class="gi">🎮</span>Jeux</div>
+      <div class="item"><span class="gi">🛡️</span>Sécurité</div>
+      <div class="item"><span class="gi">👤</span>Profil</div>
+    </div>
+  </div>
+
+  <!-- ================= NIGHT ================= -->
+  <div class="phone night">
+    <span class="modetag">Nuit · prune</span>
+    <div class="hdr">
+      <div class="logo"></div>
+      <div class="brand">Sun<b>Mates</b></div>
+      <div class="hdr-sp"></div>
+      <div class="iconbtn">🔔<span class="dot"></span></div>
+      <div class="iconbtn">💬</div>
+    </div>
+
+    <div class="kicker">Bonsoir</div>
+    <h1 class="greet">Bonjour <span class="name">Chloé</span></h1>
+    <p class="greet-sub">3 mates sont en ligne près de Lisbonne ✦</p>
+
+    <div class="tiles">
+      <div class="tile"><div class="cap coral">🧭</div><div class="t-k">12</div><div class="t-l">Voyages</div></div>
+      <div class="tile"><div class="cap amber">📍</div><div class="t-k">47</div><div class="t-l">Check-ins</div></div>
+      <div class="tile"><div class="cap teal">🛡️</div><div class="t-k">9</div><div class="t-l">Cercle sûr</div></div>
+    </div>
+
+    <div class="profcard">
+      <div class="prof-top">
+        <div class="avatar">C<div class="vchip">✓</div></div>
+        <div class="pname">Chloé Marin</div>
+        <div class="seal">
+          <div class="seal-medal">☀</div>
+          <div class="seal-txt">
+            <span class="lab">Sceau de confiance</span>
+            <span class="val">86 <span class="sv-stars">★★★★</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="n">86</div><div class="l">Confiance</div></div>
+        <div class="stat"><div class="n">218</div><div class="l">XP</div></div>
+        <div class="stat"><div class="n">14</div><div class="l">Mates</div></div>
+      </div>
+
+      <div class="prog-wrap">
+        <div class="prog-meta"><span>Profil vérifié</span><b>64 %</b></div>
+        <div class="track"><div class="fill"></div></div>
+      </div>
+    </div>
+
+    <button class="cta"><span class="ico">✦</span>Compléter ma vérification</button>
+
+    <div class="nav">
+      <div class="item active"><span class="pill"></span><span class="gi">🏠</span>Accueil</div>
+      <div class="item"><span class="gi">📍</span>Lieux</div>
+      <div class="item"><span class="gi">🎮</span>Jeux</div>
+      <div class="item"><span class="gi">🛡️</span>Sécurité</div>
+      <div class="item"><span class="gi">👤</span>Profil</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

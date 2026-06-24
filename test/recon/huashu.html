@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SunMates · Joaillerie du couchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── JOYAUX (sémantiques, invariants) ───────────────────────── */
+  --gem-coral:#FF5A4D;
+  --gem-orange:#FF8A3D;
+  --gem-amber:#FFC93C;
+  --gem-gold:#FFD15C;
+  --gem-teal:#11B5A0;
+  --gem-violet:#7A5CFF;
+  --signature:linear-gradient(135deg,#FFC93C 0%,#FF7A3D 52%,#FF4F6D 100%);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MODE JOUR (sable #FFF4E6)
+   ════════════════════════════════════════════════════════════════ */
+.day{
+  --bg:#FFF4E6;
+  --bg2:#FFEAD6;
+  --ink:#2B1A14;            /* prune-terre foncé */
+  --ink-soft:#7A5F50;
+  --ink-faint:#A8907F;
+  /* La "velours" sur lequel reposent les joyaux : surface à peine plus chaude */
+  --surface:rgba(255,255,255,.46);
+  --surface-edge:rgba(255,255,255,.85);   /* le filet spéculaire (haut) */
+  --surface-edge-low:rgba(193,121,40,.10);
+  /* Halo de lumière sunset derrière les sections */
+  --halo:radial-gradient(120% 80% at 18% 0%, rgba(255,138,61,.16) 0%, rgba(255,201,60,.07) 38%, transparent 72%);
+  --warm-shadow:0 18px 40px -22px rgba(193,84,40,.42), 0 4px 12px -8px rgba(193,84,40,.30);
+  --gem-shadow:0 8px 18px -8px rgba(193,84,40,.55);
+  --hair:linear-gradient(90deg,transparent,rgba(193,121,40,.22) 18%,rgba(193,121,40,.22) 82%,transparent);
+  --tab-bg:rgba(255,244,230,.82);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MODE NUIT (prune #190E2E)
+   ════════════════════════════════════════════════════════════════ */
+.dusk{
+  --bg:#190E2E;
+  --bg2:#241540;
+  --ink:#FDEFE0;
+  --ink-soft:#C8B2D6;
+  --ink-faint:#8A739E;
+  --surface:rgba(255,255,255,.045);
+  --surface-edge:rgba(255,209,160,.30);     /* le filet capte la lueur ambre */
+  --surface-edge-low:rgba(0,0,0,.30);
+  --halo:radial-gradient(120% 80% at 18% 0%, rgba(255,122,61,.22) 0%, rgba(122,92,255,.12) 42%, transparent 74%);
+  --warm-shadow:0 22px 48px -24px rgba(0,0,0,.75), 0 0 26px -14px rgba(255,122,61,.30);
+  --gem-shadow:0 8px 20px -7px rgba(255,90,77,.45);
+  --hair:linear-gradient(90deg,transparent,rgba(255,209,160,.20) 18%,rgba(255,209,160,.20) 82%,transparent);
+  --tab-bg:rgba(25,14,46,.80);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#d9c4b0;
+  font-family:'Manrope',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:34px;
+  display:flex;gap:34px;justify-content:center;align-items:flex-start;
+}
+
+/* ── Le téléphone ────────────────────────────────────────────── */
+.phone{
+  width:372px;
+  border-radius:42px;
+  overflow:hidden;
+  background:var(--bg);
+  position:relative;
+  box-shadow:0 40px 90px -30px rgba(60,20,10,.55);
+}
+.phone::before{ /* dégradé de fond ambiant, comme l'app */
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(140% 60% at 50% -8%, var(--bg2), transparent 60%),
+    var(--bg);
+  z-index:0;
+}
+.screen{position:relative;z-index:1;padding-bottom:84px}
+
+/* ── HEADER ──────────────────────────────────────────────────── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 6px;
+}
+.brand{
+  font-family:'Fraunces',serif;
+  font-weight:900;font-size:23px;
+  letter-spacing:-.5px;
+  background:var(--signature);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+}
+.topbtns{display:flex;gap:9px}
+.iconbtn{
+  width:34px;height:34px;border-radius:12px;
+  display:grid;place-items:center;font-size:15px;
+  background:var(--surface);
+  border:1px solid var(--surface-edge-low);
+  box-shadow:inset 0 1px 0 var(--surface-edge);
+  color:var(--ink-soft);
+}
+
+/* ── SALUTATION ──────────────────────────────────────────────── */
+.hello{padding:8px 22px 6px}
+.hello .eyebrow{
+  font-size:11.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px;
+}
+.hello h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;font-size:30px;line-height:1.04;
+  letter-spacing:-.8px;color:var(--ink);
+}
+.hello h1 em{
+  font-style:italic;font-weight:600;
+  background:var(--signature);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hello .sub{font-size:13px;color:var(--ink-soft);margin-top:7px;font-weight:500}
+
+/* ════════════════════════════════════════════════════════════
+   LE PRINCIPE — "écrin de lumière"
+   Une section = un halo sunset + une surface velours posée par
+   une ombre chaude ultra-douce + un filet spéculaire au sommet.
+   PAS de boîte fermée : les bords latéraux respirent.
+   ════════════════════════════════════════════════════════════ */
+.zone{
+  position:relative;
+  margin:22px 16px 0;
+  padding:16px 15px 14px;
+  border-radius:24px;
+  /* la matière velours */
+  background:var(--surface);
+  box-shadow:var(--warm-shadow);
+  /* filet spéculaire : ligne de lumière qui suit le biseau haut */
+  border-top:1px solid var(--surface-edge);
+  isolation:isolate;
+}
+.zone::before{ /* le HALO sunset, derrière, déborde légèrement = la lumière du joyau */
+  content:"";position:absolute;inset:-1px -6px;z-index:-1;
+  border-radius:28px;
+  background:var(--halo);
+  filter:blur(2px);
+}
+/* la "colonne vertébrale" — rythme : un filet vertical dégradé qui ancre la zone */
+.zone-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:11.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:2px 4px 13px;
+}
+.zone-title .spine{
+  width:4px;height:15px;border-radius:3px;
+  box-shadow:0 0 10px -2px currentColor;
+}
+.zt-coral .spine{background:var(--gem-coral);color:var(--gem-coral)}
+.zt-teal  .spine{background:var(--gem-teal);color:var(--gem-teal)}
+.zt-violet .spine{background:var(--gem-violet);color:var(--gem-violet)}
+
+/* ── LES JOYAUX (icônes-gemmes facettées, hiérarchie par couleur) ── */
+.gem-row{display:flex;gap:11px}
+.gem-tile{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:13px 6px 11px;
+  border-radius:18px;
+  position:relative;
+}
+.gem-tile:not(:last-child)::after{ /* séparateur = filet vertical de lumière, pas de bord de boîte */
+  content:"";position:absolute;right:-5.5px;top:22%;height:56%;width:1px;
+  background:var(--hair);
+}
+.gem{
+  width:50px;height:50px;border-radius:16px;
+  display:grid;place-items:center;font-size:22px;
+  position:relative;
+  box-shadow:var(--gem-shadow);
+  overflow:hidden;
+}
+.gem::before{ /* la FACETTE : éclat diagonal vitré, le "120%" */
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.10) 34%,transparent 50%);
+}
+.gem::after{ /* point de brillance ("glint") en haut à gauche */
+  content:"";position:absolute;top:7px;left:9px;width:11px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.75);filter:blur(2px);transform:rotate(-22deg);
+}
+.g-coral {background:linear-gradient(150deg,#FF8A6E,#FF5A4D 60%,#E8413B)}
+.g-orange{background:linear-gradient(150deg,#FFB46B,#FF8A3D 60%,#F2701E)}
+.g-amber {background:linear-gradient(150deg,#FFE08A,#FFC93C 58%,#F2A819)}
+.g-gold  {background:linear-gradient(150deg,#FFE6A6,#FFD15C 58%,#E9AE34)}
+.g-teal  {background:linear-gradient(150deg,#4FD8C6,#11B5A0 60%,#0A8F7F)}
+.g-violet{background:linear-gradient(150deg,#A593FF,#7A5CFF 60%,#5B3FE0)}
+.gem-tile .lbl{font-size:12.5px;font-weight:700;color:var(--ink)}
+
+/* ── LIGNES "TA PROGRESSION" : ancrage gemme à gauche + chiffre joaillé ── */
+.prog{display:flex;flex-direction:column}
+.prow{
+  display:flex;align-items:center;gap:13px;
+  padding:13px 6px;
+  position:relative;
+}
+.prow + .prow::before{ /* démarcation = filet de lumière entre lignes */
+  content:"";position:absolute;top:0;left:54px;right:8px;height:1px;background:var(--hair);
+}
+.gem-sm{
+  width:42px;height:42px;border-radius:13px;flex-shrink:0;
+  display:grid;place-items:center;font-size:18px;position:relative;overflow:hidden;
+  box-shadow:var(--gem-shadow);
+}
+.gem-sm::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.5),transparent 48%)}
+.gem-sm::after{content:"";position:absolute;top:6px;left:8px;width:9px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.7);filter:blur(1.5px)}
+.prow .body{flex:1;min-width:0}
+.prow .body .t{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-.2px}
+.prow .body .d{font-size:12px;color:var(--ink-soft);margin-top:2px;font-weight:500}
+.metric{
+  font-family:'Fraunces',serif;font-weight:700;font-size:18px;
+  color:var(--ink);white-space:nowrap;letter-spacing:-.3px;
+  display:flex;align-items:baseline;gap:1px;
+}
+.metric .tot{font-size:12.5px;color:var(--ink-faint);font-weight:600;font-family:'Manrope'}
+.chev{color:var(--ink-faint);font-size:15px;margin-left:3px}
+
+/* ── BANDEAU STATS (chiffres = matière noble, Fraunces) ──────── */
+.stats{
+  display:flex;margin:20px 16px 0;border-radius:22px;
+  background:var(--surface);box-shadow:var(--warm-shadow);
+  border-top:1px solid var(--surface-edge);
+  padding:15px 4px;position:relative;isolation:isolate;
+}
+.stats::before{content:"";position:absolute;inset:-1px -6px;z-index:-1;border-radius:26px;
+  background:var(--halo);filter:blur(2px)}
+.stat{flex:1;text-align:center;position:relative}
+.stat + .stat::before{content:"";position:absolute;left:0;top:14%;height:72%;width:1px;background:var(--hair)}
+.stat .v{
+  font-family:'Fraunces',serif;font-weight:700;font-size:26px;letter-spacing:-.6px;
+  background:var(--signature);-webkit-background-clip:text;background-clip:text;color:transparent;
+  line-height:1;
+}
+.stat .k{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-faint);margin-top:6px}
+
+/* ── CTA principal "Jouer la quête" : joyau pleine largeur ──── */
+.cta{
+  margin:18px 16px 0;border-radius:20px;
+  background:var(--signature);
+  color:#fff;font-weight:800;font-size:16px;
+  padding:16px;text-align:center;position:relative;overflow:hidden;
+  box-shadow:0 16px 34px -14px rgba(255,90,77,.65);
+  letter-spacing:-.2px;
+}
+.cta::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,rgba(255,255,255,.45) 0%,transparent 32%);}
+.cta .ic{margin-right:6px}
+
+/* ── TAB BAR ─────────────────────────────────────────────────── */
+.tabbar{
+  position:absolute;bottom:0;left:0;right:0;z-index:5;
+  display:flex;justify-content:space-around;padding:10px 8px 16px;
+  background:var(--tab-bg);
+  backdrop-filter:blur(18px);
+  border-top:1px solid var(--surface-edge-low);
+  box-shadow:inset 0 1px 0 var(--surface-edge);
+}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:10px;font-weight:700;color:var(--ink-faint)}
+.tab .ti{font-size:18px}
+.tab.on{color:var(--ink)}
+.tab.on .ti{filter:drop-shadow(0 3px 7px rgba(255,90,77,.5))}
+
+/* ── étiquette de mode ───────────────────────────────────────── */
+.mode-tag{
+  text-align:center;font-family:'Fraunces';font-weight:600;font-size:13px;
+  color:#5a3d2c;margin-bottom:13px;letter-spacing:.02em;
+}
+.col{display:flex;flex-direction:column;align-items:center}
+</style>
+</head>
+<body>
+
+<!-- ════════ COLONNE JOUR ════════ -->
+<div class="col">
+  <div class="mode-tag">☀️ JOUR · sable #FFF4E6</div>
+  <div class="phone day">
+    <div class="screen">
+
+      <div class="topbar">
+        <div class="brand">SunMates</div>
+        <div class="topbtns">
+          <div class="iconbtn">🔔</div>
+          <div class="iconbtn">💬</div>
+        </div>
+      </div>
+
+      <div class="hello">
+        <div class="eyebrow">Lundi · Lisbonne</div>
+        <h1>Bonjour <em>Chloé</em></h1>
+        <div class="sub">3 voyageuses vérifiées explorent près de toi ✦</div>
+      </div>
+
+      <div class="cta"><span class="ic">▶</span>Jouer la quête du jour</div>
+
+      <!-- ZONE 1 — JOUER -->
+      <div class="zone">
+        <div class="zone-title zt-coral"><span class="spine"></span>Jouer</div>
+        <div class="gem-row">
+          <div class="gem-tile"><div class="gem g-coral">🎯</div><div class="lbl">Quêtes</div></div>
+          <div class="gem-tile"><div class="gem g-violet">🎲</div><div class="lbl">Jeux</div></div>
+          <div class="gem-tile"><div class="gem g-teal">🗺️</div><div class="lbl">Carte</div></div>
+        </div>
+      </div>
+
+      <!-- ZONE 2 — RÉCOMPENSES -->
+      <div class="zone">
+        <div class="zone-title zt-teal"><span class="spine"></span>Progresser &amp; récompenses</div>
+        <div class="gem-row">
+          <div class="gem-tile"><div class="gem g-amber">🏅</div><div class="lbl">Badges</div></div>
+          <div class="gem-tile"><div class="gem g-orange">🎟️</div><div class="lbl">Coupons</div></div>
+          <div class="gem-tile"><div class="gem g-gold">🏆</div><div class="lbl">Classement</div></div>
+        </div>
+      </div>
+
+      <!-- ZONE 3 — TA PROGRESSION (lignes) -->
+      <div class="zone">
+        <div class="zone-title zt-violet"><span class="spine"></span>Ta progression</div>
+        <div class="prog">
+          <div class="prow">
+            <div class="gem-sm g-coral">🎯</div>
+            <div class="body"><div class="t">Objectifs de la semaine</div><div class="d">3 défis qui tournent chaque lundi</div></div>
+            <div class="metric">0<span class="tot">/3</span></div><div class="chev">›</div>
+          </div>
+          <div class="prow">
+            <div class="gem-sm g-teal">📍</div>
+            <div class="body"><div class="t">Quête la plus proche</div><div class="d">Le Vieux-Port · 90 XP</div></div>
+            <div class="metric">90<span class="tot">xp</span></div><div class="chev">›</div>
+          </div>
+          <div class="prow">
+            <div class="gem-sm g-amber">🗂️</div>
+            <div class="body"><div class="t">Collection de quêtes</div><div class="d">Complète la carte, ville après ville</div></div>
+            <div class="metric">0<span class="tot">/55</span></div><div class="chev">›</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANDEAU STATS -->
+      <div class="stats">
+        <div class="stat"><div class="v">740</div><div class="k">Confiance</div></div>
+        <div class="stat"><div class="v">12</div><div class="k">Check-ins</div></div>
+        <div class="stat"><div class="v">8</div><div class="k">Badges</div></div>
+      </div>
+
+    </div>
+    <div class="tabbar">
+      <div class="tab"><span class="ti">🏠</span>Accueil</div>
+      <div class="tab"><span class="ti">📍</span>Lieux</div>
+      <div class="tab on"><span class="ti">🎮</span>Jeux</div>
+      <div class="tab"><span class="ti">🛡️</span>Sécurité</div>
+      <div class="tab"><span class="ti">👤</span>Profil</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ COLONNE NUIT ════════ -->
+<div class="col">
+  <div class="mode-tag">🌙 NUIT · prune #190E2E</div>
+  <div class="phone dusk">
+    <div class="screen">
+
+      <div class="topbar">
+        <div class="brand">SunMates</div>
+        <div class="topbtns">
+          <div class="iconbtn">🔔</div>
+          <div class="iconbtn">💬</div>
+        </div>
+      </div>
+
+      <div class="hello">
+        <div class="eyebrow">Lundi · Lisbonne</div>
+        <h1>Bonjour <em>Chloé</em></h1>
+        <div class="sub">3 voyageuses vérifiées explorent près de toi ✦</div>
+      </div>
+
+      <div class="cta"><span class="ic">▶</span>Jouer la quête du jour</div>
+
+      <div class="zone">
+        <div class="zone-title zt-coral"><span class="spine"></span>Jouer</div>
+        <div class="gem-row">
+          <div class="gem-tile"><div class="gem g-coral">🎯</div><div class="lbl">Quêtes</div></div>
+          <div class="gem-tile"><div class="gem g-violet">🎲</div><div class="lbl">Jeux</div></div>
+          <div class="gem-tile"><div class="gem g-teal">🗺️</div><div class="lbl">Carte</div></div>
+        </div>
+      </div>
+
+      <div class="zone">
+        <div class="zone-title zt-teal"><span class="spine"></span>Progresser &amp; récompenses</div>
+        <div class="gem-row">
+          <div class="gem-tile"><div class="gem g-amber">🏅</div><div class="lbl">Badges</div></div>
+          <div class="gem-tile"><div class="gem g-orange">🎟️</div><div class="lbl">Coupons</div></div>
+          <div class="gem-tile"><div class="gem g-gold">🏆</div><div class="lbl">Classement</div></div>
+        </div>
+      </div>
+
+      <div class="zone">
+        <div class="zone-title zt-violet"><span class="spine"></span>Ta progression</div>
+        <div class="prog">
+          <div class="prow">
+            <div class="gem-sm g-coral">🎯</div>
+            <div class="body"><div class="t">Objectifs de la semaine</div><div class="d">3 défis qui tournent chaque lundi</div></div>
+            <div class="metric">0<span class="tot">/3</span></div><div class="chev">›</div>
+          </div>
+          <div class="prow">
+            <div class="gem-sm g-teal">📍</div>
+            <div class="body"><div class="t">Quête la plus proche</div><div class="d">Le Vieux-Port · 90 XP</div></div>
+            <div class="metric">90<span class="tot">xp</span></div><div class="chev">›</div>
+          </div>
+          <div class="prow">
+            <div class="gem-sm g-amber">🗂️</div>
+            <div class="body"><div class="t">Collection de quêtes</div><div class="d">Complète la carte, ville après ville</div></div>
+            <div class="metric">0<span class="tot">/55</span></div><div class="chev">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="v">740</div><div class="k">Confiance</div></div>
+        <div class="stat"><div class="v">12</div><div class="k">Check-ins</div></div>
+        <div class="stat"><div class="v">8</div><div class="k">Badges</div></div>
+      </div>
+
+    </div>
+    <div class="tabbar">
+      <div class="tab"><span class="ti">🏠</span>Accueil</div>
+      <div class="tab"><span class="ti">📍</span>Lieux</div>
+      <div class="tab on"><span class="ti">🎮</span>Jeux</div>
+      <div class="tab"><span class="ti">🛡️</span>Sécurité</div>
+      <div class="tab"><span class="ti">👤</span>Profil</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

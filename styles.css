@@ -1030,7 +1030,7 @@
     .homemap-filters .chip b { font-weight: 800; opacity: .85; }
     .homemap-wrap { position: relative; isolation: isolate; } /* contient les outils carte (z-index) -> ne débordent plus sur la nav du bas */
     /* P9 : la carte est LA star de l'accueil · rehaussée à 300px (zone du dessus dégraissée). */
-    .homemap { height: 340px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
+    .homemap { height: 400px; border-radius: 14px; overflow: hidden; background: var(--cream); position: relative; z-index: 0; isolation: isolate; }
     /* ===== v734 · État de CHARGEMENT de la carte (UX) : squelette « map-like » pendant l'init lourde ===== */
     .homemap-wrap { position: relative; }
     .homemap-skel { position: absolute; inset: 0; z-index: 2; border-radius: 14px; overflow: hidden;
@@ -1079,7 +1079,7 @@
       .auth-hero { padding: .8rem 1rem !important; min-height: 0; }
       .auth-hero::after, .auth-hero::before { display: none !important; }
       .detail-hero { height: 130px; }
-      .homemap { height: 380px; } /* v705 (retour Maxime « la carte mériterait plus d'espace en petite version ») : 290→380px */
+      .homemap { height: 470px; } /* v773 (retour Maxime « carte à agrandir vers le haut ») : 380→470px */
       .player-hero { padding: .55rem .8rem; }
       .souvenir-card { padding: 1rem 1.1rem; }
       #photoLightboxImg { max-height: 84vh; }
@@ -3082,7 +3082,10 @@
     body.theme-dusk .streak-chip { color: #ffce8a; background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(255,138,61,.12)); border-color: rgba(255,201,60,.28); }
     /* Bascule Voyage / Maison */
     .mode-switch { display: flex; background: var(--cream); border: 1px solid var(--line); border-radius: 999px; padding: .22rem; gap: .2rem; margin: .7rem 0; }
-    .mode-switch button { flex: 1; border: 0; background: none; color: var(--muted); font-weight: 800; font-size: .82rem; padding: .52rem; border-radius: 999px; cursor: pointer; transition: color .18s, background .18s;
+    /* v773 (retour Maxime « passe du gris au blanc, lent à se sélectionner ») : plus de fondu
+       sur color/background (c'était le flash gris→blanc) → l'état actif s'applique d'un coup ;
+       on ne transitionne qu'un léger ressort (transform) pour le retour tactile. */
+    .mode-switch button { flex: 1; border: 0; background: none; color: var(--muted); font-weight: 800; font-size: .82rem; padding: .52rem; border-radius: 999px; cursor: pointer; transition: transform .13s var(--ease-out, cubic-bezier(.23,1,.32,1));
       /* Retour Maxime « décalé / pas sur la même ligne » : on centre emoji+texte de façon identique sur les 2 boutons
          (avant : « ✈️ En voyage » avec span vs « 🏠 À la maison » emoji brut → bases différentes). */
       display: inline-flex; align-items: center; justify-content: center; gap: .35rem; white-space: nowrap; line-height: 1; }
@@ -5411,6 +5414,82 @@
     html body :is(.section-head, .qm-head, .jnav-cap), html.sm-app body :is(.section-head, .qm-head, .jnav-cap) { margin-top: 2.3rem !important; }
 
     /* ════════════════════════════════════════════════════════════════════════
+       v773 · CARRÉ ORANGE devant les titres RETIRÉ + titres CENTRÉS (retour Maxime
+       « les carrés orange doivent être retirés devant les titres qui doivent être
+       tous centrés »). Le ::before-pastille v753 est supprimé ; le lien « Voir tout »
+       éventuel est posé à droite en absolu pour ne pas décentrer le titre. ════════ */
+    html body :is(.section-head > h3, .qm-head > h3, .sp-title, .sp-head > .sp-title)::before,
+    html.sm-app body :is(.section-head > h3, .qm-head > h3, .sp-title, .sp-head > .sp-title)::before {
+      content: none !important; display: none !important; }
+    html body :is(.section-head > h3, .qm-head > h3, .sp-title),
+    html.sm-app body :is(.section-head > h3, .qm-head > h3, .sp-title) {
+      display: block !important; width: 100%; text-align: center !important; padding-left: 0 !important; }
+    html body :is(.section-head, .qm-head), html.sm-app body :is(.section-head, .qm-head) {
+      justify-content: center !important; position: relative; }
+    html body :is(.section-head, .qm-head) > a, html.sm-app body :is(.section-head, .qm-head) > a {
+      position: absolute !important; right: 0; top: 50%; transform: translateY(-50%); }
+
+    /* v773 · CARTE plus grande + MOINS d'espace entre « Personnaliser » et « Explore autour de
+       toi » (retour Maxime #6). On resserre le haut du bloc carte et son en-tête. */
+    html body .tab-panel[data-panel="accueil"] > #homeTravelMap,
+    html.sm-app body .tab-panel[data-panel="accueil"] > #homeTravelMap { margin-top: .55rem !important; padding-top: 0 !important; }
+    html body #homeTravelMap > .section-head, html.sm-app body #homeTravelMap > .section-head { margin-top: .25rem !important; margin-bottom: .15rem !important; }
+
+    /* v773 · TRAITS NOIRS sur l'ACCUEIL (retour Maxime + screenshots fil d'actu/maison).
+       Le balai anti-traits v766 SAUTE l'accueil (:not([data-panel="accueil"])) pour préserver
+       la carte → les séparateurs du fil d'actualité et des sections « À la maison » y restaient.
+       On les retire ICI explicitement, ciblé (PAS de balai global accueil : carte/joyaux/CTA
+       intacts). Couvre fil (.fpost & co), collapsibles maison (.hm-plan summary), rangées. */
+    html body .tab-panel[data-panel="accueil"] :is(.fpost, .feed-card, .fpost-top, .fpost-actions, .fpost-body, #homeFeed > *, .hm-plan, .hm-plan > summary, .hm-visitor, .visitors-list > *, .prog-row, .sugg-row, .te-row, .num-row),
+    html.sm-app body .tab-panel[data-panel="accueil"] :is(.fpost, .feed-card, .fpost-top, .fpost-actions, .fpost-body, #homeFeed > *, .hm-plan, .hm-plan > summary, .hm-visitor, .visitors-list > *, .prog-row, .sugg-row, .te-row, .num-row) {
+      border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; box-shadow: none !important; }
+
+    /* v773 · BANDE DE SÉPARATION (retour Maxime, screenshot accueil) : le fond doit être PLAT
+       (var(--bg)) de haut en bas — aucun dégradé ne doit créer de bande horizontale entre le
+       haut (greeting/recherche) et « Explore autour de toi ». On neutralise tout background-image
+       de dégradé sur les conteneurs de page (body/shell/panneaux). Carte, joyaux, CTA (descendants
+       ciblés) gardent les leurs. Aligné avec l'intention « fond strictement uniforme » (v688). */
+    html body, html.sm-app body, html body .app-shell, html body #appView, html body > main, html body .tab-panel {
+      background-image: none !important; }
+    html body, html.sm-app body { background: var(--bg) !important; }
+
+    /* v773 · #8 : « la sélection Sécurité zoome l'écran / bug d'affichage ». Garde-fous :
+       (a) tout champ de l'onglet Sécurité ≥16px → pas de zoom-focus iOS ;
+       (b) pas de débordement horizontal (l'app dépassait de ~4px = le mobile recalcule un
+           niveau de zoom au changement d'onglet). clip ne casse pas le sticky/fixed. */
+    html body .tab-panel[data-panel="securite"] :is(input, textarea, select),
+    html.sm-app body .tab-panel[data-panel="securite"] :is(input, textarea, select) { font-size: 16px !important; }
+    html body .tab-panel[data-panel="securite"], html.sm-app body .tab-panel[data-panel="securite"] { overflow-x: clip; }
+    html body > main, html.sm-app body > main { overflow-x: clip; }
+
+    /* v773 · #17 : « les phrases de suggestion ne s'affichent pas en entier dans les textareas ».
+       field-sizing:content → le textarea grandit pour montrer TOUT le texte inséré (suggestions
+       pré-remplies), au lieu de couper. Repli min-height confortable, plafond raisonnable. */
+    html body textarea, html.sm-app body textarea { field-sizing: content; min-height: 3.4em; max-height: 18em; }
+
+    /* v773 · #21 : désambiguïsation ville homonyme (pays accolé au nom de la ville) */
+    .tj-city-co { font-size: .82rem; font-weight: 600; color: var(--muted); }
+
+    /* v773 · #11 : « retire l'arrière blanc dans le sélecteur d'ambiance » → lignes du sélecteur
+       DA à plat (pas de carte blanche/sombre derrière chaque option). */
+    html body :is(.da-sw, .da-band), html.sm-app body :is(.da-sw, .da-band) {
+      background: transparent !important; border-color: transparent !important; box-shadow: none !important; }
+
+    /* v773 · #20 : « la couleur qui apparaît quand on ouvre/ferme la tuile accès rapide (et les
+       autres catégories dépliables) doit être retirée » → en-têtes de collapsibles à plat
+       (plus de fond crème/carte ni d'ombre au toggle). Chevron + titre conservés. */
+    html body :is(.coll-city > summary, .hm-plan > summary), html.sm-app body :is(.coll-city > summary, .hm-plan > summary) {
+      background: transparent !important; border-color: transparent !important; box-shadow: none !important; }
+    html body :is(.coll-city > summary, .hm-plan > summary):active, html.sm-app body :is(.coll-city > summary, .hm-plan > summary):active {
+      background: transparent !important; }
+
+    /* v773 · #12 : « retirer les contours de tuiles dans Mes mates » → aucune bordure sur les
+       rangées/tuiles de la vue connexions (insurance ; v764/v766 le font déjà hors accueil). */
+    html body :is(.mates-view, .tab-panel[data-panel="connexions"]) :is(.person, .matecard, .mate-card, .reco, .sugg-row),
+    html.sm-app body :is(.mates-view, .tab-panel[data-panel="connexions"]) :is(.person, .matecard, .mate-card, .reco, .sugg-row) {
+      border-width: 0 !important; box-shadow: none !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
        v754 · RETRAIT TOTAL des filets de séparation de contenu (Maxime : « retire-
        les, place de nouveaux séparateurs »). Plus AUCUNE ligne entre rangées/sections.
        La séparation = ESPACE généreux + en-têtes Fraunces forts (v753). Les bordures
@@ -5466,7 +5545,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 772; }
+    :root { --sm-build: 773; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5488,8 +5567,11 @@
       --contour-fill: color-mix(in oklab, #ffffff 5%, transparent);
       --contour-shadow: 0 8px 22px -12px rgba(0,0,0,.5); }
 
-    html body :is(.card, .tile, .cat-tile, .gp-tile, .sc-card, .feature, .quest-spotlight, .prog-card, .nq-card, .wg-card, .pcell, .starterCard, .reward-card, .tip-card):not(.gold-hero):not(.hidden),
-    html.sm-app body :is(.card, .tile, .cat-tile, .gp-tile, .sc-card, .feature, .quest-spotlight, .prog-card, .nq-card, .wg-card, .pcell, .starterCard, .reward-card, .tip-card):not(.gold-hero):not(.hidden) {
+    /* v773 : tuiles-icônes (.tile/.cat-tile/.gp-tile) + cellules stat (.pcell) SORTIES du
+       contour v759 — c'était la 2e source du cadre argenté (border + sheen) qui battait la
+       règle « flat » par spécificité. Contour réservé aux vraies cartes. */
+    html body :is(.card, .sc-card, .feature, .quest-spotlight, .prog-card, .nq-card, .wg-card, .starterCard, .reward-card, .tip-card):not(.gold-hero):not(.hidden),
+    html.sm-app body :is(.card, .sc-card, .feature, .quest-spotlight, .prog-card, .nq-card, .wg-card, .starterCard, .reward-card, .tip-card):not(.gold-hero):not(.hidden) {
       background: var(--contour-fill) !important;
       border: 1px solid var(--contour) !important;
       border-radius: 24px !important;
@@ -5519,8 +5601,13 @@
       --contour-shadow: 0 1px 1px -.5px rgba(0,0,0,.4), 0 12px 28px -16px rgba(0,0,0,.55); }
 
     /* SERTI : bordure-dégradé (padding-box fill + border-box dégradé directionnel) + double inset + double ombre */
-    html body :is(.card,.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.wg-card,.pcell,.starterCard,.reward-card,.tip-card):not(.gold-hero):not(.hidden),
-    html.sm-app body :is(.card,.tile,.cat-tile,.gp-tile,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.wg-card,.pcell,.starterCard,.reward-card,.tip-card):not(.gold-hero):not(.hidden) {
+    /* v773 (retour Maxime « retire les arrière-tuiles grises/argentées ») : les TUILES-ICÔNES
+       (.tile/.cat-tile/.gp-tile) + cellules stat (.pcell) sont SORTIES du serti — c'était la
+       seule chose qui peignait encore un cadre argenté autour d'elles (le serti battait la
+       règle « flat » v762 par spécificité : un :not de plus). Le serti ne reste que sur les
+       vraies cartes (elles-mêmes re-aplaties par v764 → effet net : tout est plat). */
+    html body :is(.card,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.wg-card,.starterCard,.reward-card,.tip-card):not(.gold-hero):not(.hidden),
+    html.sm-app body :is(.card,.sc-card,.feature,.quest-spotlight,.prog-card,.nq-card,.wg-card,.starterCard,.reward-card,.tip-card):not(.gold-hero):not(.hidden) {
       background:
         linear-gradient(var(--contour-fill), var(--contour-fill)) padding-box,
         linear-gradient(165deg, var(--contour-sheen) 0%, var(--contour) 40%, var(--contour) 64%, var(--contour-shade) 100%) border-box !important;

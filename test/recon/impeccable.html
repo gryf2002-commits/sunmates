@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SunMates — Reconstruction différenciation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SUNMATES — SYSTÈME DE DIFFÉRENCIATION « JOAILLERIE DU COUCHANT »
+   Tokens par mode (jour / nuit). Les 4 autres modes héritent
+   du même mécanisme : seuls bg / ink / voile changent.
+   ============================================================ */
+:root{
+  --coral:#FF5A4D; --orange:#FF8A3D; --amber:#FFC93C; --gold:#FFD15C;
+  --teal:#11B5A0; --violet:#7A5CFF;
+  --grad: linear-gradient(135deg,#FFC93C 0%,#FF7A3D 52%,#FF4F6D 100%);
+  --font-display:"Fraunces",Georgia,serif;
+  --font-ui:"Manrope",system-ui,sans-serif;
+
+  /* rythme — la clé de la lisibilité de structure */
+  --gap-group: 30px;   /* entre deux groupes : large */
+  --gap-tight: 12px;   /* dans un groupe : serré   */
+  --r-zone: 28px;      /* coins généreux de zone   */
+  --r-tile: 18px;
+}
+
+/* ---- MODE JOUR (sable) ---- */
+.mode-day{
+  --bg:#FFF4E6;
+  --ink:#2A1A12;            /* prune-chocolat, contraste fort sur sable */
+  --ink-soft:#6B5346;       /* méta lisible ≥4.5:1 sur les voiles      */
+  --tile:#FFFFFF;           /* la seule vraie surface : tuiles / champs */
+  --tile-line:rgba(42,26,18,.07);
+  /* lavis de zone : voile chaud, alterné tiède / neutre */
+  --wash-warm: linear-gradient(180deg,
+     rgba(255,138,61,.10) 0%, rgba(255,201,60,.05) 100%);
+  --wash-cool: linear-gradient(180deg,
+     rgba(122,92,255,.055) 0%, rgba(17,181,160,.04) 100%);
+  --zone-line: rgba(255,138,61,.18);
+  --shadow-tile: 0 1px 0 rgba(42,26,18,.04), 0 10px 22px -16px rgba(255,90,77,.40);
+}
+
+/* ---- MODE NUIT (prune) ---- */
+.mode-night{
+  --bg:#190E2E;
+  --ink:#FBEEDE;            /* crème : contraste fort sur prune */
+  --ink-soft:#C7B6CF;       /* lilas désaturé, lisible          */
+  --tile:#241640;          /* surface prune surélevée          */
+  --tile-line:rgba(255,255,255,.07);
+  --wash-warm: linear-gradient(180deg,
+     rgba(255,138,61,.16) 0%, rgba(255,79,109,.07) 100%);
+  --wash-cool: linear-gradient(180deg,
+     rgba(122,92,255,.18) 0%, rgba(17,181,160,.07) 100%);
+  --zone-line: rgba(255,180,120,.20);
+  --shadow-tile: 0 1px 0 rgba(255,255,255,.04), 0 14px 30px -18px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font-ui);
+  background:#0d0a14;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ====== plateau de démo : 2 phones côte à côte ====== */
+.stage{
+  display:flex; gap:34px; justify-content:center;
+  padding:34px 28px 40px; background:#0d0a14;
+}
+.phone{
+  width:374px; border-radius:36px; overflow:hidden;
+  background:var(--bg); color:var(--ink);
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.6);
+  position:relative;
+}
+.label{
+  font-family:var(--font-ui); font-weight:800; font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; color:#8a7d93;
+  text-align:center; margin:0 0 12px;
+}
+.col{display:flex;flex-direction:column;align-items:center}
+
+/* ====== app shell ====== */
+.app{padding:18px 18px 26px}
+
+/* ---- topbar : transparent au repos (signature SunMates) ---- */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.brand{font-family:var(--font-display);font-weight:700;font-size:1.18rem;color:var(--ink)}
+.brand .sun{
+  display:inline-block;width:13px;height:13px;border-radius:50%;
+  background:var(--grad);margin-right:7px;vertical-align:-1px;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 26%,transparent);
+}
+.tb-actions{display:flex;gap:9px}
+.iconbtn{
+  width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+  font-size:15px;background:color-mix(in srgb,var(--ink) 7%,transparent);color:var(--ink);
+}
+
+/* ---- HERO : ancre typographique forte ---- */
+.hero{padding:8px 2px 4px}
+.hero .hi{font-family:var(--font-ui);font-weight:600;font-size:.82rem;color:var(--ink-soft);letter-spacing:.01em}
+.hero h1{
+  font-family:var(--font-display);font-weight:700;font-size:2.05rem;line-height:1.02;
+  letter-spacing:-.02em;color:var(--ink);text-wrap:balance;margin:1px 0 10px;
+}
+.hero h1 em{font-style:italic;font-weight:600}
+.status-row{display:flex;gap:8px;margin-top:2px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 13px;border-radius:999px;
+  font-weight:700;font-size:.78rem;color:var(--ink);
+  background:color-mix(in srgb,var(--ink) 6%,transparent);
+}
+.chip.on{color:#fff;background:var(--grad);box-shadow:0 8px 18px -10px var(--coral)}
+
+/* ============================================================
+   LA SIGNATURE : la ZONE de section (lavis + coins généreux)
+   Remplace les "cartes empilées". On VOIT le groupe d'un coup.
+   ============================================================ */
+.zone{
+  margin-top:var(--gap-group);
+  padding:16px 15px 17px;
+  border-radius:var(--r-zone);
+  position:relative;
+}
+.zone--warm{background:var(--wash-warm)}
+.zone--cool{background:var(--wash-cool)}
+/* zone "à plat" : pas de lavis, juste le rythme + l'ancre — alternance */
+.zone--bare{background:transparent;padding-left:3px;padding-right:3px}
+
+/* ancre de section : jewel marker + gros titre Fraunces (PAS d'eyebrow trackée) */
+.zone-head{display:flex;align-items:center;gap:11px;margin:2px 2px 14px}
+.jewel{
+  flex:0 0 auto;width:30px;height:30px;border-radius:10px;
+  background:var(--grad);box-shadow:0 6px 14px -6px var(--coral);
+  display:grid;place-items:center;font-size:15px;
+  transform:rotate(-4deg);
+}
+.zone--cool .jewel{background:linear-gradient(135deg,var(--violet),var(--teal))}
+.zone-head h2{
+  font-family:var(--font-display);font-weight:700;font-size:1.32rem;line-height:1;
+  letter-spacing:-.01em;color:var(--ink);
+}
+.zone-head .sub{display:block;font-family:var(--font-ui);font-weight:600;font-size:.74rem;color:var(--ink-soft);margin-top:3px;letter-spacing:0}
+
+/* séparateur signature : filet dégradé qui s'estompe (jamais un trait gris plein) */
+.rule{
+  height:1px;border:0;margin:2px 2px 0;
+  background:linear-gradient(90deg,var(--zone-line),transparent 78%);
+}
+
+/* ---- tuiles dans une zone (vraie surface, hiérarchie typo) ---- */
+.tile-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-tight)}
+.tile{
+  background:var(--tile);border-radius:var(--r-tile);
+  padding:14px 14px 15px;box-shadow:var(--shadow-tile);
+  display:flex;flex-direction:column;gap:9px;
+  border:1px solid var(--tile-line);
+}
+.tile .ic{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:18px;
+  background:color-mix(in srgb,var(--orange) 16%,transparent);color:var(--ink);
+}
+.tile.alt .ic{background:color-mix(in srgb,var(--violet) 16%,transparent)}
+.tile .tt{font-family:var(--font-display);font-weight:600;font-size:1rem;color:var(--ink);line-height:1.05}
+.tile .tx{font-size:.74rem;font-weight:600;color:var(--ink-soft);line-height:1.25}
+
+/* ---- lignes (progression) : posées sur le lavis, séparées par filet estompé ---- */
+.line{
+  display:flex;align-items:center;gap:12px;padding:13px 8px;
+  border-bottom:1px solid var(--tile-line);
+}
+.line:last-child{border-bottom:0}
+.line .lic{
+  flex:0 0 auto;width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:18px;
+  background:var(--tile);box-shadow:var(--shadow-tile);border:1px solid var(--tile-line);
+}
+.line .lbody{flex:1;min-width:0}
+.line .lt{font-family:var(--font-display);font-weight:600;font-size:1rem;color:var(--ink);line-height:1.1}
+.line .lx{font-size:.76rem;font-weight:600;color:var(--ink-soft);margin-top:2px}
+.line .lval{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--coral)}
+.mode-night .line .lval{color:var(--gold)}
+.line .lgo{color:var(--ink-soft);font-weight:800;font-size:1rem;opacity:.55}
+
+/* ---- rangée de stats : chiffres Fraunces qui ancrent (joaillerie) ---- */
+.stat-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  background:var(--wash-warm);border-radius:var(--r-zone);
+  padding:16px 6px;margin-top:var(--gap-group);
+}
+.stat{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.stat + .stat::before{
+  content:"";position:absolute;left:0;top:14%;height:72%;width:1px;
+  background:linear-gradient(180deg,transparent,var(--zone-line),transparent);
+}
+.stat .n{font-family:var(--font-display);font-weight:700;font-size:1.7rem;line-height:1;
+  background:none;color:var(--ink)}
+.stat .k{font-size:.68rem;font-weight:700;letter-spacing:.02em;color:var(--ink-soft);text-transform:uppercase}
+.stat .n .u{font-size:.9rem;color:var(--coral)}
+.mode-night .stat .n .u{color:var(--gold)}
+
+/* ---- CTA principal pleine largeur (garde une vraie surface) ---- */
+.cta{
+  margin-top:var(--gap-group);width:100%;height:54px;border:0;border-radius:18px;
+  font-family:var(--font-ui);font-weight:800;font-size:1rem;color:#fff;
+  background:var(--grad);box-shadow:0 16px 30px -14px var(--coral);
+  display:flex;align-items:center;justify-content:center;gap:9px;letter-spacing:.01em;
+}
+
+/* ---- nav ---- */
+.nav{display:flex;justify-content:space-around;margin-top:24px;padding-top:12px;border-top:1px solid var(--tile-line)}
+.nav span{font-size:.66rem;font-weight:700;color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav span.act{color:var(--coral)}
+.mode-night .nav span.act{color:var(--gold)}
+.nav span i{font-size:17px;font-style:normal}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ============ COLONNE JOUR ============ -->
+  <div class="col">
+    <p class="label">Mode jour · sable</p>
+    <div class="phone mode-day">
+      <div class="app">
+
+        <div class="topbar">
+          <div class="brand"><span class="sun"></span>SunMates</div>
+          <div class="tb-actions">
+            <div class="iconbtn">🔔</div>
+            <div class="iconbtn">💬</div>
+          </div>
+        </div>
+
+        <header class="hero">
+          <p class="hi">Mardi · 8 voyageurs sûrs autour de toi</p>
+          <h1>Bonjour <em>Chloé</em></h1>
+          <div class="status-row">
+            <span class="chip on">☀️ En voyage</span>
+            <span class="chip">🏠 À la maison</span>
+          </div>
+        </header>
+
+        <!-- ZONE 1 : tiède -->
+        <section class="zone zone--warm">
+          <div class="zone-head">
+            <span class="jewel">🎮</span>
+            <div><h2>Jouer</h2><span class="sub">Quêtes du jour & défis</span></div>
+          </div>
+          <div class="tile-row">
+            <div class="tile">
+              <span class="ic">🎯</span>
+              <span class="tt">Quêtes</span>
+              <span class="tx">3 à relever cette semaine</span>
+            </div>
+            <div class="tile alt">
+              <span class="ic">🕹️</span>
+              <span class="tt">Mini-jeux</span>
+              <span class="tx">Gagne de l'XP en duo</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ZONE 2 : froide (alternance) -->
+        <section class="zone zone--cool">
+          <div class="zone-head">
+            <span class="jewel">🏆</span>
+            <div><h2>Ta progression</h2><span class="sub">Cette semaine</span></div>
+          </div>
+          <div class="line">
+            <span class="lic">🎯</span>
+            <div class="lbody"><div class="lt">Objectifs hebdo</div><div class="lx">3 défis qui tournent chaque lundi</div></div>
+            <span class="lval">0/3</span><span class="lgo">›</span>
+          </div>
+          <div class="line">
+            <span class="lic">📍</span>
+            <div class="lbody"><div class="lt">Quête la plus proche</div><div class="lx">Le Vieux-Port · 90 XP</div></div>
+            <span class="lgo">›</span>
+          </div>
+          <div class="line">
+            <span class="lic">🗺️</span>
+            <div class="lbody"><div class="lt">Collection de quêtes</div><div class="lx">Complète la carte</div></div>
+            <span class="lval">0/55</span><span class="lgo">›</span>
+          </div>
+        </section>
+
+        <!-- rangée de stats -->
+        <div class="stat-strip">
+          <div class="stat"><span class="n">412</span><span class="k">XP</span></div>
+          <div class="stat"><span class="n">7</span><span class="k">Badges</span></div>
+          <div class="stat"><span class="n">23<span class="u">★</span></span><span class="k">Confiance</span></div>
+        </div>
+
+        <button class="cta">▶ Jouer cette quête</button>
+
+        <nav class="nav">
+          <span class="act"><i>🏠</i>Accueil</span>
+          <span><i>📍</i>Lieux</span>
+          <span><i>🎮</i>Jeux</span>
+          <span><i>🛡️</i>Sécurité</span>
+          <span><i>👤</i>Profil</span>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ COLONNE NUIT ============ -->
+  <div class="col">
+    <p class="label">Mode nuit · prune</p>
+    <div class="phone mode-night">
+      <div class="app">
+
+        <div class="topbar">
+          <div class="brand"><span class="sun"></span>SunMates</div>
+          <div class="tb-actions">
+            <div class="iconbtn">🔔</div>
+            <div class="iconbtn">💬</div>
+          </div>
+        </div>
+
+        <header class="hero">
+          <p class="hi">Mardi · 8 voyageurs sûrs autour de toi</p>
+          <h1>Bonjour <em>Chloé</em></h1>
+          <div class="status-row">
+            <span class="chip on">☀️ En voyage</span>
+            <span class="chip">🏠 À la maison</span>
+          </div>
+        </header>
+
+        <section class="zone zone--warm">
+          <div class="zone-head">
+            <span class="jewel">🎮</span>
+            <div><h2>Jouer</h2><span class="sub">Quêtes du jour & défis</span></div>
+          </div>
+          <div class="tile-row">
+            <div class="tile">
+              <span class="ic">🎯</span>
+              <span class="tt">Quêtes</span>
+              <span class="tx">3 à relever cette semaine</span>
+            </div>
+            <div class="tile alt">
+              <span class="ic">🕹️</span>
+              <span class="tt">Mini-jeux</span>
+              <span class="tx">Gagne de l'XP en duo</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="zone zone--cool">
+          <div class="zone-head">
+            <span class="jewel">🏆</span>
+            <div><h2>Ta progression</h2><span class="sub">Cette semaine</span></div>
+          </div>
+          <div class="line">
+            <span class="lic">🎯</span>
+            <div class="lbody"><div class="lt">Objectifs hebdo</div><div class="lx">3 défis qui tournent chaque lundi</div></div>
+            <span class="lval">0/3</span><span class="lgo">›</span>
+          </div>
+          <div class="line">
+            <span class="lic">📍</span>
+            <div class="lbody"><div class="lt">Quête la plus proche</div><div class="lx">Le Vieux-Port · 90 XP</div></div>
+            <span class="lgo">›</span>
+          </div>
+          <div class="line">
+            <span class="lic">🗺️</span>
+            <div class="lbody"><div class="lt">Collection de quêtes</div><div class="lx">Complète la carte</div></div>
+            <span class="lval">0/55</span><span class="lgo">›</span>
+          </div>
+        </section>
+
+        <div class="stat-strip">
+          <div class="stat"><span class="n">412</span><span class="k">XP</span></div>
+          <div class="stat"><span class="n">7</span><span class="k">Badges</span></div>
+          <div class="stat"><span class="n">23<span class="u">★</span></span><span class="k">Confiance</span></div>
+        </div>
+
+        <button class="cta">▶ Jouer cette quête</button>
+
+        <nav class="nav">
+          <span class="act"><i>🏠</i>Accueil</span>
+          <span><i>📍</i>Lieux</span>
+          <span><i>🎮</i>Jeux</span>
+          <span><i>🛡️</i>Sécurité</span>
+          <span><i>👤</i>Profil</span>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

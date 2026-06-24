@@ -1,6 +1,9 @@
 {
-  "candidate": "v772",
+  "candidate": "v773",
   "items": [
-    "🌑 Tuiles grises de nuit retirées : en mode sombre, les cartes ne sont plus posées sur des rectangles gris — elles flottent à plat sur le fond, comme en mode jour. Les icônes-joyaux, boutons et champs gardent leur surface."
+    "✨ Accueil plus net : arrière-tuiles grises/argentées retirées partout, titres centrés sans le carré orange, traits de séparation du fil retirés, fond strictement plat (plus de bande).",
+    "🗺️ Carte d'accueil agrandie + moins d'espace avant « Explore autour de toi ». Bascule Voyage/Maison instantanée (fini le passage gris→blanc).",
+    "🧳 Mes voyages : la ville prime, et deux villes homonymes sont distinguées par le pays. 🧊 Joker de série désormais équipable.",
+    "🖼️ Photos : filet d'images locales → elles s'affichent même si le réseau bloque la banque distante. « Mes envies d'ailleurs » séparé de « Préparer mon voyage »."
   ]
 }

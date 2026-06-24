@@ -1,0 +1,162 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SunMates — Serti joaillerie v760 (recon)</title>
+<style>
+/* ── Palette SunMates (extrait réel) ───────────────────────── */
+:root{
+  --coral:#FF5A4D; --orange:#FF8A3D; --amber:#FFC93C; --gold:#FFD15C;
+  --teal:#11B5A0; --violet:#7A5CFF;
+  --ink:#2A1A2E; --bg:#FFF4E6; --card:#FFFBF4; --muted:#8C7B6E;
+  font-family:'Manrope',-apple-system,system-ui,sans-serif;
+}
+.dusk{ --ink:#EDE6FF; --bg:#190E2E; --card:#2E1B4C; --muted:#A99BC4; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);padding:0}
+.frame{ background:var(--bg); padding:26px 18px 40px; }
+h1{font:700 1.05rem/1.2 'Fraunces',Georgia,serif; letter-spacing:.2px; margin:0 0 2px}
+.sub{color:var(--muted);font-size:.74rem;margin-bottom:18px}
+.lbl{font:800 .62rem/1 'Manrope';text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:22px 4px 10px;display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* ════════════════════════════════════════════════════════════
+   A — v759 ACTUEL (référence) : contour plat + sheen top + ombre
+   ════════════════════════════════════════════════════════════ */
+:root,.frame{ --contour:color-mix(in oklab,var(--ink) 12%,transparent);
+  --contour-sheen:color-mix(in oklab,#fff 55%,transparent);
+  --contour-fill:color-mix(in oklab,var(--ink) 4%,transparent);
+  --contour-shadow:0 6px 18px -12px color-mix(in oklab,var(--ink) 40%,transparent); }
+.dusk{ --contour:color-mix(in oklab,#fff 15%,transparent);
+  --contour-sheen:color-mix(in oklab,#fff 8%,transparent);
+  --contour-fill:color-mix(in oklab,#fff 5%,transparent);
+  --contour-shadow:0 8px 22px -12px rgba(0,0,0,.5); }
+.v759{ background:var(--contour-fill); border:1px solid var(--contour);
+  border-radius:24px; box-shadow:inset 0 1px 0 var(--contour-sheen),var(--contour-shadow); }
+
+/* ════════════════════════════════════════════════════════════
+   B — v760 SERTI JOAILLERIE (proposition)
+   • liseré dégradé : capte la lumière en haut (sheen), s'éteint en bas
+   • micro-reflet interne haut + ombre chaude basse (gradient border)
+   • fond très subtil, teinté chaud
+   ════════════════════════════════════════════════════════════ */
+:root,.frame{
+  --ct-line:color-mix(in oklab,var(--ink) 14%,transparent);
+  --ct-sheen:color-mix(in oklab,#fff 78%,transparent);   /* haut : arête qui capte la lumière */
+  --ct-shade:color-mix(in oklab,var(--ink) 22%,transparent); /* bas : ombre chaude du serti */
+  --ct-fill:color-mix(in oklab,var(--orange) 5%,var(--card)); /* chaleur, pas gris */
+  --ct-glow:color-mix(in oklab,#fff 38%,transparent);    /* micro-reflet interne haut */
+  --ct-drop:0 10px 26px -16px color-mix(in oklab,var(--ink) 46%,transparent),
+            0 2px 6px -4px color-mix(in oklab,var(--coral) 28%,transparent);
+}
+.dusk{
+  --ct-line:color-mix(in oklab,#fff 16%,transparent);
+  --ct-sheen:color-mix(in oklab,#fff 30%,transparent);
+  --ct-shade:color-mix(in oklab,#000 38%,transparent);
+  --ct-fill:color-mix(in oklab,var(--amber) 4%,var(--card));
+  --ct-glow:color-mix(in oklab,var(--amber) 16%,transparent);
+  --ct-drop:0 12px 30px -16px rgba(0,0,0,.62),
+            0 2px 8px -4px color-mix(in oklab,var(--amber) 22%,transparent);
+}
+.v760{
+  position:relative;
+  /* 1) fond + arête lumineuse interne haut (le « biseau ») + ombre chaude basse */
+  background:
+    linear-gradient(var(--ct-fill),var(--ct-fill)) padding-box,
+    /* 2) liseré serti : clair en haut → s'éteint → chaud en bas */
+    linear-gradient(160deg, var(--ct-sheen) 0%, var(--ct-line) 38%, var(--ct-line) 66%, var(--ct-shade) 100%) border-box;
+  border:1px solid transparent;
+  border-radius:22px;
+  box-shadow:
+    inset 0 1px 0 var(--ct-glow),         /* micro-reflet : la facette du haut */
+    inset 0 -1px 0 var(--ct-shade),       /* l'arête basse, profondeur */
+    var(--ct-drop);                        /* ombre portée chaude, douce */
+}
+/* micro-glint diagonal TRÈS discret en coin haut-gauche (la « facette ») */
+.v760::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(120% 80% at 18% -8%, var(--ct-glow), transparent 46%);
+  opacity:.7;mix-blend-mode:screen;
+}
+
+/* pièce maîtresse : « posée » (plus de drop, fill plus chaud) */
+.v760.hero{
+  --ct-fill:color-mix(in oklab,var(--orange) 8%,var(--card));
+  box-shadow:inset 0 1px 0 var(--ct-glow),inset 0 -1px 0 var(--ct-shade),
+    0 18px 40px -20px color-mix(in oklab,var(--coral) 40%,transparent),
+    0 6px 14px -8px color-mix(in oklab,var(--ink) 30%,transparent);
+}
+.dusk .v760.hero{ --ct-fill:color-mix(in oklab,var(--amber) 7%,var(--card)); }
+
+/* ── Contenu démo (tuile-icône + carte) ───────────────────── */
+.cell{padding:18px 16px;min-height:108px;display:flex;flex-direction:column;gap:9px}
+.tile{align-items:center;justify-content:center;text-align:center}
+.gem{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;
+  position:relative;
+  background:linear-gradient(150deg,var(--orange),var(--coral));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.55),inset 0 -2px 4px rgba(0,0,0,.22),0 4px 10px -4px var(--coral);}
+/* glint joyau : petit éclat blanc fixe en haut-gauche */
+.gem::after{content:"";position:absolute;top:5px;left:7px;width:13px;height:7px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,255,255,.85),transparent);transform:rotate(-18deg);}
+.tile .t{font:700 .82rem 'Manrope';color:var(--ink)}
+.card .ct{font:700 .9rem 'Fraunces',serif;color:var(--ink)}
+.card .cd{font-size:.74rem;color:var(--muted);line-height:1.35}
+.pill{margin-left:auto;font:800 .72rem 'Fraunces';color:var(--amber)}
+.row{display:flex;align-items:center;gap:10px}
+.dot{width:34px;height:34px;border-radius:10px;background:linear-gradient(150deg,var(--amber),var(--orange));flex:0 0 auto;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 3px 8px -3px var(--orange);position:relative}
+.dot::after{content:"";position:absolute;top:4px;left:6px;width:10px;height:5px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.8),transparent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.col{padding:0 4px}
+.col h2{font:700 .92rem 'Fraunces',serif;margin-bottom:10px}
+.tag{font:800 .58rem 'Manrope';letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+</style></head>
+<body>
+<div class="frame" id="cap">
+  <h1>Serti joaillerie — recon v760</h1>
+  <div class="sub">Gauche = v759 actuel · Droite = serti proposé · même contenu, 6 modes dérivés des mêmes tokens</div>
+
+  <div class="two">
+    <div class="col"><h2 style="font-family:'Fraunces',serif">☀️ Jour</h2>
+      <span class="lbl">v759 actuel</span>
+      <div class="grid">
+        <div class="v759 cell tile"><div class="gem">🎯</div><div class="t">Quêtes</div></div>
+        <div class="v759 cell tile"><div class="gem" style="background:linear-gradient(150deg,var(--violet),var(--coral))">🎮</div><div class="t">Jeux</div></div>
+      </div>
+      <div class="grid" style="margin-top:14px;grid-template-columns:1fr">
+        <div class="v759 cell card"><div class="row"><span class="dot"></span><span class="ct">Objectifs de la semaine</span><span class="pill">0/3</span></div><div class="cd">3 défis qui tournent chaque lundi</div></div>
+      </div>
+
+      <span class="lbl">v760 serti — proposé</span>
+      <div class="grid">
+        <div class="v760 cell tile"><div class="gem">🎯</div><div class="t">Quêtes</div></div>
+        <div class="v760 cell tile"><div class="gem" style="background:linear-gradient(150deg,var(--violet),var(--coral))">🎮</div><div class="t">Jeux</div></div>
+      </div>
+      <div class="grid" style="margin-top:14px;grid-template-columns:1fr">
+        <div class="v760 hero cell card"><div class="row"><span class="dot"></span><span class="ct">Quête la plus proche</span><span class="pill">›</span></div><div class="cd">Le Vieux-Port · +90 XP · pièce maîtresse posée</div></div>
+        <div class="v760 cell card"><div class="row"><span class="dot" style="background:linear-gradient(150deg,var(--teal),var(--amber))"></span><span class="ct">Collection de quêtes</span><span class="pill">0/55</span></div><div class="cd">Complète la carte, une ville à la fois</div></div>
+      </div>
+    </div>
+
+    <div class="col dusk" style="background:var(--bg);border-radius:18px;padding:10px 6px 18px">
+      <h2 style="font-family:'Fraunces',serif;color:var(--ink);margin-left:6px">🌙 Crépuscule</h2>
+      <span class="lbl">v759 actuel</span>
+      <div class="grid">
+        <div class="v759 cell tile"><div class="gem">🎯</div><div class="t">Quêtes</div></div>
+        <div class="v759 cell tile"><div class="gem" style="background:linear-gradient(150deg,var(--violet),var(--coral))">🎮</div><div class="t">Jeux</div></div>
+      </div>
+      <div class="grid" style="margin-top:14px;grid-template-columns:1fr">
+        <div class="v759 cell card"><div class="row"><span class="dot"></span><span class="ct">Objectifs de la semaine</span><span class="pill">0/3</span></div><div class="cd">3 défis qui tournent chaque lundi</div></div>
+      </div>
+
+      <span class="lbl">v760 serti — proposé</span>
+      <div class="grid">
+        <div class="v760 cell tile"><div class="gem">🎯</div><div class="t">Quêtes</div></div>
+        <div class="v760 cell tile"><div class="gem" style="background:linear-gradient(150deg,var(--violet),var(--coral))">🎮</div><div class="t">Jeux</div></div>
+      </div>
+      <div class="grid" style="margin-top:14px;grid-template-columns:1fr">
+        <div class="v760 hero cell card"><div class="row"><span class="dot"></span><span class="ct">Quête la plus proche</span><span class="pill">›</span></div><div class="cd">Le Vieux-Port · +90 XP · pièce maîtresse posée</div></div>
+        <div class="v760 cell card"><div class="row"><span class="dot" style="background:linear-gradient(150deg,var(--teal),var(--amber))"></span><span class="ct">Collection de quêtes</span><span class="pill">0/55</span></div><div class="cd">Complète la carte, une ville à la fois</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

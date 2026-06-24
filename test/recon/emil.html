@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SunMates — Reconstruction DA (Emil)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   SUNMATES — Reconstruction de la différenciation « à la Emil »
+   Principe : la STRUCTURE par la RETENUE.
+   Pas de boîtes lourdes. On groupe par :
+   - micro-contraste de surface  (--surface : 1 ton plus chaud/clair que --bg)
+   - espacement comme outil de groupage (proximité = appartenance)
+   - hairlines ressenties, pas vues (--line, alpha très bas)
+   - hiérarchie typo affirmée (Fraunces display vs Manrope corps)
+   ========================================================================= */
+
+/* ---------- TOKENS PARTAGÉS ---------- */
+:root{
+  --font-display:'Fraunces', Georgia, serif;
+  --font-body:'Manrope', system-ui, sans-serif;
+
+  /* joaillerie du couchant */
+  --coral:#FF5A4D;  --orange:#FF8A3D;  --amber:#FFC93C;  --gold:#FFD15C;
+  --teal:#11B5A0;   --violet:#7A5CFF;
+
+  /* échelle d'espace (4pt) — l'espace EST la structure */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+
+  /* rayon : doux mais présent */
+  --r-sm:12px; --r-md:18px; --r-lg:24px; --r-pill:999px;
+
+  /* durée/easing Emil */
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+}
+
+/* ---------- JOUR (sable) ---------- */
+.mode-day{
+  --bg:#FFF4E6;
+  --bg-2:#FBE9D6;              /* dégradé bas, subtil */
+  --surface:rgba(255,255,255,.62);   /* le micro-contraste : ~zone groupée */
+  --surface-strong:rgba(255,255,255,.85);
+  --surface-tint:rgba(255,138,61,.05); /* chaleur quasi-invisible */
+  --ink:#2A1A12;              /* presque noir chaud */
+  --ink-2:#6E5848;            /* secondaire */
+  --ink-3:#9A8676;            /* tertiaire / labels */
+  --line:rgba(42,26,18,.07);  /* hairline ressentie */
+  --line-strong:rgba(42,26,18,.10);
+  --halo:rgba(255,138,61,.14);
+  --shadow:0 1px 2px rgba(120,72,40,.05), 0 8px 24px -12px rgba(120,72,40,.14);
+  --shadow-press:0 1px 2px rgba(120,72,40,.06);
+}
+
+/* ---------- NUIT (prune) ---------- */
+.mode-dusk{
+  --bg:#190E2E;
+  --bg-2:#120A22;
+  --surface:rgba(255,255,255,.045);
+  --surface-strong:rgba(255,255,255,.07);
+  --surface-tint:rgba(255,138,61,.045);
+  --ink:#FBF1FF;
+  --ink-2:#C9B7DE;
+  --ink-3:#8E7AA6;
+  --line:rgba(255,255,255,.07);
+  --line-strong:rgba(255,255,255,.11);
+  --halo:rgba(255,138,61,.16);
+  --shadow:0 1px 2px rgba(0,0,0,.25), 0 12px 28px -14px rgba(0,0,0,.55);
+  --shadow-press:0 1px 2px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+body{
+  font-family:var(--font-body);
+  background:#d8c9bb;
+  display:flex; gap:40px; justify-content:center;
+  padding:40px; align-items:flex-start;
+}
+
+/* ===== ÉCRAN / TÉLÉPHONE ===== */
+.phone{
+  width:380px;
+  border-radius:38px;
+  overflow:hidden;
+  position:relative;
+  background:
+    radial-gradient(120% 70% at 50% -10%, var(--halo), transparent 55%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 58%, var(--bg-2) 100%);
+  color:var(--ink);
+  box-shadow:0 30px 70px -24px rgba(60,30,10,.5);
+  border:1px solid rgba(255,255,255,.06);
+}
+.mode-label{
+  text-align:center; font-family:var(--font-display); font-weight:600;
+  font-size:13px; letter-spacing:.14em; text-transform:uppercase;
+  color:#fff; opacity:.8; margin-bottom:14px;
+}
+.screen{ padding:0 18px 26px; }
+
+/* ===== BANDEAU PROMO (compact, ne crie pas) ===== */
+.promo{
+  margin:14px 0 6px;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  font-size:11.5px; font-weight:600; color:var(--ink-2);
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-pill);
+  padding:7px 12px;
+}
+.promo .dot{ color:var(--violet); }
+
+/* ===== TOPBAR ===== */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 2px 2px;
+}
+.brand{
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-display); font-weight:700; font-size:21px;
+  letter-spacing:-.01em;
+}
+.brand .sun{
+  width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%, var(--gold), var(--orange) 60%, var(--coral));
+  box-shadow:0 0 0 3px var(--halo);
+}
+.brand .grad{
+  background:linear-gradient(92deg,var(--coral),var(--orange) 55%,var(--amber));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.topactions{ display:flex; gap:8px; }
+.iconbtn{
+  width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center; font-size:16px;
+  background:var(--surface); border:1px solid var(--line);
+  color:var(--ink-2); cursor:pointer;
+  transition:transform .16s var(--ease-out), background .2s ease;
+}
+.iconbtn:active{ transform:scale(.94); }
+
+/* ===== HERO « Bonjour » — la hiérarchie typo fait tout ===== */
+.hero{ padding:22px 2px 18px; }
+.hero .eyebrow{
+  font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:8px;
+}
+.hero h1{
+  font-family:var(--font-display);
+  font-weight:600; font-size:33px; line-height:1.02; letter-spacing:-.02em;
+  font-optical-sizing:auto;
+}
+.hero h1 .name{ font-style:italic; font-weight:600; }
+.hero .sub{
+  margin-top:10px; font-size:13.5px; color:var(--ink-2); max-width:30ch; line-height:1.45;
+}
+
+/* segmented status (En voyage / À la maison) */
+.segment{
+  margin-top:16px;
+  display:inline-flex; gap:3px; padding:3px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-pill);
+}
+.seg{
+  border:0; cursor:pointer; font-family:var(--font-body); font-weight:600; font-size:12.5px;
+  padding:8px 16px; border-radius:var(--r-pill); color:var(--ink-2);
+  background:transparent; transition:transform .16s var(--ease-out);
+}
+.seg:active{ transform:scale(.97); }
+.seg.on{
+  color:#fff;
+  background:linear-gradient(92deg,var(--coral),var(--orange));
+  box-shadow:0 4px 14px -4px rgba(255,90,77,.5);
+}
+
+/* ===== RANGÉE DE STATS — groupage par SURFACE + séparateurs internes ===== */
+/* C'est le « avant : 3 chiffres flottants » → « après : un trio cohérent » */
+.stats{
+  margin-top:22px;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.stat{ padding:16px 8px; text-align:center; position:relative; }
+.stat + .stat::before{   /* hairline interne = ressentie */
+  content:""; position:absolute; left:0; top:22%; bottom:22%; width:1px;
+  background:var(--line-strong);
+}
+.stat .v{
+  font-family:var(--font-display); font-weight:700; font-size:26px; line-height:1;
+  letter-spacing:-.02em;
+  background:linear-gradient(180deg,var(--orange),var(--coral));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.stat .k{
+  margin-top:7px; font-size:11px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3);
+}
+
+/* ===== EN-TÊTE DE SECTION — kicker + filet = repère sans boîte ===== */
+.sec{ margin-top:30px; }
+.sec-head{
+  display:flex; align-items:baseline; gap:10px; margin-bottom:6px;
+}
+.sec-head h2{
+  font-family:var(--font-display); font-weight:600; font-size:18px; letter-spacing:-.01em;
+}
+.sec-head .count{
+  font-size:12px; font-weight:600; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.sec-head .line{ flex:1; height:1px; background:var(--line); }
+.sec-sub{ font-size:12.5px; color:var(--ink-3); margin:-2px 0 14px; }
+
+/* ===== TUILES (grille 2) — micro-surface + accent à GAUCHE ===== */
+.tiles{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.tile{
+  position:relative; overflow:hidden;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  padding:16px 16px 15px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  transition:transform .18s var(--ease-out), box-shadow .2s ease;
+  isolation:isolate;
+}
+.tile::before{  /* filet accent ressenti, à gauche */
+  content:""; position:absolute; left:0; top:14px; bottom:14px; width:3px; border-radius:3px;
+  background:linear-gradient(var(--c1),var(--c2));
+  opacity:.9;
+}
+.tile:active{ transform:scale(.985); box-shadow:var(--shadow-press); }
+.tile .ic{
+  width:34px;height:34px;border-radius:11px; display:grid;place-items:center; font-size:17px;
+  margin-bottom:11px;
+  background:color-mix(in srgb, var(--c1) 16%, transparent);
+}
+.tile h3{ font-family:var(--font-display); font-weight:600; font-size:15px; letter-spacing:-.01em; }
+.tile p{ margin-top:3px; font-size:12px; color:var(--ink-3); line-height:1.35; }
+.t-quete{ --c1:var(--coral); --c2:var(--orange); }
+.t-jeux{  --c1:var(--violet); --c2:#9d86ff; }
+.t-badges{--c1:var(--amber); --c2:var(--gold); }
+.t-class{ --c1:var(--teal); --c2:#3fd0bd; }
+
+/* ===== LISTE « Ta progression » — UN groupe, lignes séparées par hairlines ===== */
+.list{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.row{
+  display:flex; align-items:center; gap:13px;
+  padding:14px 15px;
+  position:relative; cursor:pointer;
+  transition:background .18s ease;
+}
+.row + .row{ border-top:1px solid var(--line); }
+.row:active{ background:var(--surface-tint); }
+.row .ic{
+  flex:none; width:38px;height:38px;border-radius:11px; display:grid;place-items:center; font-size:17px;
+  background:color-mix(in srgb, var(--rc) 15%, transparent);
+}
+.row .body{ flex:1; min-width:0; }
+.row .body .t{ font-family:var(--font-display); font-weight:600; font-size:14.5px; letter-spacing:-.005em; }
+.row .body .d{ font-size:12px; color:var(--ink-3); margin-top:2px; }
+.row .meta{ text-align:right; flex:none; }
+.row .meta .frac{
+  font-family:var(--font-display); font-weight:700; font-size:15px;
+  font-variant-numeric:tabular-nums; color:var(--ink);
+}
+.row .meta .chev{ font-size:14px; color:var(--ink-3); margin-left:2px; }
+.r-1{ --rc:var(--coral); } .r-2{ --rc:var(--orange); }
+.r-3{ --rc:var(--amber); } .r-4{ --rc:var(--violet); }
+
+/* mini barre de progression dans la ligne — affirme le chiffre */
+.bar{ height:4px; border-radius:4px; background:var(--line-strong); margin-top:8px; overflow:hidden; }
+.bar i{ display:block; height:100%; border-radius:4px;
+  background:linear-gradient(90deg,var(--orange),var(--coral)); }
+
+/* ===== QUÊTE DU JOUR — pièce maîtresse, plus de présence ===== */
+.featured{
+  margin-top:14px;
+  background:
+    radial-gradient(120% 120% at 100% 0%, color-mix(in srgb,var(--orange) 14%, transparent), transparent 60%),
+    var(--surface-strong);
+  border:1px solid var(--line-strong);
+  border-radius:var(--r-lg);
+  padding:18px;
+  box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.featured .tag{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--coral); margin-bottom:10px;
+}
+.featured h3{ font-family:var(--font-display); font-weight:600; font-size:21px; letter-spacing:-.015em; line-height:1.1; }
+.featured p{ font-size:12.5px; color:var(--ink-2); margin-top:6px; line-height:1.45; max-width:34ch; }
+.featured .foot{ display:flex; align-items:center; gap:8px; margin-top:14px; }
+.xp{
+  font-family:var(--font-display); font-weight:700; font-size:13px;
+  color:#fff; background:linear-gradient(92deg,var(--coral),var(--orange));
+  padding:5px 11px; border-radius:var(--r-pill);
+}
+.tagm{
+  font-size:11.5px; font-weight:600; color:var(--ink-3);
+  background:var(--surface); border:1px solid var(--line); padding:5px 10px; border-radius:var(--r-pill);
+}
+.cta{
+  margin-top:15px; width:100%;
+  font-family:var(--font-body); font-weight:700; font-size:14.5px; color:#fff;
+  border:0; border-radius:14px; padding:14px;
+  background:linear-gradient(92deg,var(--coral),var(--orange));
+  box-shadow:0 8px 22px -8px rgba(255,90,77,.6);
+  cursor:pointer; transition:transform .16s var(--ease-out);
+}
+.cta:active{ transform:scale(.98); }
+
+/* ===== NAV BAS ===== */
+.nav{
+  margin-top:28px; padding-top:14px;
+  display:flex; justify-content:space-between;
+  border-top:1px solid var(--line);
+}
+.nav a{
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  font-size:10.5px; font-weight:600; color:var(--ink-3); text-decoration:none; flex:1;
+}
+.nav a.on{ color:var(--coral); }
+.nav a .g{ font-size:18px; }
+
+/* annotation pédagogique discrète */
+.note{
+  max-width:300px; color:#5a4636; font-size:12px; line-height:1.55;
+  font-family:var(--font-body); align-self:center;
+}
+.note b{ color:#2a1a12; }
+</style>
+</head>
+<body>
+
+<!-- ===================== JOUR ===================== -->
+<div class="phone mode-day">
+  <div style="position:absolute;inset:0;pointer-events:none"></div>
+  <div class="screen">
+    <div class="mode-label" style="color:#a07a55">Jour · sable</div>
+
+    <div class="promo"><span class="dot">✦</span> Préversion v749 — quoi de neuf&nbsp;?</div>
+
+    <div class="topbar">
+      <div class="brand"><span class="sun"></span><span class="grad">SunMates</span></div>
+      <div class="topactions">
+        <button class="iconbtn">🔔</button>
+        <button class="iconbtn">✉️</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="eyebrow">Mardi · Lisbonne</div>
+      <h1>Bonjour <span class="name">Chloé</span></h1>
+      <div class="sub">Regarde qui traîne dans le coin et prépare ta prochaine rencontre en sécurité.</div>
+      <div class="segment">
+        <button class="seg on">En voyage</button>
+        <button class="seg">À la maison</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="v">128</div><div class="k">XP</div></div>
+      <div class="stat"><div class="v">14</div><div class="k">Mates</div></div>
+      <div class="stat"><div class="v">9</div><div class="k">Check-ins</div></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Quête du jour</h2><span class="line"></span></div>
+      <div class="featured">
+        <div class="tag">◆ Explorateur · encore 24 h</div>
+        <h3>Au fil de la Seine</h3>
+        <p>Traverse le Pont des Arts et admire la vue sur les quais au coucher du soleil.</p>
+        <div class="foot"><span class="xp">+90 XP</span><span class="tagm">À deux · bonus</span></div>
+        <button class="cta">Jouer cette quête</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Jouer</h2><span class="line"></span></div>
+      <div class="tiles">
+        <div class="tile t-quete"><div class="ic">🎯</div><h3>Quêtes</h3><p>Défis du jour</p></div>
+        <div class="tile t-jeux"><div class="ic">🎮</div><h3>Mini-jeux</h3><p>Gagne de l'XP</p></div>
+        <div class="tile t-badges"><div class="ic">🏅</div><h3>Badges</h3><p>12 obtenus</p></div>
+        <div class="tile t-class"><div class="ic">📊</div><h3>Classement</h3><p>#34 ce mois</p></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Ta progression</h2><span class="count">4 en cours</span><span class="line"></span></div>
+      <div class="sec-sub">Complète-les pour débloquer la boutique.</div>
+      <div class="list">
+        <div class="row r-1">
+          <div class="ic">🎯</div>
+          <div class="body"><div class="t">Objectifs de la semaine</div><div class="d">3 défis qui tournent chaque lundi</div>
+            <div class="bar"><i style="width:33%"></i></div></div>
+          <div class="meta"><span class="frac">0/3</span><span class="chev">›</span></div>
+        </div>
+        <div class="row r-2">
+          <div class="ic">📍</div>
+          <div class="body"><div class="t">Quête la plus proche</div><div class="d">Le Vieux-Port · +90 XP</div>
+            <div class="bar"><i style="width:60%"></i></div></div>
+          <div class="meta"><span class="chev">›</span></div>
+        </div>
+        <div class="row r-3">
+          <div class="ic">🗺️</div>
+          <div class="body"><div class="t">Collection de quêtes</div><div class="d">Complète la carte, ville après ville</div>
+            <div class="bar"><i style="width:9%"></i></div></div>
+          <div class="meta"><span class="frac">0/55</span><span class="chev">›</span></div>
+        </div>
+        <div class="row r-4">
+          <div class="ic">🏛️</div>
+          <div class="body"><div class="t">Ville à l'honneur</div><div class="d">Lisbonne · 3 lieux validés</div></div>
+          <div class="meta"><span class="frac">3/8</span><span class="chev">›</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <a class="on"><span class="g">🏠</span>Accueil</a>
+      <a><span class="g">📍</span>Lieux</a>
+      <a><span class="g">🎮</span>Jeux</a>
+      <a><span class="g">🛡️</span>Sécurité</a>
+      <a><span class="g">👤</span>Profil</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== NUIT ===================== -->
+<div class="phone mode-dusk">
+  <div class="screen">
+    <div class="mode-label">Nuit · prune</div>
+
+    <div class="promo"><span class="dot">✦</span> Préversion v749 — quoi de neuf&nbsp;?</div>
+
+    <div class="topbar">
+      <div class="brand"><span class="sun"></span><span class="grad">SunMates</span></div>
+      <div class="topactions">
+        <button class="iconbtn">🔔</button>
+        <button class="iconbtn">✉️</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="eyebrow">Mardi · Lisbonne</div>
+      <h1>Bonjour <span class="name">Chloé</span></h1>
+      <div class="sub">Regarde qui traîne dans le coin et prépare ta prochaine rencontre en sécurité.</div>
+      <div class="segment">
+        <button class="seg on">En voyage</button>
+        <button class="seg">À la maison</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="v">128</div><div class="k">XP</div></div>
+      <div class="stat"><div class="v">14</div><div class="k">Mates</div></div>
+      <div class="stat"><div class="v">9</div><div class="k">Check-ins</div></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Quête du jour</h2><span class="line"></span></div>
+      <div class="featured">
+        <div class="tag">◆ Explorateur · encore 24 h</div>
+        <h3>Au fil de la Seine</h3>
+        <p>Traverse le Pont des Arts et admire la vue sur les quais au coucher du soleil.</p>
+        <div class="foot"><span class="xp">+90 XP</span><span class="tagm">À deux · bonus</span></div>
+        <button class="cta">Jouer cette quête</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Jouer</h2><span class="line"></span></div>
+      <div class="tiles">
+        <div class="tile t-quete"><div class="ic">🎯</div><h3>Quêtes</h3><p>Défis du jour</p></div>
+        <div class="tile t-jeux"><div class="ic">🎮</div><h3>Mini-jeux</h3><p>Gagne de l'XP</p></div>
+        <div class="tile t-badges"><div class="ic">🏅</div><h3>Badges</h3><p>12 obtenus</p></div>
+        <div class="tile t-class"><div class="ic">📊</div><h3>Classement</h3><p>#34 ce mois</p></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Ta progression</h2><span class="count">4 en cours</span><span class="line"></span></div>
+      <div class="sec-sub">Complète-les pour débloquer la boutique.</div>
+      <div class="list">
+        <div class="row r-1">
+          <div class="ic">🎯</div>
+          <div class="body"><div class="t">Objectifs de la semaine</div><div class="d">3 défis qui tournent chaque lundi</div>
+            <div class="bar"><i style="width:33%"></i></div></div>
+          <div class="meta"><span class="frac">0/3</span><span class="chev">›</span></div>
+        </div>
+        <div class="row r-2">
+          <div class="ic">📍</div>
+          <div class="body"><div class="t">Quête la plus proche</div><div class="d">Le Vieux-Port · +90 XP</div>
+            <div class="bar"><i style="width:60%"></i></div></div>
+          <div class="meta"><span class="chev">›</span></div>
+        </div>
+        <div class="row r-3">
+          <div class="ic">🗺️</div>
+          <div class="body"><div class="t">Collection de quêtes</div><div class="d">Complète la carte, ville après ville</div>
+            <div class="bar"><i style="width:9%"></i></div></div>
+          <div class="meta"><span class="frac">0/55</span><span class="chev">›</span></div>
+        </div>
+        <div class="row r-4">
+          <div class="ic">🏛️</div>
+          <div class="body"><div class="t">Ville à l'honneur</div><div class="d">Lisbonne · 3 lieux validés</div></div>
+          <div class="meta"><span class="frac">3/8</span><span class="chev">›</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <a class="on"><span class="g">🏠</span>Accueil</a>
+      <a><span class="g">📍</span>Lieux</a>
+      <a><span class="g">🎮</span>Jeux</a>
+      <a><span class="g">🛡️</span>Sécurité</a>
+      <a><span class="g">👤</span>Profil</a>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <b>Différenciation par la retenue.</b> Aucune boîte lourde : on groupe avec une
+  <b>micro-surface</b> (1 ton plus clair/chaud que le fond), des <b>hairlines ressenties</b>,
+  et l'<b>espacement</b>. Les en-têtes (Fraunces) tranchent net sur le corps (Manrope).
+  Le trio de stats devient <b>un</b> objet ; chaque section a un repère sans cadre.
+</div>
+
+</body>
+</html>
