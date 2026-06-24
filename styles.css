@@ -5466,7 +5466,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 761; }
+    :root { --sm-build: 763; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5591,3 +5591,42 @@
     html body .tab-panel:not(.hidden) > #profMain > *:nth-child(11) { animation-delay: 450ms; }
     html body .tab-panel:not(.hidden) > #profMain > *:nth-child(12) { animation-delay: 495ms; }
     @media (prefers-reduced-motion: reduce) { html body .tab-panel:not(.hidden) > #profMain > * { animation: none !important; } }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v762 · MOINS DE TRAITS (retour Maxime « bcp de traits ») : le contour serti
+       v760 était sur TOUTES les tuiles/cellules → trop de cadres. On le réserve aux
+       VRAIES CARTES ; les tuiles-icônes + cellules redeviennent PLATES (le joyau
+       coloré porte l'effet, pas un cadre autour). Contours rares = élégants. ════════ */
+    html body :is(.tile, .cat-tile, .gp-tile, .pcell, .pc-stat, .stat-box, .gp-cell):not(.gold-hero),
+    html.sm-app body :is(.tile, .cat-tile, .gp-tile, .pcell, .pc-stat, .stat-box, .gp-cell):not(.gold-hero) {
+      background: transparent !important; border: 0 !important; box-shadow: none !important; }
+
+    /* ── Correctifs DA (audit agent) : ce qui « n'est pas dans la DA » ── */
+    /* 1 · statuts « validé/fait » : vert hors-DA → sunset (règle produit : jamais vert) */
+    html.sm-app body :is(.sc-check, .rit-row.is-done .rit-box) {
+      background: linear-gradient(135deg, #FFC93C, #FF8A3D) !important; box-shadow: 0 3px 8px rgba(255,138,61,.4) !important; color: #fff !important; }
+    html.sm-app body .rit-row.is-done .rit-ic { background: color-mix(in srgb, var(--accent) 16%, transparent) !important; }
+    /* 2 · ambre #B5740E illisible en NUIT → or clair, sur les ~20 sélecteurs non couverts */
+    html.sm-app body.theme-dusk :is(.pcard-rate, .pc-stat .pc-n, .conv-bff .conv-pin, .xp-banner b, .xpl-lvl, .xpl-next b, .wg-alldone, .tip-title, .profile-title, .shop-coins, .shop-item.buyable .shop-meta, .boost-card .boost-meta, .tcard-vedette, .qs-xp, .qm-xp, .sp-stat b, .sp-next-lbl, .sc-xp, .rit-cnt, .player-badge.player-hud .hud-lvl) { color: #FFD79A !important; }
+    /* 3 · rouge d'erreur (échec message ≠ danger) → corail sunset */
+    html.sm-app body .bubble.msg-failed { background: color-mix(in srgb, var(--accent) 14%, transparent) !important; color: var(--accent-ink, var(--accent)) !important; }
+    /* 4 · indigo « bleu » classement → violet secondaire DA */
+    html.sm-app body .gcard .ghead.blue { background: linear-gradient(135deg, #9b7bff, #7a5cff) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v763 · ZÉRO TRAIT (Maxime « bcp de traits ») — un contour-bordure EST un trait.
+       On retire la BORDURE des cartes ; la structure = OMBRE douce + fond subtil +
+       arrondi + fin reflet haut (pas un cadre). Cartes arrondies, profondeur, mais
+       AUCUNE ligne. 6 modes. ════════════════════════════════════════════════════ */
+    :root, body { --card-shadow: 0 1px 2px color-mix(in oklab, var(--ink) 7%, transparent), 0 10px 26px -10px color-mix(in oklab, var(--ink) 22%, transparent); }
+    body.theme-dusk { --card-shadow: 0 2px 8px rgba(0,0,0,.32), 0 14px 32px -12px rgba(0,0,0,.5); }
+    html body :is(.card, .quest-spotlight, .prog-card, .nq-card, .feature, .wg-card, .starterCard, .reward-card, .tip-card, .sc-card):not(.gold-hero):not(.hidden),
+    html.sm-app body :is(.card, .quest-spotlight, .prog-card, .nq-card, .feature, .wg-card, .starterCard, .reward-card, .tip-card, .sc-card):not(.gold-hero):not(.hidden) {
+      background: var(--contour-fill) !important;
+      border: 0 !important;
+      box-shadow: inset 0 1px 0 var(--contour-sheen), var(--card-shadow) !important; }
+    /* la pièce maîtresse garde un peu plus de présence (ombre tiède), toujours sans trait */
+    html body :is(.quest-spotlight, .nq-card), html.sm-app body :is(.quest-spotlight, .nq-card) {
+      box-shadow: inset 0 1px 0 var(--contour-sheen),
+        0 4px 12px -6px color-mix(in oklab, var(--accent) 24%, transparent),
+        0 18px 40px -20px color-mix(in oklab, var(--ink) 36%, transparent) !important; }

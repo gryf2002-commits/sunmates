@@ -1,6 +1,6 @@
 {
-  "candidate": "v761",
+  "candidate": "v763",
   "items": [
-    "✨ La motion arrive : à chaque changement d'onglet, le contenu apparaît en cascade fluide (montée + fondu enchaînés, courbe soyeuse). Les cartes répondent au toucher. Pensé pour le wow, fiable partout et respectueux de 'mouvement réduit'."
+    "🪄 Fini les traits : les cartes ne sont plus cernées d'une bordure — elles flottent en douceur (ombre + arrondi + fond subtil), structure et profondeur sans aucune ligne. Les tuiles-icônes redeviennent plates (le joyau coloré porte l'effet). + cohérence DA : les statuts 'validé' passent en tons couchant (plus de vert), et les chiffres ambre restent lisibles la nuit."
   ]
 }
