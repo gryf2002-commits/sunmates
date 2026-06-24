@@ -5466,7 +5466,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 768; }
+    :root { --sm-build: 769; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5687,4 +5687,16 @@
     @keyframes smBreath { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
     @media (prefers-reduced-motion: no-preference) {
       html.sm-app body .quest-spotlight { animation: smBreath 5.5s ease-in-out infinite !important; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v769 · WOW (suite) : flamme de série PLUS VIVANTE (danse + glow pulsé chaud) +
+       les gros chiffres "POP" à l'apparition du panneau (après le reveal). reduced-motion ok. */
+    @keyframes smFlameGlow { 0%,100% { filter: drop-shadow(0 0 2px rgba(255,138,61,.5)); } 50% { filter: drop-shadow(0 1px 8px rgba(255,90,77,.9)); } }
+    @keyframes smNumPop { 0% { transform: scale(.55); opacity: 0; } 62% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: no-preference) {
+      html body :is(.sp-fire, .ph-streak-fire), html.sm-app body :is(.sp-fire, .ph-streak-fire) {
+        animation: smFlame 1.7s ease-in-out infinite, smFlameGlow 2.2s ease-in-out infinite !important; }
+      html.sm-app body .tab-panel:not(.hidden):not([data-panel="accueil"]) :is(.cs-v, .dstat b, .pc-n) {
+        display: inline-block; animation: smNumPop .55s var(--ease-out, cubic-bezier(.23,1,.32,1)) .28s backwards; }
     }
