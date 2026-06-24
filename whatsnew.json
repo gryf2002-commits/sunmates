@@ -1,6 +1,6 @@
 {
-  "candidate": "v757",
+  "candidate": "v758",
   "items": [
-    "🧹 TOUS les séparateurs de contenu retirés (et pas seulement les contours de boutons) : fil d'actu, listes, conversations, classement, rangées — partout, gris comme rouges. La séparation tient par l'espace, les en-têtes et les bandes douces. Bandes refaites : pleine largeur, symétriques, bien intégrées."
+    "🔧 Auto-réparateur de cache : si ton appareil affichait une vieille version figée (c'est ce qui faisait que 'rien ne changeait'), il se purge et se met à jour tout seul au prochain lancement. + dernières listes nettoyées (notifications)."
   ]
 }
