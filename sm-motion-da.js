@@ -69,10 +69,21 @@
   // Compteur qui s'incrémente (chiffres héros).
   function countUp(el, to, opt) {
     el = nodes(el)[0]; if (!el) return; opt = opt || {};
-    if (reduce()) { el.textContent = opt.dec ? to.toFixed(opt.dec) : to; return; }
-    var o = { v: opt.from || 0 };
-    G.to(o, { v: to, duration: opt.duration || 1.1, ease: "power2.out", delay: opt.delay || 0,
-      onUpdate: function () { el.textContent = (opt.prefix || "") + (opt.dec ? o.v.toFixed(opt.dec) : Math.round(o.v)) + (opt.suffix || ""); } });
+    to = Number(to) || 0;
+    var fmt = function (v) { return (opt.prefix || "") + (opt.dec ? v.toFixed(opt.dec) : Math.round(v)) + (opt.suffix || ""); };
+    if (reduce()) { el.textContent = fmt(to); return; }
+    /* v768 : requestAnimationFrame PUR (fiable sans GSAP, qui ne se chargeait pas toujours) */
+    var from = Number(opt.from || 0), dur = (opt.duration || 1.1) * 1000, start = null;
+    var run = function () {
+      var step = function (ts) {
+        if (start === null) start = ts;
+        var p = Math.min(1, (ts - start) / dur), e = 1 - Math.pow(1 - p, 2); /* power2.out */
+        el.textContent = fmt(from + (to - from) * e);
+        if (p < 1) requestAnimationFrame(step); else el.textContent = fmt(to);
+      };
+      requestAnimationFrame(step);
+    };
+    if (opt.delay) setTimeout(run, opt.delay * 1000); else run();
   }
 
   /* ── CONTINUITÉ SPATIALE (morph élément partagé) ─────────────────────────── */

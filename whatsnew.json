@@ -1,6 +1,6 @@
 {
-  "candidate": "v767",
+  "candidate": "v768",
   "items": [
-    "🚀 Fini le flash d'ancien design au chargement : l'app reste masquée le temps de vérifier sa version — si elle est périmée, elle se met à jour en restant cachée puis se révèle directement à neuf. Plus de 'vieux design qui apparaît avant'."
+    "✨ Wow motion : un reflet de lumière balaye désormais les boutons d'action tout seul (avant : seulement au survol, donc invisible sur mobile), la carte 'quête du jour' respire doucement, et les compteurs (confiance, XP) s'animent en montant. Fluide et fiable, sans dépendre d'une librairie externe."
   ]
 }

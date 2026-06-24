@@ -5466,7 +5466,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 767; }
+    :root { --sm-build: 768; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5674,3 +5674,17 @@
     /* arrière-tuiles : fonds de cartes/tuiles RETIRÉS (transparent), sauf surfaces utiles */
     html.sm-app body :is(.card,.tile,.cat-tile,.gp-tile,.sc-card,.prog-card,.nq-card,.feature,.wg-card,.pcell,.pc-stat,.stat-box,.quest-spotlight,.reward-card,.tip-card,.starterCard,.feed-card,.mod-card,.adm-card):not(.gold-hero) {
       background: transparent !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v768 · WOW MOTION — le reflet des CTA balaye AUTO (était :hover-only = JAMAIS
+       sur mobile). + countUp rendu fiable (rAF, cf sm-motion-da.js). Respecte reduced-motion. */
+    @keyframes smShineAuto { 0% { left: -75%; opacity: 0; } 5% { opacity: .8; } 17% { left: 145%; opacity: 0; } 100% { left: 145%; opacity: 0; } }
+    @media (prefers-reduced-motion: no-preference) {
+      html.sm-app body .btn-primary { position: relative !important; overflow: hidden !important; }
+      html.sm-app body .btn-primary::after { animation: smShineAuto 6s ease-in-out 2.2s infinite !important; opacity: 0; }
+    }
+    /* la pièce maîtresse (quête du jour) : un souffle très doux pour attirer l'œil sans clignoter */
+    @keyframes smBreath { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+    @media (prefers-reduced-motion: no-preference) {
+      html.sm-app body .quest-spotlight { animation: smBreath 5.5s ease-in-out infinite !important; }
+    }
