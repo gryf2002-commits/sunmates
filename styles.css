@@ -2659,8 +2659,10 @@
     #matesProfile .dstat b { color: var(--accent-ink, var(--accent)); font-size: 1.15rem; font-weight: 800; }
     /* Fiche Mate : photo en PORTRAIT (plus haute) + actions en rangée compacte */
     .tp-hero { height: 280px; }
-    .tp-actions2 { display: flex; gap: .5rem; margin-top: .7rem; }
-    .tpa-btn { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .55rem .3rem; border: 0; border-radius: 14px; color: #fff; font-size: .76rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-sm); }
+    /* v776 (retour Maxime #19 « les 5 tuiles côte à côte sous un mate ne sont pas lisibles ») :
+       grille qui S'ENROULE (~3 par rangée) au lieu de 5 boutons serrés sur une seule ligne. */
+    .tp-actions2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: .5rem; margin-top: .7rem; }
+    .tpa-btn { min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .6rem .3rem; border: 0; border-radius: 14px; color: #fff; font-size: .78rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-sm); }
     .tpa-btn .tpa-ic { font-size: 1.35rem; }
     .tpa-btn:active { transform: scale(.96); }
     /* Peps : chaque action a sa couleur (dans la DA) */
@@ -5545,7 +5547,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 776; }
+    :root { --sm-build: 777; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
