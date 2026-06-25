@@ -105,7 +105,7 @@
     ".dest-tcard .who{margin-top:16px;display:flex;align-items:center;gap:.7rem;color:var(--muted,#c9b7e0);font-size:.9rem;font-weight:600}" +
     ".dest-tcard .av{width:34px;height:34px;border-radius:50%;background:" + G + ";display:grid;place-items:center;color:#2a0d12;font-weight:900;font-family:'Fraunces',serif;flex:none}" +
     ".dest-tcard .who b{color:var(--ink,#fff);font-weight:800}" +
-    "@media (prefers-reduced-motion:reduce){.dest-testi-track{animation:none;flex-wrap:wrap;justify-content:center;width:auto}}" +
+    "@media (prefers-reduced-motion:reduce){.dest-testi-track{animation:none;flex-wrap:wrap;justify-content:center;width:auto}.dest-ticker-track{animation:none}.dest-hero-bg{transform:none!important}}" +
     /* BANDE CTA FINALE — image plein cadre + scrim, repris d'index.html */
     ".dest-final{position:relative;width:100vw;margin-left:calc(50% - 50vw);min-height:64vh;display:flex;align-items:center;overflow:hidden;text-align:center;background:#120720}" +
     ".dest-final-bg{position:absolute;inset:0;background-size:cover;background-position:center}" +
