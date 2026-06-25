@@ -2479,8 +2479,8 @@
     .hm-cities{ margin-top:.5rem; display:flex; flex-direction:column; gap:.3rem; }
     .hm-album > summary{ list-style:none; cursor:pointer; font-size:.82rem; font-weight:800; color:var(--muted); padding:.3rem 0; }
     .hm-album > summary::-webkit-details-marker{ display:none; }
-    .hm-album > summary::after{ content:" ▾"; }
-    .hm-album[open] > summary::after{ content:" ▴"; }
+    .hm-album > summary::after{ content:" ›"; display:inline-block; transition: transform .2s; color: var(--accent-ink, var(--accent)); font-weight:800; }
+    .hm-album[open] > summary::after{ transform: rotate(90deg); }
     .hm-city-row{ display:flex; align-items:center; gap:.5rem; font-size:.84rem; }
     .hm-city-row .hc-name{ flex:1; font-weight:700; color:var(--ink); }
     .hm-city-row .hc-n{ color:var(--accent-ink, var(--accent)); font-weight:800; }
@@ -2864,8 +2864,8 @@
     .hm-plan { margin: .4rem 0 1rem; }
     .hm-plan > summary { list-style: none; cursor: pointer; padding: .85rem 1rem; border-radius: var(--radius); background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); font-family: "Fraunces", serif; font-weight: 800; color: var(--ink); display: flex; align-items: center; justify-content: space-between; }
     .hm-plan > summary::-webkit-details-marker { display: none; }
-    .hm-plan > summary::after { content: "▾"; color: var(--muted); transition: transform .2s; }
-    .hm-plan[open] > summary::after { transform: rotate(180deg); }
+    .hm-plan > summary::after { content: "›"; color: var(--accent-ink, var(--accent)); font-weight: 800; transition: transform .2s; display:inline-block; }
+    .hm-plan[open] > summary::after { transform: rotate(90deg); }
     .hm-plan[open] > summary { margin-bottom: .5rem; }
     .hm-plan > summary:active { transform: scale(.99); }
     /* Toasts : emojis dimensionnels (même relief que l'onboarding) */
@@ -5645,7 +5645,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 820; }
+    :root { --sm-build: 821; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -6191,7 +6191,7 @@
     html.sm-app body .homemap-card.fs .epin, html.sm-app body .homemap-card.fs .epin-cluster { border: 2.5px solid #fff !important; }
     html.sm-app body .homemap-fsopen { border: 1.5px solid rgba(255,255,255,.9) !important; }
 
-    :root { --sm-build: 820; }
+    :root { --sm-build: 821; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v818 · 2e lot retours Maxime (25/06). LEÇON CLÉ (re-confirmée) : les balais
@@ -6241,7 +6241,7 @@
     html.sm-app body .weather-chip > * { min-width: 0; }
     html.sm-app body .weather-chip .wc-temp, html.sm-app body .weather-chip .wc-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    :root { --sm-build: 820; }
+    :root { --sm-build: 821; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v820 · 3e lot retours Maxime (25/06). ════════════════════════════════ */
@@ -6306,4 +6306,28 @@
       html body .homemap-card.fs { height: 100dvh !important; }
     }
 
-    :root { --sm-build: 820; }
+    :root { --sm-build: 821; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v821 · 4e lot Maxime — flèches repliage uniformes + titres centrés. ════ */
+
+    /* (1) TITRES « qm-head » (Rituels du jour, Tes souvenirs, Défis solo…) : le titre
+       est CENTRÉ, l'action/compteur de droite est ABAISSÉ et positionné en absolu →
+       il ne pousse plus le titre hors de l'axe (« centrer + abaisser le compteur »),
+       et ne se chevauche plus avec lui (« à partager… sur la même ligne »). */
+    html.sm-app body .qm-head { position: relative; justify-content: center; align-items: center; min-height: 2rem; gap: 0; flex-wrap: nowrap; }
+    html.sm-app body .qm-head > h3 { text-align: center; margin: 0 auto; padding: 0 4.2rem; }
+    html.sm-app body .qm-head > :is(.qm-all, .rit-cnt) {
+      position: absolute; right: .1rem; top: 50%; transform: translateY(-50%);
+      max-width: 4rem; text-align: right; line-height: 1.1; }
+    @media (max-width: 360px) { html.sm-app body .qm-head > h3 { padding: 0 3.4rem; font-size: .98rem; } }
+
+    /* (2) FLÈCHES DE REPLIAGE — APPARENCE UNIFORME partout : même glyphe « › »,
+       même couleur (accent), même taille, même rotation (→ pointe vers le bas une
+       fois ouvert). Couvre spans ET ::after. */
+    html.sm-app body :is(.sp-chev, .gn-chev, .coll-chev, .pc-chev, .hsec-chev, .pf-head .chev),
+    html.sm-app body .hm-album > summary::after, html.sm-app body .hm-plan > summary::after {
+      color: var(--accent-ink, var(--accent)) !important; font-weight: 800 !important; font-size: 1.15rem !important;
+      line-height: 1; opacity: .9; }
+
+    :root { --sm-build: 821; }

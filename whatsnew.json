@@ -1,14 +1,8 @@
 {
-  "candidate": "v820",
+  "candidate": "v821",
   "items": [
-    "✋ Glisser pour voir l'heure des messages : RÉPARÉ. Les bulles glissent de nouveau (l'animation d'entrée figeait leur position → l'heure se superposait au texte).",
-    "👟 Compteur de pas RETIRÉ : il affichait un chiffre inventé (pas de vrai podomètre) — c'était malhonnête. La météo prend toute la largeur.",
-    "⬛ Fond uniforme sur TOUT l'écran, en haut comme ailleurs (peu importe le téléphone) ; le « Bonjour … » ne se superpose plus au logo au scroll.",
-    "↔️ Bascule « En voyage / À la maison » : la pastille GLISSE en douceur d'un côté à l'autre.",
-    "✨ Halos : passe agressive — plus aucune ombre flottante autour des cartes et tuiles.",
-    "🖼️ Photos : elles s'affichent maintenant dans les popups de lieux sur la carte (et au clic des check-ins).",
-    "👤 Contours d'avatars réparés (ils étaient coupés en haut/bas par une règle anti-traits).",
-    "🧳 Tuiles « Mes voyages » adaptées à tous les modes (jour/nuit/saisons).",
-    "📱 Garde-fou anti-débordement : l'app s'adapte mieux à toutes les tailles d'écran."
+    "🔽 Flèches de repliage UNIFORMES partout : même chevron « › », même couleur, même rotation (il pointe vers le bas une fois ouvert).",
+    "🎯 Titres centrés quand il y a un compteur/action sur la même ligne (Rituels du jour, Tes souvenirs…) : le titre est bien centré, le compteur abaissé à droite, fini les collisions « à partager ».",
+    "✋ Rappel v820 : glisser pour voir l'heure des messages = réparé. Compteur de pas (faux) retiré. Fond uni en haut. Bascule maison/voyage qui glisse."
   ]
 }
