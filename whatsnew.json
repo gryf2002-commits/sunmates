@@ -1,10 +1,9 @@
 {
-  "candidate": "v825",
+  "candidate": "v826",
   "items": [
-    "🆙 BUG XP/NIVEAU corrigé : le total d'XP se resynchronise avec le serveur après chaque quête, rituel ET mini-jeu (avant, un cache périmé faisait « repasser » au niveau 3).",
-    "✨ Halos : FLATTEN total — zéro ombre portée sur toutes les tuiles/cartes (méthode design system).",
-    "↔️ Le switch qui glisse est partout : Humeur/Spot/Cherche/Sondage, Cartes/Frise, quête du jour, recherche… (10 sélecteurs), et il ne fait plus sauter le contenu.",
-    "🎯 Titres de section centrés de façon cohérente, l'action de droite abaissée → fini les collisions « Tes souvenirs / Partager ».",
-    "🔽 Flèches de repliage uniformes et dans le flux (plus jamais superposées à une tuile)."
+    "🛟 RÉGRESSIONS CORRIGÉES : le switch ne fait plus disparaître le texte (bouton actif plein + lisible, plus de blanc sur blanc), les titres ne se chevauchent plus, le « + Ajouter » ne se coupe plus, le compteur de villes des voyages passés réapparaît.",
+    "📱 L'app reprend toute la largeur de l'écran (un réglage cassait le plein écran).",
+    "✨ Halos : icônes des tuiles 100% plates (ombre du pictogramme retirée aussi).",
+    "🆙 (rappel v825) XP/niveau resynchronisé serveur après quête/rituel/jeu."
   ]
 }
