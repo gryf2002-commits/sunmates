@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=799"></script>
+  <script src="sunmates-badges.js?v=801"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=799"></script>
+  <script defer src="sunmates-motion.js?v=801"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -361,7 +361,7 @@
       });
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=799">
+  <link rel="stylesheet" href="styles.css?v=801">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
@@ -1458,7 +1458,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=799">
+  <link rel="stylesheet" href="sunmates-lite.css?v=801">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -8268,18 +8268,18 @@
 
     async function loadCafes() {
       skelFirst("cafesList", skelRows(4));
-      const { data, error } = await db.from("partner_cafes").select("*").order("name");
-      if (error) { $("cafesList").innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
-      allCafes = data || []; // pour la recherche globale de l'accueil + la carte
-      try {
-        const r = await db.from("checkpoints").select("cafe_id");
-        cafeCheckins = {}; (r.data || []).forEach((c) => { cafeCheckins[c.cafe_id] = (cafeCheckins[c.cafe_id] || 0) + 1; });
-      } catch (e) {}
-      try {
-        // Moyennes d'avis par lieu (vide si migration session 21 pas lancée)
-        const { data: rt } = await db.rpc("place_ratings");
-        cafeRatings = {}; (rt || []).forEach((r) => { cafeRatings[r.cafe_id] = { avg: Number(r.avg), cnt: Number(r.cnt) }; });
-      } catch (e) {}
+      // PERF (audit) : les 3 requêtes sont INDÉPENDANTES (lieux / check-ins / notes) → en PARALLÈLE
+      // (Promise.all = 1 aller-retour au lieu de 3). Les requêtes secondaires retombent sur vide si
+      // elles échouent (migration absente), sans casser le chargement des lieux.
+      const [cafesRes, checkRes, ratingsRes] = await Promise.all([
+        db.from("partner_cafes").select("*").order("name"),
+        db.from("checkpoints").select("cafe_id").then((r) => r, () => ({ data: [] })),
+        db.rpc("place_ratings").then((r) => r, () => ({ data: [] }))
+      ]);
+      if (cafesRes.error) { $("cafesList").innerHTML = '<p class="muted">Erreur de chargement.</p>'; return; }
+      allCafes = cafesRes.data || []; // pour la recherche globale de l'accueil + la carte
+      cafeCheckins = {}; (checkRes.data || []).forEach((c) => { cafeCheckins[c.cafe_id] = (cafeCheckins[c.cafe_id] || 0) + 1; });
+      cafeRatings = {}; (ratingsRes.data || []).forEach((r) => { cafeRatings[r.cafe_id] = { avg: Number(r.avg), cnt: Number(r.cnt) }; });
       renderCafesList();
       loadHome(); // garde l'accueil synchronisé
       if (typeof renderHomeMap === "function" && homeLeaf) renderHomeMap(); // rafraîchit la carte d'accueil
@@ -20521,7 +20521,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=799"></script>
+  <script src="sunmates-da-loader.js?v=801"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
