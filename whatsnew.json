@@ -1,9 +1,9 @@
 {
-  "candidate": "v823",
+  "candidate": "v824",
   "items": [
-    "🔤 Titres de section UNIFORMISÉS dans toute l'app (même police, taille, graisse) : « Défis solo », « Préparer mon voyage », « Mes contacts d'urgence », « Cercle de confiance »… tous au même format, logique UX/UI pro.",
-    "🧳 Tuiles « Mes voyages » (globe, année…) : couleurs qui suivent enfin le thème dans tous les modes + halos retirés.",
-    "🖼️ Photos des check-ins plus robustes : hauteur réservée + repli propre si l'image ne charge pas, et photo ajoutée sur les check-ins de la carte.",
-    "✋ Rappels v822 : halos d'icônes supprimés, bandeau du haut transparent + qui se cache au scroll, fond uni en haut, mot « Gold » lisible partout."
+    "↔️ Le switch qui GLISSE est maintenant PARTOUT : la pilule suit le bouton actif sur tous les sélecteurs (Gold/Pro/Admin, jour/nuit, etc.), pas seulement maison/voyage.",
+    "🔤 Titres de section uniformisés dans toute l'app (même police/taille/graisse).",
+    "🧳 Tuiles « Mes voyages » (globe/année) adaptées à tous les modes + halos retirés.",
+    "🖼️ Photos des check-ins plus robustes (repli propre) + photo ajoutée sur les check-ins de la carte."
   ]
 }

@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=823"></script>
+  <script src="sunmates-badges.js?v=824"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=823"></script>
+  <script defer src="sunmates-motion.js?v=824"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -384,13 +384,13 @@
       } catch (e) {}
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=823">
+  <link rel="stylesheet" href="styles.css?v=824">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
      Appareil à jour → révélé tout de suite ; appareil périmé → purge caches+SW et reload
      EN RESTANT MASQUÉ (fini le flash d'« ancien design qui se charge avant »). Failsafe 2.5s. */
-  (function(){try{var EXPECT="823",H=document.documentElement;H.classList.add("sm-verifying");
+  (function(){try{var EXPECT="824",H=document.documentElement;H.classList.add("sm-verifying");
     var revealed=false,reveal=function(){if(revealed)return;revealed=true;try{H.classList.remove("sm-verifying");}catch(e){}};
     setTimeout(reveal,2500);
     document.addEventListener("DOMContentLoaded",function(){try{
@@ -1486,7 +1486,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=823">
+  <link rel="stylesheet" href="sunmates-lite.css?v=824">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -5928,6 +5928,38 @@
     window._smNavInd = _smNavInd;
     window.addEventListener("resize", function () { try { _smNavInd(); } catch (e) {} });
     window.addEventListener("load", function () { setTimeout(function () { try { _smNavInd(); } catch (e) {} }, 200); });
+
+    // v823 — SWITCH QUI GLISSE PARTOUT (retour Maxime). Indicateur (pilule accent) qui suit
+    // le bouton actif dans TOUS les segments .seg/.mseg (sauf ceux sur plusieurs lignes, où
+    // un slider unique n'a pas de sens). Repositionné au clic + sur changement programmatique
+    // de .active (MutationObserver) + au resize.
+    function _smSegInd(c) {
+      if (!c) return;
+      // pas de slider sur les segments réellement SUR PLUSIEURS LIGNES (le pavé admin) :
+      // un indicateur unique n'aurait pas de sens. Un segment wrap qui tient sur 1 ligne est OK.
+      var btns = c.querySelectorAll(":scope > button");
+      if (btns.length > 1 && btns[0].offsetParent && Math.abs(btns[0].offsetTop - btns[btns.length - 1].offsetTop) > 4) return;
+      var ind = c.querySelector(":scope > .sm-seg-ind");
+      if (!ind) { ind = document.createElement("div"); ind.className = "sm-seg-ind"; ind.setAttribute("aria-hidden", "true"); c.insertBefore(ind, c.firstChild); c.classList.add("sm-seg-slide"); }
+      var act = c.querySelector(":scope > button.active, :scope > .active");
+      if (!act || act === ind || act.offsetParent === null) { ind.style.opacity = "0"; return; }
+      var firstRun = !ind._init; ind._init = 1;
+      if (firstRun) ind.style.transition = "none";
+      ind.style.opacity = "1";
+      ind.style.left = act.offsetLeft + "px"; ind.style.top = act.offsetTop + "px";
+      ind.style.width = act.offsetWidth + "px"; ind.style.height = act.offsetHeight + "px";
+      try { ind.style.borderRadius = getComputedStyle(act).borderRadius || "999px"; } catch (e) {}
+      if (firstRun) requestAnimationFrame(function () { ind.style.transition = ""; });
+    }
+    function _smSegIndAll() { document.querySelectorAll(".seg, .mseg").forEach(function (c) { try { _smSegInd(c); } catch (e) {} }); }
+    window._smSegIndAll = _smSegIndAll;
+    document.addEventListener("click", function (e) { var c = e.target.closest && e.target.closest(".seg, .mseg"); if (c) requestAnimationFrame(function () { requestAnimationFrame(function () { _smSegInd(c); }); }); }, true);
+    try {
+      var _segObs = new MutationObserver(function (muts) { var seen = []; muts.forEach(function (m) { var c = m.target.closest && m.target.closest(".seg, .mseg"); if (c && seen.indexOf(c) < 0) { seen.push(c); _smSegInd(c); } }); });
+      setTimeout(function () { document.querySelectorAll(".seg, .mseg").forEach(function (c) { try { _segObs.observe(c, { subtree: true, attributes: true, attributeFilter: ["class"] }); _smSegInd(c); } catch (e) {} }); }, 350);
+    } catch (e) {}
+    window.addEventListener("resize", function () { try { _smSegIndAll(); } catch (e) {} });
+    setTimeout(_smSegIndAll, 700); setTimeout(_smSegIndAll, 2000);
 
     function goToTab(target) {
       const changed = target !== __lastTab;
@@ -20672,7 +20704,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=823"></script>
+  <script src="sunmates-da-loader.js?v=824"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
