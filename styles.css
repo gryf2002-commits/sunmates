@@ -235,7 +235,7 @@
     .act-block .ic { background: #fbd5d5; }
     .act-block:hover { box-shadow: 0 8px 18px rgba(45,38,52,.16); } /* Lot C : ombre dé-rougie → gris chaud (doctrine) */
     body.theme-dusk .act-challenge { background: rgba(255,138,61,.16); color: #ffce9b; border-color: rgba(255,138,61,.34); }
-    body.theme-dusk .act-challenge .ic { background: rgba(122,92,255,.34); }
+    body.theme-dusk .act-challenge .ic { background: rgba(255,138,61,.34); }
     body.theme-dusk .act-bff { background: rgba(255,178,116,.16); color: #ffce9b; border-color: rgba(255,178,116,.32); }
     body.theme-dusk .act-bff .ic { background: rgba(255,178,116,.32); }
     body.theme-dusk .act-block { background: rgba(239,68,68,.15); color: #ff9b9b; border-color: rgba(239,68,68,.32); }
@@ -710,7 +710,7 @@
     .seen-mark { align-self: flex-end; font-size: .68rem; color: var(--accent-ink, var(--accent)); font-weight: 700; margin: -.1rem .25rem .35rem 0; }
 
     /* ---- Bannière « compte de démonstration (IA) » ---- */
-    .demo-banner { background: rgba(122,92,255,.12); color: #6a4ad8; border: 1px solid rgba(122,92,255,.25);
+    .demo-banner { background: rgba(255,138,61,.12); color: #B5502E; border: 1px solid rgba(255,138,61,.25);
       border-radius: 12px; padding: .5rem .7rem; font-size: .78rem; margin-bottom: .7rem; text-align: center; line-height: 1.35; }
     body.theme-dusk .demo-banner { background: rgba(255,138,61,.2); color: #ffce9b; }
 
@@ -3093,10 +3093,10 @@
       display: inline-flex; align-items: center; justify-content: center; gap: .35rem; white-space: nowrap; line-height: 1; }
     .mode-switch button.active { background: var(--accent-grad); color: #fff; box-shadow: var(--shadow-sm); }
     /* Mode Maison */
-    .hm-hero { display: flex; gap: .9rem; align-items: center; background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(122,92,255,.1)); border: 1px solid rgba(201,138,30,.18); }
+    .hm-hero { display: flex; gap: .9rem; align-items: center; background: linear-gradient(135deg, rgba(255,201,60,.16), rgba(255,138,61,.12)); border: 1px solid rgba(201,138,30,.18); }
     .hm-hero-ic { font-size: 2.2rem; line-height: 1; flex-shrink: 0; }
     .hm-hero-title { font-weight: 800; font-size: 1.05rem; }
-    .hm-inspo { background: linear-gradient(135deg, rgba(122,92,255,.12), rgba(255,138,61,.1)); border: 1px solid rgba(122,92,255,.18); }
+    .hm-inspo { background: linear-gradient(135deg, rgba(255,193,90,.14), rgba(255,138,61,.1)); border: 1px solid rgba(201,138,30,.18); }
     .hm-inspo-top { display: flex; align-items: center; gap: .7rem; }
     .hm-inspo-flag { font-size: 2rem; }
     .hm-inspo-ttl { font-size: .72rem; font-weight: 800; color: var(--accent-ink, var(--accent)); text-transform: uppercase; letter-spacing: .04em; }
@@ -5582,7 +5582,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 801; }
+    :root { --sm-build: 802; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
