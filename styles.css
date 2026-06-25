@@ -5580,7 +5580,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 794; }
+    :root { --sm-build: 795; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5997,3 +5997,26 @@
        un dégradé pleine largeur → à plat (surface neutre discrète), tous modes. */
     html body .hm-gal-open, html.sm-app body .hm-gal-open {
       background: color-mix(in srgb, var(--ink) 5%, transparent) !important; border: 1px solid var(--line) !important; box-shadow: none !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v795 · BANDES PARTOUT (retour furieux Maxime « énormément de bandes »). Audit agent :
+       127+ filets `border: var(--line)` jamais retirés + barres ::before. On les RETIRE VRAIMENT
+       sur tout le CONTENU (rangées/cartes/sections/collapsibles), tous modes. Structure = espace +
+       en-têtes. Les CHAMPS/contrôles (input/textarea/select/.btn-ghost/.chip actifs) NON listés ici
+       gardent leur bordure. ════════════════════════════════════════════════════════════════════ */
+    html body :is(.fpost, .pcard, .person, .conv, .conv-row, .convrow, .lb-row, .qrow, .prog-row, .te-row, .num-row, .num-here, .da-comp-row, .coll-city, .coll-city > summary, .coll-row, .ptl-row, .place, .review-item, .reviews-form, .cstory-hl, .cstory-fact, .trip-card, .trip-matches, .tj-card, .poll-opt, .jeux-open, .ci-card, .ci-row, .sa-tile, .prep-item, .tcard, .lb-segs, .feed-composer, .chat-header, .section-head, .qm-head, .sp-head, .ptrip-section, .set-grouptitle, .set-row, .pfield-sep, .cat-tile, .feature, .souvenir-card, .hm-plan, .hm-plan > summary, .hm-souv, .hm-mateday, .gal-city, .reco, .sugg-card, .sugg-row, .sc-row, .stat-box, .dstat, .pc-stat, .member-row, .grp-row, .req-row, .act-row, .hist-row, .rit-row, .rank-row, .badge-row, .bdg-row, .fr-row, .lead-row, .match-row, .vouch-row, .report-row, .reco-row, .tgo-head, .tgo-input, .secu-explain, .trust-explain, .num-here, .day-chips .weather-chip, details),
+    html.sm-app body :is(.fpost, .pcard, .person, .conv, .conv-row, .convrow, .lb-row, .qrow, .prog-row, .te-row, .num-row, .num-here, .da-comp-row, .coll-city, .coll-city > summary, .coll-row, .ptl-row, .place, .review-item, .reviews-form, .cstory-hl, .cstory-fact, .trip-card, .trip-matches, .tj-card, .poll-opt, .jeux-open, .ci-card, .ci-row, .sa-tile, .prep-item, .tcard, .lb-segs, .feed-composer, .chat-header, .section-head, .qm-head, .sp-head, .ptrip-section, .set-grouptitle, .set-row, .pfield-sep, .cat-tile, .feature, .souvenir-card, .hm-plan, .hm-plan > summary, .hm-souv, .hm-mateday, .gal-city, .reco, .sugg-card, .sugg-row, .sc-row, .stat-box, .dstat, .pc-stat, .member-row, .grp-row, .req-row, .act-row, .hist-row, .rit-row, .rank-row, .badge-row, .bdg-row, .fr-row, .lead-row, .match-row, .vouch-row, .report-row, .reco-row, .tgo-head, .tgo-input, .secu-explain, .trust-explain, .day-chips .weather-chip, details) {
+      border-width: 0 !important; border-top-width: 0 !important; border-bottom-width: 0 !important; border-left-width: 0 !important; border-right-width: 0 !important; box-shadow: none !important; }
+    /* barres d'accent verticales ::before = les « bandes de couleurs » → retirées partout */
+    html body :is(.section-head > h3, .qm-head > h3, .sp-title, .quest-spotlight, .nq-card, .souvenir-card, .mod-card)::before,
+    html.sm-app body :is(.section-head > h3, .qm-head > h3, .sp-title, .quest-spotlight, .nq-card, .souvenir-card, .mod-card)::before {
+      display: none !important; content: none !important; width: 0 !important; }
+    /* filets « border-top » de délimitation de sections (color-mix) → retirés (l'espace suffit) */
+    html body .tab-panel > .section-head, html.sm-app body .tab-panel > .section-head,
+    html body #homeTravelMap > .section-head, html.sm-app body #homeTravelMap > .section-head { border-top: 0 !important; }
+
+    /* v795 · #réglages : tous les boutons de segments (saison/langue/profil/admin) au MÊME fond
+       neutre inactif (avant : #seasonCtl .seg en oklab 7% ≠ les autres → « la tuile Tous diffère »). */
+    html body :is(.seg, .mseg, .pseg, .aseg-nav, .lang-seg, .lb-segs) button:not(.active):not(.on):not(.is-on),
+    html.sm-app body :is(.seg, .mseg, .pseg, .aseg-nav, .lang-seg, .lb-segs) button:not(.active):not(.on):not(.is-on) {
+      background: color-mix(in srgb, var(--ink) 5%, transparent) !important; border-color: transparent !important; box-shadow: none !important; }
