@@ -1,9 +1,8 @@
 {
-  "candidate": "v835",
+  "candidate": "v836",
   "items": [
-    "⚡ GROS LAGS corrigés (chargement, pliage/dépliage) : j'avais ajouté une surveillance trop gourmande qui recalculait les switchs à chaque changement — retirée.",
-    "🎨 Couleurs des switchs alignées sur la DA de chaque mode (conteneur qui suit le fond, pilule = accent, texte lisible).",
-    "🎯 Centrage des titres re-fiabilisé.",
-    "🔽 Rotation des flèches de repliage re-fiabilisée (fermé = à droite, ouvert = vers le bas)."
+    "🛠️ ADMIN réparé : mes règles de switch incluaient par erreur les segments génériques (.seg/.mseg) → tout était forcé sur une ligne en admin. Retiré → l'admin se remet sur plusieurs rangées (jouable).",
+    "⚡ (rappel v835) Gros lags du chargement/pliage retirés, couleurs des switchs alignées sur la DA, centrage + rotation des flèches re-fiabilisés.",
+    "⏱️ Pense à attendre 3-5 min (propagation GitHub) avant de tester."
   ]
 }
