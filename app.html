@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=822"></script>
+  <script src="sunmates-badges.js?v=823"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=822"></script>
+  <script defer src="sunmates-motion.js?v=823"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -384,13 +384,13 @@
       } catch (e) {}
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=822">
+  <link rel="stylesheet" href="styles.css?v=823">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
      Appareil à jour → révélé tout de suite ; appareil périmé → purge caches+SW et reload
      EN RESTANT MASQUÉ (fini le flash d'« ancien design qui se charge avant »). Failsafe 2.5s. */
-  (function(){try{var EXPECT="822",H=document.documentElement;H.classList.add("sm-verifying");
+  (function(){try{var EXPECT="823",H=document.documentElement;H.classList.add("sm-verifying");
     var revealed=false,reveal=function(){if(revealed)return;revealed=true;try{H.classList.remove("sm-verifying");}catch(e){}};
     setTimeout(reveal,2500);
     document.addEventListener("DOMContentLoaded",function(){try{
@@ -1486,7 +1486,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=822">
+  <link rel="stylesheet" href="sunmates-lite.css?v=823">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -8665,8 +8665,11 @@
       $("checkinList").querySelectorAll("[data-cig]").forEach((el) => el.addEventListener("click", () => {
         const g = arr[Number(el.dataset.cig)];
         const dates = g.dates.slice().sort((a, b) => (b || "").localeCompare(a || "")).map((d) => "• " + new Date(d).toLocaleString("fr-FR")).join("<br>");
+        // v823 : photo ROBUSTE — pas de lazy (la modale est hors flux → lazy ne se déclenchait
+        // pas), hauteur réservée + onerror qui retombe sur l'emoji si l'image ne charge pas
+        // (« rien n'apparaît à l'endroit des photos » = image vide/échouée).
         const hero = g.img
-          ? `<img src="${escapeHtml(g.img)}" alt="" style="width:100%;max-height:160px;object-fit:cover;border-radius:12px;margin-bottom:.5rem" loading="lazy">`
+          ? `<img src="${escapeHtml(g.img)}" alt="" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:.5rem;background:var(--cream)" onerror="this.outerHTML='&lt;div style=&quot;font-size:3rem&quot;&gt;📍&lt;/div&gt;'">`
           : `<div style="font-size:3rem">📍</div>`;
         showInfo("Check-in", `<div style="text-align:center;padding:.4rem 0">
             ${hero}
@@ -15143,8 +15146,11 @@
         const knowWho = ck.user_id !== myUserId && travelerMap[ck.user_id] && (travelerMap[ck.user_id].is_demo || connectedIds.has(ck.user_id));
         const whoBtn = knowWho ? `<button class="mappop-btn ghost" data-hmprofile="${ck.user_id}">Voir le profil</button>` : "";
         const mins = Math.max(1, Math.round((HOUR - (nowMs - new Date(ck.created_at).getTime())) / 60000));
+        // v823 : photo du lieu dans le popup de check-in carte (avant : aucune photo).
+        const _ckImg = (typeof cafeImage === "function") ? cafeImage(cafe) : cafe.image_url;
+        const _ckPhoto = _ckImg ? `<img src="${escapeHtml(_ckImg)}" alt="" style="width:100%;height:64px;object-fit:cover;border-radius:8px;margin-bottom:5px" onerror="this.style.display='none'">` : "";
         const mk = L.marker(jitterAt(cafe, "ck-" + ck.user_id + "-" + i), { icon: epinIcon("✅", "#17a99b") })
-          .bindPopup(`<div class="mappop-mini"><b>${escapeHtml(who)}</b><br>check-in · ${escapeHtml(cafe.name)}<br><span class="muted">${timeAgo(ck.created_at)} · disparaît dans ~${mins} min</span>${whoBtn}</div>`);
+          .bindPopup(`<div class="mappop-mini">${_ckPhoto}<b>${escapeHtml(who)}</b><br>check-in · ${escapeHtml(cafe.name)}<br><span class="muted">${timeAgo(ck.created_at)} · disparaît dans ~${mins} min</span>${whoBtn}</div>`);
         mk.smType = "checkins"; homeMarkersByType.checkins.push(mk); allMarkers.push(mk);
       });
 
@@ -20666,7 +20672,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=822"></script>
+  <script src="sunmates-da-loader.js?v=823"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->

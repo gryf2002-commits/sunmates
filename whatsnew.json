@@ -1,9 +1,9 @@
 {
-  "candidate": "v822",
+  "candidate": "v823",
   "items": [
-    "✨ Halos ENFIN retirés autour des icônes de tuiles : la vraie cause était une ombre portée forcée sur chaque icône — supprimée.",
-    "⬛ Bandeau du haut : RETOUR au transparent + il disparaît de nouveau quand tu descends (et le fond du <html> prend la vraie couleur du thème/DA → fond uni en haut, tous téléphones).",
-    "🥇 Le mot « Gold » ne disparaît plus : il est en or plein, lisible dans tous les modes (le dégradé fragile pouvait le rendre invisible).",
-    "🔆 Contraste (WCAG) : l'ambre foncé illisible en nuit passe en ambre clair."
+    "🔤 Titres de section UNIFORMISÉS dans toute l'app (même police, taille, graisse) : « Défis solo », « Préparer mon voyage », « Mes contacts d'urgence », « Cercle de confiance »… tous au même format, logique UX/UI pro.",
+    "🧳 Tuiles « Mes voyages » (globe, année…) : couleurs qui suivent enfin le thème dans tous les modes + halos retirés.",
+    "🖼️ Photos des check-ins plus robustes : hauteur réservée + repli propre si l'image ne charge pas, et photo ajoutée sur les check-ins de la carte.",
+    "✋ Rappels v822 : halos d'icônes supprimés, bandeau du haut transparent + qui se cache au scroll, fond uni en haut, mot « Gold » lisible partout."
   ]
 }
