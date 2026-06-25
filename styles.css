@@ -4797,8 +4797,8 @@
        les lignes VISIBLES disparaissent, le layout ne bouge pas. On PRÉSERVE les bordures utiles :
        champs de saisie, recherche, chat, modales.
        ============================================================ */
-    html body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet),
-    html.sm-app body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet) {
+    html body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet):not(.epin):not(.epin-cluster):not(.epin-wrap):not([class*="leaflet"]):not(.homemap-fsopen):not(.homemap-fsclose):not(.su-call):not(.su-sos),
+    html.sm-app body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet):not(.epin):not(.epin-cluster):not(.epin-wrap):not([class*="leaflet"]):not(.homemap-fsopen):not(.homemap-fsclose):not(.su-call):not(.su-sos) {
       border-top-color: transparent !important;
       border-bottom-color: transparent !important;
     }
@@ -5641,7 +5641,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 817; }
+    :root { --sm-build: 818; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5851,7 +5851,7 @@
        cibler par classe). Zéro bordure + zéro ombre-ligne sur TOUT le contenu,
        SAUF whitelist : champs, interrupteurs (.sl), joyaux (.cic/.jo-ic/.smgem),
        avatars, épingles carte, CTA principal/SOS, carte Leaflet. ════════════════ */
-    html.sm-app body :is(.tab-panel:not([data-panel="accueil"]), #settingsCard, .mates-view) *:not(input):not(textarea):not(select):not(.sl):not(.cic):not(.jo-ic):not(.smgem):not(.pb-av):not(.prof-photo):not(.epin):not(.epin-cluster):not(.avatar):not(.btn-primary):not(.btn-danger):not(.leaflet-container):not([class*="leaflet"]):not(.gp-tile):not(.gold-perks):not(.gold-hero):not(.pcell):not(.pc-stat):not(.thumb) {
+    html.sm-app body :is(.tab-panel:not([data-panel="accueil"]), #settingsCard, .mates-view) *:not(input):not(textarea):not(select):not(.sl):not(.cic):not(.jo-ic):not(.smgem):not(.pb-av):not(.prof-photo):not(.epin):not(.epin-cluster):not(.avatar):not(.btn-primary):not(.btn-danger):not(.su-btn):not(.su-call):not(.su-sos):not(.leaflet-container):not([class*="leaflet"]):not(.gp-tile):not(.gold-perks):not(.gold-hero):not(.pcell):not(.pc-stat):not(.thumb) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-left-width: 0 !important; border-right-width: 0 !important;
       box-shadow: none !important; }
     /* arrière-tuiles : fonds de cartes/tuiles RETIRÉS (transparent), sauf surfaces utiles */
@@ -6187,4 +6187,54 @@
     html.sm-app body .homemap-card.fs .epin, html.sm-app body .homemap-card.fs .epin-cluster { border: 2.5px solid #fff !important; }
     html.sm-app body .homemap-fsopen { border: 1.5px solid rgba(255,255,255,.9) !important; }
 
-    :root { --sm-build: 817; }
+    :root { --sm-build: 818; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v818 · 2e lot retours Maxime (25/06). LEÇON CLÉ (re-confirmée) : les balais
+       « épure » à ~14 `:not()` ont une spécificité ÉNORME → on NE peut PAS les
+       battre avec une règle concurrente, il faut AJOUTER l'élément à leur whitelist
+       (fait pour .epin/.su-* sur les balais 4800 & 5854). Le reste ci-dessous. ══ */
+
+    /* (1) « Le carré qui slide en orange en bas » : l'indicateur de nav passe en
+       NEUTRE (fini le dégradé sunset translucide), discret, sans halo. */
+    html body .nav-ind, html.sm-app body .nav-ind {
+      background: color-mix(in srgb, var(--ink) 8%, transparent) !important;
+      box-shadow: none !important; }
+
+    /* (2) « La sélection des tuiles affiche un contour, on retire » : plus de
+       liseré accent ni d'ombre sur la tuile active (état porté par l'icône/le
+       libellé en gras, pas par un cadre). Tous modes. */
+    html.sm-app body .cat-tile.active,
+    html.sm-app body #lieuxCats .cat-tile.active { border-color: transparent !important; box-shadow: none !important; }
+
+    /* (3) HALOS encore présents → RETIRÉS : ombres portées des tuiles/icônes
+       (le « flottant » que voit Maxime). Filet hairline toléré sur .card seul. */
+    html.sm-app body .tile, html.sm-app body .gcard, html.sm-app body .reco { box-shadow: none !important; }
+    html.sm-app body .tile:hover, html.sm-app body .gcard:hover, html.sm-app body .reco:hover { box-shadow: none !important; }
+    html.sm-app body .tile .thumb, html.sm-app body .cat-tile .cic {
+      filter: saturate(1.04) brightness(1.01) !important; }
+    html.sm-app body :is(.cat-tile.active .cic, .prog-row .cic, .qcoll .cic, .smgem) {
+      box-shadow: inset 0 -8px 16px rgba(0,0,0,.08) !important; }
+
+    /* (4) GRILLES de tuiles : quand le nombre est IMPAIR, la DERNIÈRE tuile se
+       CENTRE (symétrie demandée : « celle du bas au milieu TOUJOURS »). */
+    html.sm-app body .grid2 > *:last-child:nth-child(odd) {
+      grid-column: 1 / -1; justify-self: center; width: calc(50% - .275rem); }
+
+    /* (5) ÉCARTS entre catégories RÉDUITS (« trop espacés »). Accueil + autres
+       onglets : marges de section resserrées, sans coller. */
+    html body .tab-panel[data-panel="accueil"] > section,
+    html body .tab-panel[data-panel="accueil"] > .section-head,
+    html body .tab-panel[data-panel="accueil"] > #homeTravelMap,
+    html body .tab-panel[data-panel="accueil"] > #homeQuickAccess {
+      margin-top: 1.3rem !important; padding-top: 0 !important; }
+    html body .tab-panel:not([data-panel="accueil"]) > section,
+    html body .tab-panel:not([data-panel="accueil"]) > .section-head { margin-top: 1.3rem !important; }
+
+    /* (6) Compteur de pas / météo : la tuile contient son contenu (plus de débord
+       « conseils sort de la tuile »), texte tronqué proprement si trop long. */
+    html.sm-app body .day-chips .weather-chip { overflow: hidden; min-width: 0; }
+    html.sm-app body .weather-chip > * { min-width: 0; }
+    html.sm-app body .weather-chip .wc-temp, html.sm-app body .weather-chip .wc-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    :root { --sm-build: 818; }
