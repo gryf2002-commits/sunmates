@@ -1,9 +1,11 @@
 {
-  "candidate": "v773",
+  "candidate": "v798",
   "items": [
-    "✨ Accueil plus net : arrière-tuiles grises/argentées retirées partout, titres centrés sans le carré orange, traits de séparation du fil retirés, fond strictement plat (plus de bande).",
-    "🗺️ Carte d'accueil agrandie + moins d'espace avant « Explore autour de toi ». Bascule Voyage/Maison instantanée (fini le passage gris→blanc).",
-    "🧳 Mes voyages : la ville prime, et deux villes homonymes sont distinguées par le pays. 🧊 Joker de série désormais équipable.",
-    "🖼️ Photos : filet d'images locales → elles s'affichent même si le réseau bloque la banque distante. « Mes envies d'ailleurs » séparé de « Préparer mon voyage »."
+    "✨ Fini les traits de séparation : listes, cartes et sections à plat, sur tous les écrans et tous les modes (jour, nuit, hiver, tropical).",
+    "🎨 Couleurs des tuiles homogènes partout — accueil, sécurité, jeux : la même teinte coucher de soleil, même en mode sombre.",
+    "🖼️ Photos plus nettes et plus rapides : chaque lieu a son image unique, sans rechargement ni clignotement, et elles s'affichent enfin en mode sombre.",
+    "👟 Compteur de pas en tuile cliquable, juste à côté de la météo, sous la carte.",
+    "🗺️ Carte d'accueil qui ne fait plus attendre : l'écran « on prépare ta carte » ne traîne plus.",
+    "🌍 Pages de villes immersives : grande photo plein écran, format façon page principale, et une ambiance sonore propre à chaque ville."
   ]
 }
