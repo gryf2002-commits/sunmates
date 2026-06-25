@@ -1,13 +1,14 @@
 {
-  "candidate": "v819",
+  "candidate": "v820",
   "items": [
-    "👋 Tu peux maintenant te DÉCONNECTER d'un Mate : depuis sa fiche, le bouton « ✅ Connecté » propose la déconnexion (avec confirmation).",
-    "🎨 Les 5 actions sur la fiche d'un Mate (Défi, Mi-chemin, On s'est vus, BFF, Bloquer) : fini les tuiles grises — chacune a sa couleur, et la rangée du bas est centrée (symétrie).",
-    "📍 Contours blancs des pins de la carte ENFIN de retour (petite carte ET plein écran), bouton plein écran nettoyé.",
-    "✨ Halos retirés autour de beaucoup plus de tuiles + le carré orange de la barre d'onglets passe en neutre.",
-    "🚨 Le « pulse » de la tuile Alerte d'urgence est de retour.",
-    "🆙 Fini la notif « Niveau 3 » en boucle alors que tu es déjà niveau 4.",
-    "🖼️ Photos des check-ins affichées au clic (vraie source d'image).",
-    "📐 Écarts entre catégories resserrés + l'en-tête ne clignote plus au scroll + tuile impaire centrée."
+    "✋ Glisser pour voir l'heure des messages : RÉPARÉ. Les bulles glissent de nouveau (l'animation d'entrée figeait leur position → l'heure se superposait au texte).",
+    "👟 Compteur de pas RETIRÉ : il affichait un chiffre inventé (pas de vrai podomètre) — c'était malhonnête. La météo prend toute la largeur.",
+    "⬛ Fond uniforme sur TOUT l'écran, en haut comme ailleurs (peu importe le téléphone) ; le « Bonjour … » ne se superpose plus au logo au scroll.",
+    "↔️ Bascule « En voyage / À la maison » : la pastille GLISSE en douceur d'un côté à l'autre.",
+    "✨ Halos : passe agressive — plus aucune ombre flottante autour des cartes et tuiles.",
+    "🖼️ Photos : elles s'affichent maintenant dans les popups de lieux sur la carte (et au clic des check-ins).",
+    "👤 Contours d'avatars réparés (ils étaient coupés en haut/bas par une règle anti-traits).",
+    "🧳 Tuiles « Mes voyages » adaptées à tous les modes (jour/nuit/saisons).",
+    "📱 Garde-fou anti-débordement : l'app s'adapte mieux à toutes les tailles d'écran."
   ]
 }

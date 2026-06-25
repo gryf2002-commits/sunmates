@@ -4801,8 +4801,8 @@
        les lignes VISIBLES disparaissent, le layout ne bouge pas. On PRÉSERVE les bordures utiles :
        champs de saisie, recherche, chat, modales.
        ============================================================ */
-    html body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet):not(.epin):not(.epin-cluster):not(.epin-wrap):not([class*="leaflet"]):not(.homemap-fsopen):not(.homemap-fsclose):not(.su-call):not(.su-sos):not(.tpa-btn),
-    html.sm-app body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet):not(.epin):not(.epin-cluster):not(.epin-wrap):not([class*="leaflet"]):not(.homemap-fsopen):not(.homemap-fsclose):not(.su-call):not(.su-sos):not(.tpa-btn) {
+    html body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet):not(.avatar):not(.pb-av):not(.prof-photo):not(.epin):not(.epin-cluster):not(.epin-wrap):not([class*="leaflet"]):not(.homemap-fsopen):not(.homemap-fsclose):not(.su-call):not(.su-sos):not(.tpa-btn),
+    html.sm-app body :is(.tab-panel, .secu-view, #placeDetail) *:not(input):not(textarea):not(select):not(.search):not(.chat-header):not(.tgo-head):not(.tgo-input):not(.bubble):not(.modal-card):not(.sm-selsheet):not(.popinfo-card):not(.act-card):not(.hcust-ov):not(.hcust-sheet):not(.avatar):not(.pb-av):not(.prof-photo):not(.epin):not(.epin-cluster):not(.epin-wrap):not([class*="leaflet"]):not(.homemap-fsopen):not(.homemap-fsclose):not(.su-call):not(.su-sos):not(.tpa-btn) {
       border-top-color: transparent !important;
       border-bottom-color: transparent !important;
     }
@@ -5645,7 +5645,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 819; }
+    :root { --sm-build: 820; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -6191,7 +6191,7 @@
     html.sm-app body .homemap-card.fs .epin, html.sm-app body .homemap-card.fs .epin-cluster { border: 2.5px solid #fff !important; }
     html.sm-app body .homemap-fsopen { border: 1.5px solid rgba(255,255,255,.9) !important; }
 
-    :root { --sm-build: 819; }
+    :root { --sm-build: 820; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v818 · 2e lot retours Maxime (25/06). LEÇON CLÉ (re-confirmée) : les balais
@@ -6241,4 +6241,69 @@
     html.sm-app body .weather-chip > * { min-width: 0; }
     html.sm-app body .weather-chip .wc-temp, html.sm-app body .weather-chip .wc-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    :root { --sm-build: 819; }
+    :root { --sm-build: 820; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v820 · 3e lot retours Maxime (25/06). ════════════════════════════════ */
+
+    /* (1) FOND UNI TOUT EN HAUT (« sur tout l'écran peu importe le téléphone ») +
+       le « Bonjour pseudo » ne doit plus se superposer au logo au scroll. Solution :
+       le topbar devient OPAQUE var(--bg) PLEIN (au lieu de transparent/dégradé) →
+       même couleur EXACTE que la status-bar (theme-color = --bg) ET que le contenu,
+       donc ZÉRO bande/joint, et le contenu qui défile passe PROPREMENT derrière. */
+    html body .topbar, html.sm-app body .topbar,
+    html body.sm-scrolled .topbar, html.sm-app body.sm-scrolled .topbar,
+    html body.theme-dusk .topbar, html body.theme-winter .topbar, html body.theme-tropic .topbar,
+    html body.theme-winter.theme-dusk .topbar, html body.theme-tropic.theme-dusk .topbar {
+      background: var(--bg) !important; background-image: none !important;
+      box-shadow: none !important; border-bottom: 0 !important;
+      -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+
+    /* (2) HALOS — passe AGRESSIVE (« ENORMEMENT de halos présents »). Zéro ombre
+       portée sur toutes les cartes/tuiles de contenu. (Pulse SOS, avatars, pins,
+       mode-switch = exclus, gérés ailleurs.) */
+    html.sm-app body :is(.card,.tile,.gcard,.reco,.cat-tile,.gp-tile,.sc-card,.feature,.wg-card,.wg-goal,
+      .stat-box,.pcell,.pc-stat,.prog-card,.reward-card,.tip-card,.qcoll,.ci-card,.feed-card,.sugg-card,
+      .spot-card,.quest-spotlight,.starterCard,.boost-card,.xpl-card,.nq-card,.demo-step,.tj-card,.trip-card,
+      .coupon,.shop-item,.jeux-open,.num-here,.geoNowCard,.poll-opt,.lb-row) {
+      box-shadow: none !important; }
+    html.sm-app body :is(.card,.tile,.gcard,.reco,.cat-tile,.gp-tile):hover { box-shadow: none !important; }
+    /* drop-shadows portées des icônes/emoji de tuiles (le « flottant ») */
+    html.sm-app body :is(.tile .thumb, .cat-tile .cic, .su-e, .dh-emoji, .tip-ic, .onb-emoji) {
+      filter: none !important; }
+
+    /* (3) SWITCH « En voyage / À la maison » : indicateur qui GLISSE en douceur
+       (pilule accent qui slide d'un segment à l'autre) au lieu d'un simple changement
+       de fond. :has() pour suivre le bouton actif. */
+    html.sm-app body .mode-switch { position: relative; overflow: hidden; }
+    html.sm-app body .mode-switch::before {
+      content: ""; position: absolute; top: .22rem; bottom: .22rem; left: .22rem;
+      width: calc(50% - .22rem); border-radius: 999px; background: var(--accent-grad);
+      transform: translateX(0); transition: transform .36s cubic-bezier(.34,1.25,.4,1);
+      z-index: 0; pointer-events: none; will-change: transform; }
+    html.sm-app body .mode-switch:has(button[data-mode="home"].active)::before { transform: translateX(100%); }
+    html.sm-app body .mode-switch button { position: relative; z-index: 1; background: transparent !important; box-shadow: none !important; transition: color .28s ease; }
+    html.sm-app body .mode-switch button.active { background: transparent !important; color: #fff !important; }
+    @media (prefers-reduced-motion: reduce) { html.sm-app body .mode-switch::before { transition: none; } }
+
+    /* (4) MÉTÉO pleine largeur (compteur de pas RETIRÉ — il était simulé/faux). */
+    html.sm-app body .day-chips .weather-chip { flex: 1 1 100% !important; max-width: 100% !important; justify-content: flex-start; }
+    html.sm-app body #stepsChip { display: none !important; }
+
+    /* (5) MES VOYAGES : tuiles thémées tous modes (le drapeau + ville + méta lisibles
+       sur le fond du mode ; carte plate sans halo). */
+    html.sm-app body .tj-card, html.sm-app body .trip-card {
+      background: transparent !important; border: 0 !important; }
+    html.sm-app body .tj-card .tj-city { color: var(--ink) !important; }
+    html.sm-app body .tj-card .tj-meta, html.sm-app body .tj-card .trip-note { color: var(--muted) !important; }
+
+    /* (6) RESPONSIVE — robustesse tous téléphones (Maxime : « adapte-toi à tout type
+       de téléphone »). Pas de débordement horizontal, échelles fluides, safe-areas. */
+    html, body { max-width: 100%; overflow-x: clip; }
+    html body .tab-panel, html body #smMain, html body .app-shell { max-width: 100vw; overflow-x: clip; }
+    html body img, html body video, html body canvas { max-width: 100%; }
+    @supports (height: 100dvh) {
+      html body .homemap-card.fs { height: 100dvh !important; }
+    }
+
+    :root { --sm-build: 820; }
