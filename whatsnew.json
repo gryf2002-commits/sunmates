@@ -1,8 +1,8 @@
 {
-  "candidate": "v837",
+  "candidate": "v838",
   "items": [
-    "⚡ PERFORMANCE : j'ai retiré ce qui ramait — un nettoyage d'ombres qui s'appliquait à CHAQUE élément du contenu, et une dizaine de règles `:has()` ré-évaluées à chaque pliage/changement. C'était la cause des lags et des textes qui se figent au pliage/dépliage.",
-    "✅ Conservé : ombres à plat, titres centrés, switch avec pilule, flèches uniformes — mais avec des règles légères (listes de classes) au lieu de sélecteurs lourds.",
-    "🛠️ (rappel v836) Admin réparé (plus tout sur une ligne)."
+    "🔔 Notifications (cloche) ENFIN lisibles : une optimisation (content-visibility) cassait le rendu du panneau → fond/contraste bugés. Retirée pour ce panneau → fond plein + texte lisible.",
+    "🗺️ La carte garde son écran « on prépare ta carte… » jusqu'à ce qu'elle soit VRAIMENT prête (tuiles chargées), au lieu de s'afficher à moitié et ramer.",
+    "⚡ (rappel v837) Lags du pliage/dépliage retirés (sélecteurs lourds supprimés)."
   ]
 }

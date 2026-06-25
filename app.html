@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=837"></script>
+  <script src="sunmates-badges.js?v=838"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=837"></script>
+  <script defer src="sunmates-motion.js?v=838"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -384,13 +384,13 @@
       } catch (e) {}
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=837">
+  <link rel="stylesheet" href="styles.css?v=838">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
      Appareil à jour → révélé tout de suite ; appareil périmé → purge caches+SW et reload
      EN RESTANT MASQUÉ (fini le flash d'« ancien design qui se charge avant »). Failsafe 2.5s. */
-  (function(){try{var EXPECT="837",H=document.documentElement;H.classList.add("sm-verifying");
+  (function(){try{var EXPECT="838",H=document.documentElement;H.classList.add("sm-verifying");
     var revealed=false,reveal=function(){if(revealed)return;revealed=true;try{H.classList.remove("sm-verifying");}catch(e){}};
     setTimeout(reveal,2500);
     document.addEventListener("DOMContentLoaded",function(){try{
@@ -1486,7 +1486,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=837">
+  <link rel="stylesheet" href="sunmates-lite.css?v=838">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -14889,12 +14889,16 @@
         // #5 (retour Maxime « le squelette s'arrête trop tôt ») : en raster, whenReady ne garantit
         // PAS que les tuiles soient peintes → on attend l'event 'load' du fond de carte (toutes les
         // tuiles visibles chargées) s'il est dispo, sinon un délai PLUS LONG (1500 ms vs 400). Garde-fou 6 s.
+        // v838 (retour Maxime « laisse le squelette JUSQU'À CE QUE LA CARTE SOIT PLEINEMENT
+        // PRÊTE DERRIÈRE ») : on NE révèle PLUS à whenReady+700 (trop tôt, tuiles pas peintes →
+        // carte qui rame à l'apparition). On attend l'event 'load' (toutes les tuiles visibles
+        // chargées) ; backup whenReady+2.5 s si 'load' ne vient pas ; garde-fou allongé à 9 s.
         try {
           let _mapDone = false; const _done = () => { if (_mapDone) return; _mapDone = true; _smMapReady(); };
           const _bl = window._homeBaseLyr; if (_bl && typeof _bl.once === "function") { _bl.once("load", _done); }
-          homeLeaf.whenReady(() => setTimeout(_done, 700));
-        } catch (e) { try { homeLeaf.whenReady(() => setTimeout(_smMapReady, 700)); } catch (e2) {} }
-        setTimeout(_smMapReady, 3500); // garde-fou raccourci : on ne laisse JAMAIS le squelette traîner (la carte finit de charger en place)
+          homeLeaf.whenReady(() => setTimeout(_done, 2500));
+        } catch (e) { try { homeLeaf.whenReady(() => setTimeout(_smMapReady, 2500)); } catch (e2) {} }
+        setTimeout(_smMapReady, 9000); // garde-fou : si un event manque, on révèle au pire après 9 s
         // P4 (retour Maxime, remplace le geste P2.7) : TAP-POUR-EXPLORER · la mini-carte dort
         // (1 doigt = la page défile) ; un TAP dessus la RÉVEILLE (drag direct, 100 % réactive,
         // liseré corail discret) ; toucher la page EN DEHORS la rendort → le scroll de
@@ -20740,7 +20744,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=837"></script>
+  <script src="sunmates-da-loader.js?v=838"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->
