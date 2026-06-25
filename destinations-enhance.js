@@ -113,6 +113,26 @@
     ".dest-final-in{position:relative;z-index:2;width:100%;max-width:1140px;margin:0 auto;padding:80px 24px}" +
     ".dest-final-in h2{font-family:'Fraunces',Georgia,serif;font-size:clamp(2rem,5.2vw,3.6rem);font-weight:900;color:#fff;margin:0}" +
     ".dest-final-in p{color:#ECE2F5;margin:1rem auto 1.8rem;max-width:44ch;font-size:1.08rem}" +
+    /* TICKER défilant (bandeau sunset) — repris d'index.html */
+    ".dest-ticker{width:100vw;margin-left:calc(50% - 50vw);background:" + G + ";color:#2a0d12;overflow:hidden;white-space:nowrap;margin-bottom:2rem}" +
+    ".dest-ticker-track{display:inline-flex;align-items:center;animation:destTick 26s linear infinite}" +
+    ".dest-ticker:hover .dest-ticker-track{animation-play-state:paused}" +
+    ".dest-ticker-track span{font-family:'Fraunces',Georgia,serif;font-weight:800;font-style:italic;font-size:1.02rem;padding:.62rem 1.3rem;display:inline-flex;align-items:center;gap:1.3rem}" +
+    ".dest-ticker-track span::after{content:'☀';font-style:normal;opacity:.7}" +
+    "@keyframes destTick{from{transform:translateX(0)}to{transform:translateX(-50%)}}" +
+    /* BENTO fonctionnalités (grille 6 col) — repris d'index.html */
+    ".dest-bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;max-width:1140px;margin:2.4rem auto;padding:0 24px}" +
+    ".dest-cell{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:26px;position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.16,1,.3,1)}" +
+    "@media (hover:hover){.dest-cell:hover{transform:translateY(-4px)}}" +
+    ".dest-cell h3{font-family:'Fraunces',Georgia,serif;font-size:1.3rem;margin:0 0 .4rem;color:var(--ink,#f3e9e0)}" +
+    ".dest-cell p{color:var(--muted,#c9b7e0);font-size:.95rem;margin:0;line-height:1.5}" +
+    ".dest-cell .tag{font-weight:800;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:" + prof.grad[0] + ";margin-bottom:.7rem;display:block}" +
+    ".dest-cell.feat{grid-column:span 3;background:linear-gradient(150deg,color-mix(in srgb," + prof.grad[0] + " 18%,transparent),color-mix(in srgb," + prof.accent + " 8%,transparent));border-color:color-mix(in srgb," + prof.accent + " 40%,transparent)}" +
+    ".dest-cell.wide{grid-column:span 3}.dest-cell.third{grid-column:span 2}" +
+    ".dest-cell.photo{grid-column:span 3;min-height:200px;color:#fff;border:0;display:flex;flex-direction:column;justify-content:flex-end;background-size:cover;background-position:center}" +
+    ".dest-cell.photo::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,9,38,.9),rgba(20,9,38,.2))}" +
+    ".dest-cell.photo>*{position:relative;z-index:1}" +
+    "@media (max-width:760px){.dest-bento{grid-template-columns:1fr;gap:13px}.dest-cell.feat,.dest-cell.wide,.dest-cell.third,.dest-cell.photo{grid-column:auto}}" +
     /* lecteur d'ambiance sonore — MÊME composant que la vitrine principale (index.html) */
     ".player{position:fixed;right:18px;bottom:84px;z-index:31;display:inline-flex;align-items:center;gap:.65rem;padding:.5rem .7rem;border-radius:999px;background:rgba(15,10,25,.92);border:1px solid rgba(255,255,255,.18);color:#fff;box-shadow:0 12px 30px rgba(8,4,18,.5);font-size:.85rem}" +
     ".player button{background:none;border:0;color:inherit;cursor:pointer;font:inherit}" +
@@ -160,6 +180,12 @@
     var trust = document.createElement("div"); trust.className = "dest-trust";
     trust.innerHTML = "<span>🛡️ Sécurité d'abord</span><span>🌍 42 pays</span><span>✅ Profils vérifiés</span><span>🇫🇷 FR / EN</span><span>🤝 Projet indépendant</span>";
     if (hero.parentNode) hero.parentNode.insertBefore(trust, hero.nextSibling);
+    // TICKER défilant sous la bande de confiance (phrases doublées = boucle continue)
+    var tick = document.createElement("div"); tick.className = "dest-ticker"; tick.setAttribute("aria-hidden", "true");
+    var phr = ["Aucun plan B requis", "La table est mise pour une personne de plus", "À " + CITY + ", quelqu'un cherche aussi du monde", "Tu choisis qui rejoindre, et quand", "Le monde est plus petit que tu ne le crois"];
+    var span = phr.map(function (p) { return "<span>" + p + "</span>"; }).join("");
+    tick.innerHTML = "<div class='dest-ticker-track'>" + span + span + "</div>";
+    if (trust.parentNode) trust.parentNode.insertBefore(tick, trust.nextSibling);
   }
   var firstH2 = document.querySelector("main h2"); if (firstH2 && !firstH2.id) firstH2.id = "qui-traine";
 
@@ -190,6 +216,14 @@
     ["Je voulais juste savoir où boire un verre correct. Repartie avec une coloc de vacances.", "Inès, 28 ans", "I"],
     ["L'appli te dit qui est dans le coin, pas qui est célibataire. Franchement, reposant.", "Mathéo, 24 ans", "M"]
   ];
+  // BENTO fonctionnalités (grille façon index.html), photo « spot » à la ville
+  var bento = document.createElement("section"); bento.className = "dest-bento";
+  bento.innerHTML =
+    "<div class='dest-cell feat'><span class='tag'>Les lieux</span><h3>Les bons endroits, sans le guide qui parle trop.</h3><p>Les coins où ça se passe vraiment à " + CITY + ", repérés par des gens qui y étaient hier. Tu check-ines sur place, et la carte se remplit.</p></div>" +
+    "<div class='dest-cell photo' style=\"background-image:" + cityPhoto(8, 800, 600) + "\"><span class='tag' style='color:#FFD15C'>Des spots qui ont une âme</span><h3>Pose ton sac où c'est bon.</h3></div>" +
+    "<div class='dest-cell wide'><span class='tag'>Le jeu</span><h3>Voyager devient un terrain de jeu.</h3><p>Quêtes solo ou à plusieurs, XP, emblèmes faits main. Une excuse de plus pour sortir, et voir qui est là.</p></div>" +
+    "<div class='dest-cell third'><span class='tag'>Sans frontières</span><h3>FR / EN, hors-ligne</h3><p>Toute l'appli dans les deux langues, même quand le réseau te lâche.</p></div>" +
+    "<div class='dest-cell third'><span class='tag'>Tranquillité</span><h3>Un geste, et quelqu'un répond</h3><p>Partage ta position avec ton cercle de confiance, quand tu veux. Toi seul·e décides qui voit quoi.</p></div>";
   function tcard(t) { return "<div class='dest-tcard'><q>" + t[0] + "</q><div class='who'><span class='av' aria-hidden='true'>" + t[2] + "</span><span><b>" + t[1] + "</b></span></div></div>"; }
   var testi = document.createElement("section"); testi.className = "dest-testi";
   // cartes DOUBLÉES pour un défilement en boucle continue (translateX -50%)
@@ -198,8 +232,8 @@
   var fin = document.createElement("section"); fin.className = "dest-final";
   fin.innerHTML = "<div class='dest-final-bg' style=\"background-image:" + cityPhoto(7, 1280, 800) + "\"></div><div class='dest-final-scrim'></div>" +
     "<div class='dest-final-in'><h2>Ta place est déjà gardée à " + CITY + ".</h2><p>Télécharge, arrive seul·e, et vois ce que la ville a prévu pour toi.</p><a href='app.html' class='btn'>Réserve ta place</a></div>";
-  if (footer && footer.parentNode) { footer.parentNode.insertBefore(testi, footer); footer.parentNode.insertBefore(fin, footer); }
-  else if (anchor && anchor.parentNode) { anchor.parentNode.appendChild(testi); anchor.parentNode.appendChild(fin); }
+  if (footer && footer.parentNode) { footer.parentNode.insertBefore(bento, footer); footer.parentNode.insertBefore(testi, footer); footer.parentNode.insertBefore(fin, footer); }
+  else if (anchor && anchor.parentNode) { anchor.parentNode.appendChild(bento); anchor.parentNode.appendChild(testi); anchor.parentNode.appendChild(fin); }
 
   // --- Bande CTA collante -----------------------------------------------------------------------
   var sticky = document.createElement("div"); sticky.className = "dest-sticky";
