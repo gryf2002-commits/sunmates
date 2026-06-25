@@ -5580,7 +5580,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 793; }
+    :root { --sm-build: 794; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -5987,3 +5987,13 @@
     html body :is(.card, .tile, .cat-tile, .pcard, .gcard, .sc-card, .feature, .quest-spotlight, .prog-card, .prog-row, .nq-card, .wg-card, .reward-card, .tip-card, .homemap-card, .homemap, .section-head, .qm-head, .fpost, .hm-hero, .hm-inspo, .solo-prog, .mod-card, .trip-card, .tj-card, .starterCard, .hm-souv, .hm-mateday, details, .hm-plan, .qcoll, .coupon, .lb-row, .person, .conv, .stat-box, .dstat, .pc-stat, .pcell, .reco, .sugg-card, .ci-card),
     html.sm-app body :is(.card, .tile, .cat-tile, .pcard, .gcard, .sc-card, .feature, .quest-spotlight, .prog-card, .prog-row, .nq-card, .wg-card, .reward-card, .tip-card, .homemap-card, .homemap, .section-head, .qm-head, .fpost, .hm-hero, .hm-inspo, .solo-prog, .mod-card, .trip-card, .tj-card, .starterCard, .hm-souv, .hm-mateday, details, .hm-plan, .qcoll, .coupon, .lb-row, .person, .conv, .stat-box, .dstat, .pc-stat, .pcell, .reco, .sugg-card, .ci-card) {
       box-shadow: none !important; }
+
+    /* v794 · compteur de pas EN TUILE, juste à côté de la VRAIE météo (pas de météo en double) */
+    .day-chips { display: flex; gap: .5rem; flex-wrap: wrap; margin: .2rem 0 .2rem; }
+    .day-chips .weather-chip { flex: 1 1 0; min-width: 140px; margin: 0 !important; }
+    .steps-chip .wc-hint { color: var(--accent-ink, var(--accent)); }
+
+    /* v794 · une bande colorée résiduelle = le bouton « Album souvenir » (.hm-gal-open) qui porte
+       un dégradé pleine largeur → à plat (surface neutre discrète), tous modes. */
+    html body .hm-gal-open, html.sm-app body .hm-gal-open {
+      background: color-mix(in srgb, var(--ink) 5%, transparent) !important; border: 1px solid var(--line) !important; box-shadow: none !important; }

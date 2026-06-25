@@ -43,7 +43,11 @@
   var LOCAL = ["sm-hero-sunset.jpg", "sm-cliff.jpg", "sm-rencontre.jpg", "sm-friends.jpg", "sm-joie.jpg", "sm-cafe.jpg", "sm-moment1.jpg", "sm-moment2.jpg", "sm-moment3.jpg"];
   function cityPhoto(i, w, h) {
     var local = LOCAL[(SEED + i * 7) % LOCAL.length];
-    var remote = "https://loremflickr.com/" + (w || 1280) + "/" + (h || 720) + "/" + encodeURIComponent(prof.kw) + "?lock=" + ((SEED % 90) + i);
+    // #26 (re-fix doublons) : loremflickr renvoyait son IMAGE PAR DÉFAUT pour les mots-clés
+    // composés (« paris,eiffel,street ») → on garde UNIQUEMENT le 1er mot (la ville : paris,
+    // lisbon, barcelona…), fiable, + un lock unique par carte → vraies photos de ville, variées.
+    var kw = (prof.kw.split(",")[0] || "travel").trim();
+    var remote = "https://loremflickr.com/" + (w || 1280) + "/" + (h || 720) + "/" + encodeURIComponent(kw) + "?lock=" + ((SEED % 90) + i * 13);
     return "url('" + remote + "'), url('" + local + "')";
   }
 
