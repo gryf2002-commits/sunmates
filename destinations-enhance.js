@@ -62,15 +62,20 @@
     ".reveal-d{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}" +
     ".reveal-d.in{opacity:1;transform:none}" +
     "@media (prefers-reduced-motion:reduce){.reveal-d{opacity:1;transform:none;transition:none}}" +
-    /* hero cinématique */
-    ".dest-hero{position:relative;border-radius:26px;overflow:hidden;margin:.6rem 0 1.4rem;box-shadow:var(--shadow,0 22px 60px rgba(8,4,18,.45))}" +
+    /* contenu plus large façon vitrine principale (index.html = 1180px, pas 900) */
+    "body{--maxw:1140px}main,.wrap{max-width:1140px!important}" +
+    /* hero PLEINE LARGEUR & immersif (comme le hero vidéo de la page principale) */
+    ".dest-hero{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-top:-8px;margin-bottom:2.2rem;border-radius:0;overflow:hidden;box-shadow:none}" +
     ".dest-hero-bg{position:absolute;inset:-8% 0 0;background-size:cover;background-position:center;transform:scale(1.06);will-change:transform;filter:saturate(1.08)}" +
-    ".dest-hero-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,10,25,.12) 0%,rgba(15,10,25,.5) 55%,rgba(15,10,25,.93) 100%)}" +
+    ".dest-hero-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,10,25,.18) 0%,rgba(15,10,25,.5) 55%,rgba(15,10,25,.93) 100%)}" +
     ".dest-hero-tint{position:absolute;inset:0;mix-blend-mode:soft-light;opacity:.5;background:" + G + "}" +
-    ".dest-hero-in{position:relative;padding:clamp(1.4rem,5vw,2.6rem) 1.3rem 1.5rem;min-height:clamp(340px,54vw,460px);display:flex;flex-direction:column;justify-content:flex-end}" +
+    ".dest-hero-in{position:relative;max-width:1140px;margin:0 auto;width:100%;box-sizing:border-box;padding:clamp(2rem,7vw,4rem) max(24px,env(safe-area-inset-left)) clamp(2.2rem,6vw,3.4rem);min-height:clamp(74vh,78vh,86vh);display:flex;flex-direction:column;justify-content:flex-end}" +
     ".dest-hero .eyebrow{margin-bottom:.7rem}" +
-    ".dest-hero h1{margin:.1em 0 .3em;text-shadow:0 2px 24px rgba(8,4,18,.55)}" +
-    ".dest-hero .lead{color:#fff;max-width:46ch}" +
+    ".dest-hero h1{margin:.1em 0 .3em;font-size:clamp(2.4rem,6.2vw,4.4rem);text-shadow:0 2px 24px rgba(8,4,18,.55)}" +
+    ".dest-hero .lead{color:#fff;max-width:52ch;font-size:clamp(1.05rem,2.2vw,1.4rem)}" +
+    /* bande de confiance (chips) sous le hero, comme index.html */
+    ".dest-trust{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:-.6rem auto 2.2rem;max-width:1140px}" +
+    ".dest-trust span{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:700;color:var(--ink,#f3e9e0);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:.45rem .85rem}" +
     ".dest-vibe{display:inline-block;margin-top:.5rem;font-size:.82rem;color:#fff;opacity:.92}" +
     ".dest-hero-cta{margin-top:1.2rem;display:flex;gap:.6rem;flex-wrap:wrap}" +
     ".btn-ghost-d{display:inline-block;background:rgba(255,255,255,.12);color:#fff;font-weight:700;padding:.7rem 1.1rem;border-radius:999px;text-decoration:none;border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(6px)}" +
@@ -130,6 +135,10 @@
       var g = document.createElement("a"); g.className = "btn-ghost-d"; g.href = "#qui-traine"; g.textContent = "Voir qui traîne dans le coin"; ctaRow.appendChild(g);
     }
     window.addEventListener("scroll", function () { bg.style.transform = "scale(1.06) translateY(" + (Math.max(0, window.scrollY) * 0.12) + "px)"; }, { passive: true });
+    // bande de confiance (chips) sous le hero — comme index.html
+    var trust = document.createElement("div"); trust.className = "dest-trust";
+    trust.innerHTML = "<span>🛡️ Sécurité d'abord</span><span>🌍 42 pays</span><span>✅ Profils vérifiés</span><span>🇫🇷 FR / EN</span><span>🤝 Projet indépendant</span>";
+    if (hero.parentNode) hero.parentNode.insertBefore(trust, hero.nextSibling);
   }
   var firstH2 = document.querySelector("main h2"); if (firstH2 && !firstH2.id) firstH2.id = "qui-traine";
 
@@ -143,6 +152,9 @@
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (ents) { ents.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
     document.querySelectorAll("main h2, main .card, main .grid, main .lead, main .cta, main .faq").forEach(function (el) { el.classList.add("reveal-d"); io.observe(el); });
+    // FAILSAFE : si l'observer ne se déclenche pas (capture/JS lent), on révèle tout après 2,8 s →
+    // le contenu n'est JAMAIS masqué pour de bon.
+    setTimeout(function () { document.querySelectorAll(".reveal-d:not(.in)").forEach(function (e) { e.classList.add("in"); }); }, 2800);
   }
 
   // --- Bande CTA collante -----------------------------------------------------------------------
