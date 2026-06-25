@@ -1,8 +1,9 @@
 {
-  "candidate": "v821",
+  "candidate": "v822",
   "items": [
-    "🔽 Flèches de repliage UNIFORMES partout : même chevron « › », même couleur, même rotation (il pointe vers le bas une fois ouvert).",
-    "🎯 Titres centrés quand il y a un compteur/action sur la même ligne (Rituels du jour, Tes souvenirs…) : le titre est bien centré, le compteur abaissé à droite, fini les collisions « à partager ».",
-    "✋ Rappel v820 : glisser pour voir l'heure des messages = réparé. Compteur de pas (faux) retiré. Fond uni en haut. Bascule maison/voyage qui glisse."
+    "✨ Halos ENFIN retirés autour des icônes de tuiles : la vraie cause était une ombre portée forcée sur chaque icône — supprimée.",
+    "⬛ Bandeau du haut : RETOUR au transparent + il disparaît de nouveau quand tu descends (et le fond du <html> prend la vraie couleur du thème/DA → fond uni en haut, tous téléphones).",
+    "🥇 Le mot « Gold » ne disparaît plus : il est en or plein, lisible dans tous les modes (le dégradé fragile pouvait le rendre invisible).",
+    "🔆 Contraste (WCAG) : l'ambre foncé illisible en nuit passe en ambre clair."
   ]
 }

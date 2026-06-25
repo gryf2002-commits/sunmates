@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=821"></script>
+  <script src="sunmates-badges.js?v=822"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=821"></script>
+  <script defer src="sunmates-motion.js?v=822"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -384,13 +384,13 @@
       } catch (e) {}
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=821">
+  <link rel="stylesheet" href="styles.css?v=822">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
      Appareil à jour → révélé tout de suite ; appareil périmé → purge caches+SW et reload
      EN RESTANT MASQUÉ (fini le flash d'« ancien design qui se charge avant »). Failsafe 2.5s. */
-  (function(){try{var EXPECT="821",H=document.documentElement;H.classList.add("sm-verifying");
+  (function(){try{var EXPECT="822",H=document.documentElement;H.classList.add("sm-verifying");
     var revealed=false,reveal=function(){if(revealed)return;revealed=true;try{H.classList.remove("sm-verifying");}catch(e){}};
     setTimeout(reveal,2500);
     document.addEventListener("DOMContentLoaded",function(){try{
@@ -1486,7 +1486,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=821">
+  <link rel="stylesheet" href="sunmates-lite.css?v=822">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -19146,7 +19146,29 @@
       // (v667 lisait le 1er stop du dégradé → status-bar plus CLAIRE que le topbar = cassure PIRE. Revert v668.)
       try { var bg = getComputedStyle(document.body).getPropertyValue("--bg").trim();
         var m = document.querySelector('meta[name="theme-color"]'); if (m && bg) m.setAttribute("content", bg); } catch (e) {}
+      _smSyncTopBg();
     }
+    // v822 — FOND UNIFORME EN HAUT (« le fond n'est pas uni en haut, peu importe le téléphone »).
+    // Le <html> doit avoir EXACTEMENT le même fond que le <body>. On NE peut pas le faire en CSS
+    // (le theme/DA est porté par body, var(--bg) lu au niveau html = mauvaise valeur). On lit donc
+    // la VRAIE couleur de fond du body (DA perso comprise) et on l'applique au <html> → zéro bande
+    // sous la status-bar, tous thèmes ET toutes DA personnalisées.
+    function _smSyncTopBg() {
+      try {
+        var bg = getComputedStyle(document.body).getPropertyValue("--bg").trim()
+              || getComputedStyle(document.body).backgroundColor;
+        if (bg) document.documentElement.style.backgroundColor = bg;
+      } catch (e) {}
+    }
+    window._smSyncTopBg = _smSyncTopBg;
+    // Resynchronise quand le DA loader change le fond (il modifie body class/style à chaud).
+    try {
+      // observe UNIQUEMENT le body (où theme/DA changent) — surtout PAS documentElement,
+      // sinon notre propre écriture de html.style.backgroundColor relancerait l'observer (boucle).
+      var _topObs = new MutationObserver(function () { _smSyncTopBg(); });
+      _topObs.observe(document.body, { attributes: true, attributeFilter: ["class", "style"] });
+      setTimeout(_smSyncTopBg, 400); setTimeout(_smSyncTopBg, 1500); setTimeout(_smSyncTopBg, 3500);
+    } catch (e) {}
     // ---- Thème : jour (aube) ↔ nuit (crépuscule plage) ----
     function applyTheme(t) {
       const dusk = t === "dusk";
@@ -19770,13 +19792,19 @@
       // v684 : header AUTO-HIDE façon app native — il glisse hors champ quand on descend (plus
       // d'écran pour le contenu) et réapparaît dès qu'on remonte, même un peu. Hystérésis pour
       // éviter le clignotement ; jamais caché tout en haut.
+      // v822 — AUTO-HIDE RÉACTIVÉ (Maxime : « le bandeau ne disparaît plus au scroll »).
+      // Header TRANSPARENT au repos, qui GLISSE hors champ quand on descend et revient quand
+      // on remonte. Grande hystérésis (24px) + zone franche en haut → zéro clignotement.
+      let lastY = 0, lastDir = 0;
       const upd = () => {
         const sm = document.getElementById("smMain");
         const y = window.scrollY || document.documentElement.scrollTop || (sm ? sm.scrollTop : 0) || 0;
         document.body.classList.toggle("sm-scrolled", y > 6);
-        // v818 — AUTO-HIDE DÉSACTIVÉ (retour Maxime : « au scroll le haut disparaît et
-        // réapparaît »). Le header reste visible en permanence → plus de clignotement.
-        document.body.classList.remove("sm-hdrhide");
+        const dy = y - lastY;
+        if (y < 80) { document.body.classList.remove("sm-hdrhide"); lastDir = 0; }      // tout en haut : visible
+        else if (dy > 24 && lastDir <= 0) { document.body.classList.add("sm-hdrhide"); lastDir = 1; }    // on descend franchement → caché
+        else if (dy < -24 && lastDir >= 0) { document.body.classList.remove("sm-hdrhide"); lastDir = -1; } // on remonte franchement → visible
+        if (Math.abs(dy) > 2) lastY = y;
       };
       window.addEventListener("scroll", upd, { passive: true });
       document.addEventListener("scroll", upd, { passive: true, capture: true });
@@ -20638,7 +20666,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=821"></script>
+  <script src="sunmates-da-loader.js?v=822"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->

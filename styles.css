@@ -5645,7 +5645,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 821; }
+    :root { --sm-build: 822; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -6191,7 +6191,7 @@
     html.sm-app body .homemap-card.fs .epin, html.sm-app body .homemap-card.fs .epin-cluster { border: 2.5px solid #fff !important; }
     html.sm-app body .homemap-fsopen { border: 1.5px solid rgba(255,255,255,.9) !important; }
 
-    :root { --sm-build: 821; }
+    :root { --sm-build: 822; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v818 · 2e lot retours Maxime (25/06). LEÇON CLÉ (re-confirmée) : les balais
@@ -6241,21 +6241,21 @@
     html.sm-app body .weather-chip > * { min-width: 0; }
     html.sm-app body .weather-chip .wc-temp, html.sm-app body .weather-chip .wc-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    :root { --sm-build: 821; }
+    :root { --sm-build: 822; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v820 · 3e lot retours Maxime (25/06). ════════════════════════════════ */
 
-    /* (1) FOND UNI TOUT EN HAUT (« sur tout l'écran peu importe le téléphone ») +
-       le « Bonjour pseudo » ne doit plus se superposer au logo au scroll. Solution :
-       le topbar devient OPAQUE var(--bg) PLEIN (au lieu de transparent/dégradé) →
-       même couleur EXACTE que la status-bar (theme-color = --bg) ET que le contenu,
-       donc ZÉRO bande/joint, et le contenu qui défile passe PROPREMENT derrière. */
+    /* (1) [v822 RÉVISÉ] Maxime : « le bandeau n'est plus transparent et ne disparaît plus
+       au scroll ». On REVIENT au topbar TRANSPARENT (il laisse voir le MÊME fond que la
+       page → invisible, zéro bande) ET il GLISSE hors champ au scroll (auto-hide réactivé
+       en JS). Le fond uniforme du HAUT est garanti par _smSyncTopBg() (le <html> prend la
+       VRAIE couleur de fond du body, DA comprise) — pas par un topbar opaque. */
     html body .topbar, html.sm-app body .topbar,
     html body.sm-scrolled .topbar, html.sm-app body.sm-scrolled .topbar,
     html body.theme-dusk .topbar, html body.theme-winter .topbar, html body.theme-tropic .topbar,
     html body.theme-winter.theme-dusk .topbar, html body.theme-tropic.theme-dusk .topbar {
-      background: var(--bg) !important; background-image: none !important;
+      background: transparent !important; background-image: none !important;
       box-shadow: none !important; border-bottom: 0 !important;
       -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 
@@ -6306,7 +6306,7 @@
       html body .homemap-card.fs { height: 100dvh !important; }
     }
 
-    :root { --sm-build: 821; }
+    :root { --sm-build: 822; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v821 · 4e lot Maxime — flèches repliage uniformes + titres centrés. ════ */
@@ -6330,4 +6330,36 @@
       color: var(--accent-ink, var(--accent)) !important; font-weight: 800 !important; font-size: 1.15rem !important;
       line-height: 1; opacity: .9; }
 
-    :root { --sm-build: 821; }
+    :root { --sm-build: 822; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v822 · 5e lot Maxime — halos (vraie source), mot « Gold » (WCAG), contraste. */
+
+    /* (A) HALOS — la VRAIE source : app.html l.1484 met une OMBRE PORTÉE !important sur
+       TOUS les .thumb / .cic[data-smicon] / .jo-ic / .smgem (`0 6px 14px`). C'est ÇA le
+       halo autour de chaque icône de tuile. On la TUE (on garde juste le relief interne). */
+    html.sm-app body :is(.thumb, .cic[data-smicon], .jo-ic[data-smicon], .smgem) {
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.22) !important; }
+    html.sm-app body :is(.thumb.green, .thumb.blue, .thumb.purp, .thumb.red, .thumb.gold,
+      .thumb.teal, .thumb.indigo, .thumb.c-sun, .thumb.c-green, .thumb.c-blue, .thumb.c-purp,
+      .thumb.c-gold, .thumb.gold-soon) { box-shadow: none !important; }
+
+    /* (B) MOT « GOLD » LISIBLE PARTOUT (WCAG) — il utilisait un texte en dégradé
+       (background-clip:text + color:transparent) ; dès que le dégradé saute, le mot
+       DISPARAÎT (« le mot gold n'existe même plus »). On force une couleur OR PLEINE
+       lisible sur l'écrin sombre, dans TOUS les modes (le shimmer reste si dispo). */
+    html.sm-app body .gold-hero .gh-title span {
+      color: #FFD15C !important; -webkit-text-fill-color: #FFD15C !important;
+      background-image: none !important; -webkit-background-clip: border-box !important; background-clip: border-box !important;
+      animation: none !important; }
+    html.sm-app body .gold-hero, html body.sm-da-on .gold-hero {
+      background: linear-gradient(160deg, #2A1E0E 0%, #44310F 45%, #2A1C08 100%) !important; }
+    html.sm-app body .gold-hero :is(.gh-title, .gh-tag) { color: #FFF3CE !important; }
+
+    /* (C) CONTRASTE (WCAG) — l'ambre foncé #B5740E illisible sur fond sombre → ambre CLAIR.
+       (Couvre les chiffres dorés, notes, badges qui « disparaissent » en nuit.) */
+    html.sm-app body.theme-dusk [style*="#B5740E"], html.sm-app body.theme-dusk [style*="#b5740e"],
+    html.sm-app body.theme-winter.theme-dusk [style*="#B5740E"], html.sm-app body.theme-tropic.theme-dusk [style*="#B5740E"] {
+      color: #FFD79A !important; }
+
+    :root { --sm-build: 822; }
