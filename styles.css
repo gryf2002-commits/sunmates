@@ -5582,7 +5582,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 803; }
+    :root { --sm-build: 805; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -6043,3 +6043,26 @@
     html body .sm-reveal, html.sm-app body .sm-reveal,
     html body .sm-reveal.in, html.sm-app body .sm-reveal.in { transform: none !important; }
     html body #homeQuickAccess.sm-reveal .grid2 > .tile { transform: none !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v805 · PEAUFINAGE UX (audit Emil/impeccable) — améliorations SÛRES (affordance par
+       fond/espace/taille, JAMAIS de nouveau trait pour ne pas réintroduire de bande). ═══════════ */
+    /* Lieux : état vide plus chaleureux */
+    html body .empty .empty-ill, html body .empty-ill { width: 92px; height: 92px; font-size: 2.7rem; }
+    /* Lieux : libellés de catégories plus lisibles, actif affirmé */
+    html body .cat-tile .clbl { font-size: .8rem; }
+    html body .cat-tile.active .clbl { font-weight: 900; }
+    /* Accueil : résultats de recherche aérés (espace, pas de trait) */
+    #searchResults:not(:empty) { margin-top: .85rem; }
+    /* Accueil : méta des tuiles un peu plus lisible */
+    html body .t-meta { font-size: .8rem; letter-spacing: .2px; }
+    /* Profil : stats cliquables = affordance par FOND léger + curseur (pas de trait), visible en nuit */
+    .stat-click { cursor: pointer; }
+    body.theme-dusk .stat-click { background: rgba(255,255,255,.05) !important; }
+    @media (hover:hover) { .stat-click:hover { background: color-mix(in srgb, var(--accent) 8%, transparent) !important; } }
+    /* Jeux : badge de niveau évidemment cliquable (curseur + hitbox + ressort au clic) */
+    .player-badge { cursor: pointer; }
+    .player-badge:active { transform: scale(.97); }
+    @media (hover:hover) { .player-badge:hover { background: color-mix(in srgb, var(--accent) 9%, transparent); } }
+    /* Accueil : bouton de mode INACTIF ne doit pas paraître invisible/non-cliquable en nuit */
+    body.theme-dusk .mode-switch button:not(.active) { background: rgba(255,255,255,.05) !important; color: var(--ink) !important; }
