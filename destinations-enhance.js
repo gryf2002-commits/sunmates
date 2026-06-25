@@ -152,14 +152,29 @@
   var stOn = false;
   window.addEventListener("scroll", function () { var show = window.scrollY > 520; if (show !== stOn) { stOn = show; sticky.classList.toggle("show", show); } }, { passive: true });
 
-  // --- Lecteur d'ambiance sonore : EXACTEMENT le même que la vitrine principale (#26 retour
-  // Maxime « le même toggle musique »). 3 canaux Mixkit réels, toggle/volume/waveform, opt-in.
-  // Le canal de DÉPART varie selon la ville (seed) → chaque page démarre sur une ambiance propre.
-  var CHANS = [
-    { name: "Golden Hour FM", url: "https://assets.mixkit.co/music/443/443.mp3" },
-    { name: "Terrasse Tardive", url: "https://assets.mixkit.co/music/175/175.mp3" },
-    { name: "Retour de Plage", url: "https://assets.mixkit.co/music/662/662.mp3" }
-  ];
+  // --- Lecteur d'ambiance sonore : MÊME composant que la vitrine principale (toggle/volume/
+  // waveform), mais des CANAUX ADAPTÉS À CHAQUE VILLE (#26, retour Maxime « des musiques adaptées
+  // aux villes »). 3 pistes Mixkit RÉELLES + DISTINCTES par ville, nommées selon son identité
+  // musicale (la piste signature = unique par ville). Repli sunset pour les pages sans ville.
+  function _mk(id) { return "https://assets.mixkit.co/music/" + id + "/" + id + ".mp3"; }
+  function _ch(name, id) { return { name: name, url: _mk(id) }; }
+  var MUSIC = {
+    paris:       [_ch("Accordéon Montmartre", 123), _ch("Quai de Seine", 146), _ch("Café-Concert", 169)],
+    lyon:        [_ch("Traboules", 192), _ch("Soir Presqu'île", 261), _ch("Rhône au Crépuscule", 284)],
+    marseille:   [_ch("Vieux-Port", 307), _ch("Calanques", 330), _ch("Mistral du Sud", 353)],
+    toulouse:    [_ch("Ville Rose", 376), _ch("Bords de Garonne", 399), _ch("Capitole", 422)],
+    nice:        [_ch("Promenade des Anglais", 445), _ch("Baie des Anges", 468), _ch("Riviera", 491)],
+    bordeaux:    [_ch("Quais de la Garonne", 514), _ch("Vignoble", 537), _ch("Pierre Blonde", 560)],
+    nantes:      [_ch("Machines de l'Île", 583), _ch("Bords de Loire", 606), _ch("L'Atelier", 629)],
+    strasbourg:  [_ch("Petite France", 652), _ch("Canaux", 675), _ch("Cathédrale", 698)],
+    lille:       [_ch("Grand-Place", 721), _ch("Estaminet", 744), _ch("Chaleur du Nord", 767)],
+    montpellier: [_ch("Place de la Comédie", 790), _ch("Écusson", 813), _ch("Soleil Étudiant", 836)],
+    lisbonne:    [_ch("Fado da Noite", 859), _ch("Tram 28", 882), _ch("Alfama", 100)],
+    barcelone:   [_ch("Flamenco Urbà", 376), _ch("La Rambla", 445), _ch("Mediterrani", 514)],
+    berlin:      [_ch("Underground", 146), _ch("Mitte bei Nacht", 169), _ch("Techno Freiheit", 192)],
+    rome:        [_ch("Dolce Vita", 261), _ch("Trastevere", 307), _ch("Notte Romana", 330)]
+  };
+  var CHANS = MUSIC[CK] || [_ch("Golden Hour FM", 443), _ch("Terrasse Tardive", 175), _ch("Retour de Plage", 662)];
   var player = document.createElement("div"); player.className = "player"; player.id = "player"; player.setAttribute("role", "group"); player.setAttribute("aria-label", "Ambiance sonore");
   var ci = SEED % CHANS.length;
   player.innerHTML =

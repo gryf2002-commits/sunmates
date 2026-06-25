@@ -5580,7 +5580,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 795; }
+    :root { --sm-build: 796; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -6020,3 +6020,24 @@
     html body :is(.seg, .mseg, .pseg, .aseg-nav, .lang-seg, .lb-segs) button:not(.active):not(.on):not(.is-on),
     html.sm-app body :is(.seg, .mseg, .pseg, .aseg-nav, .lang-seg, .lb-segs) button:not(.active):not(.on):not(.is-on) {
       background: color-mix(in srgb, var(--ink) 5%, transparent) !important; border-color: transparent !important; box-shadow: none !important; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       v796 · TUILES MÊME COULEUR PARTOUT (retour Maxime « accueil et sécurité pas les mêmes
+       couleurs »). Le système de pastilles .thumb.red/.blue/.teal/.gold… laissait fuiter des
+       couleurs distinctes en nuit/saison → on force TOUTES les pastilles au dégradé d'accent du
+       mode (sunset jour, accent nuit, bleu hiver, vert tropical), DANS TOUS LES MODES. La DA est
+       mono-coucher-de-soleil : accueil = sécurité = jeux = identiques. ══════════════════════════ */
+    html body :is(.thumb, .thumb.red, .thumb.blue, .thumb.teal, .thumb.green, .thumb.gold, .thumb.purp, .thumb.coral, .thumb.lime, .thumb.indigo, .thumb.rose),
+    html.sm-app body :is(.thumb, .thumb.red, .thumb.blue, .thumb.teal, .thumb.green, .thumb.gold, .thumb.purp, .thumb.coral, .thumb.lime, .thumb.indigo, .thumb.rose),
+    body.theme-dusk :is(.thumb, .thumb.red, .thumb.blue, .thumb.teal, .thumb.green, .thumb.gold, .thumb.purp, .thumb.coral, .thumb.lime, .thumb.rose),
+    body.theme-winter :is(.thumb, .thumb.red, .thumb.blue, .thumb.teal, .thumb.gold, .thumb.purp),
+    body.theme-tropic :is(.thumb, .thumb.red, .thumb.blue, .thumb.teal, .thumb.gold, .thumb.purp) {
+      background: var(--accent-grad) !important; --c1: var(--accent) !important; --c2: var(--accent-2, var(--accent)) !important; --ic1: var(--accent) !important; --ic2: var(--accent-2, var(--accent)) !important; }
+
+    /* v796 · BANDES = SEAMS DE L'ANIM DE RÉVÉLATION : .sm-reveal décalait chaque section de
+       translateY(14-20px) → un joint/ombre perçu en HAUT de CHAQUE section (« une dizaine de
+       bandes, une par section », surtout au-dessus d'« Explore autour de toi »). On garde le fondu
+       d'opacité mais on RETIRE le décalage vertical → zéro joint. */
+    html body .sm-reveal, html.sm-app body .sm-reveal,
+    html body .sm-reveal.in, html.sm-app body .sm-reveal.in { transform: none !important; }
+    html body #homeQuickAccess.sm-reveal .grid2 > .tile { transform: none !important; }
