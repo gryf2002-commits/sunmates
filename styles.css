@@ -5647,7 +5647,7 @@
       border-top-width: 0 !important; border-bottom-width: 0 !important; }
 
     /* v758 · marqueur de version lu par l'auto-réparateur cache (app.html) */
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
     /* notifs (listes peuplées) — séparateurs retirés */
     html body :is(.notif-card, .notif-item), html.sm-app body :is(.notif-card, .notif-item) {
       border-top-width: 0 !important; border-bottom-width: 0 !important; border-top-style: none !important; border-bottom-style: none !important; }
@@ -6145,11 +6145,9 @@
        (tuiles/cartes/gold/voyages) s'affiche sur du crème en bas de page, dans
        tous les modes sombres. On lit l'état du body via :has() et on force la
        couleur de fond du <html> = le vrai fond du mode. */
-    html.sm-app:has(body.theme-dusk)  { background-color: #190E2E !important; }
-    html.sm-app:has(body.theme-winter):not(:has(body.theme-dusk)) { background-color: #EAF3FB !important; }
-    html.sm-app:has(body.theme-tropic):not(:has(body.theme-dusk)) { background-color: #F7F9EC !important; }
-    html.sm-app:has(body.theme-winter.theme-dusk) { background-color: #0F1B2B !important; }
-    html.sm-app:has(body.theme-tropic.theme-dusk) { background-color: #0C1D17 !important; }
+    /* [v837 PERF] Les règles html:has(body.theme-*) sont RETIRÉES : redondantes avec le JS
+       `_smSyncTopBg()` (qui pose html.style.backgroundColor = vrai --bg, et l'inline gagne de
+       toute façon), et le :has() coûtait à chaque mutation. Le fond html reste géré par le JS. */
 
     /* (2) TUILES D'URGENCE (Appeler le 112 / Alerte d'urgence). Le balai nuit
        (styles.css ~5908 : background:transparent sur le contenu nuit hors
@@ -6193,7 +6191,7 @@
     html.sm-app body .homemap-card.fs .epin, html.sm-app body .homemap-card.fs .epin-cluster { border: 2.5px solid #fff !important; }
     html.sm-app body .homemap-fsopen { border: 1.5px solid rgba(255,255,255,.9) !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v818 · 2e lot retours Maxime (25/06). LEÇON CLÉ (re-confirmée) : les balais
@@ -6243,7 +6241,7 @@
     html.sm-app body .weather-chip > * { min-width: 0; }
     html.sm-app body .weather-chip .wc-temp, html.sm-app body .weather-chip .wc-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v820 · 3e lot retours Maxime (25/06). ════════════════════════════════ */
@@ -6277,16 +6275,9 @@
     /* (3) SWITCH « En voyage / À la maison » : indicateur qui GLISSE en douceur
        (pilule accent qui slide d'un segment à l'autre) au lieu d'un simple changement
        de fond. :has() pour suivre le bouton actif. */
-    html.sm-app body .mode-switch { position: relative; overflow: hidden; }
-    html.sm-app body .mode-switch::before {
-      content: ""; position: absolute; top: .22rem; bottom: .22rem; left: .22rem;
-      width: calc(50% - .22rem); border-radius: 999px; background: var(--accent-grad);
-      transform: translateX(0); transition: transform .36s cubic-bezier(.34,1.25,.4,1);
-      z-index: 0; pointer-events: none; will-change: transform; }
-    html.sm-app body .mode-switch:has(button[data-mode="home"].active)::before { transform: translateX(100%); }
-    html.sm-app body .mode-switch button { position: relative; z-index: 1; background: transparent !important; box-shadow: none !important; transition: color .28s ease; }
-    html.sm-app body .mode-switch button.active { background: transparent !important; color: #fff !important; }
-    @media (prefers-reduced-motion: reduce) { html.sm-app body .mode-switch::before { transition: none; } }
+    /* [v837 PERF] ancien slider mode-switch via ::before + :has() RETIRÉ (remplacé par la
+       pilule JS _smSegInd ; le :has() coûtait à chaque mutation). */
+    html.sm-app body .mode-switch { position: relative; }
 
     /* (4) MÉTÉO pleine largeur (compteur de pas RETIRÉ — il était simulé/faux). */
     html.sm-app body .day-chips .weather-chip { flex: 1 1 100% !important; max-width: 100% !important; justify-content: flex-start; }
@@ -6304,7 +6295,7 @@
        UNIQUEMENT un garde-fou anti-débordement d'images (sans toucher la largeur de l'app). */
     html body img, html body video, html body canvas { max-width: 100%; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v821 · 4e lot Maxime — flèches repliage uniformes + titres centrés. ════ */
@@ -6328,7 +6319,7 @@
       color: var(--accent-ink, var(--accent)) !important; font-weight: 800 !important; font-size: 1.15rem !important;
       line-height: 1; opacity: .9; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v822 · 5e lot Maxime — halos (vraie source), mot « Gold » (WCAG), contraste. */
@@ -6360,7 +6351,7 @@
     html.sm-app body.theme-winter.theme-dusk [style*="#B5740E"], html.sm-app body.theme-tropic.theme-dusk [style*="#B5740E"] {
       color: #FFD79A !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v823 · 6e lot Maxime — TYPO uniforme (logique UX/UI pro) + tuiles Mes voyages
@@ -6391,7 +6382,7 @@
     html.sm-app body :is(.trip-passport, .globe-passport, .tj-passport, .trip-cta-duo) {
       background: transparent !important; box-shadow: none !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* v823b · SWITCH QUI GLISSE (générique, posé par _smSegInd sur .seg/.mseg non-wrap). */
     html.sm-app body .sm-seg-slide { position: relative; }
@@ -6458,7 +6449,7 @@
       flex: 0 0 auto !important; margin-left: .5rem !important; color: var(--accent-ink, var(--accent)) !important;
       font-weight: 800 !important; font-size: 1.15rem !important; line-height: 1 !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v826 · CORRECTION DES RÉGRESSIONS (priorité : NE RIEN CASSER). ══════════ */
@@ -6479,18 +6470,18 @@
     /* (B) TITRES — CENTRÉS uniquement quand il n'y a PAS d'action à droite ; sinon
        titre à gauche tronqué + action à droite (JAMAIS de chevauchement, JAMAIS de
        « + » au-dessus de « Ajouter », compteur de villes TOUJOURS visible). */
+    /* [v837 PERF] plus de :has() (très coûteux, ré-évalué à chaque pliage). Centrage SIMPLE :
+       le titre est centré, l'action de droite reste en flux (espacée). text-align center. */
     html.sm-app body :is(.section-head, .qm-head, .ptrip-head) {
-      position: static; display: flex; align-items: center; gap: .6rem; flex-wrap: nowrap; }
-    html.sm-app body :is(.section-head, .qm-head, .ptrip-head):not(:has(a)):not(:has(.qm-all)):not(:has(.rit-cnt)):not(:has(.ptrip-count)):not(:has([role="button"])) {
-      justify-content: center; text-align: center; }
-    html.sm-app body :is(.section-head, .qm-head, .ptrip-head):is(:has(a), :has(.qm-all), :has(.rit-cnt), :has(.ptrip-count), :has([role="button"])) {
-      justify-content: space-between; text-align: left; }
+      position: static; display: flex; align-items: center; gap: .6rem; flex-wrap: nowrap;
+      justify-content: space-between; }
     html.sm-app body :is(.section-head, .qm-head, .ptrip-head) > :is(h2, h3, h4) {
       position: static; margin: 0 !important; padding: 0 !important; min-width: 0;
+      flex: 1 1 auto; text-align: center;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     html.sm-app body :is(.section-head, .qm-head, .ptrip-head) > :is(a, .qm-all, .rit-cnt, .ptrip-count, [role="button"]) {
       position: static !important; transform: none !important; flex: 0 0 auto; max-width: none !important;
-      white-space: nowrap; transform: none; }
+      white-space: nowrap; }
     html.sm-app body .su-head { justify-content: center; text-align: center; }
 
     /* (C) FLATTEN icônes — drop-shadow du SVG + reliefs internes RETIRÉS (le « halo »
@@ -6502,15 +6493,21 @@
     :root, body, body.theme-dusk, body.theme-winter, body.theme-tropic,
     body.theme-winter.theme-dusk, body.theme-tropic.theme-dusk { --shadow: none !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v827 · REPREND TOUT (Maxime furieux). Bulletproof : halos, switch, contraste.
        Vérifié VISUELLEMENT avant push. ════════════════════════════════════════ */
 
-    /* (1) HALOS — NUCLÉAIRE : zéro ombre sur TOUT le contenu (sauf pulse SOS, overlays,
-       focus a11y). Plus aucune ombre ne peut subsister, peu importe la source/DA. */
-    html.sm-app body :is(.tab-panel, .secu-view, .mates-view, .jeux-view, .prof-seg, #smMain) *:not(.su-sos):not(.modal-card):not(.popinfo-card):not(.act-card):not(.picker-card):not(.sm-selsheet):not(:focus-visible) {
+    /* (1) HALOS — [v837 PERF] l'ancien sélecteur `… * :not()` matchait CHAQUE élément du
+       contenu → recalcul de style énorme à chaque pliage/dépliage = LAGS. Remplacé par une
+       LISTE DE CLASSES explicite (cheap, ne re-matche pas tout l'arbre). Couvre les tuiles/cartes. */
+    html.sm-app body :is(.card, .tile, .gcard, .reco, .cat-tile, .gp-tile, .sc-card, .feature, .wg-card,
+      .wg-goal, .stat-box, .pcell, .pc-stat, .prog-card, .prog-row, .reward-card, .tip-card, .qcoll, .ci-card,
+      .feed-card, .fpost, .sugg-card, .spot-card, .quest-spotlight, .starterCard, .boost-card, .xpl-card,
+      .nq-card, .demo-step, .tj-card, .trip-card, .coupon, .shop-item, .jeux-open, .num-here, .geoNowCard,
+      .poll-opt, .lb-row, .mod-card, .pcard, .chip, .thumb, .cic, .jo-ic, .smgem, .qm-card, .sp-stat, .dstat,
+      .coll-stat, .pb-pill, .sa-tile, .rit-row, .hsec-chev, .coll-chev) {
       box-shadow: none !important; }
 
     /* (2) SWITCHS — FIGÉS SUR UNE LIGNE (jamais de wrap / saut / remontée), lisibles,
@@ -6533,7 +6530,7 @@
     /* le conteneur ne change pas de hauteur / ne remonte pas */
     html.sm-app body :is(.mode-switch, .qs-mode, .fc-kinds, .search-scopes, .trip-vtoggle) { min-height: 2.5rem; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v828 · flèches repliage UNIFORMES (glyphe › partout + rotation) + titres nus
@@ -6550,7 +6547,7 @@
     html.sm-app body .card > h3:first-child, html.sm-app body .card[data-coll] > h3 {
       text-align: center !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v829 · Maxime point par point (j'écoute, je vérifie). ════════════════════ */
@@ -6600,7 +6597,7 @@
       border-color: color-mix(in srgb, var(--ink) 16%, transparent) !important; }
     html.sm-app body .todo-toggle:not(.active) .tt-state { color: var(--muted) !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v831 · SWITCH = vraie pilule qui GLISSE (snappy) + flèche repliage INLINE
@@ -6624,19 +6621,13 @@
       white-space: nowrap !important; overflow: visible !important; }
     html.sm-app body :is(.mode-switch, .qs-mode, .fc-kinds, .search-scopes, .trip-vtoggle) > button::before { display: none !important; }
 
-    /* FLÈCHE DE REPLI — reste INLINE À DROITE (cliquable), titre centré (flex). Plus EN DESSOUS. */
-    html.sm-app body :is(.section-head, .qm-head, .ptrip-head):has(> .hsec-chev), 
-    html.sm-app body :is(.section-head, .qm-head, .ptrip-head):has(> .coll-chev) {
-      flex-direction: row !important; align-items: center !important; justify-content: space-between !important; gap: .4rem !important; }
-    html.sm-app body :is(.section-head, .qm-head, .ptrip-head):has(> .hsec-chev) > :is(h2,h3,h4),
-    html.sm-app body :is(.section-head, .qm-head, .ptrip-head):has(> .coll-chev) > :is(h2,h3,h4) {
-      flex: 1 1 auto !important; text-align: center !important; }
+    /* [v837 PERF] plus de :has() ici — la règle générale (titre flex:1 centré + head
+       space-between) met déjà le chevron à droite. On garde juste sa taille cliquable. */
     html.sm-app body :is(.section-head, .qm-head, .ptrip-head) > :is(.hsec-chev, .coll-chev) {
       flex: 0 0 auto !important; margin: 0 !important; align-self: center !important; }
-    /* le chevron reste assez grand pour être cliqué */
     html.sm-app body .coll-chev { min-width: 1.6rem; min-height: 1.6rem; display: inline-flex; align-items: center; justify-content: center; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v832 · halo orange du popup (pin) + contrastes restants + espacements. ════ */
@@ -6659,7 +6650,7 @@
     html.sm-app body :is(.t-meta, .pr-sub, .tj-meta, .qm-sub, .pf-sub, .su-head .su-s) { margin-top: .15rem !important; }
     html.sm-app body :is(.prog-row, .pr-tx, .sugg-row, .te-row, .num-row) { line-height: 1.4 !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v833 · cohérence des formes de tuiles (météo / journée) + finitions trips. ═ */
@@ -6683,7 +6674,7 @@
       color: var(--ink) !important; border: 0 !important; }
     html.sm-app body :is(.tj-card, .ptrip-card, .trip-card) { color: var(--ink) !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }
 
     /* ════════════════════════════════════════════════════════════════════════
        v835 · switch aux couleurs DA + centrage/flèches re-fiabilisés. ══════════ */
@@ -6698,10 +6689,7 @@
     html.sm-app body :is(.mode-switch, .qs-mode, .fc-kinds, .search-scopes, .trip-vtoggle) > :is(button.active, button.on, button.is-on) {
       color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,.5) !important; }
 
-    /* (2) CENTRAGE — re-fiabilisé : tout titre de section centré. Sans action → centré seul ;
-       avec chevron → chevron à droite (cliquable) + titre centré ; avec lien → lien en dessous. */
-    html.sm-app body :is(.section-head, .qm-head, .ptrip-head):not(:has(.hsec-chev)):not(:has(.coll-chev)):not(:has(a)):not(:has(.qm-all)):not(:has(.rit-cnt)):not(:has(.ptrip-count)) {
-      display: flex !important; flex-direction: row !important; justify-content: center !important; text-align: center !important; }
+    /* (2) [v837 PERF] plus de :has() — centrage simple du titre (text-align center). */
     html.sm-app body :is(.section-head, .qm-head, .ptrip-head) > :is(h2,h3,h4) { text-align: center !important; }
 
     /* (3) FLÈCHES — rotation FIABLE : fermé = › (0°), ouvert = › pivoté vers le bas (90°).
@@ -6713,4 +6701,4 @@
     html.sm-app body :is(.spot-card[open] .sp-chev, details[open] > summary .sp-chev) { transform: rotate(90deg) !important; }
     html.sm-app body :is(.spot-card:not([open]) .sp-chev, details:not([open]) > summary .sp-chev) { transform: rotate(0deg) !important; }
 
-    :root { --sm-build: 836; }
+    :root { --sm-build: 837; }

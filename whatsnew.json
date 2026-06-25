@@ -1,8 +1,8 @@
 {
-  "candidate": "v836",
+  "candidate": "v837",
   "items": [
-    "🛠️ ADMIN réparé : mes règles de switch incluaient par erreur les segments génériques (.seg/.mseg) → tout était forcé sur une ligne en admin. Retiré → l'admin se remet sur plusieurs rangées (jouable).",
-    "⚡ (rappel v835) Gros lags du chargement/pliage retirés, couleurs des switchs alignées sur la DA, centrage + rotation des flèches re-fiabilisés.",
-    "⏱️ Pense à attendre 3-5 min (propagation GitHub) avant de tester."
+    "⚡ PERFORMANCE : j'ai retiré ce qui ramait — un nettoyage d'ombres qui s'appliquait à CHAQUE élément du contenu, et une dizaine de règles `:has()` ré-évaluées à chaque pliage/changement. C'était la cause des lags et des textes qui se figent au pliage/dépliage.",
+    "✅ Conservé : ombres à plat, titres centrés, switch avec pilule, flèches uniformes — mais avec des règles légères (listes de classes) au lieu de sélecteurs lourds.",
+    "🛠️ (rappel v836) Admin réparé (plus tout sur une ligne)."
   ]
 }
