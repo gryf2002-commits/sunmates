@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script defer src="sunmates-badges.js?v=844"></script>
+  <script defer src="sunmates-badges.js?v=845"></script>
   <script defer src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script defer src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=844"></script>
+  <script defer src="sunmates-motion.js?v=845"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -384,13 +384,13 @@
       } catch (e) {}
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=844">
+  <link rel="stylesheet" href="styles.css?v=845">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
      Appareil à jour → révélé tout de suite ; appareil périmé → purge caches+SW et reload
      EN RESTANT MASQUÉ (fini le flash d'« ancien design qui se charge avant »). Failsafe 2.5s. */
-  (function(){try{var EXPECT="844",H=document.documentElement;H.classList.add("sm-verifying");
+  (function(){try{var EXPECT="845",H=document.documentElement;H.classList.add("sm-verifying");
     var revealed=false,reveal=function(){if(revealed)return;revealed=true;try{H.classList.remove("sm-verifying");}catch(e){}};
     setTimeout(reveal,2500);
     document.addEventListener("DOMContentLoaded",function(){try{
@@ -1486,7 +1486,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=844">
+  <link rel="stylesheet" href="sunmates-lite.css?v=845">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -7413,7 +7413,7 @@
         const streak = st.count || 0;
         const matesN = (typeof connectedIds !== "undefined" && connectedIds) ? connectedIds.size : 0;
         const xp = (myProfile && myProfile.xp) || 0;
-        const line = (e, lbl, v) => `<div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.2rem 0"><span style="font-size:1.2rem">${e}</span><b style="color:#B5740E;font-size:1.1rem">${v}</b><span class="muted" style="font-size:.85rem">${lbl}</span></div>`;
+        const line = (e, lbl, v) => `<div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.2rem 0"><span style="font-size:1.2rem">${e}</span><b style="color:#8A5800;font-size:1.1rem">${v}</b><span class="muted" style="font-size:.85rem">${lbl}</span></div>`;
         setTimeout(() => popInfo("🌅", "Ta semaine sur SunMates", `
           <p class="muted" style="font-size:.84rem;margin:0 0 .6rem;text-align:center">Nouvelle semaine qui commence, petit bilan ✨</p>
           ${line("🔥", "jours de série", streak)}
@@ -7471,7 +7471,7 @@
             if (!d0) {
               d0 = document.createElement("section"); d0.id = "hmDay0"; d0.className = "card";
               d0.style.cssText = "background:linear-gradient(150deg,#FFE9C4,#FFD9AE);border:0;text-align:center";
-              d0.innerHTML = '<div style="font-size:2rem;filter:var(--relief)">🌅</div><h3 style="margin:.2rem 0 .3rem">' + i18nT("Bienvenue chez toi") + '</h3><p style="margin:0 0 .7rem;font-size:.85rem;color:#7a4a20">' + i18nT("Ici, c'est ton cocon : défis du quotidien et rituels. L'aventure, elle, se passe en mode Voyage, carte, Mates et quêtes autour de toi.") + '</p><button class="btn-primary btn-block" id="hmDay0Go">✈️ ' + i18nT("Passer en mode Voyage") + '</button><button class="btn-ghost btn-block" id="hmDay0X" style="margin-top:.4rem">' + i18nT("Rester ici pour l'instant") + "</button>";
+              d0.innerHTML = '<div style="font-size:2rem;filter:var(--relief)">🌅</div><h3 style="margin:.2rem 0 .3rem">' + i18nT("Bienvenue chez toi") + '</h3><p style="margin:0 0 .7rem;font-size:.85rem;color:var(--text)">' + i18nT("Ici, c'est ton cocon : défis du quotidien et rituels. L'aventure, elle, se passe en mode Voyage, carte, Mates et quêtes autour de toi.") + '</p><button class="btn-primary btn-block" id="hmDay0Go">✈️ ' + i18nT("Passer en mode Voyage") + '</button><button class="btn-ghost btn-block" id="hmDay0X" style="margin-top:.4rem">' + i18nT("Rester ici pour l'instant") + "</button>";
               const host = $("homeHomeMode"); if (host) host.insertBefore(d0, host.firstChild);
               const g = $("hmDay0Go"); if (g) g.addEventListener("click", () => { try { localStorage.setItem("sm_day0_done", "1"); } catch (e) {} d0.remove(); setHomeMode("travel"); });
               const x = $("hmDay0X"); if (x) x.addEventListener("click", () => { try { localStorage.setItem("sm_day0_done", "1"); } catch (e) {} d0.remove(); });
@@ -15166,7 +15166,7 @@
         const _cphoto = (typeof cafeImage === "function") ? cafeImage(c) : c.image_url;
         const photo = _cphoto ? `<img src="${escapeHtml(_cphoto)}" style="width:100%;height:72px;object-fit:cover;border-radius:8px;margin-bottom:5px" alt="" loading="lazy">` : "";
         const rt = cafeRatings[c.id];
-        const rateLine = (rt && rt.cnt) ? `<div style="margin:.15rem 0;color:#B5740E;font-weight:700;font-size:.78rem">⭐ ${rt.avg.toFixed(1)} <span class="muted" style="font-weight:600">(${rt.cnt} avis)</span></div>` : "";
+        const rateLine = (rt && rt.cnt) ? `<div style="margin:.15rem 0;color:#8A5800;font-weight:700;font-size:.78rem">⭐ ${rt.avg.toFixed(1)} <span class="muted" style="font-weight:600">(${rt.cnt} avis)</span></div>` : "";
         const stats = `<div class="muted" style="margin:.2rem 0">${nCk ? "✅ " + nCk + " ici récemment" : "✨ Sois le·la 1er·ère à checker !"}${c.is_eco ? " · 🌱 éco" : ""}</div>`;
         const mk = L.marker([c.lat, c.lng], { icon: epinIcon("📍", "#FF5A4D") })
           .bindPopup(`<div class="mappop-mini">${photo}<b>${escapeHtml(c.name)}</b><br>${c.address ? `<span class="muted" style="font-size:.72rem">📍 ${escapeHtml(c.address)}</span>` : escapeHtml(c.city || "")}${rateLine}${stats}${(() => { const _f = _smPlaceFact(c.city, c.country); return _f ? `<div class="mappop-fact">💡 ${escapeHtml(_f)}</div>` : ""; })()}<button class="mappop-btn" data-hmcid="${c.id}" data-hmcname="${escapeHtml(c.name)}">🔒 Check-in</button><button class="mappop-btn ghost" data-hmreviews="${c.id}" data-hmrname="${escapeHtml(c.name)}">⭐ Avis</button></div>`);
@@ -16580,7 +16580,7 @@
       const s = b.dataset.stat;
       if (s === "trust") openTrustModal();
       else if (s === "xp") { showInfo("⭐ Ton XP", `<div style="line-height:1.6;font-size:.9rem;text-align:center">
-        <div style="font-size:2.4rem;font-weight:800;color:#B5740E">${(myProfile && myProfile.xp) || 0} XP</div>
+        <div style="font-size:2.4rem;font-weight:800;color:#8A5800">${(myProfile && myProfile.xp) || 0} XP</div>
         <p style="margin:.4rem 0">L'XP est ta <b>monnaie de jeu</b> : tu en gagnes en accomplissant des quêtes. Elle te fait grimper au <b>classement</b> 🏆</p>
         <p class="muted" style="font-size:.8rem;margin-bottom:.6rem">Ton XP débloque des <b>titres</b> et des <b>cadres d'avatar</b> dans la boutique 🎨</p>
         <button class="btn-primary btn-block" id="xpShopBtn">🛍️ Ouvrir la boutique XP</button></div>`);
@@ -17587,7 +17587,7 @@
       showInfo("⭐ Ta progression", `<div style="text-align:center;line-height:1.5">
         <div style="font-weight:800;font-size:1.12rem;color:var(--ink)">${escapeHtml(g("phName"))}</div>
         <div class="muted" style="font-size:.85rem">${escapeHtml(g("phTitle"))}</div>
-        <div style="margin:.7rem 0 .3rem;font-weight:800;color:#B5740E">Niveau ${escapeHtml(g("phLvl"))} · 🔥 ${escapeHtml(g("phStreakN"))} j d'affilée</div>
+        <div style="margin:.7rem 0 .3rem;font-weight:800;color:#8A5800">Niveau ${escapeHtml(g("phLvl"))} · 🔥 ${escapeHtml(g("phStreakN"))} j d'affilée</div>
         <div style="font-size:.84rem;margin-bottom:.35rem">${escapeHtml(g("phXpCur"))} / ${escapeHtml(g("phXpMax"))} XP</div>
         <div class="ph-xp-track" style="height:12px;background:rgba(120,40,10,.18)"><div class="ph-xp-fill" style="width:${($("phXpFill") ? $("phXpFill").style.width : "0%")}"></div></div>
         <p style="font-size:.85rem;margin:.75rem 0 0">${$("phXpNext") ? $("phXpNext").innerHTML : ""}</p>
@@ -20747,7 +20747,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=844"></script>
+  <script src="sunmates-da-loader.js?v=845"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY. Le script (49 Ko) n'est CHARGÉ
        QUE pour un vrai admin (ou ?daforce sur preview) → 0 Ko pour les visiteurs normaux.
        Le script lui-même re-gate ensuite la bulle sur window.myProfile.is_admin. -->
