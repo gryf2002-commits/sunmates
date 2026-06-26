@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script defer src="sunmates-badges.js?v=841"></script>
+  <script defer src="sunmates-badges.js?v=842"></script>
   <script defer src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script defer src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -309,7 +309,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
   <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=841"></script>
+  <script defer src="sunmates-motion.js?v=842"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -384,13 +384,13 @@
       } catch (e) {}
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=841">
+  <link rel="stylesheet" href="styles.css?v=842">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
      Appareil à jour → révélé tout de suite ; appareil périmé → purge caches+SW et reload
      EN RESTANT MASQUÉ (fini le flash d'« ancien design qui se charge avant »). Failsafe 2.5s. */
-  (function(){try{var EXPECT="841",H=document.documentElement;H.classList.add("sm-verifying");
+  (function(){try{var EXPECT="842",H=document.documentElement;H.classList.add("sm-verifying");
     var revealed=false,reveal=function(){if(revealed)return;revealed=true;try{H.classList.remove("sm-verifying");}catch(e){}};
     setTimeout(reveal,2500);
     document.addEventListener("DOMContentLoaded",function(){try{
@@ -520,7 +520,7 @@
     }
     .globe-pt-label {
       font: 600 .78rem/1.35 "Manrope", system-ui, sans-serif; color: #2a1640;
-      background: linear-gradient(135deg, #FFD15C, #ff9a8d); padding: .35rem .55rem; border-radius: 10px;
+      background: linear-gradient(135deg, #FFD15C, #ff9a8d); padding: .35rem .55rem; border-radius: 12px;
       box-shadow: 0 6px 18px -8px rgba(0,0,0,.6); max-width: 200px;
     }
     .globe-pt-label b { color: #2a1640; }
@@ -545,7 +545,7 @@
     .gp-figs { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
     .gp-fig {
       flex: 1 1 0; min-width: 76px; max-width: 150px; text-align: center;
-      padding: .35rem .4rem; border-radius: 13px;
+      padding: .35rem .4rem; border-radius: 12px;
       background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
     }
     .gp-fig b {
@@ -698,7 +698,7 @@
     #seasonCtl .seg { display: flex; gap: .4rem; margin-top: .4rem; }
     /* Fond/bordure DÉRIVÉS de --ink (et non var(--card)) : les tuiles restent visibles
        même posées sur la carte Réglages (elle aussi en --card). Marche sur tout thème. */
-    #seasonCtl .seg button { flex: 1; min-width: 0; padding: .55rem .3rem; border-radius: 11px;
+    #seasonCtl .seg button { flex: 1; min-width: 0; padding: .55rem .3rem; border-radius: 12px;
       border: 1.5px solid color-mix(in oklab, var(--ink) 22%, transparent);
       background: color-mix(in oklab, var(--ink) 7%, transparent);
       color: var(--ink); font-weight: 700; font-size: .8rem; white-space: nowrap; cursor: pointer;
@@ -1007,7 +1007,7 @@
     .ttl-dot.past   { background: var(--accent, #ff6a5d); border-color: color-mix(in oklab, var(--accent) 60%, white); }
     .ttl-dot.future { background: var(--gold, #FFD15C);   border-color: color-mix(in oklab, var(--gold) 55%, white); }
     .ttl-card {
-      border-radius: 13px; padding: .5rem .65rem;
+      border-radius: 12px; padding: .5rem .65rem;
       background: color-mix(in oklab, var(--ink) 5%, transparent);
       border: 1px solid color-mix(in oklab, var(--ink) 11%, transparent);
       transition: transform .14s ease, border-color .16s ease, background .16s ease;
@@ -1345,7 +1345,7 @@
     #authView .lp-nav { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(28,20,44,.82); border-bottom: 1px solid var(--lp-line); }
     #authView .lp-nav-inner { width: min(1080px, 90vw); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem 0; }
     #authView .lp-brand { display: flex; align-items: center; gap: .5rem; font-family: "Fraunces", serif; font-weight: 700; font-size: 1.25rem; color: var(--lp-ink); }
-    #authView .lp-brand .lp-logo { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--lp-grad); box-shadow: var(--lp-shadow); font-size: 1.05rem; }
+    #authView .lp-brand .lp-logo { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: var(--lp-grad); box-shadow: var(--lp-shadow); font-size: 1.05rem; }
     #authView .lp-nav-links { display: flex; align-items: center; gap: 1.1rem; }
     #authView .lp-link { font-weight: 600; color: var(--lp-text); font-size: .95rem; }
     #authView .lp-link:hover { color: var(--lp-accent); }
@@ -1486,7 +1486,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=841">
+  <link rel="stylesheet" href="sunmates-lite.css?v=842">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -2124,7 +2124,7 @@
         <div id="geoPrompt" class="hidden" style="margin:.55rem 0 .2rem;padding:.7rem .85rem;border-radius:14px;background:var(--accent-soft,rgba(255,209,92,.12));border:1px solid var(--line,rgba(0,0,0,.08));display:flex;align-items:center;gap:.6rem">
           <span style="font-size:1.3rem">📍</span>
           <div style="flex:1;font-size:.84rem;line-height:1.35">Active ta position pour voir les lieux sûrs et les voyageur·ses <b>autour de toi</b>.</div>
-          <button id="geoPromptBtn" class="btn-accent" style="flex-shrink:0;padding:.5rem .8rem;border-radius:10px">Activer</button>
+          <button id="geoPromptBtn" class="btn-accent" style="flex-shrink:0;padding:.5rem .8rem;border-radius:12px">Activer</button>
           <button id="geoPromptX" aria-label="Fermer" style="flex-shrink:0;background:none;border:0;font-size:1.1rem;color:var(--muted);cursor:pointer">✕</button>
         </div>
 
@@ -6652,7 +6652,7 @@
       });
     }
     { const tg = $("tripViewToggle"); if (tg) tg.addEventListener("click", (e) => { const b = e.target.closest(".tvt-btn"); if (b) _setTripView(b.dataset.tview); }); }
-    const _trIn = "width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:.5rem .6rem;font:inherit;background:var(--card);color:var(--ink);margin-top:.15rem";
+    const _trIn = "width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:.5rem .6rem;font:inherit;background:var(--card);color:var(--ink);margin-top:.15rem";
     const _trLbl = "font-size:.76rem;font-weight:700;color:var(--muted);margin-top:.5rem;display:block";
     function openAddTrip() {
       popInfo("✈️", "Ajouter un voyage", `<div style="text-align:left">
@@ -8398,7 +8398,7 @@
         "<div style='font-size:.84rem;color:var(--muted);margin-bottom:.5rem'>" + escapeHtml(c.category || "Lieu sûr") + ", " + escapeHtml(c.city || "") + (km != null ? ", 📍 à " + _fmtDist(km) : "") + "</div>" +
         "<div style='font-size:.88rem;line-height:1.7'>" +
           // P14 (Espace Pro) : l'OFFRE DU MOMENT du partenaire, mise en avant sur sa fiche
-          (c.offer ? "<div style='background:var(--accent-soft);border-radius:10px;padding:.4rem .6rem;margin-bottom:.4rem;font-weight:700'>🎁 " + escapeHtml(c.offer) + "</div>" : "") +
+          (c.offer ? "<div style='background:var(--accent-soft);border-radius:12px;padding:.4rem .6rem;margin-bottom:.4rem;font-weight:700'>🎁 " + escapeHtml(c.offer) + "</div>" : "") +
           (c.is_eco ? "🌱 Éco-responsable<br>" : "") +
           (c.hours ? "🕐 " + escapeHtml(c.hours) + "<br>" : "") +
           (c.price_range ? "💶 " + escapeHtml(c.price_range) + "<br>" : "") +
@@ -10715,7 +10715,7 @@
       showInfo("📞 Configurer le faux appel", `
         <div style="text-align:left">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><label style="font-weight:700;font-size:.85rem">Nom de l'appelant</label><button class="btn-ghost" id="fcManage" style="padding:.25rem .6rem;font-size:.74rem">⚙️ Gérer</button></div>
-          <input id="fcNameInput" type="text" maxlength="24" placeholder="Ex : Maman, Le boulot…" value="${escapeHtml(saved)}" autocomplete="off" autocapitalize="words" autocorrect="off" name="sm-fake-caller" data-lpignore="true" data-1p-ignore data-form-type="other" style="width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin:.3rem 0 .6rem" />
+          <input id="fcNameInput" type="text" maxlength="24" placeholder="Ex : Maman, Le boulot…" value="${escapeHtml(saved)}" autocomplete="off" autocapitalize="words" autocorrect="off" name="sm-fake-caller" data-lpignore="true" data-1p-ignore data-form-type="other" style="width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:12px;margin:.3rem 0 .6rem" />
           <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem">${names.map((n) => `<button class="btn-ghost fc-pickname" data-n="${escapeHtml(n)}" style="flex:0 0 auto;padding:.35rem .7rem;font-size:.82rem">${escapeHtml(n)}</button>`).join("")}</div>
           <label style="font-weight:700;font-size:.85rem">Sonne dans</label>
           <div style="display:flex;gap:.4rem;margin:.3rem 0 .7rem">${FC_DELAYS.map(([s, l]) => `<button class="btn-ghost fc-delay${s === curDelay ? " active" : ""}" data-s="${s}" style="flex:1;padding:.42rem .2rem;font-size:.82rem${s === curDelay ? ";background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink, var(--accent));font-weight:800" : ""}">${l}</button>`).join("")}</div>
@@ -16498,7 +16498,7 @@
           <div class="row" style="margin-top:.45rem"><button class="btn-ghost" id="proDemoBar" style="flex:1">🍹 Cas bar</button><button class="btn-ghost" id="proDemoHostel" style="flex:1">🛏️ Cas auberge</button></div></div>` : ""}
         <div class="card">
           <div style="display:flex;align-items:center;gap:.7rem">
-            <div class="thumb teal" style="width:52px;height:52px;font-size:26px;display:grid;place-items:center;border-radius:15px">${d.emoji || "🏪"}</div>
+            <div class="thumb teal" style="width:52px;height:52px;font-size:26px;display:grid;place-items:center;border-radius:16px">${d.emoji || "🏪"}</div>
             <div style="min-width:0;flex:1"><b style="font-size:1.05rem">${escapeHtml(d.name)}</b>
               <div class="muted" style="font-size:.8rem">${escapeHtml(d.cat || "Partenaire")} · ${escapeHtml(d.city || "")}</div></div>
           </div>
@@ -18017,8 +18017,8 @@
       popInfo("✍️", "Mon rituel à moi",
         "<p style='font-size:.84rem;margin:0 0 .6rem'>Crée <b>ta</b> routine quotidienne, ce qui compte pour toi.</p>" +
         "<div style='display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;margin-bottom:.6rem'>" + suggs.map((sg, i) => "<button type='button' class='cre-sugg' data-si='" + i + "' style='font-size:.76rem;font-weight:700;padding:.35rem .6rem;border:1px solid var(--line);border-radius:999px;background:var(--cream);cursor:pointer'>" + sg[0] + " " + escapeHtml(i18nT(sg[1])) + "</button>").join("") + "</div>" +
-        "<input id='custRitTitle' type='text' maxlength='40' placeholder='Ex : Boire 1,5 L d'eau' value=\"" + (cur.title ? escapeHtml(cur.title).replace(/"/g, "&quot;") : "") + "\" style='width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;margin-bottom:.6rem'>" +
-        "<div id='custRitEmos' style='display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center'>" + emos.map((e) => "<button type='button' class='cre-emo' data-e='" + e + "' style='font-size:1.3rem;padding:.25rem .4rem;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer'>" + e + "</button>").join("") + "</div>" +
+        "<input id='custRitTitle' type='text' maxlength='40' placeholder='Ex : Boire 1,5 L d'eau' value=\"" + (cur.title ? escapeHtml(cur.title).replace(/"/g, "&quot;") : "") + "\" style='width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:12px;margin-bottom:.6rem'>" +
+        "<div id='custRitEmos' style='display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center'>" + emos.map((e) => "<button type='button' class='cre-emo' data-e='" + e + "' style='font-size:1.3rem;padding:.25rem .4rem;border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer'>" + e + "</button>").join("") + "</div>" +
         "<button class='btn-primary btn-block' id='custRitSave' style='margin-top:.9rem'>Enregistrer mon rituel</button>" +
         (cur.title ? "<button class='btn-ghost btn-block' id='custRitDel' style='margin-top:.4rem'>Supprimer</button>" : ""));
       setTimeout(() => {
@@ -18228,7 +18228,7 @@
       const cur = _souvGet(c);
       popInfo("📖", "Souvenir · " + c,
         "<p style='font-size:.84rem;margin:0 0 .6rem'>Un moment, une rencontre, une émotion à " + escapeHtml(c) + "…</p>" +
-        "<textarea id='souvInput' maxlength='140' rows='3' placeholder='Ton plus beau souvenir ici…' style='width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:10px;resize:none;font:inherit'>" + (cur ? escapeHtml(cur) : "") + "</textarea>" +
+        "<textarea id='souvInput' maxlength='140' rows='3' placeholder='Ton plus beau souvenir ici…' style='width:100%;box-sizing:border-box;padding:.6rem;border:1px solid var(--line);border-radius:12px;resize:none;font:inherit'>" + (cur ? escapeHtml(cur) : "") + "</textarea>" +
         "<button class='btn-primary btn-block' id='souvSave' style='margin-top:.7rem'>Enregistrer</button>" +
         (cur ? "<button class='btn-ghost btn-block' id='souvDel' style='margin-top:.4rem'>Effacer</button>" : ""));
       setTimeout(() => {
@@ -20747,7 +20747,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=841"></script>
+  <script src="sunmates-da-loader.js?v=842"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY. Le script (49 Ko) n'est CHARGÉ
        QUE pour un vrai admin (ou ?daforce sur preview) → 0 Ko pour les visiteurs normaux.
        Le script lui-même re-gate ensuite la bulle sur window.myProfile.is_admin. -->
@@ -20906,7 +20906,7 @@
     .hcust-row.is-hidden .hcust-name { opacity: .45; text-decoration: line-through; }
     .hcust-name { flex: 1; min-width: 0; font-weight: 700; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .hcust-mv { display: inline-flex; gap: .25rem; }
-    .hcust-mv button, .hcust-eye { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--card, #fff); display: grid; place-items: center; cursor: pointer; color: var(--text); font-size: 1rem; line-height: 1; padding: 0; }
+    .hcust-mv button, .hcust-eye { width: 34px; height: 34px; border-radius: 12px; border: 1px solid var(--line); background: var(--card, #fff); display: grid; place-items: center; cursor: pointer; color: var(--text); font-size: 1rem; line-height: 1; padding: 0; }
     .hcust-mv button:active, .hcust-eye:active { transform: scale(.92); }
     .hcust-mv button:disabled { opacity: .3; cursor: default; }
     .hcust-eye.off { opacity: .5; }
@@ -20915,7 +20915,7 @@
     .hcust-reset:hover { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
     .hcust-reset:active { transform: scale(.98); }
     .hcust-drag { flex: 0 0 auto; color: var(--muted); font-size: 1.1rem; line-height: 1; cursor: grab; touch-action: none; padding: 0 .15rem; user-select: none; }
-    .hcust-row.dragging { opacity: .7; background: var(--accent-soft); border-radius: 10px; cursor: grabbing; }
+    .hcust-row.dragging { opacity: .7; background: var(--accent-soft); border-radius: 12px; cursor: grabbing; }
     /* Masquage utilisateur (Personnaliser) — via classe pour coexister avec le .hidden géré par l'app. */
     .hcust-userhidden { display: none !important; }
     /* (héritage : anciens sur-conteneurs .vb-shell désormais dé-enveloppés au runtime — CSS gardé inerte) */
