@@ -300,7 +300,7 @@
   <script defer src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <!-- Badges sur-mesure SunMates (identité « joaillerie » : 1 DA par famille, emblèmes dessinés main) -->
-  <script src="sunmates-badges.js?v=857"></script>
+  <script src="sunmates-badges.js?v=858"></script>
   <script src="sm_country_stories.js?v=638"></script><!-- 🌍 histoires de pays (Découvrir) -->
   <script src="sunmates-icons-v2.js?v=541"></script>
   <!-- ✨ MOTION : GSAP (best-effort, defer) + couche SunMates. Si GSAP ne charge pas, tout retombe sur le
@@ -308,8 +308,8 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
   <!-- 🎬 DA de Motion « Le mouvement du couchant » : noyau réutilisable (window.SM_MOTION). -->
-  <script defer src="sm-motion-da.js?v=740"></script>
-  <script defer src="sunmates-motion.js?v=857"></script>
+  <script defer src="sm-motion-da.js?v=858"></script>
+  <script defer src="sunmates-motion.js?v=858"></script>
   <!-- 🎨 Twemoji : emojis IDENTIQUES pour tous les appareils (au lieu du rendu natif Apple/Google/Samsung
        qui change d'un utilisateur à l'autre). SVG mis en cache via jsDelivr. Init + observer en bas de page. -->
   <script defer src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js"></script>
@@ -384,13 +384,13 @@
       } catch (e) {}
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=857">
+  <link rel="stylesheet" href="styles.css?v=858">
   <style id="sm-cloak">html.sm-verifying body{visibility:hidden!important}</style>
   <script>
   /* v767 · AUTO-RÉPARATEUR + CLOAK : on masque la page jusqu'à la vérif de version.
      Appareil à jour → révélé tout de suite ; appareil périmé → purge caches+SW et reload
      EN RESTANT MASQUÉ (fini le flash d'« ancien design qui se charge avant »). Failsafe 2.5s. */
-  (function(){try{var EXPECT="857",H=document.documentElement;H.classList.add("sm-verifying");
+  (function(){try{var EXPECT="858",H=document.documentElement;H.classList.add("sm-verifying");
     var revealed=false,reveal=function(){if(revealed)return;revealed=true;try{H.classList.remove("sm-verifying");}catch(e){}};
     setTimeout(reveal,2500);
     document.addEventListener("DOMContentLoaded",function(){try{
@@ -1486,7 +1486,7 @@
     .cic[data-smicon] svg, .jo-ic[data-smicon] svg, .smgem svg, .thumb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2px rgba(30,14,6,.34)); }
   </style>
   <!-- Version lissée (beta OFF) : garde la DA sunset, calme les effets, masque [data-beta]. Inerte sans body.sm-lite. -->
-  <link rel="stylesheet" href="sunmates-lite.css?v=857">
+  <link rel="stylesheet" href="sunmates-lite.css?v=858">
 </head>
 <body>
   <!-- a11y : lien d'évitement (premier élément focalisable) → saute la barre/nav vers le contenu principal. -->
@@ -3642,7 +3642,7 @@
           <h1>Badges 🏅</h1>
           <div class="card">
             <div class="person" style="border:0;padding:.2rem 0"><div class="qico smgem" data-smicon="medal" data-smicon-size="24">🏅</div><div class="info"><div class="name">Collection actuelle</div></div><span class="badge warn" id="badgeCollCount">—</span></div>
-            <div class="person" id="openCouponsFromBadges" style="border:0;padding:.4rem .2rem;cursor:pointer"><div class="qico smgem" data-smicon="coupon" data-smicon-size="24">🎟️</div><div class="info"><div class="name">Mes coupons</div><div class="meta">Voir mes coupons ›</div></div><div class="qarrow">›</div></div>
+            <div class="person" id="openCouponsFromBadges" style="border:0;padding:.4rem .2rem;cursor:pointer"><div class="qico smgem" data-smicon="coupon" data-smicon-size="24">🎟️</div><div class="info"><div class="name">Mes coupons</div><div class="meta">Voir mes coupons</div></div><div class="qarrow">›</div></div>
           </div>
           <div class="card"><div class="bgrid" id="badgeGrid"></div></div>
         </div>
@@ -3892,7 +3892,7 @@
       "La réponse.": "The answer.",
       "« 42 : la réponse à la grande question sur la vie, l'univers et le reste. » Bon voyage galactique, et n'oublie jamais ta serviette 🧻✨": "“42: the answer to the great question of life, the universe and everything.” Safe galactic travels, and never forget your towel 🧻✨",
       "Hakuna matata, mais quelle phrase magnifique !": "Hakuna matata, what a wonderful phrase!",
-      "conseils": "tips", "Météo du moment": "Weather right now",
+      "conseils": "tips", "Météo du moment": "Weather right now", "Météo : activer la position": "Weather: enable location",
       "six seveeen !": "six seveeen!", "Flamme envoyée ! 🔥": "Flame sent! 🔥",
       "L'avion est rentré au hangar 🛬": "The plane is back in the hangar 🛬",
       "Vibrations activées, tu viens de le sentir 😉": "Vibrations on, you just felt it 😉",
@@ -4194,7 +4194,7 @@
       "Conseils & secours": "Tips & help", "Sécurité & confidentialité": "Safety & privacy", "Préférences": "Preferences", "Nous contacter": "Contact us",
       // Jeux (détail)
       "À débloquer": "To unlock", "✅ Fait": "✅ Done", "⏳ En cours": "⏳ In progress", "Rejoindre la quête": "Join the quest", "Quête accomplie ! 🎉": "Quest completed! 🎉", "Récompenses": "Rewards", "Niveau": "Level", "Mes envies": "My wishlist",
-      "Collection actuelle": "Current collection", "Mes coupons": "My coupons", "Voir mes coupons ›": "See my coupons ›", "Badges secrets": "Secret badges", "à découvrir 👀": "to discover 👀",
+      "Collection actuelle": "Current collection", "Mes coupons": "My coupons", "Voir mes coupons": "See my coupons", "Badges secrets": "Secret badges", "à découvrir 👀": "to discover 👀",
       // Profil (détail / premium)
       "Aperçu de mon profil public": "Preview my public profile", "Mon spot du jour": "My spot of the day", "Vérification (MVP)": "Verification (MVP)", "Profil complété à": "Profile completed at", "Photos": "Photos", "Ajouter une photo": "Add a photo",
       "Passe en SunMates Gold ✨": "Go SunMates Gold ✨", "9,99 €/mois": "€9.99/month", "Mode incognito": "Incognito mode", "Quêtes & lieux exclusifs": "Exclusive quests & places", "Coupons exclusifs": "Exclusive coupons", "BFF du moment": "BFF of the moment", "Support prioritaire": "Priority support",
@@ -9411,6 +9411,8 @@
     // Ferme tout ce qui pourrait rester ouvert entre deux scènes
     function adCleanup() {
       ["trustModal", "actCreate", "matesListModal", "onboarding", "tour", "notifPanel", "qrModal", "qrScanModal"].forEach((id) => { const e = $(id); if (e) e.classList.add("hidden"); });
+      // v858 : re-masque les sections révélées temporairement par un step (ex. « Le fil »).
+      document.querySelectorAll("[data-ad-temp-shown]").forEach((el) => { el.style.display = "none"; el.classList.add("hcust-userhidden"); delete el.dataset.adTempShown; });
       if (typeof closeQrScan === "function") A(closeQrScan); // coupe la caméra si un scan tournait
       document.querySelectorAll(".act-overlay").forEach((o) => { if (o.querySelector(".match-card")) o.remove(); }); // retire l'overlay « match » dynamique
       // Revenir à l'app si une scène avait affiché la connexion ou l'espace Pro
@@ -9546,7 +9548,10 @@
       { title: "📍 Mon spot du jour", text: "Dis où tu traînes : tes Mates te voient sur la carte et peuvent te rejoindre. Visible 24 h, façon story.", ms: 6000,
         run: () => { adCleanup(); A(() => goToTab("lieux")); setTimeout(() => { const s = document.getElementById("spotCard"); if (s) s.open = true; adInto("#spotCard", 250); }, 400); } },
       { title: "📰 Le fil : humeur ou spot", text: "Publie en un geste : touche une tuile d'humeur ou de spot, le champ se pré-remplit.", ms: 6000,
-        run: () => { adCleanup(); A(() => goToTab("accueil")); A(() => { if (typeof setHomeMode === "function") setHomeMode("travel"); }); adInto("#feedComposer", 350); } },
+        run: () => { adCleanup(); A(() => goToTab("accueil")); A(() => { if (typeof setHomeMode === "function") setHomeMode("travel"); });
+          // v858 : « Le fil » est masqué par défaut (v687) → on le révèle LE TEMPS du step (re-masqué par adCleanup).
+          A(() => { const s = document.getElementById("homeFeedSection"); if (s && (s.style.display === "none" || s.classList.contains("hcust-userhidden"))) { s.style.display = ""; s.classList.remove("hcust-userhidden"); s.dataset.adTempShown = "1"; } });
+          adInto("#feedComposer", 350); } },
       { title: "🏙️ La capitale du jour", text: "Une ville mise à l'honneur chaque jour : un teaser de ses quêtes avant d'explorer.", ms: 6000,
         run: () => { adCleanup(); A(() => goToTab("jeux")); setTimeout(() => adInto('[data-prog="capitale"]', 250), 400); } },
       { title: "🎯 Le radar : quête la plus proche", text: "Géolocalisé : la quête la plus proche de toi, avec la distance. Touche pour la liste complète.", ms: 6000,
@@ -12032,6 +12037,9 @@
     function showJeuxView(id) {
       { const sh = $("jeuxSheet"); if (sh) sh.classList.add("hidden"); } // ferme la feuille quêtes/jeux
       ["jeuxHome", "jeuxDetail", "jeuxBadges", "jeuxCoupons", "jeuxRank", "jeuxShop"].forEach((v) => show($(v), v === id));
+      // v858 : la boutique s'affichait VIDE si on y arrivait sans être passé par son bouton
+      // (ex. visite guidée) → on la rend ici, quel que soit le chemin d'entrée.
+      if (id === "jeuxShop" && typeof renderShop === "function") renderShop();
       window.scrollTo(0, 0); // PERF : instantané (réactivité)
     }
 
@@ -13983,6 +13991,7 @@
         if (typeof popInfo === "function") popInfo("🧪", i18nT("Quoi de neuf dans cette préversion"), html);
       });
       document.body.appendChild(r);
+      document.body.classList.add("sm-ribbon"); // v858 : les toasts passent SOUS le ruban (CSS)
     }
 
     // #24 : cartes REPLIABLES dans « Besoin d'aide » · toucher le titre replie/déplie,
@@ -16503,7 +16512,7 @@
               <div class="muted" style="font-size:.8rem">${escapeHtml(d.cat || "Partenaire")} · ${escapeHtml(d.city || "")}</div></div>
           </div>
           <div style="margin-top:.6rem;display:flex;gap:.4rem;flex-wrap:wrap">
-            <span class="vchip" style="width:auto;height:auto;border-radius:999px;padding:.25rem .6rem;font-size:.72rem">🛟 Lieu sûr vérifié</span>
+            <span class="vchip vchip-pro">🛟 Lieu sûr vérifié</span>
             <span class="presence-pill">Fiche en ligne</span>
           </div>
         </div>
@@ -17232,7 +17241,10 @@
     function closeNotif() { show($("notifPanel"), false); }
     $("notifBell").addEventListener("click", openNotifPanel);
     // Onglet Messages (header, tout à droite) → Connexions, segment Messages
-    { const mb = $("topMsgBtn"); if (mb) mb.addEventListener("click", () => { goToTab("connexions"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }); }
+    { const mb = $("topMsgBtn"); if (mb) mb.addEventListener("click", () => {
+      // v858 (Lite) : overlay Messages dédié (‹ Retour + back Android) au lieu d'un onglet sans repères.
+      if (document.body.classList.contains("sm-lite") && typeof window.openLiteMsg === "function") { window.openLiteMsg(); return; }
+      goToTab("connexions"); if (typeof showMatesSegment === "function") showMatesSegment("messages"); }); }
     $("notifClose").addEventListener("click", closeNotif);
     $("notifPanel").addEventListener("click", (e) => { if (e.target.id === "notifPanel") closeNotif(); });
 
@@ -19398,7 +19410,16 @@
         if (!w) {
           if (!navigator.geolocation || !navigator.permissions || !navigator.permissions.query) return;
           const st = await navigator.permissions.query({ name: "geolocation" });
-          if (st.state !== "granted") return;
+          // v858 : sans position, la chip restait figée sur « …météo » (avait l'air cassée).
+          // → état explicite + tap = demande de permission puis re-rendu.
+          if (st.state !== "granted") {
+            if (!chip.dataset.loaded) {
+              chip.innerHTML = '<span class="wc-ic">🌤️</span><span class="wc-hint">' + i18nT("Météo : activer la position") + ' ›</span>';
+              chip.style.display = "";
+              chip.onclick = () => { try { navigator.geolocation.getCurrentPosition(() => renderWeather(), () => {}, { timeout: 8000 }); } catch (e) {} };
+            }
+            return;
+          }
           const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { maximumAge: 1800000, timeout: 8000 }));
           const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + pos.coords.latitude.toFixed(3) + "&longitude=" + pos.coords.longitude.toFixed(3) + "&current=temperature_2m,precipitation,weather_code,wind_speed_10m,uv_index&daily=uv_index_max,temperature_2m_max&timezone=auto&forecast_days=1");
           const j = await r.json();
@@ -20200,7 +20221,9 @@
           // Anti-doublon (19/06) : le bouton Messages du header est désormais #topMsgBtn (statique,
           // emoji 💬). On NE crée plus #liteMsgBtn → fini les 2 icônes. (La section Messages dédiée
           // façon Instagram via cet overlay = chantier ergonomie en cours.)
-          void openLiteMsg; // référence conservée (utilisée par le futur câblage section Messages)
+          // v858 : câblage effectif — le 💬 du header ouvre l'OVERLAY Messages en Lite
+          // (‹ Retour + back Android) au lieu d'un écran sans repères. Exposé pour #topMsgBtn.
+          window.openLiteMsg = openLiteMsg;
         } catch (e) {}
         // v554 — Profil : ouvrir d'office l'édition (« ça fait plus complet ») ; carte raccourcis retirée en CSS.
         try {
@@ -20681,7 +20704,8 @@
         ? "Appuie sur Partager ⬆️ puis « Sur l'écran d'accueil »."
         : "Menu ⋮ du navigateur → « Installer l'application » / « Ajouter à l'écran d'accueil ».";
 
-      const hideBanner = () => banner.classList.remove("show");
+      // v858 : classe body → le contenu du bas reste atteignable + le FAB ✦ DA remonte (CSS).
+      const hideBanner = () => { banner.classList.remove("show"); document.body.classList.remove("sm-installbar"); };
       // force = ignore la mise en veille (re-déclenchement manuel)
       const showBanner = (force) => {
         if (isStandalone()) { markInstalled(); return; }
@@ -20689,6 +20713,7 @@
         installBtn.style.display = deferredPrompt ? "" : "none"; // pas de bouton 1-clic sans invite native (ex. iOS)
         sub.textContent = deferredPrompt ? "Accès direct depuis ton écran d'accueil, comme une vraie app." : manualHint();
         banner.classList.add("show");
+        document.body.classList.add("sm-installbar"); // v858
       };
 
       closeBtn.addEventListener("click", () => { hideBanner(); snooze(); });
@@ -20747,7 +20772,7 @@
     db.auth.getSession().then(({ data }) => render(data.session));
   </script>
   <!-- Loader DA : INERTE tant qu'aucun token n'est publié (getTokens()===null → sort). Permet l'aperçu DA admin en preview. -->
-  <script src="sunmates-da-loader.js?v=857"></script>
+  <script src="sunmates-da-loader.js?v=858"></script>
   <!-- Console DA LIVE (bouton flottant ✦ DA) : ADMIN ONLY (se gate sur window.isAdmin/myProfile).
        Édite la vraie app en direct. Bac à essai preview. ⚠️ À la promotion vers index.html :
        décider si les admins prod la gardent, et retirer tout ?daforce. -->

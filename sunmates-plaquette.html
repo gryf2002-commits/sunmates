@@ -11,6 +11,7 @@
 <!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Google Fonts : Fraunces (titres) + Manrope (interface) -->
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -79,6 +80,8 @@
     animation:breathe 7s ease-in-out infinite;
   }
   @keyframes breathe{ 0%,100%{ transform:scale(1) } 50%{ transform:scale(1.04) } }
+  /* orbes/halos décoratifs (fixes en px) débordent sur petit écran -> clip au niveau des sections (ne dépend pas du CDN Tailwind ; pas de sticky dans la page) */
+  section{ overflow:clip; }
 
   /* lignes d'horizon ondulantes */
   @keyframes drift{ from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
@@ -392,18 +395,18 @@
                 <div class="rounded-2xl bg-white p-3 shadow-sm">
                   <span class="material-symbols-rounded text-[22px]" style="color:#FF4F6D">military_tech</span>
                   <p class="mt-1 text-xs font-bold leading-tight">Quête du jour</p>
-                  <p class="text-[10px] text-ink/50">Visiter 1 spot sûr</p>
+                  <p class="text-[12px] text-ink/50">Visiter 1 spot sûr</p>
                 </div>
                 <div class="rounded-2xl bg-white p-3 shadow-sm">
                   <span class="material-symbols-rounded text-[22px]" style="color:#6638D6">sports_esports</span>
                   <p class="mt-1 text-xs font-bold leading-tight">Mini-jeu</p>
-                  <p class="text-[10px] text-ink/50">+40 XP dispo</p>
+                  <p class="text-[12px] text-ink/50">+40 XP dispo</p>
                 </div>
               </div>
 
               <div class="mt-3 flex items-center gap-3 rounded-2xl bg-white p-3 shadow-sm">
                 <span class="grid h-9 w-9 place-items-center rounded-full text-white" style="background:linear-gradient(135deg,#56C2F5,#2D7FE0)"><span class="material-symbols-rounded text-[18px]">local_cafe</span></span>
-                <div class="flex-1"><p class="text-xs font-bold">Café offert débloqué</p><p class="text-[10px] text-ink/50">Près de toi · 200 m</p></div>
+                <div class="flex-1"><p class="text-xs font-bold">Café offert débloqué</p><p class="text-[12px] text-ink/50">Près de toi · 200 m</p></div>
               </div>
             </div>
 
@@ -449,9 +452,9 @@
             <div class="absolute inset-x-3 bottom-3 rounded-3xl bg-white p-4 shadow-2xl">
               <div class="flex items-center justify-between">
                 <p class="font-display text-base font-extrabold">Café Aurora</p>
-                <span class="rounded-full px-2 py-0.5 text-[10px] font-bold text-white" style="background:var(--primary)">Vérifié</span>
+                <span class="rounded-full px-2 py-0.5 text-[12px] font-bold text-white" style="background:var(--primary)">Vérifié</span>
               </div>
-              <p class="mt-0.5 text-[11px] text-ink/55">Éco-responsable · 4 mates ici maintenant</p>
+              <p class="mt-0.5 text-[12px] text-ink/55">Éco-responsable · 4 mates ici maintenant</p>
               <div class="mt-3 flex items-center gap-2">
                 <button class="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2.5 text-xs font-bold text-white" style="background:var(--sunset)"><span class="material-symbols-rounded text-[16px]">qr_code_2</span> Check-in</button>
                 <button class="grid h-9 w-9 place-items-center rounded-full bg-surface"><span class="material-symbols-rounded text-[18px] text-primary">directions</span></button>

@@ -3,7 +3,7 @@
 // cache à la volée les libs CDN et les images (avatars, tuiles de carte) en
 // "stale-while-revalidate" (on sert le cache tout de suite, on rafraîchit en fond).
 // Les écritures Supabase (POST/PATCH…) ne sont jamais touchées.
-const VER = "v857";
+const VER = "v858";
 const SHELL_CACHE = "sunmates-shell-" + VER;   // coquille (versionnée → purge à chaque déploiement)
 const RUNTIME = "sunmates-rt-" + VER;          // libs CDN/fonts (regénéré par version, re-précaché à l'install)
 // #15/#8 : cache MÉDIA STABLE (NON versionné) → avatars, photos (quêtes/check-ins), emojis.
@@ -13,7 +13,9 @@ const RUNTIME = "sunmates-rt-" + VER;          // libs CDN/fonts (regénéré pa
 // de padding Chrome = 1,8 Go fantôme rapporté pour ~16 Mo réels). Désormais on ne cache QUE
 // du non-opaque (fetch forcé en CORS) et les TUILES de carte sont sorties du SW (cf. fetch).
 const MEDIA = "sunmates-media-v2";
-const MEDIA_MAX = 60;
+// v858 : 60 → 300. ~215 twemoji/session faisaient thrasher le LRU (70 SVG repartaient au
+// réseau à chaque boot). Coût réel ~1-3 Mo (le garde-fou anti-opaque reste en place).
+const MEDIA_MAX = 300;
 // Depuis la bascule vitrine (v567) : "./" + "./index.html" = la VITRINE (accueil) ;
 // "./app.html" = l'APPLICATION. Les deux sont précachées → l'app installée marche hors-ligne.
 const SHELL = ["./", "./index.html", "./app.html", "./manifest.json", "./icon.svg", "./styles.css", "./sunmates-badges.js", "./sunmates-icons-v2.js", "./sm_country_stories.js", "./sunmates-motion.js",
@@ -36,7 +38,9 @@ const CDN_PRECACHE = [
   // GSAP (couche motion) précaché → animations dispo hors-ligne aussi.
   "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js",
   // Polices SunMates (Fraunces + Manrope) précachées → texte net dès le 1er rendu, même hors-ligne.
-  "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap",
+  // ⚠️ Cette URL doit être IDENTIQUE à celle du <link> de app.html/preview.html (sinon le
+  // précache polices ne matche jamais → polices système au 1er lancement offline). v858 : +800.
+  "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap",
 ];
 
 self.addEventListener("install", (e) => {
@@ -105,7 +109,9 @@ self.addEventListener("fetch", (e) => {
   if (NO_SW_CACHE.some((h) => url.host === h || url.host.endsWith("." + h))) return;
 
   // 1) Navigation : réseau d'abord (dernière version), MAIS avec un GARDE-FOU de TIMEOUT.
-  // cache:"no-store" → on bypasse le cache HTTP du navigateur + le CDN GitHub Pages/Fastly.
+  // cache:"no-cache" (v858, était no-store) → REVALIDATION conditionnelle (If-None-Match) :
+  // GitHub Pages/Fastly répond 304 si rien n'a changé → fraîcheur identique, ~-95 % de
+  // transfert de coquille à chaque lancement (no-store re-téléchargeait tout, à chaque fois).
   //   ⚠️ BUG « chargement infini » corrigé (v468) : sans timeout, si l'edge est lent juste
   //   après un déploiement, la requête réseau ne résout NI ne rejette → la page tournait à
   //   l'infini. On court-circuite désormais après 6 s en servant la coquille en cache (toujours
@@ -123,7 +129,7 @@ self.addEventListener("fetch", (e) => {
       try {
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 6000);
-        const res = await fetch(req.url, { cache: "no-store", signal: ctrl.signal });
+        const res = await fetch(req.url, { cache: "no-cache", signal: ctrl.signal });
         clearTimeout(timer);
         if (res && res.ok) { const c = res.clone(); caches.open(SHELL_CACHE).then((cc) => cc.put(shellKey, c)).catch(() => {}); }
         return res;
@@ -134,12 +140,13 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // 2) Même origine (JS, CSS, icônes, manifest) : RÉSEAU D'ABORD (sans cache HTTP), cache en secours (offline).
-  // → on a TOUJOURS le code le plus frais (zéro état « cache hybride » ancien/nouveau qui buggue),
-  //   tout en restant utilisable hors-ligne grâce au repli sur la coquille.
+  // 2) Même origine (JS, CSS, icônes, manifest) : RÉSEAU D'ABORD avec REVALIDATION (no-cache,
+  // v858) : toujours le code le plus frais (le serveur confirme par 304 ou renvoie le nouveau),
+  // zéro état « cache hybride », mais sans re-télécharger les octets identiques à chaque fois.
+  // Utilisable hors-ligne grâce au repli sur la coquille.
   if (url.origin === self.location.origin) {
     e.respondWith(
-      fetch(req, { cache: "no-store" }).then((res) => {
+      fetch(req, { cache: "no-cache" }).then((res) => {
         if (res && res.ok) { const c = res.clone(); caches.open(SHELL_CACHE).then((cc) => cc.put(req, c)).catch(() => {}); }
         return res;
       // FIX OFFLINE (#35) : ignoreSearch ! La coquille précache « sunmates-badges.js » SANS

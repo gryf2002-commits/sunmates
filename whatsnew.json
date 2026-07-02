@@ -1,9 +1,12 @@
 {
-  "candidate": "v857",
+  "candidate": "v858",
   "items": [
-    "🔒 Sécurité & anti-spam : toutes les demandes (connexions, vouches, avis, feed, messages) sont protégées contre le spam et les doublons ; économie SunCoins verrouillée côté serveur.",
-    "👀 Lisibilité (mode jour) : l'ambre du jeu (XP, série, badges), les pastilles de compteur et quelques textes passent au contraste AA — plus aucun texte pâle illisible.",
-    "⚡ Démarrage un peu plus vif : scripts non essentiels chargés en différé.",
-    "🔽 (rappel v839) Flèches de repliage cohérentes partout."
+    "⚡ Lancements plus rapides : l'app ne re-télécharge plus tout à chaque ouverture (le serveur confirme juste que rien n'a changé) et les emojis restent en cache.",
+    "🌇 Mode jour réparé : l'écran Gold ✨ retrouve son écrin sombre, les notes ⭐ sur les photos de lieux redeviennent lisibles, les badges à débloquer se voient à nouveau.",
+    "🛍️ La boutique ne s'affiche plus vide pendant la visite guidée, et l'étape « Le fil » montre enfin le composer.",
+    "📲 La bannière d'installation ne cache plus le bas de page et se fait compacte sur les petits écrans.",
+    "🌤️ Météo : si la position n'est pas activée, la puce l'explique et un tap suffit pour l'activer.",
+    "💬 Mode Lite : le bouton Messages ouvre une vraie vue dédiée avec « ‹ Retour ».",
+    "🏙️ Vitrine : nouveau sélecteur de destinations en cartes colorées, et plus rien ne déborde sur les petits téléphones."
   ]
 }

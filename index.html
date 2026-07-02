@@ -148,6 +148,8 @@
     .nav-start .lbl-short { display: none; }
     @media (max-width: 860px) { .nav-links { display: none; } }
     @media (max-width: 560px) { .wrap { padding: 0 16px; } .nav-start .lbl-full { display: none; } .nav-start .lbl-short { display: inline; } }
+    @media (max-width: 400px) { .nav-in { gap: .5rem; } .brand { font-size: 1.12rem; gap: .45rem; } .brand .mark { width: 30px; height: 30px; } .nav-cta { gap: .45rem; } .lang-btn { padding: .4rem .55rem; } .nav-start.btn-sm { padding: .55rem .85rem; } }
+    @media (max-width: 350px) { .brand { font-size: 1rem; gap: .35rem; } .brand .mark { width: 26px; height: 26px; } .nav-cta { gap: .35rem; } .lang-btn { padding: .35rem .45rem; font-size: .76rem; } .nav-start.btn-sm { padding: .5rem .7rem; font-size: .86rem; } }
 
     /* HERO vidéo */
     /* le hero remonte SOUS la nav translucide -> la vidéo remplit jusqu'en haut (plus de bande vide). */
@@ -240,6 +242,25 @@
     .moment .mtag { position: absolute; left: 12px; bottom: 12px; z-index: 2; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #2a0d12; background: var(--gold); padding: .25rem .55rem; border-radius: 999px; }
     @media (prefers-reduced-motion: reduce) { .moments { overflow: visible; } .moments-track { flex-wrap: wrap; width: auto; justify-content: center; } }
 
+    /* v808 — sélecteur de villes VISUEL (chaque ville a sa couleur, son emoji, son ambiance) */
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 14px; margin-top: 10px; }
+    .dest-card { position: relative; min-height: 134px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); text-decoration: none; color: #fff; isolation: isolate; display: flex; flex-direction: column; justify-content: flex-end; transition: transform .32s cubic-bezier(.16,1,.3,1), box-shadow .32s ease; }
+    .dest-card::before { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--cg, var(--sunset)); transition: transform .55s cubic-bezier(.16,1,.3,1), filter .32s ease; }
+    .dest-card::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,6,20,0) 32%, rgba(10,6,20,.62) 100%); }
+    .dest-card .dc-in { padding: 14px; }
+    .dest-card .de { font-size: 1.85rem; line-height: 1; display: block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); transition: transform .4s cubic-bezier(.16,1,.3,1); }
+    .dest-card .dn { display: block; font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 1.12rem; margin-top: .34rem; line-height: 1.05; text-shadow: 0 1px 9px rgba(8,4,18,.55); }
+    .dest-card .dv { display: block; font-size: .71rem; font-weight: 600; opacity: .93; margin-top: .1rem; text-shadow: 0 1px 7px rgba(8,4,18,.55); }
+    @media (hover: hover) {
+      .dest-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(8,4,18,.42); }
+      .dest-card:hover::before { transform: scale(1.09); filter: saturate(1.12) brightness(1.04); }
+      .dest-card:hover .de { transform: translateY(-4px) rotate(-7deg) scale(1.12); }
+    }
+    .dest-card:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .dest-safe { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: .5rem; min-height: 58px; border-radius: var(--r); border: 1px dashed var(--line-strong); background: rgba(255,255,255,.04); color: var(--ink); text-decoration: none; font-weight: 700; font-size: .95rem; transition: border-color .25s ease, background .25s ease, transform .25s ease; }
+    .dest-safe:hover { border-color: var(--accent); background: rgba(255,255,255,.07); transform: translateY(-2px); }
+    @media (max-width: 460px) { .dest-grid { grid-template-columns: repeat(2, 1fr); gap: 11px; } .dest-card { min-height: 116px; } }
+
     .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 48px; }
     .cell { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; transition: transform .2s cubic-bezier(.16,1,.3,1), border-color .2s ease; position: relative; overflow: hidden; }
     .cell:hover { transform: translateY(-4px); border-color: var(--line-strong); }
@@ -331,7 +352,7 @@
     <div class="wrap nav-in">
       <a href="#main" class="brand" aria-label="SunMates, accueil"><span class="mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><g stroke="#FFD15C" stroke-width="3" stroke-linecap="round"><line x1="32" y1="9" x2="32" y2="16"/><line x1="17" y1="16" x2="21" y2="20"/><line x1="47" y1="16" x2="43" y2="20"/><line x1="7" y1="30" x2="13" y2="30"/><line x1="51" y1="30" x2="57" y2="30"/></g><circle cx="32" cy="33" r="11" fill="#fff6e9"/><path d="M9 40h46" stroke="#FFD15C" stroke-width="3.6" stroke-linecap="round"/><path d="M18 46h28" stroke="#fff6e9" stroke-width="2.4" stroke-linecap="round" opacity=".5"/></svg></span><span class="wm">Sun<b>Mates</b></span></a>
       <nav class="nav-links" aria-label="Navigation principale"><a href="#rencontres">Rencontres</a><a href="#fonctions">Fonctions</a><a href="#destinations">Destinations</a><a href="#temoignages">Témoignages</a><a href="#apercu">L'app</a><a href="#contact">À propos</a></nav>
-      <div class="nav-cta"><button id="dayBtn" class="lang-btn" type="button" aria-label="Basculer jour / nuit" title="Jour / nuit">☀️</button><button id="langBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button><a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Embarque</span><span class="lbl-short">Embarque</span></a></div>
+      <div class="nav-cta"><button id="dayBtn" class="lang-btn" type="button" aria-label="Basculer jour / nuit" title="Jour / nuit">☀️</button><button id="langBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button><a href="app.html" class="btn btn-primary btn-sm nav-start"><span class="lbl-full">Embarque</span><span class="lbl-short">L'app ☀️</span></a></div>
     </div>
   </header>
 
@@ -491,22 +512,22 @@
         <span class="seclabel reveal">Destinations</span>
         <h2 class="h2 reveal">Où pars-tu seul·e ?</h2>
         <p class="sub reveal">On te montre qui traîne dans le coin, ville par ville. La suite, c'est ton affaire.</p>
-        <div class="contact-row reveal">
-          <a href="voyager-seul-a-paris.html" class="btn btn-ghost">Paris</a>
-          <a href="voyager-seul-a-lyon.html" class="btn btn-ghost">Lyon</a>
-          <a href="voyager-seul-a-marseille.html" class="btn btn-ghost">Marseille</a>
-          <a href="voyager-seul-a-toulouse.html" class="btn btn-ghost">Toulouse</a>
-          <a href="voyager-seul-a-nice.html" class="btn btn-ghost">Nice</a>
-          <a href="voyager-seul-a-bordeaux.html" class="btn btn-ghost">Bordeaux</a>
-          <a href="voyager-seul-a-nantes.html" class="btn btn-ghost">Nantes</a>
-          <a href="voyager-seul-a-strasbourg.html" class="btn btn-ghost">Strasbourg</a>
-          <a href="voyager-seul-a-lille.html" class="btn btn-ghost">Lille</a>
-          <a href="voyager-seul-a-montpellier.html" class="btn btn-ghost">Montpellier</a>
-          <a href="voyager-seul-a-lisbonne.html" class="btn btn-ghost">Lisbonne</a>
-          <a href="voyager-seul-a-barcelone.html" class="btn btn-ghost">Barcelone</a>
-          <a href="voyager-seul-a-berlin.html" class="btn btn-ghost">Berlin</a>
-          <a href="voyager-seul-a-rome.html" class="btn btn-ghost">Rome</a>
-          <a href="voyager-seule-en-securite.html" class="btn btn-ghost">Voyager seule en sécurité</a>
+        <div class="dest-grid reveal">
+          <a href="voyager-seul-a-paris.html" class="dest-card" style="--cg:linear-gradient(150deg,#F4D58D,#C45B7C,#9C4368)"><span class="dc-in"><span class="de">🗼</span><span class="dn">Paris</span><span class="dv">élégance &amp; flânerie</span></span></a>
+          <a href="voyager-seul-a-lisbonne.html" class="dest-card" style="--cg:linear-gradient(150deg,#F2C14E,#2E86AB,#1B4F6B)"><span class="dc-in"><span class="de">🚋</span><span class="dn">Lisbonne</span><span class="dv">fado &amp; tramways jaunes</span></span></a>
+          <a href="voyager-seul-a-barcelone.html" class="dest-card" style="--cg:linear-gradient(150deg,#F4C430,#E2723B,#2BA59E)"><span class="dc-in"><span class="de">🦎</span><span class="dn">Barcelone</span><span class="dv">Gaudí &amp; Méditerranée</span></span></a>
+          <a href="voyager-seul-a-rome.html" class="dest-card" style="--cg:linear-gradient(150deg,#E6B85C,#C0622E,#7A3A18)"><span class="dc-in"><span class="de">🏛️</span><span class="dn">Rome</span><span class="dv">dolce vita antique</span></span></a>
+          <a href="voyager-seul-a-berlin.html" class="dest-card" style="--cg:linear-gradient(150deg,#F0C419,#D64541,#2C2C2C)"><span class="dc-in"><span class="de">🐻</span><span class="dn">Berlin</span><span class="dv">underground &amp; liberté</span></span></a>
+          <a href="voyager-seul-a-marseille.html" class="dest-card" style="--cg:linear-gradient(150deg,#5CC6E8,#1E88A8,#0E5A78)"><span class="dc-in"><span class="de">⛵</span><span class="dn">Marseille</span><span class="dv">soleil &amp; mer</span></span></a>
+          <a href="voyager-seul-a-lyon.html" class="dest-card" style="--cg:linear-gradient(150deg,#E8B45A,#C45A3A,#7E2D22)"><span class="dc-in"><span class="de">🦁</span><span class="dn">Lyon</span><span class="dv">gastronomie &amp; traboules</span></span></a>
+          <a href="voyager-seul-a-nice.html" class="dest-card" style="--cg:linear-gradient(150deg,#7FD0E8,#2F9FC9,#FF8A5B)"><span class="dc-in"><span class="de">🌴</span><span class="dn">Nice</span><span class="dv">azur &amp; promenade</span></span></a>
+          <a href="voyager-seul-a-bordeaux.html" class="dest-card" style="--cg:linear-gradient(150deg,#C9A06A,#7E1F33,#4A1220)"><span class="dc-in"><span class="de">🍷</span><span class="dn">Bordeaux</span><span class="dv">pierre &amp; vignes</span></span></a>
+          <a href="voyager-seul-a-toulouse.html" class="dest-card" style="--cg:linear-gradient(150deg,#E89BB0,#C76B86,#8A5CB0)"><span class="dc-in"><span class="de">🌸</span><span class="dn">Toulouse</span><span class="dv">la ville rose</span></span></a>
+          <a href="voyager-seul-a-montpellier.html" class="dest-card" style="--cg:linear-gradient(150deg,#FFC07A,#E8743B,#C04E8A)"><span class="dc-in"><span class="de">☀️</span><span class="dn">Montpellier</span><span class="dv">soleil étudiant</span></span></a>
+          <a href="voyager-seul-a-nantes.html" class="dest-card" style="--cg:linear-gradient(150deg,#6FCF97,#2E8B57,#34557A)"><span class="dc-in"><span class="de">🐘</span><span class="dn">Nantes</span><span class="dv">machines &amp; Loire</span></span></a>
+          <a href="voyager-seul-a-strasbourg.html" class="dest-card" style="--cg:linear-gradient(150deg,#E8C39E,#C0392B,#7A2018)"><span class="dc-in"><span class="de">🏰</span><span class="dn">Strasbourg</span><span class="dv">la Petite France</span></span></a>
+          <a href="voyager-seul-a-lille.html" class="dest-card" style="--cg:linear-gradient(150deg,#E0B040,#B5502E,#7A331C)"><span class="dc-in"><span class="de">🍟</span><span class="dn">Lille</span><span class="dv">briques &amp; chaleur du Nord</span></span></a>
+          <a href="voyager-seule-en-securite.html" class="dest-safe">🛡️ Voyager seule en sécurité</a>
         </div>
       </div>
     </section>
